@@ -121,8 +121,11 @@ namespace felib {
             glBindVertexArray(0);
         }
 
-        void add_vbo(size_t buffer_size, void* data, GLenum usage_hint) {
+        void add_vbo(GLuint location, GLint number_of_dimensions, size_t buffer_size, void* data, GLenum usage_hint) {
             this->add_buffer(GL_ARRAY_BUFFER, buffer_size, data, usage_hint);
+            glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, (void*)0);
+            glEnableVertexAttribArray(location);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
         }
 
         void add_ebo(size_t buffer_size, void* data, GLenum usage_hint) {
@@ -352,45 +355,8 @@ felib::Vao build_vao()
 
     VaoBuilder vao_builder = VaoBuilder();
 
-    vao_builder.add_vbo(VERTEX_POSITIONS_SIZE, vertex_positions, GL_STATIC_DRAW);
-
-    // Precisamos então informar um índice de "local" ("location"), o qual será
-    // utilizado no shader "shader_vertex.glsl" para acessar os valores
-    // armazenados no VBO "ligado" acima. Também, informamos a dimensão (número de
-    // coeficientes) destes atributos. Como em nosso caso são coordenadas NDC
-    // homogêneas, temos quatro coeficientes por vértice (X,Y,Z,W). Isto define
-    // um tipo de dado chamado de "vec4" em "shader_vertex.glsl": um vetor com
-    // quatro coeficientes. Finalmente, informamos que os dados estão em ponto
-    // flutuante com 32 bits (GL_FLOAT).
-    // Esta função também informa que o VBO "ligado" acima em glBindBuffer()
-    // está dentro do VAO "ligado" acima por glBindVertexArray().
-    // Veja https://www.khronos.org/opengl/wiki/Vertex_Specification#Vertex_Buffer_Object
-    GLuint location = 0; // "(location = 0)" em "shader_vertex.glsl"
-    GLint  number_of_dimensions = 4; // vec4 em "shader_vertex.glsl"
-    glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
-
-    // "Ativamos" os atributos. Informamos que os atributos com índice de local
-    // definido acima, na variável "location", deve ser utilizado durante o
-    // rendering.
-    glEnableVertexAttribArray(location);
-
-    // "Desligamos" o VBO, evitando assim que operações posteriores venham a
-    // alterar o mesmo. Isto evita bugs.
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    // Agora repetimos todos os passos acima para atribuir um novo atributo a
-    // cada vértice: uma cor (veja slides 109-112 do documento Aula_03_Rendering_Pipeline_Grafico.pdf e slide 111 do documento Aula_04_Modelagem_Geometrica_3D.pdf).
-    // Tal cor é definida como coeficientes RGBA: Red, Green, Blue, Alpha;
-    // isto é: Vermelho, Verde, Azul, Alpha (valor de transparência).
-    // Conversaremos sobre sistemas de cores nas aulas de Modelos de Iluminação.
-    vao_builder.add_vbo(VERTEX_COLORS_SIZE, vertex_colors, GL_STATIC_DRAW);
-
-    location = 1; // "(location = 1)" em "shader_vertex.glsl"
-    number_of_dimensions = 4; // vec4 em "shader_vertex.glsl"
-    glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(location);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
+    vao_builder.add_vbo(0, 4, VERTEX_POSITIONS_SIZE, vertex_positions, GL_STATIC_DRAW);
+    vao_builder.add_vbo(1, 4, VERTEX_COLORS_SIZE, vertex_colors, GL_STATIC_DRAW);
     vao_builder.add_ebo(topology_size, topology, GL_STATIC_DRAW);
 
     return vao_builder.build(TOPOLOGY_MODE, topology_size / sizeof(GLubyte), GL_UNSIGNED_BYTE);
