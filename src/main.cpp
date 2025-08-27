@@ -34,98 +34,111 @@
 
 // BEGIN Custom
 
-#define PI 3.14159265358979323846
+namespace felib {
+    #define PI 3.14159265358979323846
 
-typedef struct Position {
-    GLfloat x;
-    GLfloat y;
-    GLfloat z;
-    GLfloat w;
+    typedef struct Position {
+        GLfloat x;
+        GLfloat y;
+        GLfloat z;
+        GLfloat w;
 
-    Position() {
-        x = 0.0;
-        y = 0.0;
-        z = 0.0;
-        w = 0.0;
-    }
+        Position() {
+            x = 0.0;
+            y = 0.0;
+            z = 0.0;
+            w = 0.0;
+        }
 
-    Position(GLfloat x, GLfloat y, GLfloat z) {
-        this->x = x;
-        this->y = y;
-        this->z = z;
-        this->w = 1.0;
-    }
+        Position(GLfloat x, GLfloat y, GLfloat z) {
+            this->x = x;
+            this->y = y;
+            this->z = z;
+            this->w = 1.0;
+        }
 
-    Position(GLfloat x, GLfloat y, GLfloat z, GLfloat w) {
-        this->x = x;
-        this->y = y;
-        this->z = z;
-        this->w = w;
-    }
-} Position;
+        Position(GLfloat x, GLfloat y, GLfloat z, GLfloat w) {
+            this->x = x;
+            this->y = y;
+            this->z = z;
+            this->w = w;
+        }
+    } Position;
 
-typedef struct Color {
-    GLfloat r;
-    GLfloat g;
-    GLfloat b;
-    GLfloat a;
+    typedef struct Color {
+        GLfloat r;
+        GLfloat g;
+        GLfloat b;
+        GLfloat a;
 
-    Color() {
-        r = 0.0;
-        g = 0.0;
-        b = 0.0;
-        a = 0.0;
-    }
+        Color() {
+            r = 0.0;
+            g = 0.0;
+            b = 0.0;
+            a = 0.0;
+        }
 
-    Color(GLfloat r, GLfloat g, GLfloat b) {
-        this->r = r;
-        this->g = g;
-        this->b = b;
-        this->a = 1.0;
-    }
+        Color(GLfloat r, GLfloat g, GLfloat b) {
+            this->r = r;
+            this->g = g;
+            this->b = b;
+            this->a = 1.0;
+        }
 
-    Color(GLfloat r, GLfloat g, GLfloat b, GLfloat a) {
-        this->r = r;
-        this->g = g;
-        this->b = b;
-        this->a = a;
-    }
-} Color;
+        Color(GLfloat r, GLfloat g, GLfloat b, GLfloat a) {
+            this->r = r;
+            this->g = g;
+            this->b = b;
+            this->a = a;
+        }
+    } Color;
 
-typedef struct Vao {
-    GLuint vao_id;
-    GLenum topology_mode;
-    GLsizei topology_size;
-    GLenum topology_type;
+    typedef struct Vao {
+        GLuint vao_id;
+        GLenum topology_mode;
+        GLsizei topology_size;
+        GLenum topology_type;
 
-    Vao(GLuint vao_id, GLenum topology_mode, GLsizei topology_size, GLenum topology_type) {
-        this->vao_id = vao_id;
-        this->topology_mode = topology_mode;
-        this->topology_size = topology_size;
-        this->topology_type = topology_type;
-    }
-} Vao;
+        Vao(GLuint vao_id, GLenum topology_mode, GLsizei topology_size, GLenum topology_type) {
+            this->vao_id = vao_id;
+            this->topology_mode = topology_mode;
+            this->topology_size = topology_size;
+            this->topology_type = topology_type;
+        }
+    } Vao;
 
-typedef class VaoBuilder {
-private:
-    GLenum topology_mode;
+    typedef class VaoBuilder {
+    private:
+        GLuint vao_id;
 
-public:
-    VaoBuilder(GLenum topology_mode) {
-        this->topology_mode = topology_mode;
-    }
+    public:
+        VaoBuilder() {
+            glGenVertexArrays(1, &this->vao_id);
+            glBindVertexArray(this->vao_id);
+        }
 
-    Vao build(GLuint vao_id, GLsizei topology_size, GLenum topology_type) {
-        return Vao(vao_id, topology_mode, topology_size, topology_type);
-    }
-} VaoBuilder;
+        ~VaoBuilder() {
+            glBindVertexArray(0);
+        }
+
+        void add_vbo() {
+            GLuint vbo_id;
+            glGenBuffers(1, &vbo_id);
+            glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
+        }
+
+        Vao build(GLenum topology_mode, GLsizei topology_size, GLenum topology_type) {
+            return Vao(this->vao_id, topology_mode, topology_size, topology_type);
+        }
+    } VaoBuilder;
+}
 
 // END Custom
 
 
 // Declaração de várias funções utilizadas em main().  Essas estão definidas
 // logo após a definição de main() neste arquivo.
-Vao build_vao(); // Constrói triângulos para renderização
+felib::Vao build_vao(); // Constrói triângulos para renderização
 void LoadShadersFromFiles(); // Carrega os shaders de vértice e fragmento, criando um programa de GPU
 GLuint LoadShader_Vertex(const char* filename);   // Carrega um vertex shader
 GLuint LoadShader_Fragment(const char* filename); // Carrega um fragment shader
@@ -208,7 +221,7 @@ int main()
     LoadShadersFromFiles();
 
     // Construímos a representação de um triângulo
-    Vao vao = build_vao();
+    felib::Vao vao = build_vao();
 
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
@@ -273,17 +286,21 @@ int main()
 }
 
 // Constrói triângulos para futura renderização
-Vao build_vao()
+felib::Vao build_vao()
 {
-    const GLenum TOPOLOGY_MODE = GL_TRIANGLE_STRIP;
-    VaoBuilder builder = VaoBuilder(TOPOLOGY_MODE);
+    using felib::VaoBuilder;
+    using felib::Position;
+    using felib::Color;
 
-    // Define circle constants
+
     const size_t CIRCUMFERENCE_VERTEX_COUNT = 16;
     const GLfloat OUTER_DISTANCE_TO_CENTER = 0.7f;
     const GLfloat INNER_DISTANCE_TO_CENTER = 0.5f;
 
     const size_t VERTEX_COUNT = 2 * CIRCUMFERENCE_VERTEX_COUNT;
+    
+    const GLenum TOPOLOGY_MODE = GL_TRIANGLE_STRIP;
+
     Position vertex_positions[VERTEX_COUNT];
     const size_t VERTEX_POSITIONS_SIZE = sizeof(vertex_positions);
 
@@ -323,30 +340,9 @@ Vao build_vao()
     topology[TOPOLOGY_LENGTH - 2] = 0;
     topology[TOPOLOGY_LENGTH - 1] = 1;
 
-    // Criamos o identificador (ID) de um Vertex Buffer Object (VBO).  Um VBO é
-    // um buffer de memória que irá conter os valores de um certo atributo de
-    // um conjunto de vértices; por exemplo: posição, cor, normais, coordenadas
-    // de textura. Neste exemplo utilizaremos vários VBOs, um para cada tipo de
-    // atributo.  Agora criamos um VBO para armazenarmos um atributo: posição
-    // (coeficientes NDC definidos acima).
-    GLuint VBO_NDC_coefficients_id;
-    glGenBuffers(1, &VBO_NDC_coefficients_id);
+    VaoBuilder vao_builder = VaoBuilder();
 
-    // Criamos o identificador (ID) de um Vertex Array Object (VAO).  Um VAO
-    // contém a definição de vários atributos de um certo conjunto de vértices;
-    // isto é, um VAO irá conter ponteiros para vários VBOs.
-    GLuint vao_id;
-    glGenVertexArrays(1, &vao_id);
-
-    // "Ligamos" o VAO ("bind"). Informamos que iremos atualizar o VAO cujo ID
-    // está contido na variável "vao_id".
-    glBindVertexArray(vao_id);
-
-    // "Ligamos" o VBO ("bind"). Informamos que o VBO cujo ID está contido na
-    // variável VBO_NDC_coefficients_id será modificado a seguir. A
-    // constante "GL_ARRAY_BUFFER" informa que esse buffer é de fato um VBO, e
-    // irá conter atributos de vértices.
-    glBindBuffer(GL_ARRAY_BUFFER, VBO_NDC_coefficients_id);
+    vao_builder.add_vbo();
 
     // Alocamos memória para o VBO "ligado" acima. Como queremos armazenar
     // nesse VBO todos os valores contidos no array "vertex_positions", pedimos
@@ -398,9 +394,7 @@ Vao build_vao()
     // isto é: Vermelho, Verde, Azul, Alpha (valor de transparência).
     // Conversaremos sobre sistemas de cores nas aulas de Modelos de Iluminação.
 
-    GLuint VBO_color_coefficients_id;
-    glGenBuffers(1, &VBO_color_coefficients_id);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO_color_coefficients_id);
+    vao_builder.add_vbo();
     glBufferData(GL_ARRAY_BUFFER, VERTEX_COLORS_SIZE, NULL, GL_STATIC_DRAW);
     glBufferSubData(GL_ARRAY_BUFFER, 0, VERTEX_COLORS_SIZE, vertex_colors);
     location = 1; // "(location = 1)" em "shader_vertex.glsl"
@@ -430,20 +424,9 @@ Vao build_vao()
     // Copiamos os valores do array topology[] para dentro do buffer.
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, topology_size, topology);
 
-    // NÃO faça a chamada abaixo! Diferente de um VBO (GL_ARRAY_BUFFER), um
-    // array de índices (GL_ELEMENT_ARRAY_BUFFER) não pode ser "desligado",
-    // caso contrário o VAO irá perder a informação sobre os índices.
-    //
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); // XXX Errado!
-    //
-
-    // "Desligamos" o VAO, evitando assim que operações posteriores venham a
-    // alterar o mesmo. Isso evita bugs.
-    glBindVertexArray(0);
-
     // Retornamos o ID do VAO. Isso é tudo que será necessário para renderizar
     // os triângulos definidos acima. Veja a chamada glDrawElements() em main().
-    return builder.build(vao_id, topology_size / sizeof(GLubyte), GL_UNSIGNED_BYTE);
+    return vao_builder.build(TOPOLOGY_MODE, topology_size / sizeof(GLubyte), GL_UNSIGNED_BYTE);
 }
 
 // Carrega um Vertex Shader de um arquivo GLSL. Veja definição de LoadShader() abaixo.
