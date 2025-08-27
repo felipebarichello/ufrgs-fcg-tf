@@ -101,6 +101,22 @@ namespace felib {
         }
     } Vertex;
 
+    template<size_t N>
+    class GeometryEditor {
+    private:
+        Position (&vertex_positions)[N];
+        Color (&vertex_colors)[N];
+
+    public:
+        GeometryEditor(Position (&vertex_positions)[N], Color (&vertex_colors)[N])
+            : vertex_positions(vertex_positions), vertex_colors(vertex_colors) {}
+
+        void set(size_t index, Vertex vertex) {
+            this->vertex_positions[index] = vertex.position;
+            this->vertex_colors[index] = vertex.color;
+        }
+    };
+
     typedef struct Vao {
         GLuint vao_id;
         GLenum topology_mode;
@@ -312,6 +328,7 @@ felib::Vao build_vao()
     using felib::VaoBuilder;
     using felib::Position;
     using felib::Color;
+    using felib::GeometryEditor;
 
 
     const size_t CIRCUMFERENCE_VERTEX_COUNT = 16;
@@ -328,26 +345,30 @@ felib::Vao build_vao()
     Color vertex_colors[VERTEX_COUNT];
     const size_t VERTEX_COLORS_SIZE = sizeof(vertex_colors);
 
+    GeometryEditor<VERTEX_COUNT> geometry = GeometryEditor<VERTEX_COUNT>(vertex_positions, vertex_colors);
+
     // Make vertices
     for (size_t i = 0; i < CIRCUMFERENCE_VERTEX_COUNT; i++) {
         size_t outer_vertex_index = 2*i;
         size_t inner_vertex_index = outer_vertex_index + 1;
 
-        vertex_positions[outer_vertex_index] = Position(
-            OUTER_DISTANCE_TO_CENTER * (float)sin(2.0 * PI * i / CIRCUMFERENCE_VERTEX_COUNT),
-            OUTER_DISTANCE_TO_CENTER * (float)cos(2.0 * PI * i / CIRCUMFERENCE_VERTEX_COUNT),
-            0.0
-        );
+        geometry.set(outer_vertex_index, felib::Vertex(
+            Position(
+                OUTER_DISTANCE_TO_CENTER * (float)sin(2.0 * PI * i / CIRCUMFERENCE_VERTEX_COUNT),
+                OUTER_DISTANCE_TO_CENTER * (float)cos(2.0 * PI * i / CIRCUMFERENCE_VERTEX_COUNT),
+                0.0
+            ),
+            Color(0.0, 0.0, 1.0)
+        ));
 
-        vertex_colors[outer_vertex_index] = Color(0.0, 0.0, 1.0);
-
-        vertex_positions[inner_vertex_index] = Position(
-            INNER_DISTANCE_TO_CENTER * (float)sin(2.0 * PI * i / CIRCUMFERENCE_VERTEX_COUNT),
-            INNER_DISTANCE_TO_CENTER * (float)cos(2.0 * PI * i / CIRCUMFERENCE_VERTEX_COUNT),
-            0.0
-        );
-
-        vertex_colors[inner_vertex_index] = Color(1.0, 0.0, 0.0);
+        geometry.set(inner_vertex_index, felib::Vertex(
+            Position(
+                INNER_DISTANCE_TO_CENTER * (float)sin(2.0 * PI * i / CIRCUMFERENCE_VERTEX_COUNT),
+                INNER_DISTANCE_TO_CENTER * (float)cos(2.0 * PI * i / CIRCUMFERENCE_VERTEX_COUNT),
+                0.0
+            ),
+            Color(1.0, 0.0, 0.0)
+        ));
     }
 
     const size_t TOPOLOGY_LENGTH = VERTEX_COUNT + 2;
