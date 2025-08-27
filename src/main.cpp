@@ -106,6 +106,20 @@ typedef struct Vao {
     }
 } Vao;
 
+typedef class VaoBuilder {
+private:
+    GLenum topology_mode;
+
+public:
+    VaoBuilder(GLenum topology_mode) {
+        this->topology_mode = topology_mode;
+    }
+
+    Vao build(GLuint vao_id, GLsizei topology_size, GLenum topology_type) {
+        return Vao(vao_id, topology_mode, topology_size, topology_type);
+    }
+} VaoBuilder;
+
 // END Custom
 
 
@@ -261,20 +275,9 @@ int main()
 // Constrói triângulos para futura renderização
 Vao build_vao()
 {
-    // Primeiro, definimos os atributos de cada vértice.
+    const GLenum TOPOLOGY_MODE = GL_TRIANGLE_STRIP;
+    VaoBuilder builder = VaoBuilder(TOPOLOGY_MODE);
 
-    // A posição de cada vértice é definida por coeficientes em "normalized
-    // device coordinates" (NDC), onde cada coeficiente está entre -1 e 1.
-    // (Veja slides 131-134 e 141-148 do documento Aula_03_Rendering_Pipeline_Grafico.pdf).
-    // Nas aulas sobre transformações geométrica veremos como transformar
-    // coeficientes em outros sistemas de coordenadas para coeficientes NDC.
-    //
-    // Note que aqui adicionamos um quarto coeficiente W (igual a 1.0).
-    // Conversaremos sobre isso quando tratarmos de coordenadas homogêneas.
-    //
-    // Este vetor "vertex_positions" define a GEOMETRIA (veja slides 103-110 do documento Aula_04_Modelagem_Geometrica_3D.pdf).
-    //
-    
     // Define circle constants
     const size_t CIRCUMFERENCE_VERTEX_COUNT = 16;
     const GLfloat OUTER_DISTANCE_TO_CENTER = 0.7f;
@@ -309,7 +312,6 @@ Vao build_vao()
         vertex_colors[inner_vertex_index] = Color(1.0, 0.0, 0.0);
     }
 
-    const GLenum TOPOLOGY_MODE = GL_TRIANGLE_STRIP;
     const size_t TOPOLOGY_LENGTH = VERTEX_COUNT + 2;
     GLubyte topology[TOPOLOGY_LENGTH]; // GLubyte: valores entre 0 e 255 (8 bits sem sinal).
     GLsizei topology_size = sizeof(topology);
@@ -333,12 +335,12 @@ Vao build_vao()
     // Criamos o identificador (ID) de um Vertex Array Object (VAO).  Um VAO
     // contém a definição de vários atributos de um certo conjunto de vértices;
     // isto é, um VAO irá conter ponteiros para vários VBOs.
-    GLuint vertex_array_object_id;
-    glGenVertexArrays(1, &vertex_array_object_id);
+    GLuint vao_id;
+    glGenVertexArrays(1, &vao_id);
 
     // "Ligamos" o VAO ("bind"). Informamos que iremos atualizar o VAO cujo ID
-    // está contido na variável "vertex_array_object_id".
-    glBindVertexArray(vertex_array_object_id);
+    // está contido na variável "vao_id".
+    glBindVertexArray(vao_id);
 
     // "Ligamos" o VBO ("bind"). Informamos que o VBO cujo ID está contido na
     // variável VBO_NDC_coefficients_id será modificado a seguir. A
@@ -441,7 +443,7 @@ Vao build_vao()
 
     // Retornamos o ID do VAO. Isso é tudo que será necessário para renderizar
     // os triângulos definidos acima. Veja a chamada glDrawElements() em main().
-    return Vao(vertex_array_object_id, TOPOLOGY_MODE, topology_size / sizeof(GLubyte), GL_UNSIGNED_BYTE);
+    return builder.build(vao_id, topology_size / sizeof(GLubyte), GL_UNSIGNED_BYTE);
 }
 
 // Carrega um Vertex Shader de um arquivo GLSL. Veja definição de LoadShader() abaixo.
