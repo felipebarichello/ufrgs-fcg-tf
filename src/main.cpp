@@ -122,14 +122,23 @@ namespace felib {
         }
 
         void add_vbo(size_t buffer_size, void* data, GLenum usage_hint) {
-            GLuint vbo_id;
-            glGenBuffers(1, &vbo_id);
-            glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
-            glBufferData(GL_ARRAY_BUFFER, buffer_size, data, usage_hint);
+            this->add_buffer(GL_ARRAY_BUFFER, buffer_size, data, usage_hint);
+        }
+
+        void add_ebo(size_t buffer_size, void* data, GLenum usage_hint) {
+            this->add_buffer(GL_ELEMENT_ARRAY_BUFFER, buffer_size, data, usage_hint);
         }
 
         Vao build(GLenum topology_mode, GLsizei topology_size, GLenum topology_type) {
             return Vao(this->vao_id, topology_mode, topology_size, topology_type);
+        }
+
+    private:
+        void add_buffer(GLenum target, size_t buffer_size, void* data, GLenum usage_hint) {
+            GLuint vbo_id;
+            glGenBuffers(1, &vbo_id);
+            glBindBuffer(target, vbo_id);
+            glBufferData(target, buffer_size, data, usage_hint);
         }
     } VaoBuilder;
 }
@@ -374,7 +383,6 @@ felib::Vao build_vao()
     // Tal cor é definida como coeficientes RGBA: Red, Green, Blue, Alpha;
     // isto é: Vermelho, Verde, Azul, Alpha (valor de transparência).
     // Conversaremos sobre sistemas de cores nas aulas de Modelos de Iluminação.
-
     vao_builder.add_vbo(VERTEX_COLORS_SIZE, vertex_colors, GL_STATIC_DRAW);
 
     location = 1; // "(location = 1)" em "shader_vertex.glsl"
@@ -383,29 +391,8 @@ felib::Vao build_vao()
     glEnableVertexAttribArray(location);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    // Vamos então definir dois triângulos utilizando os vértices do array
-    // vertex_positions. O primeiro triângulo é formado pelos vértices 0,1,2;
-    // e o segundo pelos vértices 2,1,3. Note que usaremos o modo de renderização
-    // GL_TRIANGLES na chamada glDrawElements() dentro de main(). Veja slides 182-188 do documento Aula_04_Modelagem_Geometrica_3D.pdf.
-    //
-    // Este vetor "topology" define a TOPOLOGIA (veja slides 103-110 do documento Aula_04_Modelagem_Geometrica_3D.pdf).
-    //
+    vao_builder.add_ebo(topology_size, topology, GL_STATIC_DRAW);
 
-    // Criamos um buffer OpenGL para armazenar os índices acima
-    GLuint indices_id;
-    glGenBuffers(1, &indices_id);
-
-    // "Ligamos" o buffer. Note que o tipo agora é GL_ELEMENT_ARRAY_BUFFER.
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_id);
-
-    // Alocamos memória para o buffer.
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, topology_size, NULL, GL_STATIC_DRAW);
-
-    // Copiamos os valores do array topology[] para dentro do buffer.
-    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, topology_size, topology);
-
-    // Retornamos o ID do VAO. Isso é tudo que será necessário para renderizar
-    // os triângulos definidos acima. Veja a chamada glDrawElements() em main().
     return vao_builder.build(TOPOLOGY_MODE, topology_size / sizeof(GLubyte), GL_UNSIGNED_BYTE);
 }
 
