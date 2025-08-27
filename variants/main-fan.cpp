@@ -291,6 +291,9 @@ Vao build_vao()
         vertex_colors[vertex_index] = Color(0.0, 0.0, 1.0, 1.0);
     }
 
+    GLubyte indices[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1 }; // GLubyte: valores entre 0 e 255 (8 bits sem sinal).
+    GLsizei topology_size = sizeof(indices);
+
     // Criamos o identificador (ID) de um Vertex Buffer Object (VBO).  Um VBO é
     // um buffer de memória que irá conter os valores de um certo atributo de
     // um conjunto de vértices; por exemplo: posição, cor, normais, coordenadas
@@ -384,8 +387,6 @@ Vao build_vao()
     //
     // Este vetor "indices" define a TOPOLOGIA (veja slides 103-110 do documento Aula_04_Modelagem_Geometrica_3D.pdf).
     //
-    GLubyte indices[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 1 }; // GLubyte: valores entre 0 e 255 (8 bits sem sinal).
-    GLsizei topology_size = sizeof(indices);
 
     // Criamos um buffer OpenGL para armazenar os índices acima
     GLuint indices_id;
