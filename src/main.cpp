@@ -121,10 +121,11 @@ namespace felib {
             glBindVertexArray(0);
         }
 
-        void add_vbo() {
+        void add_vbo(size_t buffer_size, void* data, GLenum usage_hint) {
             GLuint vbo_id;
             glGenBuffers(1, &vbo_id);
             glBindBuffer(GL_ARRAY_BUFFER, vbo_id);
+            glBufferData(GL_ARRAY_BUFFER, buffer_size, data, usage_hint);
         }
 
         Vao build(GLenum topology_mode, GLsizei topology_size, GLenum topology_type) {
@@ -342,27 +343,7 @@ felib::Vao build_vao()
 
     VaoBuilder vao_builder = VaoBuilder();
 
-    vao_builder.add_vbo();
-
-    // Alocamos memória para o VBO "ligado" acima. Como queremos armazenar
-    // nesse VBO todos os valores contidos no array "vertex_positions", pedimos
-    // para alocar um número de bytes exatamente igual ao tamanho ("size")
-    // desse array. A constante "GL_STATIC_DRAW" dá uma dica para o driver da
-    // GPU sobre como utilizaremos os dados do VBO. Neste caso, estamos dizendo
-    // que não pretendemos alterar tais dados (são estáticos: "STATIC"), e
-    // também dizemos que tais dados serão utilizados para renderizar ou
-    // desenhar ("DRAW").  Pense que:
-    //
-    //            glBufferData()  ==  malloc() do C  ==  new do C++.
-    //
-    glBufferData(GL_ARRAY_BUFFER, VERTEX_POSITIONS_SIZE, NULL, GL_STATIC_DRAW);
-
-    // Finalmente, copiamos os valores do array vertex_positions para dentro do
-    // VBO "ligado" acima.  Pense que:
-    //
-    //            glBufferSubData()  ==  memcpy() do C.
-    //
-    glBufferSubData(GL_ARRAY_BUFFER, 0, VERTEX_POSITIONS_SIZE, vertex_positions);
+    vao_builder.add_vbo(VERTEX_POSITIONS_SIZE, vertex_positions, GL_STATIC_DRAW);
 
     // Precisamos então informar um índice de "local" ("location"), o qual será
     // utilizado no shader "shader_vertex.glsl" para acessar os valores
@@ -394,9 +375,8 @@ felib::Vao build_vao()
     // isto é: Vermelho, Verde, Azul, Alpha (valor de transparência).
     // Conversaremos sobre sistemas de cores nas aulas de Modelos de Iluminação.
 
-    vao_builder.add_vbo();
-    glBufferData(GL_ARRAY_BUFFER, VERTEX_COLORS_SIZE, NULL, GL_STATIC_DRAW);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, VERTEX_COLORS_SIZE, vertex_colors);
+    vao_builder.add_vbo(VERTEX_COLORS_SIZE, vertex_colors, GL_STATIC_DRAW);
+
     location = 1; // "(location = 1)" em "shader_vertex.glsl"
     number_of_dimensions = 4; // vec4 em "shader_vertex.glsl"
     glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
