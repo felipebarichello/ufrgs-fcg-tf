@@ -32,8 +32,6 @@
 #include "utils.h"
 
 
-// BEGIN Custom
-
 namespace felib {
     #define PI 3.14159265358979323846
 
@@ -93,6 +91,16 @@ namespace felib {
         }
     } Color;
 
+    typedef struct Vertex {
+        Position position;
+        Color color;
+
+        Vertex(Position position, Color color) {
+            this->position = position;
+            this->color = color;
+        }
+    } Vertex;
+
     typedef struct Vao {
         GLuint vao_id;
         GLenum topology_mode;
@@ -147,8 +155,6 @@ namespace felib {
         }
     } VaoBuilder;
 }
-
-// END Custom
 
 
 // Declaração de várias funções utilizadas em main().  Essas estão definidas
