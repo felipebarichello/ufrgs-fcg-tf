@@ -80,13 +80,13 @@ typedef struct Color {
 
 typedef struct Vao {
     GLuint vao_id;
-    GLenum rasterization_mode;
+    GLenum topology_mode;
     GLsizei topology_size;
     GLenum topology_type;
 
-    Vao(GLuint vao_id, GLenum rasterization_mode, GLsizei topology_size, GLenum topology_type) {
+    Vao(GLuint vao_id, GLenum topology_mode, GLsizei topology_size, GLenum topology_type) {
         this->vao_id = vao_id;
-        this->rasterization_mode = rasterization_mode;
+        this->topology_mode = topology_mode;
         this->topology_size = topology_size;
         this->topology_type = topology_type;
     }
@@ -216,7 +216,7 @@ int main()
         //                |                    |                  |                  +--- Vértices começam em indices[0] (veja função build_vao()).
         //                |                    |                  |                  |
         //                V                    V                  V                  V
-        glDrawElements(vao.rasterization_mode, vao.topology_size, vao.topology_type, 0);
+        glDrawElements(vao.topology_mode, vao.topology_size, vao.topology_type, 0);
 
         // "Desligamos" o VAO, evitando assim que operações posteriores venham a
         // alterar o mesmo. Isso evita bugs.
@@ -276,8 +276,7 @@ Vao build_vao()
     vertex_positions[0] = Position(0.0, 0.0, 0.0, 1.0);
     vertex_colors[0] = Color(1.0, 0.0, 0.0, 1.0);
 
-    // Make triangles
-
+    // Make circumference vertices
     for (size_t i = 0; i < CIRCLE_OUTER_VERTEX_COUNT; i++) {
         size_t vertex_index = i + 1;
 
