@@ -121,15 +121,17 @@ namespace felib {
             glBindVertexArray(0);
         }
 
-        void add_vbo(GLuint location, GLint number_of_dimensions, size_t buffer_size, void* data, GLenum usage_hint) {
+        VaoBuilder& add_vbo(GLuint location, GLint number_of_dimensions, size_t buffer_size, void* data, GLenum usage_hint) {
             this->add_buffer(GL_ARRAY_BUFFER, buffer_size, data, usage_hint);
             glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, (void*)0);
             glEnableVertexAttribArray(location);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
+            return *this;
         }
 
-        void add_ebo(size_t buffer_size, void* data, GLenum usage_hint) {
+        VaoBuilder& add_ebo(size_t buffer_size, void* data, GLenum usage_hint) {
             this->add_buffer(GL_ELEMENT_ARRAY_BUFFER, buffer_size, data, usage_hint);
+            return *this;
         }
 
         Vao build(GLenum topology_mode, GLsizei topology_size, GLenum topology_type) {
@@ -353,13 +355,11 @@ felib::Vao build_vao()
     topology[TOPOLOGY_LENGTH - 2] = 0;
     topology[TOPOLOGY_LENGTH - 1] = 1;
 
-    VaoBuilder vao_builder = VaoBuilder();
-
-    vao_builder.add_vbo(0, 4, VERTEX_POSITIONS_SIZE, vertex_positions, GL_STATIC_DRAW);
-    vao_builder.add_vbo(1, 4, VERTEX_COLORS_SIZE, vertex_colors, GL_STATIC_DRAW);
-    vao_builder.add_ebo(topology_size, topology, GL_STATIC_DRAW);
-
-    return vao_builder.build(TOPOLOGY_MODE, topology_size / sizeof(GLubyte), GL_UNSIGNED_BYTE);
+    return VaoBuilder()
+        .add_vbo(0, 4, VERTEX_POSITIONS_SIZE, vertex_positions, GL_STATIC_DRAW)
+        .add_vbo(1, 4, VERTEX_COLORS_SIZE, vertex_colors, GL_STATIC_DRAW)
+        .add_ebo(topology_size, topology, GL_STATIC_DRAW)
+        .build(TOPOLOGY_MODE, topology_size / sizeof(GLubyte), GL_UNSIGNED_BYTE);
 }
 
 // Carrega um Vertex Shader de um arquivo GLSL. Veja definição de LoadShader() abaixo.
