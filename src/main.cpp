@@ -31,9 +31,43 @@
 // Headers locais, definidos na pasta "include/"
 #include "utils.h"
 
+
+// BEGIN Custom types
+
+typedef struct Vertice {
+    GLfloat x;
+    GLfloat y;
+    GLfloat z;
+    GLfloat w;
+} Vertice;
+
+typedef struct Color {
+    GLfloat r;
+    GLfloat g;
+    GLfloat b;
+    GLfloat a;
+} Color;
+
+typedef struct Vao {
+    GLuint vao_id;
+    GLenum rasterization_mode;
+    GLsizei topology_size;
+    GLenum topology_type;
+
+    Vao(GLuint vao_id, GLenum rasterization_mode, GLsizei topology_size, GLenum topology_type) {
+        this->vao_id = vao_id;
+        this->rasterization_mode = rasterization_mode;
+        this->topology_size = topology_size;
+        this->topology_type = topology_type;
+    }
+} Vao;
+
+// END Custom types
+
+
 // Declaração de várias funções utilizadas em main().  Essas estão definidas
 // logo após a definição de main() neste arquivo.
-GLuint BuildTriangles(); // Constrói triângulos para renderização
+Vao build_vao(); // Constrói triângulos para renderização
 void LoadShadersFromFiles(); // Carrega os shaders de vértice e fragmento, criando um programa de GPU
 GLuint LoadShader_Vertex(const char* filename);   // Carrega um vertex shader
 GLuint LoadShader_Fragment(const char* filename); // Carrega um fragment shader
@@ -116,7 +150,7 @@ int main()
     LoadShadersFromFiles();
 
     // Construímos a representação de um triângulo
-    GLuint vertex_array_object_id = BuildTriangles();
+    Vao vao = build_vao();
 
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
@@ -139,20 +173,20 @@ int main()
         glUseProgram(g_GpuProgramID);
 
         // "Ligamos" o VAO. Informamos que queremos utilizar os atributos de
-        // vértices apontados pelo VAO criado pela função BuildTriangles(). Veja
-        // comentários detalhados dentro da definição de BuildTriangles().
-        glBindVertexArray(vertex_array_object_id);
+        // vértices apontados pelo VAO criado pela função build_vao(). Veja
+        // comentários detalhados dentro da definição de build_vao().
+        glBindVertexArray(vao.vao_id);
 
         // Pedimos para a GPU rasterizar os vértices apontados pelo VAO como
         // triângulos.
         //
         //                +--- Veja slides 182-188 do documento Aula_04_Modelagem_Geometrica_3D.pdf.
-        //                |          +--- O array "indices[]" contém 6 índices (veja função BuildTriangles()).
-        //                |          |  +--- Os índices são do tipo "GLubyte" (8 bits sem sinal)
-        //                |          |  |                 +--- Vértices começam em indices[0] (veja função BuildTriangles()).
-        //                |          |  |                 |
-        //                V          V  V                 V
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, 0);
+        //                |                    +--- O array "indices[]" contém 6 índices (veja função build_vao()).
+        //                |                    |                  +--- Os índices são do tipo "GLubyte" (8 bits sem sinal)
+        //                |                    |                  |                  +--- Vértices começam em indices[0] (veja função build_vao()).
+        //                |                    |                  |                  |
+        //                V                    V                  V                  V
+        glDrawElements(vao.rasterization_mode, vao.topology_size, vao.topology_type, 0);
 
         // "Desligamos" o VAO, evitando assim que operações posteriores venham a
         // alterar o mesmo. Isso evita bugs.
@@ -180,8 +214,22 @@ int main()
     return 0;
 }
 
+typedef struct GLVertice {
+    GLfloat x;
+    GLfloat y;
+    GLfloat z;
+    GLfloat w;
+} GLVertice;
+
+typedef struct GLColor {
+    GLfloat r;
+    GLfloat g;
+    GLfloat b;
+    GLfloat a;
+} GLColor;
+
 // Constrói triângulos para futura renderização
-GLuint BuildTriangles()
+Vao build_vao()
 {
     // Primeiro, definimos os atributos de cada vértice.
 
@@ -194,14 +242,54 @@ GLuint BuildTriangles()
     // Note que aqui adicionamos um quarto coeficiente W (igual a 1.0).
     // Conversaremos sobre isso quando tratarmos de coordenadas homogêneas.
     //
-    // Este vetor "NDC_coefficients" define a GEOMETRIA (veja slides 103-110 do documento Aula_04_Modelagem_Geometrica_3D.pdf).
+    // Este vetor "ndc_coefficients" define a GEOMETRIA (veja slides 103-110 do documento Aula_04_Modelagem_Geometrica_3D.pdf).
     //
-    GLfloat NDC_coefficients[] = {
+    
+    // const size_t TRIANGLE_VERTEX_COUNT = 17;
+    // const size_t COEFFICIENT_COUNT = TRIANGLE_VERTEX_COUNT * 4;
+    
+    // const size_t ndc_coefficients_size = COEFFICIENT_COUNT * sizeof(GLfloat);
+    // GLfloat ndc_coefficients[COEFFICIENT_COUNT];
+    
+    // const size_t color_coefficients_size = COEFFICIENT_COUNT * sizeof(GLfloat);
+    // GLfloat color_coefficients[COEFFICIENT_COUNT];
+
+    // // Define circle constants
+    // const size_t CIRCLE_OUTER_VERTEX_COUNT = 16;
+    // const GLfloat DISTANCE_TO_CENTER = 0.7;
+
+    // // Make center vertice
+    // ndc_coefficients[0] = 0.0;
+    // ndc_coefficients[1] = 0.0;
+    // ndc_coefficients[2] = 0.0;
+    // ndc_coefficients[3] = 1.0;
+    // color_coefficients[0] = 1.0;
+    // color_coefficients[1] = 0.0;
+    // color_coefficients[2] = 0.0;
+    // color_coefficients[4] = 1.0;
+
+    // // Make triangles
+
+    // for (size_t i = 4; i < CIRCLE_OUTER_VERTEX_COUNT * 4; i += 4) {
+    //     const GLfloat hypothenuse = DISTANCE_TO_CENTER;
+    // }
+
+    size_t ndc_coefficients_size = 16 * sizeof(GLfloat);
+    GLfloat ndc_coefficients[] = {
     //    X      Y     Z     W
         -0.5f, -0.5f, 0.0f, 1.0f,
          0.5f, -0.5f, 0.0f, 1.0f,
          0.0f,  0.5f, 0.0f, 1.0f,
          0.5f,  0.5f, 0.0f, 1.0f
+    };
+
+    size_t color_coefficients_size = 16 * sizeof(GLfloat);
+    GLfloat color_coefficients[] = {
+    //  R     G     B     A
+        1.0f, 0.0f, 0.0f, 1.0f,
+        0.0f, 1.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f, 1.0f,
+        0.0f, 1.0f, 1.0f, 1.0f
     };
 
     // Criamos o identificador (ID) de um Vertex Buffer Object (VBO).  Um VBO é
@@ -230,7 +318,7 @@ GLuint BuildTriangles()
     glBindBuffer(GL_ARRAY_BUFFER, VBO_NDC_coefficients_id);
 
     // Alocamos memória para o VBO "ligado" acima. Como queremos armazenar
-    // nesse VBO todos os valores contidos no array "NDC_coefficients", pedimos
+    // nesse VBO todos os valores contidos no array "ndc_coefficients", pedimos
     // para alocar um número de bytes exatamente igual ao tamanho ("size")
     // desse array. A constante "GL_STATIC_DRAW" dá uma dica para o driver da
     // GPU sobre como utilizaremos os dados do VBO. Neste caso, estamos dizendo
@@ -240,14 +328,14 @@ GLuint BuildTriangles()
     //
     //            glBufferData()  ==  malloc() do C  ==  new do C++.
     //
-    glBufferData(GL_ARRAY_BUFFER, sizeof(NDC_coefficients), NULL, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, ndc_coefficients_size, NULL, GL_STATIC_DRAW);
 
-    // Finalmente, copiamos os valores do array NDC_coefficients para dentro do
+    // Finalmente, copiamos os valores do array ndc_coefficients para dentro do
     // VBO "ligado" acima.  Pense que:
     //
     //            glBufferSubData()  ==  memcpy() do C.
     //
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(NDC_coefficients), NDC_coefficients);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, ndc_coefficients_size, ndc_coefficients);
 
     // Precisamos então informar um índice de "local" ("location"), o qual será
     // utilizado no shader "shader_vertex.glsl" para acessar os valores
@@ -278,18 +366,12 @@ GLuint BuildTriangles()
     // Tal cor é definida como coeficientes RGBA: Red, Green, Blue, Alpha;
     // isto é: Vermelho, Verde, Azul, Alpha (valor de transparência).
     // Conversaremos sobre sistemas de cores nas aulas de Modelos de Iluminação.
-    GLfloat color_coefficients[] = {
-    //  R     G     B     A
-        1.0f, 0.0f, 0.0f, 1.0f,
-        0.0f, 1.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f, 1.0f,
-        0.0f, 1.0f, 1.0f, 1.0f
-    };
+
     GLuint VBO_color_coefficients_id;
     glGenBuffers(1, &VBO_color_coefficients_id);
     glBindBuffer(GL_ARRAY_BUFFER, VBO_color_coefficients_id);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(color_coefficients), NULL, GL_STATIC_DRAW);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(color_coefficients), color_coefficients);
+    glBufferData(GL_ARRAY_BUFFER, color_coefficients_size, NULL, GL_STATIC_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, color_coefficients_size, color_coefficients);
     location = 1; // "(location = 1)" em "shader_vertex.glsl"
     number_of_dimensions = 4; // vec4 em "shader_vertex.glsl"
     glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
@@ -297,7 +379,7 @@ GLuint BuildTriangles()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // Vamos então definir dois triângulos utilizando os vértices do array
-    // NDC_coefficients. O primeiro triângulo é formado pelos vértices 0,1,2;
+    // ndc_coefficients. O primeiro triângulo é formado pelos vértices 0,1,2;
     // e o segundo pelos vértices 2,1,3. Note que usaremos o modo de renderização
     // GL_TRIANGLES na chamada glDrawElements() dentro de main(). Veja slides 182-188 do documento Aula_04_Modelagem_Geometrica_3D.pdf.
     //
@@ -331,7 +413,7 @@ GLuint BuildTriangles()
 
     // Retornamos o ID do VAO. Isso é tudo que será necessário para renderizar
     // os triângulos definidos acima. Veja a chamada glDrawElements() em main().
-    return vertex_array_object_id;
+    return Vao(vertex_array_object_id, GL_TRIANGLES, 6, GL_UNSIGNED_BYTE);
 }
 
 // Carrega um Vertex Shader de um arquivo GLSL. Veja definição de LoadShader() abaixo.
