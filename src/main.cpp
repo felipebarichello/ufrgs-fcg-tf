@@ -346,8 +346,6 @@ felib::Vao build_vao()
 
     const size_t VERTEX_COUNT = 2 * CIRCUMFERENCE_VERTEX_COUNT;
 
-    const GLenum TOPOLOGY_MODE = GL_TRIANGLE_STRIP;
-
     Position vertex_positions[VERTEX_COUNT];
     const size_t VERTEX_POSITIONS_SIZE = sizeof(vertex_positions);
 
@@ -393,8 +391,13 @@ felib::Vao build_vao()
         ));
     }
 
+
+    /* Topology */
+
+    const GLenum TOPOLOGY_MODE = GL_TRIANGLE_STRIP;
+
     const size_t TOPOLOGY_LENGTH = VERTEX_COUNT + 2;
-    GLubyte topology[TOPOLOGY_LENGTH]; // GLubyte: valores entre 0 e 255 (8 bits sem sinal).
+    GLubyte topology[TOPOLOGY_LENGTH];
     const GLsizei TOPOLOGY_SIZE = sizeof(topology);
 
     for (size_t i = 0; i < VERTEX_COUNT; i++) {
@@ -404,11 +407,12 @@ felib::Vao build_vao()
     topology[TOPOLOGY_LENGTH - 2] = 0;
     topology[TOPOLOGY_LENGTH - 1] = 1;
 
+
     return VaoBuilder()
         .add_vbo(0, 4, VERTEX_POSITIONS_SIZE, vertex_positions, GL_STATIC_DRAW)
-        .add_vbo(1, 4, VERTEX_COLORS_SIZE, vertex_colors, GL_STATIC_DRAW)
-        .add_ebo(TOPOLOGY_SIZE, topology, GL_STATIC_DRAW)
-        .build(TOPOLOGY_MODE, TOPOLOGY_SIZE / sizeof(GLubyte), GL_UNSIGNED_BYTE);
+        .add_vbo(1, 4, VERTEX_COLORS_SIZE,    vertex_colors,    GL_STATIC_DRAW)
+        .add_ebo(      TOPOLOGY_SIZE,         topology,         GL_STATIC_DRAW)
+        .build(TOPOLOGY_MODE, TOPOLOGY_LENGTH, GL_UNSIGNED_BYTE);
 }
 
 // Carrega um Vertex Shader de um arquivo GLSL. Veja definição de LoadShader() abaixo.
