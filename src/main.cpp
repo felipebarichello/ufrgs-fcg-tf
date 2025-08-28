@@ -341,6 +341,7 @@ felib::Vao build_vao()
     const Color OUTER_VERTEX_COLOR = Color(0.0, 0.0, 1.0);
     const Color INNER_VERTEX_COLOR = Color(0.0, 0.0, 1.0);
 
+
     /* Derived geometry constants */
 
     const size_t VERTEX_COUNT = 2 * CIRCUMFERENCE_VERTEX_COUNT;
@@ -353,11 +354,10 @@ felib::Vao build_vao()
     Color vertex_colors[VERTEX_COUNT];
     const size_t VERTEX_COLORS_SIZE = sizeof(vertex_colors);
     
+    
+    /* Geometry creation */
 
     GeometryEditor<VERTEX_COUNT> geometry = GeometryEditor<VERTEX_COUNT>(vertex_positions, vertex_colors);
-
-
-    /* Geometry creation */
 
     // Make vertices
     for (size_t i = 0; i < CIRCUMFERENCE_VERTEX_COUNT; i++) {
