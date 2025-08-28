@@ -32,9 +32,9 @@
 #include "utils.h"
 
 
-namespace felib {
-    #define PI 3.14159265358979323846
+#define PI 3.14159265358979323846
 
+namespace felib {
     typedef struct Position {
         GLfloat x;
         GLfloat y;
@@ -331,12 +331,18 @@ felib::Vao build_vao()
     using felib::GeometryEditor;
 
 
+    /* High level geometry parameters */
+
     const size_t CIRCUMFERENCE_VERTEX_COUNT = 16;
-    const GLfloat OUTER_DISTANCE_TO_CENTER = 0.7f;
-    const GLfloat INNER_DISTANCE_TO_CENTER = 0.5f;
+    const GLfloat VERTICAL_OUTER_RADIUS = 0.7f;
+    const GLfloat VERTICAL_INNER_RADIUS = 0.5f;
+    const GLfloat HORIZONTAL_RADIUS_RATIO = 0.7f;
+
+    
+    /* Derived geometry constants */
 
     const size_t VERTEX_COUNT = 2 * CIRCUMFERENCE_VERTEX_COUNT;
-    
+
     const GLenum TOPOLOGY_MODE = GL_TRIANGLE_STRIP;
 
     Position vertex_positions[VERTEX_COUNT];
@@ -344,18 +350,32 @@ felib::Vao build_vao()
 
     Color vertex_colors[VERTEX_COUNT];
     const size_t VERTEX_COLORS_SIZE = sizeof(vertex_colors);
+    
 
     GeometryEditor<VERTEX_COUNT> geometry = GeometryEditor<VERTEX_COUNT>(vertex_positions, vertex_colors);
 
+
+    /* Geometry creation */
+
     // Make vertices
     for (size_t i = 0; i < CIRCUMFERENCE_VERTEX_COUNT; i++) {
+        const GLfloat CENTER_X = 0.0f;
+        const GLfloat CENTER_Y = 0.0f;
+
+        const GLfloat HORIZONTAL_OUTER_RADIUS = HORIZONTAL_RADIUS_RATIO * VERTICAL_OUTER_RADIUS;
+        const GLfloat HORIZONTAL_INNER_RADIUS = HORIZONTAL_RADIUS_RATIO * VERTICAL_INNER_RADIUS;
+
         size_t outer_vertex_index = 2*i;
         size_t inner_vertex_index = outer_vertex_index + 1;
 
+        GLfloat angle  = (GLfloat)(2.0f * PI * (GLfloat)i / (GLfloat)CIRCUMFERENCE_VERTEX_COUNT);
+        GLfloat cosine = (GLfloat)cos(angle);
+        GLfloat sine   = (GLfloat)sin(angle);
+
         geometry.set(outer_vertex_index, felib::Vertex(
             Position(
-                OUTER_DISTANCE_TO_CENTER * (float)sin(2.0 * PI * i / CIRCUMFERENCE_VERTEX_COUNT),
-                OUTER_DISTANCE_TO_CENTER * (float)cos(2.0 * PI * i / CIRCUMFERENCE_VERTEX_COUNT),
+                HORIZONTAL_OUTER_RADIUS * cosine,
+                VERTICAL_OUTER_RADIUS * sine,
                 0.0
             ),
             Color(0.0, 0.0, 1.0)
@@ -363,17 +383,17 @@ felib::Vao build_vao()
 
         geometry.set(inner_vertex_index, felib::Vertex(
             Position(
-                INNER_DISTANCE_TO_CENTER * (float)sin(2.0 * PI * i / CIRCUMFERENCE_VERTEX_COUNT),
-                INNER_DISTANCE_TO_CENTER * (float)cos(2.0 * PI * i / CIRCUMFERENCE_VERTEX_COUNT),
+                HORIZONTAL_INNER_RADIUS * cosine,
+                VERTICAL_INNER_RADIUS * sine,
                 0.0
             ),
-            Color(1.0, 0.0, 0.0)
+            Color(0.0, 0.0, 1.0)
         ));
     }
 
     const size_t TOPOLOGY_LENGTH = VERTEX_COUNT + 2;
     GLubyte topology[TOPOLOGY_LENGTH]; // GLubyte: valores entre 0 e 255 (8 bits sem sinal).
-    GLsizei topology_size = sizeof(topology);
+    const GLsizei TOPOLOGY_SIZE = sizeof(topology);
 
     for (size_t i = 0; i < VERTEX_COUNT; i++) {
         topology[i] = (GLubyte)i;
@@ -385,8 +405,8 @@ felib::Vao build_vao()
     return VaoBuilder()
         .add_vbo(0, 4, VERTEX_POSITIONS_SIZE, vertex_positions, GL_STATIC_DRAW)
         .add_vbo(1, 4, VERTEX_COLORS_SIZE, vertex_colors, GL_STATIC_DRAW)
-        .add_ebo(topology_size, topology, GL_STATIC_DRAW)
-        .build(TOPOLOGY_MODE, topology_size / sizeof(GLubyte), GL_UNSIGNED_BYTE);
+        .add_ebo(TOPOLOGY_SIZE, topology, GL_STATIC_DRAW)
+        .build(TOPOLOGY_MODE, TOPOLOGY_SIZE / sizeof(GLubyte), GL_UNSIGNED_BYTE);
 }
 
 // Carrega um Vertex Shader de um arquivo GLSL. Veja definição de LoadShader() abaixo.
