@@ -219,7 +219,7 @@ int main()
 
     // Criamos uma janela do sistema operacional, com 500 colunas e 500 linhas
     // de pixels, e com título "INF01047 ...".
-    glfwWindowHint(GLFW_SAMPLES, 4); // Request 4x MSAA
+    glfwWindowHint(GLFW_SAMPLES, 16); // Request 16x MSAA
     GLFWwindow* window = glfwCreateWindow(500, 500, "INF01047 - 00579876 - Felipe Wendt Barichello", NULL, NULL);
     if (!window)
     {
@@ -326,10 +326,10 @@ felib::Vao build_vao()
 
     /* High level geometry parameters */
 
-    const size_t CIRCUMFERENCE_VERTEX_COUNT = 10000;
-    const GLfloat VERTICAL_OUTER_RADIUS = 0.7f;
-    const GLfloat VERTICAL_INNER_RADIUS = 0.5f;
-    const GLfloat HORIZONTAL_RADIUS_RATIO = 0.7f;
+    const size_t CIRCUMFERENCE_VERTEX_COUNT = 1000;
+    const GLfloat VERTICAL_OUTER_RADIUS = 0.4f;
+    const GLfloat INNER_RADIUS_RATIO = 0.7f;
+    const GLfloat HORIZONTAL_RADIUS_RATIO = 0.5f;
 
     const Color OUTER_VERTEX_COLOR = Color(0.0, 0.0, 1.0);
     const Color INNER_VERTEX_COLOR = Color(0.0, 0.0, 1.0);
@@ -355,6 +355,7 @@ felib::Vao build_vao()
         const GLfloat CENTER_X = 0.0f;
         const GLfloat CENTER_Y = 0.0f;
 
+        const GLfloat VERTICAL_INNER_RADIUS = INNER_RADIUS_RATIO * VERTICAL_OUTER_RADIUS;
         const GLfloat HORIZONTAL_OUTER_RADIUS = HORIZONTAL_RADIUS_RATIO * VERTICAL_OUTER_RADIUS;
         const GLfloat HORIZONTAL_INNER_RADIUS = HORIZONTAL_RADIUS_RATIO * VERTICAL_INNER_RADIUS;
 
