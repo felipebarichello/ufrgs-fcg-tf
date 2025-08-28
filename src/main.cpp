@@ -287,13 +287,6 @@ int main()
 
         // Pedimos para a GPU rasterizar os vértices apontados pelo VAO como
         // triângulos.
-        //
-        //                +--- Veja slides 182-188 do documento Aula_04_Modelagem_Geometrica_3D.pdf.
-        //                |                    +--- O array "topology[]" contém 6 índices (veja função build_vao()).
-        //                |                    |                  +--- Os índices são do tipo "GLubyte" (8 bits sem sinal)
-        //                |                    |                  |                  +--- Vértices começam em topology[0] (veja função build_vao()).
-        //                |                    |                  |                  |
-        //                V                    V                  V                  V
         glDrawElements(vao.topology_mode, vao.topology_size, vao.topology_type, 0);
 
         // "Desligamos" o VAO, evitando assim que operações posteriores venham a
@@ -333,7 +326,7 @@ felib::Vao build_vao()
 
     /* High level geometry parameters */
 
-    const size_t CIRCUMFERENCE_VERTEX_COUNT = 16;
+    const size_t CIRCUMFERENCE_VERTEX_COUNT = 10000;
     const GLfloat VERTICAL_OUTER_RADIUS = 0.7f;
     const GLfloat VERTICAL_INNER_RADIUS = 0.5f;
     const GLfloat HORIZONTAL_RADIUS_RATIO = 0.7f;
@@ -397,11 +390,11 @@ felib::Vao build_vao()
     const GLenum TOPOLOGY_MODE = GL_TRIANGLE_STRIP;
 
     const size_t TOPOLOGY_LENGTH = VERTEX_COUNT + 2;
-    GLubyte topology[TOPOLOGY_LENGTH];
+    GLushort topology[TOPOLOGY_LENGTH];
     const GLsizei TOPOLOGY_SIZE = sizeof(topology);
 
     for (size_t i = 0; i < VERTEX_COUNT; i++) {
-        topology[i] = (GLubyte)i;
+        topology[i] = (GLushort)i;
     }
 
     topology[TOPOLOGY_LENGTH - 2] = 0;
@@ -412,7 +405,7 @@ felib::Vao build_vao()
         .add_vbo(0, 4, VERTEX_POSITIONS_SIZE, vertex_positions, GL_STATIC_DRAW)
         .add_vbo(1, 4, VERTEX_COLORS_SIZE,    vertex_colors,    GL_STATIC_DRAW)
         .add_ebo(      TOPOLOGY_SIZE,         topology,         GL_STATIC_DRAW)
-        .build(TOPOLOGY_MODE, TOPOLOGY_LENGTH, GL_UNSIGNED_BYTE);
+        .build(TOPOLOGY_MODE, TOPOLOGY_LENGTH, GL_UNSIGNED_SHORT);
 }
 
 // Carrega um Vertex Shader de um arquivo GLSL. Veja definição de LoadShader() abaixo.
