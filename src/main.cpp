@@ -338,7 +338,9 @@ felib::Vao build_vao()
     const GLfloat VERTICAL_INNER_RADIUS = 0.5f;
     const GLfloat HORIZONTAL_RADIUS_RATIO = 0.7f;
 
-    
+    const Color OUTER_VERTEX_COLOR = Color(0.0, 0.0, 1.0);
+    const Color INNER_VERTEX_COLOR = Color(0.0, 0.0, 1.0);
+
     /* Derived geometry constants */
 
     const size_t VERTEX_COUNT = 2 * CIRCUMFERENCE_VERTEX_COUNT;
@@ -378,7 +380,7 @@ felib::Vao build_vao()
                 VERTICAL_OUTER_RADIUS * sine,
                 0.0
             ),
-            Color(0.0, 0.0, 1.0)
+            OUTER_VERTEX_COLOR
         ));
 
         geometry.set(inner_vertex_index, felib::Vertex(
@@ -387,7 +389,7 @@ felib::Vao build_vao()
                 VERTICAL_INNER_RADIUS * sine,
                 0.0
             ),
-            Color(0.0, 0.0, 1.0)
+            INNER_VERTEX_COLOR
         ));
     }
 
