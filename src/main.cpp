@@ -219,8 +219,8 @@ int main()
 
     // Criamos uma janela do sistema operacional, com 500 colunas e 500 linhas
     // de pixels, e com título "INF01047 ...".
-    GLFWwindow* window;
-    window = glfwCreateWindow(500, 500, "INF01047 - 00579876 - Felipe Wendt Barichello", NULL, NULL);
+    glfwWindowHint(GLFW_SAMPLES, 4); // Request 4x MSAA
+    GLFWwindow* window = glfwCreateWindow(500, 500, "INF01047 - 00579876 - Felipe Wendt Barichello", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
