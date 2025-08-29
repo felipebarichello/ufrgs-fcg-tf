@@ -46,7 +46,8 @@ using lib::Vertex;
 
 // Declaração de várias funções utilizadas em main().  Essas estão definidas
 // logo após a definição de main() neste arquivo.
-Vao build_zero(Position center); // Constrói triângulos para renderização
+Vao build_zero(Position center);
+Vao build_one(Position center);
 void LoadShadersFromFiles(); // Carrega os shaders de vértice e fragmento, criando um programa de GPU
 GLuint LoadShader_Vertex(const char* filename);   // Carrega um vertex shader
 GLuint LoadShader_Fragment(const char* filename); // Carrega um fragment shader
@@ -128,7 +129,8 @@ int main()
     //
     LoadShadersFromFiles();
 
-    Vao vao = build_zero(Position(0.0, 0.0, 0.0));
+    Vao zero = build_zero(Position(-0.25f, 0.0f, 0.0f));
+    Vao one  = build_one( Position( 0.25f, 0.0f, 0.0f));
 
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
@@ -150,7 +152,8 @@ int main()
         // os shaders de vértice e fragmentos).
         glUseProgram(g_GpuProgramID);
 
-        vao.draw();
+        zero.draw();
+        one.draw();
 
         // O framebuffer onde OpenGL executa as operações de renderização não
         // é o mesmo que está sendo mostrado para o usuário, caso contrário
@@ -178,13 +181,13 @@ Vao build_zero(Position center)
 {
     /* High level geometry parameters */
 
+    const GLfloat HEIGHT = 0.4f;
     const size_t CIRCUMFERENCE_VERTEX_COUNT = 800;
-    const GLfloat VERTICAL_OUTER_RADIUS = 0.4f;
     const GLfloat INNER_RADIUS_RATIO = 0.7f;
     const GLfloat HORIZONTAL_RADIUS_RATIO = 0.5f;
 
-    const Color OUTER_VERTEX_COLOR = Color(0.0, 0.0, 1.0);
-    const Color INNER_VERTEX_COLOR = Color(0.0, 0.0, 1.0);
+    const Color OUTER_VERTEX_COLOR = Color(1.0, 0.0, 0.0);
+    const Color INNER_VERTEX_COLOR = Color(1.0, 0.0, 0.0);
 
 
     /* Derived geometry constants */
@@ -204,6 +207,7 @@ Vao build_zero(Position center)
 
     // Make vertices
     for (size_t i = 0; i < CIRCUMFERENCE_VERTEX_COUNT; i++) {
+        const GLfloat VERTICAL_OUTER_RADIUS = HEIGHT;
         const GLfloat VERTICAL_INNER_RADIUS = INNER_RADIUS_RATIO * VERTICAL_OUTER_RADIUS;
         const GLfloat HORIZONTAL_OUTER_RADIUS = HORIZONTAL_RADIUS_RATIO * VERTICAL_OUTER_RADIUS;
         const GLfloat HORIZONTAL_INNER_RADIUS = HORIZONTAL_RADIUS_RATIO * VERTICAL_INNER_RADIUS;
@@ -249,6 +253,79 @@ Vao build_zero(Position center)
 
     topology[TOPOLOGY_LENGTH - 2] = 0;
     topology[TOPOLOGY_LENGTH - 1] = 1;
+
+
+    return VaoBuilder()
+        .add_vbo(0, 4, VERTEX_POSITIONS_SIZE, vertex_positions, GL_STATIC_DRAW)
+        .add_vbo(1, 4, VERTEX_COLORS_SIZE,    vertex_colors,    GL_STATIC_DRAW)
+        .add_ebo(      TOPOLOGY_SIZE,         topology,         GL_STATIC_DRAW)
+        .build(TOPOLOGY_MODE, TOPOLOGY_LENGTH, GL_UNSIGNED_SHORT);
+}
+
+template<size_t N>
+const size_t fill_colors(const size_t vertex_count, Color (&color_buffer)[N], const Color color) {
+    for (size_t i = 0; i < vertex_count; i++) {
+        color_buffer[i] = color;
+    }
+
+    return sizeof(color_buffer);
+}
+
+template<size_t N>
+const size_t fill_topology(const size_t vertex_count, GLushort (&topology_buffer)[N]) {
+    for (size_t i = 0; i < vertex_count; i++) {
+        topology_buffer[i] = (GLushort)i;
+    }
+
+    return sizeof(topology_buffer);
+}
+
+Vao build_one(Position center)
+{
+    /* High level geometry parameters */
+
+    const GLfloat HEIGHT = 1.0f;
+    const GLfloat WIDTH = 0.08f;
+    const GLfloat X_OFFSET = 0.0f;
+    const GLfloat Y_OFFSET = 0.0f;
+    const Color COLOR = Color(0.0, 0.0, 1.0);
+
+
+    /* Derived geometry constants */
+
+    const GLfloat BEND_HEIGHT = HEIGHT - WIDTH;
+
+    GLfloat start_x = center.x;
+    GLfloat start_y = center.y;
+    // GLfloat start_x = center.x + X_OFFSET;
+    // GLfloat start_y = center.y - (HEIGHT / 2.0f) + Y_OFFSET;
+
+    Position vertex_positions[] {
+        Position(start_x, start_y, center.z),
+        Position(start_x + WIDTH, start_y, center.z),
+        Position(start_x + WIDTH, start_y + HEIGHT, center.z),
+        Position(start_x, start_y + HEIGHT, center.z),
+    };
+    // Position vertex_positions[] {
+    //     Position(start_x, start_y + BEND_HEIGHT, center.z),
+    //     Position(start_x, start_y, center.z),
+    //     Position(start_x + WIDTH, start_y, center.z),
+    //     Position(start_x + WIDTH, start_y + HEIGHT, center.z),
+    // };
+
+    const size_t VERTEX_POSITIONS_SIZE = sizeof(vertex_positions);
+    const size_t VERTEX_COUNT = sizeof(vertex_positions) / sizeof(Position);
+
+    Color vertex_colors[VERTEX_COUNT];
+    const size_t VERTEX_COLORS_SIZE = fill_colors(VERTEX_COUNT, vertex_colors, COLOR);
+
+
+    /* Topology */
+
+    const GLenum TOPOLOGY_MODE = GL_TRIANGLE_FAN;
+    GLushort topology[VERTEX_COUNT];
+    const size_t TOPOLOGY_SIZE = fill_topology(VERTEX_COUNT, topology);
+    const size_t TOPOLOGY_LENGTH = sizeof(topology) / sizeof(GLushort);
 
 
     return VaoBuilder()
