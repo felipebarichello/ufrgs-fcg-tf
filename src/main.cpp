@@ -300,6 +300,7 @@ void LoadShader(const char* filename, GLuint shader_id)
         file.exceptions(std::ifstream::failbit);
         file.open(filename);
     } catch ( std::exception& e ) {
+        (void)e; // Suppress "unused variable" warning. Does not change compilation result.
         fprintf(stderr, "ERROR: Cannot open file \"%s\".\n", filename);
         std::exit(EXIT_FAILURE);
     }
