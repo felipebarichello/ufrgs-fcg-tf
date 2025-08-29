@@ -7,6 +7,7 @@
 # ser compilados.
 set(SOURCES
   src/main.cpp
+  src/lib/lib.cpp
   src/glad.c
 )
 
