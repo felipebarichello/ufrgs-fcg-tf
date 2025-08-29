@@ -2,8 +2,6 @@
 
 #include <glad/glad.h>   // Criação de contexto OpenGL 3.3
 
-#define PI 3.14159265358979323846
-
 namespace lib {
     typedef struct Position {
         GLfloat x;

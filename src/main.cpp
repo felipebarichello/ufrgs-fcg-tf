@@ -15,7 +15,9 @@
 //  vira
 //    #include <cstdio> // Em C++
 //
+#define _USE_MATH_DEFINES
 #include <cmath>
+
 #include <cstdio>
 #include <cstdlib>
 
@@ -209,7 +211,7 @@ Vao build_zero(Position center)
         size_t outer_vertex_index = 2*i;
         size_t inner_vertex_index = outer_vertex_index + 1;
 
-        GLfloat angle  = (GLfloat)(2.0f * PI * (GLfloat)i / (GLfloat)CIRCUMFERENCE_VERTEX_COUNT);
+        GLfloat angle  = (GLfloat)(2.0f * M_PI * (GLfloat)i / (GLfloat)CIRCUMFERENCE_VERTEX_COUNT);
         GLfloat cosine = (GLfloat)cos(angle);
         GLfloat sine   = (GLfloat)sin(angle);
 
