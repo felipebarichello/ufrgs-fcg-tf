@@ -190,9 +190,17 @@ namespace felib {
 }
 
 
+using felib::Vao;
+using felib::VaoBuilder;
+using felib::Position;
+using felib::Color;
+using felib::GeometryEditor;
+using felib::Vertex;
+
+
 // Declaração de várias funções utilizadas em main().  Essas estão definidas
 // logo após a definição de main() neste arquivo.
-felib::Vao build_vao(); // Constrói triângulos para renderização
+Vao build_vao(); // Constrói triângulos para renderização
 void LoadShadersFromFiles(); // Carrega os shaders de vértice e fragmento, criando um programa de GPU
 GLuint LoadShader_Vertex(const char* filename);   // Carrega um vertex shader
 GLuint LoadShader_Fragment(const char* filename); // Carrega um fragment shader
@@ -274,8 +282,7 @@ int main()
     //
     LoadShadersFromFiles();
 
-    // Construímos a representação de um triângulo
-    felib::Vao vao = build_vao();
+    Vao vao = build_vao();
 
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
@@ -322,14 +329,8 @@ int main()
 }
 
 // Constrói triângulos para futura renderização
-felib::Vao build_vao()
+Vao build_vao()
 {
-    using felib::VaoBuilder;
-    using felib::Position;
-    using felib::Color;
-    using felib::GeometryEditor;
-
-
     /* High level geometry parameters */
 
     const size_t CIRCUMFERENCE_VERTEX_COUNT = 800;
@@ -372,7 +373,7 @@ felib::Vao build_vao()
         GLfloat cosine = (GLfloat)cos(angle);
         GLfloat sine   = (GLfloat)sin(angle);
 
-        geometry.set(outer_vertex_index, felib::Vertex(
+        geometry.set(outer_vertex_index, Vertex(
             Position(
                 HORIZONTAL_OUTER_RADIUS * cosine,
                 VERTICAL_OUTER_RADIUS * sine,
@@ -381,7 +382,7 @@ felib::Vao build_vao()
             OUTER_VERTEX_COLOR
         ));
 
-        geometry.set(inner_vertex_index, felib::Vertex(
+        geometry.set(inner_vertex_index, Vertex(
             Position(
                 HORIZONTAL_INNER_RADIUS * cosine,
                 VERTICAL_INNER_RADIUS * sine,
