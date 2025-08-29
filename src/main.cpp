@@ -44,7 +44,7 @@ using lib::Vertex;
 
 // Declaração de várias funções utilizadas em main().  Essas estão definidas
 // logo após a definição de main() neste arquivo.
-Vao build_vao(); // Constrói triângulos para renderização
+Vao build_zero(Position center); // Constrói triângulos para renderização
 void LoadShadersFromFiles(); // Carrega os shaders de vértice e fragmento, criando um programa de GPU
 GLuint LoadShader_Vertex(const char* filename);   // Carrega um vertex shader
 GLuint LoadShader_Fragment(const char* filename); // Carrega um fragment shader
@@ -126,7 +126,7 @@ int main()
     //
     LoadShadersFromFiles();
 
-    Vao vao = build_vao();
+    Vao vao = build_zero(Position(0.0, 0.0, 0.0));
 
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
@@ -172,8 +172,7 @@ int main()
     return 0;
 }
 
-// Constrói triângulos para futura renderização
-Vao build_vao()
+Vao build_zero(Position center)
 {
     /* High level geometry parameters */
 
@@ -203,9 +202,6 @@ Vao build_vao()
 
     // Make vertices
     for (size_t i = 0; i < CIRCUMFERENCE_VERTEX_COUNT; i++) {
-        const GLfloat CENTER_X = 0.0f;
-        const GLfloat CENTER_Y = 0.0f;
-
         const GLfloat VERTICAL_INNER_RADIUS = INNER_RADIUS_RATIO * VERTICAL_OUTER_RADIUS;
         const GLfloat HORIZONTAL_OUTER_RADIUS = HORIZONTAL_RADIUS_RATIO * VERTICAL_OUTER_RADIUS;
         const GLfloat HORIZONTAL_INNER_RADIUS = HORIZONTAL_RADIUS_RATIO * VERTICAL_INNER_RADIUS;
@@ -219,18 +215,18 @@ Vao build_vao()
 
         geometry.set(outer_vertex_index, Vertex(
             Position(
-                HORIZONTAL_OUTER_RADIUS * cosine,
-                VERTICAL_OUTER_RADIUS * sine,
-                0.0
+                center.x + HORIZONTAL_OUTER_RADIUS * cosine,
+                center.y + VERTICAL_OUTER_RADIUS * sine,
+                center.z
             ),
             OUTER_VERTEX_COLOR
         ));
 
         geometry.set(inner_vertex_index, Vertex(
             Position(
-                HORIZONTAL_INNER_RADIUS * cosine,
-                VERTICAL_INNER_RADIUS * sine,
-                0.0
+                center.x + HORIZONTAL_INNER_RADIUS * cosine,
+                center.y + VERTICAL_INNER_RADIUS * sine,
+                center.z
             ),
             INNER_VERTEX_COLOR
         ));
