@@ -129,6 +129,14 @@ namespace felib {
             this->topology_size = topology_size;
             this->topology_type = topology_type;
         }
+
+        void bind() const {
+            glBindVertexArray(this->vao_id);
+        }
+
+        void unbind() const {
+            glBindVertexArray(0);
+        }
     } Vao;
 
     typedef class VaoBuilder {
@@ -283,7 +291,7 @@ int main()
         // "Ligamos" o VAO. Informamos que queremos utilizar os atributos de
         // vértices apontados pelo VAO criado pela função build_vao(). Veja
         // comentários detalhados dentro da definição de build_vao().
-        glBindVertexArray(vao.vao_id);
+        vao.bind();
 
         // Pedimos para a GPU rasterizar os vértices apontados pelo VAO como
         // triângulos.
@@ -291,7 +299,7 @@ int main()
 
         // "Desligamos" o VAO, evitando assim que operações posteriores venham a
         // alterar o mesmo. Isso evita bugs.
-        glBindVertexArray(0);
+        vao.unbind();
 
         // O framebuffer onde OpenGL executa as operações de renderização não
         // é o mesmo que está sendo mostrado para o usuário, caso contrário
@@ -326,7 +334,7 @@ felib::Vao build_vao()
 
     /* High level geometry parameters */
 
-    const size_t CIRCUMFERENCE_VERTEX_COUNT = 1000;
+    const size_t CIRCUMFERENCE_VERTEX_COUNT = 800;
     const GLfloat VERTICAL_OUTER_RADIUS = 0.4f;
     const GLfloat INNER_RADIUS_RATIO = 0.7f;
     const GLfloat HORIZONTAL_RADIUS_RATIO = 0.5f;
