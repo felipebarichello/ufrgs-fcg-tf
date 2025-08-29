@@ -4,7 +4,7 @@
 #include <glad/glad.h>   // Criação de contexto OpenGL 3.3
 
 
-namespace felib {
+namespace lib {
 
     // Position
     Position::Position() {
@@ -111,4 +111,4 @@ namespace felib {
         glBindBuffer(target, vbo_id);
         glBufferData(target, buffer_size, data, usage_hint);
     }
-} // namespace felib
+} // namespace lib

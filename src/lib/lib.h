@@ -4,7 +4,7 @@
 
 #define PI 3.14159265358979323846
 
-namespace felib {
+namespace lib {
     typedef struct Position {
         GLfloat x;
         GLfloat y;

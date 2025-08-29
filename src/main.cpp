@@ -34,12 +34,12 @@
 #include "lib/lib.h"
 
 
-using felib::Vao;
-using felib::VaoBuilder;
-using felib::Position;
-using felib::Color;
-using felib::GeometryEditor;
-using felib::Vertex;
+using lib::Vao;
+using lib::VaoBuilder;
+using lib::Position;
+using lib::Color;
+using lib::GeometryEditor;
+using lib::Vertex;
 
 
 // Declaração de várias funções utilizadas em main().  Essas estão definidas
