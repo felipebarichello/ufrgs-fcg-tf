@@ -117,12 +117,14 @@ namespace felib {
         }
     };
 
-    typedef struct Vao {
+    typedef class Vao {
+    private:
         GLuint vao_id;
         GLenum topology_mode;
         GLsizei topology_size;
         GLenum topology_type;
-
+        
+    public:
         Vao(GLuint vao_id, GLenum topology_mode, GLsizei topology_size, GLenum topology_type) {
             this->vao_id = vao_id;
             this->topology_mode = topology_mode;
@@ -130,6 +132,13 @@ namespace felib {
             this->topology_type = topology_type;
         }
 
+        void draw() const {
+            this->bind();
+            glDrawElements(this->topology_mode, this->topology_size, this->topology_type, 0);
+            this->unbind();
+        }
+
+    private: 
         void bind() const {
             glBindVertexArray(this->vao_id);
         }
@@ -288,18 +297,7 @@ int main()
         // os shaders de vértice e fragmentos).
         glUseProgram(g_GpuProgramID);
 
-        // "Ligamos" o VAO. Informamos que queremos utilizar os atributos de
-        // vértices apontados pelo VAO criado pela função build_vao(). Veja
-        // comentários detalhados dentro da definição de build_vao().
-        vao.bind();
-
-        // Pedimos para a GPU rasterizar os vértices apontados pelo VAO como
-        // triângulos.
-        glDrawElements(vao.topology_mode, vao.topology_size, vao.topology_type, 0);
-
-        // "Desligamos" o VAO, evitando assim que operações posteriores venham a
-        // alterar o mesmo. Isso evita bugs.
-        vao.unbind();
+        vao.draw();
 
         // O framebuffer onde OpenGL executa as operações de renderização não
         // é o mesmo que está sendo mostrado para o usuário, caso contrário
