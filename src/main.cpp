@@ -129,14 +129,14 @@ int main()
     //
     LoadShadersFromFiles();
 
-    Vao zero1 = build_zero(Position(-0.675f, 0.0f, 0.0f));
-    Vao zero2 = build_zero(Position(-0.225f, 0.0f, 0.0f));
-    Vao zero3 = build_zero(Position( 0.225f, 0.0f, 0.0f));
-    Vao zero4 = build_zero(Position( 0.675f, 0.0f, 0.0f));
-    Vao one1  = build_one( Position(-0.675f, 0.0f, 0.0f));
-    Vao one2  = build_one( Position(-0.225f, 0.0f, 0.0f));
-    Vao one3  = build_one( Position( 0.225f, 0.0f, 0.0f));
-    Vao one4  = build_one( Position( 0.675f, 0.0f, 0.0f));
+    Vao zero1 = build_zero(Position( 0.675f, 0.0f, 0.0f));
+    Vao zero2 = build_zero(Position( 0.225f, 0.0f, 0.0f));
+    Vao zero4 = build_zero(Position(-0.225f, 0.0f, 0.0f));
+    Vao zero8 = build_zero(Position(-0.675f, 0.0f, 0.0f));
+    Vao one1  = build_one( Position( 0.675f, 0.0f, 0.0f));
+    Vao one2  = build_one( Position( 0.225f, 0.0f, 0.0f));
+    Vao one4  = build_one( Position(-0.225f, 0.0f, 0.0f));
+    Vao one8  = build_one( Position(-0.675f, 0.0f, 0.0f));
 
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
@@ -158,14 +158,12 @@ int main()
         // os shaders de vértice e fragmentos).
         glUseProgram(g_GpuProgramID);
 
-        zero1.draw();
-        zero2.draw();
-        zero3.draw();
-        zero4.draw();
-        one1.draw();
-        one2.draw();
-        one3.draw();
-        one4.draw();
+        int seconds = (int)glfwGetTime();
+
+        seconds % 2 < 1 ? zero1.draw() : one1.draw();
+        seconds % 4 < 2 ? zero2.draw() : one2.draw();
+        seconds % 8 < 4 ? zero4.draw() : one4.draw();
+        seconds % 16 < 8 ? zero8.draw() : one8.draw();
 
         // O framebuffer onde OpenGL executa as operações de renderização não
         // é o mesmo que está sendo mostrado para o usuário, caso contrário
@@ -303,7 +301,7 @@ Vao build_one(Position position)
 
     const GLfloat FONT_SIZE = GLOBAL_FONT_SIZE;
     const GLfloat WIDTH = 0.08f;
-    const GLfloat BEND_LENGTH_RATIO = 0.3f;
+    const GLfloat BEND_LENGTH_RATIO = 0.33f;
     const GLfloat BEND_ANGLE = (GLfloat)(0.3f * M_PI);
     const GLfloat X_OFFSET = 0.0f;
     const Color COLOR = Color(0.0, 0.0, 1.0);
