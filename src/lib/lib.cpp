@@ -1,4 +1,4 @@
-#include "lib.h"
+#include "lib.hpp"
 
 // Headers das bibliotecas OpenGL
 #include <glad/glad.h>   // Criação de contexto OpenGL 3.3

@@ -33,8 +33,8 @@
 // Headers locais, definidos na pasta "include/"
 #include "utils.h"
 
-// #include "lib/lib.h"
-/* --- FLATTEN: lib/lib.h --- */
+// #include "lib/lib.hpp"
+/* --- FLATTEN: lib/lib.hpp --- */
 #include <glad/glad.h>   // Criação de contexto OpenGL 3.3
 
 namespace lib {
@@ -114,7 +114,7 @@ namespace lib {
         void add_buffer(GLenum target, size_t buffer_size, void* data, GLenum usage_hint);
     } VaoBuilder;
 }
-/* --- END FLATTEN: lib/lib.h --- */
+/* --- END FLATTEN: lib/lib.hpp --- */
 
 
 using lib::Vao;

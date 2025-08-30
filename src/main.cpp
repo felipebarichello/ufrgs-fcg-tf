@@ -33,7 +33,7 @@
 // Headers locais, definidos na pasta "include/"
 #include "utils.h"
 
-#include "lib/lib.h"
+#include "lib/lib.hpp"
 
 
 using lib::Vao;
