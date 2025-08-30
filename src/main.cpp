@@ -160,9 +160,9 @@ int main()
 
         int seconds = (int)glfwGetTime();
 
-        seconds % 2 < 1 ? zero1.draw() : one1.draw();
-        seconds % 4 < 2 ? zero2.draw() : one2.draw();
-        seconds % 8 < 4 ? zero4.draw() : one4.draw();
+        seconds %  2 < 1 ? zero1.draw() : one1.draw();
+        seconds %  4 < 2 ? zero2.draw() : one2.draw();
+        seconds %  8 < 4 ? zero4.draw() : one4.draw();
         seconds % 16 < 8 ? zero8.draw() : one8.draw();
 
         // O framebuffer onde OpenGL executa as operações de renderização não
