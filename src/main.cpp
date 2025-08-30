@@ -46,8 +46,8 @@ using lib::Vertex;
 
 // Declaração de várias funções utilizadas em main().  Essas estão definidas
 // logo após a definição de main() neste arquivo.
-Vao build_zero(Position center);
-Vao build_one(Position center);
+Vao build_zero(Position position);
+Vao build_one(Position position);
 void LoadShadersFromFiles(); // Carrega os shaders de vértice e fragmento, criando um programa de GPU
 GLuint LoadShader_Vertex(const char* filename);   // Carrega um vertex shader
 GLuint LoadShader_Fragment(const char* filename); // Carrega um fragment shader
@@ -92,7 +92,7 @@ int main()
     // Criamos uma janela do sistema operacional, com 500 colunas e 500 linhas
     // de pixels, e com título "INF01047 ...".
     glfwWindowHint(GLFW_SAMPLES, 16); // Request 16x MSAA
-    GLFWwindow* window = glfwCreateWindow(500, 500, "INF01047 - 00579876 - Felipe Wendt Barichello", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(1000, 1000, "INF01047 - 00579876 - Felipe Wendt Barichello", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -129,8 +129,14 @@ int main()
     //
     LoadShadersFromFiles();
 
-    Vao zero = build_zero(Position(-0.25f, 0.0f, 0.0f));
-    Vao one  = build_one( Position( 0.25f, 0.0f, 0.0f));
+    Vao zero1 = build_zero(Position(-0.675f, 0.0f, 0.0f));
+    Vao zero2 = build_zero(Position(-0.225f, 0.0f, 0.0f));
+    Vao zero3 = build_zero(Position( 0.225f, 0.0f, 0.0f));
+    Vao zero4 = build_zero(Position( 0.675f, 0.0f, 0.0f));
+    Vao one1  = build_one( Position(-0.675f, 0.0f, 0.0f));
+    Vao one2  = build_one( Position(-0.225f, 0.0f, 0.0f));
+    Vao one3  = build_one( Position( 0.225f, 0.0f, 0.0f));
+    Vao one4  = build_one( Position( 0.675f, 0.0f, 0.0f));
 
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
@@ -152,8 +158,14 @@ int main()
         // os shaders de vértice e fragmentos).
         glUseProgram(g_GpuProgramID);
 
-        zero.draw();
-        one.draw();
+        zero1.draw();
+        zero2.draw();
+        zero3.draw();
+        zero4.draw();
+        one1.draw();
+        one2.draw();
+        one3.draw();
+        one4.draw();
 
         // O framebuffer onde OpenGL executa as operações de renderização não
         // é o mesmo que está sendo mostrado para o usuário, caso contrário
@@ -177,11 +189,13 @@ int main()
     return 0;
 }
 
-Vao build_zero(Position center)
+const GLfloat GLOBAL_FONT_SIZE = 0.8f;
+
+Vao build_zero(Position position)
 {
     /* High level geometry parameters */
 
-    const GLfloat HEIGHT = 0.4f;
+    const GLfloat FONT_SIZE = GLOBAL_FONT_SIZE;
     const size_t CIRCUMFERENCE_VERTEX_COUNT = 800;
     const GLfloat INNER_RADIUS_RATIO = 0.7f;
     const GLfloat HORIZONTAL_RADIUS_RATIO = 0.5f;
@@ -190,7 +204,7 @@ Vao build_zero(Position center)
     const Color INNER_VERTEX_COLOR = Color(1.0, 0.0, 0.0);
 
 
-    /* Derived geometry constants */
+    /* Derived geometry */
 
     const size_t VERTEX_COUNT = 2 * CIRCUMFERENCE_VERTEX_COUNT;
 
@@ -199,19 +213,22 @@ Vao build_zero(Position center)
 
     Color vertex_colors[VERTEX_COUNT];
     const size_t VERTEX_COLORS_SIZE = sizeof(vertex_colors);
-    
-    
+
+    const GLfloat HEIGHT = FONT_SIZE;
+    const GLfloat VERTICAL_OUTER_RADIUS = HEIGHT / 2.0f;
+    const GLfloat VERTICAL_INNER_RADIUS = INNER_RADIUS_RATIO * VERTICAL_OUTER_RADIUS;
+    const GLfloat HORIZONTAL_OUTER_RADIUS = HORIZONTAL_RADIUS_RATIO * VERTICAL_OUTER_RADIUS;
+    const GLfloat HORIZONTAL_INNER_RADIUS = HORIZONTAL_RADIUS_RATIO * VERTICAL_INNER_RADIUS;
+
+    Position center = position;
+
+
     /* Geometry creation */
 
     GeometryEditor<VERTEX_COUNT> geometry = GeometryEditor<VERTEX_COUNT>(vertex_positions, vertex_colors);
 
     // Make vertices
     for (size_t i = 0; i < CIRCUMFERENCE_VERTEX_COUNT; i++) {
-        const GLfloat VERTICAL_OUTER_RADIUS = HEIGHT;
-        const GLfloat VERTICAL_INNER_RADIUS = INNER_RADIUS_RATIO * VERTICAL_OUTER_RADIUS;
-        const GLfloat HORIZONTAL_OUTER_RADIUS = HORIZONTAL_RADIUS_RATIO * VERTICAL_OUTER_RADIUS;
-        const GLfloat HORIZONTAL_INNER_RADIUS = HORIZONTAL_RADIUS_RATIO * VERTICAL_INNER_RADIUS;
-
         size_t outer_vertex_index = 2*i;
         size_t inner_vertex_index = outer_vertex_index + 1;
 
@@ -280,38 +297,49 @@ const size_t fill_topology(const size_t vertex_count, GLushort (&topology_buffer
     return sizeof(topology_buffer);
 }
 
-Vao build_one(Position center)
+Vao build_one(Position position)
 {
     /* High level geometry parameters */
 
-    const GLfloat HEIGHT = 1.0f;
+    const GLfloat FONT_SIZE = GLOBAL_FONT_SIZE;
     const GLfloat WIDTH = 0.08f;
+    const GLfloat BEND_LENGTH_RATIO = 0.3f;
+    const GLfloat BEND_ANGLE = (GLfloat)(0.3f * M_PI);
     const GLfloat X_OFFSET = 0.0f;
-    const GLfloat Y_OFFSET = 0.0f;
     const Color COLOR = Color(0.0, 0.0, 1.0);
 
 
-    /* Derived geometry constants */
+    /* Derived geometry */
 
-    const GLfloat BEND_HEIGHT = HEIGHT - WIDTH;
+    const GLfloat HEIGHT = FONT_SIZE;
+    const GLfloat Y_OFFSET = -HEIGHT / 2.0f;
 
-    GLfloat start_x = center.x;
-    GLfloat start_y = center.y;
-    // GLfloat start_x = center.x + X_OFFSET;
-    // GLfloat start_y = center.y - (HEIGHT / 2.0f) + Y_OFFSET;
+    const GLfloat BEND_LENGTH = BEND_LENGTH_RATIO * HEIGHT;
+    const GLfloat BEND_COSINE = cos(BEND_ANGLE);
+    const GLfloat BEND_SINE   = sin(BEND_ANGLE);
+    const GLfloat BEND_TAN    = BEND_SINE / BEND_COSINE;
+    const GLfloat BEND_LENGTH_X = BEND_LENGTH * BEND_COSINE;
+    const GLfloat BEND_LENGTH_Y = BEND_LENGTH * BEND_SINE;
+
+    GLfloat base_x = position.x + X_OFFSET;
+    GLfloat base_y = position.y + Y_OFFSET;
+    GLfloat rightmost_x = base_x + WIDTH;
+    GLfloat top_y = base_y + HEIGHT;
+    GLfloat leftmost_x = base_x - BEND_LENGTH_X;
+    GLfloat leftmost_y = top_y - BEND_LENGTH_Y;
+    GLfloat final_x = leftmost_x + BEND_SINE * WIDTH;
+    GLfloat final_y = leftmost_y - BEND_COSINE * WIDTH;
+    GLfloat bend_y = final_y + BEND_TAN * (base_x - final_x);
 
     Position vertex_positions[] {
-        Position(start_x, start_y, center.z),
-        Position(start_x + WIDTH, start_y, center.z),
-        Position(start_x + WIDTH, start_y + HEIGHT, center.z),
-        Position(start_x, start_y + HEIGHT, center.z),
+        Position(base_x,      bend_y,     position.z),
+        Position(base_x,      base_y,     position.z),
+        Position(rightmost_x, base_y,     position.z),
+        Position(rightmost_x, top_y,      position.z),
+        Position(base_x,      top_y,      position.z),
+        Position(leftmost_x,  leftmost_y, position.z),
+        Position(final_x,     final_y,    position.z),
     };
-    // Position vertex_positions[] {
-    //     Position(start_x, start_y + BEND_HEIGHT, center.z),
-    //     Position(start_x, start_y, center.z),
-    //     Position(start_x + WIDTH, start_y, center.z),
-    //     Position(start_x + WIDTH, start_y + HEIGHT, center.z),
-    // };
 
     const size_t VERTEX_POSITIONS_SIZE = sizeof(vertex_positions);
     const size_t VERTEX_COUNT = sizeof(vertex_positions) / sizeof(Position);
