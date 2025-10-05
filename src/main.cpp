@@ -170,9 +170,9 @@ GLFWwindow* g_window;
 
 void update();
 
-Vao* cube_faces_vao = nullptr;
-Vao* cube_edges_vao = nullptr;
-Vao* cube_axes_vao = nullptr;
+Vao cube_faces_vao = Vao();
+Vao cube_edges_vao = Vao();
+Vao cube_axes_vao = Vao();
 
 int main() {
     WindowConfig window_config = WindowConfig(
@@ -192,9 +192,9 @@ int main() {
     g_window = g_engine_controller.get_window();
 
     //g_vertex_array_object_id = BuildCube();
-    cube_faces_vao = new Vao(BuildCubeFaces());
-    cube_edges_vao = new Vao(BuildCubeEdges());
-    cube_axes_vao  = new Vao(BuildCubeAxes());
+    cube_faces_vao = BuildCubeFaces();
+    cube_edges_vao = BuildCubeEdges();
+    cube_axes_vao  = BuildCubeAxes();
 
     // Buscamos o endereço das variáveis definidas dentro do Vertex Shader.
     // Utilizaremos estas variáveis para enviar dados para a placa de vídeo
@@ -333,11 +333,11 @@ void update() {
         }
 
         glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        cube_faces_vao->draw();
+        cube_faces_vao.draw();
 
         glLineWidth(4.0f);
-        cube_axes_vao->draw();
-        cube_edges_vao->draw();
+        cube_axes_vao.draw();
+        cube_edges_vao.draw();
 
         // Desenhamos um ponto de tamanho 15 pixels em cima do terceiro vértice
         // do terceiro cubo. Este vértice tem coordenada de modelo igual à
@@ -352,7 +352,7 @@ void update() {
     glm::mat4 model = Matrix_Identity();
     glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
     glLineWidth(10.0f);
-    cube_axes_vao->draw();
+    cube_axes_vao.draw();
 
     glBindVertexArray(0);
 
