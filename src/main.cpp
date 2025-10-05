@@ -201,8 +201,6 @@ int main() {
 
     camera.transform().set_position(camera_start_position);
 
-    camera.transform().set_position(camera_start_position);
-
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!engine_controller.update_and_test_should_close()) {
         // Pedimos para a GPU utilizar o programa de GPU criado acima (contendo
