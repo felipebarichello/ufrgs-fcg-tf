@@ -205,21 +205,6 @@ namespace engine {
         delete [] log;
     }
 
-    // Função que carrega os shaders de vértices e de fragmentos que serão
-    // utilizados para renderização. Veja slides 180-200 do documento Aula_03_Rendering_Pipeline_Grafico.pdf.
-    void EngineController::load_shaders_from_files()
-    {
-        GLuint vertex_shader_id = load_shader_vertex("../../src/engine/shaders/shader_vertex.glsl");
-        GLuint fragment_shader_id = load_shader_fragment("../../src/engine/shaders/shader_fragment.glsl");
-
-        // Deletamos o programa de GPU anterior, caso ele exista.
-        if (gpu_program_id != 0)
-            glDeleteProgram(gpu_program_id);
-
-        // Criamos um programa de GPU utilizando os shaders carregados acima.
-        gpu_program_id = create_gpu_program(vertex_shader_id, fragment_shader_id);
-    }
-
     // Esta função cria um programa de GPU, o qual contém obrigatoriamente um
     // Vertex Shader e um Fragment Shader.
     GLuint EngineController::create_gpu_program(GLuint vertex_shader_id, GLuint fragment_shader_id)
@@ -265,6 +250,64 @@ namespace engine {
 
         // Retornamos o ID gerado acima
         return program_id;
+    }
+
+    #ifdef _WIN32
+        #include <windows.h>
+        #include <libloaderapi.h>
+    #else
+        #include <unistd.h>
+        #include <limits.h>
+    #endif
+
+    // Função que obtém o diretório onde está o executável
+    std::string EngineController::get_executable_directory()
+    {
+    #ifdef _WIN32
+        char path[MAX_PATH];
+        GetModuleFileNameA(NULL, path, MAX_PATH);
+        std::string exe_path(path);
+        size_t pos = exe_path.find_last_of("\\/");
+        return exe_path.substr(0, pos);
+    #else
+        char path[PATH_MAX];
+        ssize_t count = readlink("/proc/self/exe", path, PATH_MAX);
+        if (count != -1) {
+            path[count] = '\0';
+            std::string exe_path(path);
+            size_t pos = exe_path.find_last_of('/');
+            return exe_path.substr(0, pos);
+        }
+        return ".";
+    #endif
+    }
+
+    // Função que carrega os shaders de vértices e de fragmentos que serão
+    // utilizados para renderização. Veja slides 180-200 do documento Aula_03_Rendering_Pipeline_Grafico.pdf.
+    //
+    void EngineController::load_shaders_from_files()
+    {
+        // Obtemos o diretório do executável e construímos os caminhos relativos aos shaders
+        std::string exe_dir = get_executable_directory();
+        
+        // Construímos os caminhos para os shaders relativos ao executável
+        // Assumindo estrutura: bin/Debug/main.exe e src/shader_*.glsl
+        std::string vertex_shader_path = exe_dir + "/../../src/engine/shaders/shader_vertex.glsl";
+        std::string fragment_shader_path = exe_dir + "/../../src/engine/shaders/shader_fragment.glsl";
+
+        printf("Loading shaders from:\n");
+        printf("  Vertex: %s\n", vertex_shader_path.c_str());
+        printf("  Fragment: %s\n", fragment_shader_path.c_str());
+
+        GLuint vertex_shader_id = load_shader_vertex(vertex_shader_path.c_str());
+        GLuint fragment_shader_id = load_shader_fragment(fragment_shader_path.c_str());
+
+        // Deletamos o programa de GPU anterior, caso ele exista.
+        if (gpu_program_id != 0)
+            glDeleteProgram(gpu_program_id);
+
+        // Criamos um programa de GPU utilizando os shaders carregados acima.
+        gpu_program_id = create_gpu_program(vertex_shader_id, fragment_shader_id);
     }
 
 } // namespace engine
