@@ -31,7 +31,7 @@ const GLchar* const textfragmentshader_source = ""
 "out vec4 fragColor;\n"
 "void main()\n"
 "{\n"
-    "fragColor = vec4(0, 0, 0, texture(tex, texCoords).r);\n"
+    "fragColor = vec4(1.0f, 1.0f, 1.0f, texture(tex, texCoords).r);\n"
 "}\n"
 "\0";
 
