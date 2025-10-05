@@ -40,6 +40,7 @@
 #include "matrices.h"
 
 #include "engine/controller.hpp"
+#include "engine/input_controller.hpp"
 
 // Declaração de várias funções utilizadas em main().  Essas estão definidas
 // logo após a definição de main() neste arquivo.
@@ -155,18 +156,13 @@ int main() {
     );
 
     engine_controller = EngineController::start_engine(window_config);
+    
+    engine_controller.input().attach_key_handler(KeyCallback);
+    engine_controller.input().attach_mouse_button_handler(MouseButtonCallback);
+    engine_controller.input().attach_cursor_position_handler(CursorPosCallback);
+    engine_controller.input().attach_scrolling_handler(ScrollCallback);
 
     GLFWwindow* window = engine_controller.get_window();
-
-    // Definimos a função de callback que será chamada sempre que o usuário
-    // pressionar alguma tecla do teclado ...
-    glfwSetKeyCallback(window, KeyCallback);
-    // ... ou clicar os botões do mouse ...
-    glfwSetMouseButtonCallback(window, MouseButtonCallback);
-    // ... ou movimentar o cursor do mouse em cima da janela ...
-    glfwSetCursorPosCallback(window, CursorPosCallback);
-    // ... ou rolar a "rodinha" do mouse.
-    glfwSetScrollCallback(window, ScrollCallback);
 
     // Definimos a função de callback que será chamada sempre que a janela for
     // redimensionada, por consequência alterando o tamanho do "framebuffer"

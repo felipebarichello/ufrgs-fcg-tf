@@ -2,6 +2,7 @@
 
 #include <glad/glad.h> 
 #include <GLFW/glfw3.h>
+#include "input_controller.hpp"
 
 namespace engine {
     struct WindowConfig {
@@ -16,13 +17,10 @@ namespace engine {
     class EngineController {
     private:
         GLFWwindow* window;
+        InputController input_controller;
 
     public:
-        EngineController() = default;
-
-        void set_window(GLFWwindow* win) {
-            this->window = win;
-        }
+        EngineController() : window(nullptr), input_controller(nullptr) {};
 
         static EngineController start_engine(WindowConfig window_config);
 
@@ -31,5 +29,6 @@ namespace engine {
         bool tick();
 
         GLFWwindow* get_window();
+        InputController& input();
     };
 }

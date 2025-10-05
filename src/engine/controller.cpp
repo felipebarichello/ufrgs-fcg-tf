@@ -11,7 +11,7 @@ void error_callback(int error, const char* description) {
 namespace engine {
     EngineController EngineController::start_engine(WindowConfig window_config) {
         EngineController engine_controller = EngineController();
-
+        
         // Inicializamos a biblioteca GLFW, utilizada para criar uma janela do
         // sistema operacional, onde poderemos renderizar com OpenGL.
         int success = glfwInit();
@@ -42,6 +42,8 @@ namespace engine {
             std::exit(EXIT_FAILURE);
         }
 
+        engine_controller.input_controller = InputController(engine_controller.window);
+
         return engine_controller;
     }
 
@@ -52,5 +54,9 @@ namespace engine {
 
     GLFWwindow* EngineController::get_window() {
         return this->window;
+    }
+
+    InputController& EngineController::input() {
+        return this->input_controller;
     }
 } // namespace engine
