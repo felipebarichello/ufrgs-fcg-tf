@@ -158,11 +158,13 @@ GLint view_uniform;
 GLint projection_uniform;
 
 GLint model_uniform;
+GLint g_view_uniform;
+GLint g_projection_uniform;
 GLint render_as_black_uniform;
 
-glm::mat4 the_projection;
-glm::mat4 the_model;
-glm::mat4 the_view;
+glm::mat4 g_the_projection;
+glm::mat4 g_the_model;
+glm::mat4 g_the_view;
 
 GLFWwindow* window;
 
@@ -192,8 +194,8 @@ int main() {
     // Utilizaremos estas variáveis para enviar dados para a placa de vídeo
     // (GPU)! Veja arquivo "shader_vertex.glsl".
     model_uniform            = glGetUniformLocation(engine_controller.get_gpu_program_id(), "model"); // Variável da matriz "model"
-    GLint view_uniform       = glGetUniformLocation(engine_controller.get_gpu_program_id(), "view"); // Variável da matriz "view" em shader_vertex.glsl
-    GLint projection_uniform = glGetUniformLocation(engine_controller.get_gpu_program_id(), "projection"); // Variável da matriz "projection" em shader_vertex.glsl
+    g_view_uniform       = glGetUniformLocation(engine_controller.get_gpu_program_id(), "view"); // Variável da matriz "view" em shader_vertex.glsl
+    g_projection_uniform = glGetUniformLocation(engine_controller.get_gpu_program_id(), "projection"); // Variável da matriz "projection" em shader_vertex.glsl
     render_as_black_uniform  = glGetUniformLocation(engine_controller.get_gpu_program_id(), "render_as_black"); // Variável booleana em shader_vertex.glsl
 
     // Habilitamos o Z-buffer. Veja slides 104-116 do documento Aula_09_Projecoes.pdf.
@@ -280,8 +282,8 @@ int main() {
         // Enviamos as matrizes "view" e "projection" para a placa de vídeo
         // (GPU). Veja o arquivo "shader_vertex.glsl", onde estas são
         // efetivamente aplicadas em todos os pontos.
-        glUniformMatrix4fv(view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
-        glUniformMatrix4fv(projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
+        glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
+        glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
 
         // Vamos desenhar 3 instâncias (cópias) do cubo
         for (int i = 1; i <= 3; ++i) {
@@ -315,9 +317,9 @@ int main() {
 
                 // Armazenamos as matrizes model, view, e projection do terceiro cubo
                 // para mostrar elas na tela através da função TextRendering_ShowModelViewProjection().
-                the_model = model;
-                the_projection = projection;
-                the_view = view;
+                g_the_model = model;
+                g_the_projection = projection;
+                g_the_view = view;
             }
 
             // Enviamos a matriz "model" para a placa de vídeo (GPU). Veja o
@@ -393,70 +395,7 @@ int main() {
             }
         }
 
-        // Agora queremos desenhar os eixos XYZ de coordenadas GLOBAIS.
-        // Para tanto, colocamos a matriz de modelagem igual à identidade.
-        // Veja slides 2-14 e 184-190 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
-        glm::mat4 model = Matrix_Identity();
-
-        // Enviamos a nova matriz "model" para a placa de vídeo (GPU). Veja o
-        // arquivo "shader_vertex.glsl".
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-
-        // Pedimos para OpenGL desenhar linhas com largura de 10 pixels.
-        glLineWidth(10.0f);
-
-        // Informamos para a placa de vídeo (GPU) que a variável booleana
-        // "render_as_black" deve ser colocada como "false". Veja o arquivo
-        // "shader_vertex.glsl".
-        glUniform1i(render_as_black_uniform, false);
-
-        // Pedimos para a GPU rasterizar os vértices dos eixos XYZ
-        // apontados pelo VAO como linhas. Veja a definição de
-        // g_VirtualScene["axes"] dentro da função BuildTriangles(), e veja
-        // a documentação da função glDrawElements() em
-        // http://docs.gl/gl3/glDrawElements.
-        glDrawElements(
-            g_VirtualScene["axes"].rendering_mode,
-            g_VirtualScene["axes"].num_indices,
-            GL_UNSIGNED_INT,
-            (void*)g_VirtualScene["axes"].first_index
-        );
-
-        // "Desligamos" o VAO, evitando assim que operações posteriores venham a
-        // alterar o mesmo. Isso evita bugs.
-        glBindVertexArray(0);
-
-        // Pegamos um vértice com coordenadas de modelo (0.5, 0.5, 0.5, 1) e o
-        // passamos por todos os sistemas de coordenadas armazenados nas
-        // matrizes the_model, the_view, e the_projection; e escrevemos na tela
-        // as matrizes e pontos resultantes dessas transformações.
-        glm::vec4 p_model(0.5f, 0.5f, 0.5f, 1.0f);
-        //TextRendering_ShowModelViewProjection(window, the_projection, the_view, the_model, p_model);
-
-        // Imprimimos na tela os ângulos de Euler que controlam a rotação do
-        // terceiro cubo.
-        //TextRendering_ShowEulerAngles(window);
-
-        // Imprimimos na informação sobre a matriz de projeção sendo utilizada.
-        //TextRendering_ShowProjection(window);
-
-        // Imprimimos na tela informação sobre o número de quadros renderizados
-        // por segundo (frames per second).
-        //TextRendering_ShowFramesPerSecond(window);
-
-        // O framebuffer onde OpenGL executa as operações de renderização não
-        // é o mesmo que está sendo mostrado para o usuário, caso contrário
-        // seria possível ver artefatos conhecidos como "screen tearing". A
-        // chamada abaixo faz a troca dos buffers, mostrando para o usuário
-        // tudo que foi renderizado pelas funções acima.
-        // Veja o link: https://en.wikipedia.org/w/index.php?title=Multiple_buffering&oldid=793452829#Double_buffering_in_computer_graphics
-        glfwSwapBuffers(window);
-
-        // Verificamos com o sistema operacional se houve alguma interação do
-        // usuário (teclado, mouse, ...). Caso positivo, as funções de callback
-        // definidas anteriormente usando glfwSet*Callback() serão chamadas
-        // pela biblioteca GLFW.
-        glfwPollEvents();
+        update();
     }
 
     // Finalizamos o uso dos recursos do sistema operacional
@@ -464,6 +403,48 @@ int main() {
 
     // Fim do programa
     return 0;
+}
+
+void update() {
+    // Agora queremos desenhar os eixos XYZ de coordenadas GLOBAIS.
+    // Para tanto, colocamos a matriz de modelagem igual à identidade.
+    // Veja slides 2-14 e 184-190 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
+    glm::mat4 model = Matrix_Identity();
+
+    // Enviamos a nova matriz "model" para a placa de vídeo (GPU). Veja o
+    // arquivo "shader_vertex.glsl".
+    glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+
+    // Pedimos para OpenGL desenhar linhas com largura de 10 pixels.
+    glLineWidth(10.0f);
+
+    // Informamos para a placa de vídeo (GPU) que a variável booleana
+    // "render_as_black" deve ser colocada como "false". Veja o arquivo
+    // "shader_vertex.glsl".
+    glUniform1i(render_as_black_uniform, false);
+
+    // Pedimos para a GPU rasterizar os vértices dos eixos XYZ
+    // apontados pelo VAO como linhas. Veja a definição de
+    // g_VirtualScene["axes"] dentro da função BuildTriangles(), e veja
+    // a documentação da função glDrawElements() em
+    // http://docs.gl/gl3/glDrawElements.
+    glDrawElements(
+        g_VirtualScene["axes"].rendering_mode,
+        g_VirtualScene["axes"].num_indices,
+        GL_UNSIGNED_INT,
+        (void*)g_VirtualScene["axes"].first_index
+    );
+
+    glBindVertexArray(0);
+
+    // Pegamos um vértice com coordenadas de modelo (0.5, 0.5, 0.5, 1) e o
+    // passamos por todos os sistemas de coordenadas armazenados nas
+    // matrizes the_model, the_view, e the_projection; e escrevemos na tela
+    // as matrizes e pontos resultantes dessas transformações.
+    glm::vec4 p_model(0.5f, 0.5f, 0.5f, 1.0f);
+
+    glfwSwapBuffers(window);
+    glfwPollEvents();
 }
 
 void update_free_camera_position() {
