@@ -24,6 +24,7 @@ namespace engine {
 
         static EngineController start_engine(WindowConfig window_config);
 
+        // TODO: Rename to `update_and_test_should_close`
         /// @brief Ticks the engine
         /// @return True if window should close
         bool tick();
