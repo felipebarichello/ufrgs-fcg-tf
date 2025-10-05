@@ -29,6 +29,7 @@ namespace engine {
         static GLuint load_shader_vertex(const char* filename);
         static GLuint load_shader_fragment(const char* filename);
         static GLuint create_gpu_program(GLuint vertex_shader_id, GLuint fragment_shader_id);
+        static std::string get_executable_directory();
         static void load_shaders_from_files();
     public:
         EngineController() : window(nullptr), input_controller(nullptr) {};
