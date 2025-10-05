@@ -136,10 +136,10 @@ const Vec3 g_camera_start_position = Vec3(0.0f, 0.0f, 2.5f);
 
 Camera g_camera = Camera();
 
-Vec3 g_free_camera_position     = Vec3(0.0f, 0.0f, 2.5f);
-Vec3 g_free_camera_view_vector  = Vec3(0.0f, 0.0f, -1.0f);
-Vec3 g_free_camera_right_vector = Vec3(1.0f, 0.0f, 0.0f);
-Vec2 g_free_camera_move_vector  = Vec2(0.0f, 0.0f);
+Vec3 g_free_camera_position         = Vec3(0.0f, 0.0f, 2.5f);
+Vec3 g_free_camera_view_unit_vector = Vec3(0.0f, 0.0f, -1.0f);
+Vec3 g_free_camera_right_vector     = Vec3(1.0f, 0.0f, 0.0f);
+Vec2 g_free_camera_move_vector      = Vec2(0.0f, 0.0f);
 
 float g_free_camera_speed = 0.1f;
 
@@ -227,7 +227,7 @@ void update() {
         update_free_camera_position();
 
         camera_position_c = g_free_camera_position;
-        camera_view_vector = g_free_camera_view_vector;
+        camera_view_vector = g_free_camera_view_unit_vector;
 
         float y = sin(g_CameraPhi);
         float z = cos(g_CameraPhi)*cos(g_CameraTheta);
@@ -437,7 +437,7 @@ void update() {
 }
 
 void update_free_camera_position() {
-    g_free_camera_position += g_free_camera_speed * g_free_camera_move_vector.y * g_free_camera_view_vector;
+    g_free_camera_position += g_free_camera_speed * g_free_camera_move_vector.y * g_free_camera_view_unit_vector;
     g_free_camera_position += g_free_camera_speed * g_free_camera_move_vector.x * g_free_camera_right_vector;
 }
 
@@ -720,7 +720,7 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
 }
 
 void update_free_camera_view_vector() {
-    g_free_camera_view_vector = Vec3(
+    g_free_camera_view_unit_vector = Vec3(
         cosf(g_CameraPhi) * sinf(g_CameraTheta),
         sinf(g_CameraPhi),
         cosf(g_CameraPhi) * cosf(g_CameraTheta)
