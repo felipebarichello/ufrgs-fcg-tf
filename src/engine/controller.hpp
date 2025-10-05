@@ -16,26 +16,26 @@ namespace engine {
     };
     
     class EngineController {
-    private:
-        GLFWwindow* window;
-        InputController input_controller;
-        static float screen_ratio; // TODO: Make non-static?
-        static void frame_buffer_size_callback(GLFWwindow* window, int width, int height);
-        static void error_callback(int error, const char* description);
-        static GLFWwindow* init_window(WindowConfig window_config);
+        private:
+            GLFWwindow* window;
+            InputController input_controller;
+            static float screen_ratio; // TODO: Make non-static?
+            static void frame_buffer_size_callback(GLFWwindow* window, int width, int height);
+            static void error_callback(int error, const char* description);
+            static GLFWwindow* init_window(WindowConfig window_config);
 
-    public:
-        EngineController() : window(nullptr), input_controller(nullptr) {};
+        public:
+            EngineController() : window(nullptr), input_controller(nullptr) {};
 
-        static EngineController start_engine(WindowConfig window_config);
+            static EngineController start_engine(WindowConfig window_config);
 
-        /// @brief Ticks the engine
-        /// @return True if window should close
-        bool update_and_test_should_close();
+            /// @brief Ticks the engine
+            /// @return True if window should close
+            bool update_and_test_should_close();
 
-        GLFWwindow* get_window();
-        InputController& input();
-        float get_screen_ratio() { return screen_ratio; }
-        void set_screen_ratio(float ratio) { screen_ratio = ratio; }
+            GLFWwindow* get_window();
+            InputController& input();
+            float get_screen_ratio() { return screen_ratio; }
+            void set_screen_ratio(float ratio) { screen_ratio = ratio; }
     };
 }
