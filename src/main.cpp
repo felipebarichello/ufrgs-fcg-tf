@@ -221,20 +221,20 @@ void update() {
 
     Vec3 camera_up_vector   = g_free_camera_up_vector;
     Vec3 camera_position_c; // Camera center (position)
-    Vec3 camera_view_vector; // Direction the camera is pointing
+    Vec3 camera_view_unit_vector; // Direction the camera is pointing
 
     if (g_camera_is_free) {
         // Update da posição da câmera de acordo com o input de movimento
         update_free_camera_position();
 
         camera_position_c = g_free_camera_position;
-        camera_view_vector = g_free_camera_view_unit_vector;
+        camera_view_unit_vector = g_free_camera_view_unit_vector;
 
         float y = sin(g_CameraPhi);
         float z = cos(g_CameraPhi)*cos(g_CameraTheta);
         float x = cos(g_CameraPhi)*sin(g_CameraTheta);
         
-        camera_view_vector = Vec3(x, y, z);
+        camera_view_unit_vector = Vec3(x, y, z);
     } else {
         // Computamos a posição da câmera utilizando coordenadas esféricas.  As
         // variáveis g_CameraDistance, g_CameraPhi, e g_CameraTheta são
@@ -247,13 +247,13 @@ void update() {
 
         camera_position_c = Vec3(x, y, z);
         Vec3 camera_lookat_l = Vec3(0.0f, 0.0f, 0.0f);    // Ponto "l", para onde a câmera (look-at) estará sempre olhando
-        camera_view_vector = camera_lookat_l - camera_position_c;
+        camera_view_unit_vector = camera_lookat_l - camera_position_c;
     }
 
     // Computamos a matriz "View" utilizando os parâmetros da câmera para
     // definir o sistema de coordenadas da câmera.  Veja slides 2-14, 184-190 e 236-242 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
     glm::vec4 camera_position_c_glm = glm::vec4(camera_position_c.x, camera_position_c.y, camera_position_c.z, 1.0f);
-    glm::vec4 camera_view_vector_glm = glm::vec4(camera_view_vector.x, camera_view_vector.y, camera_view_vector.z, 0.0f);
+    glm::vec4 camera_view_vector_glm = glm::vec4(camera_view_unit_vector.x, camera_view_unit_vector.y, camera_view_unit_vector.z, 0.0f);
     glm::vec4 camera_up_vector_glm   = glm::vec4(camera_up_vector.x, camera_up_vector.y, camera_up_vector.z, 0.0f);
     glm::mat4 view = Matrix_Camera_View(camera_position_c_glm, camera_view_vector_glm, camera_up_vector_glm);
     g_free_camera_right_vector = Vec3(view[0][0], view[1][0], view[2][0]);
