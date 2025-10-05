@@ -161,7 +161,6 @@ GLuint g_vertex_array_object_id;
 GLint g_model_uniform;
 GLint g_view_uniform;
 GLint g_projection_uniform;
-GLint g_render_as_black_uniform;
 
 glm::mat4 g_the_projection;
 glm::mat4 g_the_model;
@@ -203,7 +202,6 @@ int main() {
     g_model_uniform            = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "model"); // Variável da matriz "model"
     g_view_uniform       = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "view"); // Variável da matriz "view" em shader_vertex.glsl
     g_projection_uniform = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "projection"); // Variável da matriz "projection" em shader_vertex.glsl
-    g_render_as_black_uniform  = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "render_as_black"); // Variável booleana em shader_vertex.glsl
 
     // Habilitamos o Z-buffer. Veja slides 104-116 do documento Aula_09_Projecoes.pdf.
     glEnable(GL_DEPTH_TEST);
@@ -339,11 +337,6 @@ void update() {
         // aplicada em todos os pontos.
         glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
 
-        // Informamos para a placa de vídeo (GPU) que a variável booleana
-        // "render_as_black" deve ser colocada como "false". Veja o arquivo
-        // "shader_vertex.glsl".
-        glUniform1i(g_render_as_black_uniform, false);
-
         // Pedimos para a GPU rasterizar os vértices do cubo apontados pelo
         // VAO como triângulos, formando as faces do cubo. Esta
         // renderização irá executar o Vertex Shader definido no arquivo
@@ -370,11 +363,6 @@ void update() {
         // geométricas que o cubo. Isto é, estes eixos estarão
         // representando o sistema de coordenadas do modelo (e não o global)!
         cube_axes_vao->draw();
-
-        // Informamos para a placa de vídeo (GPU) que a variável booleana
-        // "render_as_black" deve ser colocada como "true". Veja o arquivo
-        // "shader_vertex.glsl".
-        glUniform1i(g_render_as_black_uniform, true);
 
         // Pedimos para a GPU rasterizar os vértices do cubo apontados pelo
         // VAO como linhas, formando as arestas pretas do cubo. Veja a
@@ -403,11 +391,6 @@ void update() {
 
     // Pedimos para OpenGL desenhar linhas com largura de 10 pixels.
     glLineWidth(10.0f);
-
-    // Informamos para a placa de vídeo (GPU) que a variável booleana
-    // "render_as_black" deve ser colocada como "false". Veja o arquivo
-    // "shader_vertex.glsl".
-    glUniform1i(g_render_as_black_uniform, false);
 
     // Pedimos para a GPU rasterizar os vértices dos eixos XYZ
     // apontados pelo VAO como linhas. Veja a definição de

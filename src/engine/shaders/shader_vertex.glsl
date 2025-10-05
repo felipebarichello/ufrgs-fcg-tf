@@ -16,9 +16,6 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
-// Variável booleana no código C++ também enviada para a GPU
-uniform bool render_as_black;
-
 void main()
 {
     // A variável gl_Position define a posição final de cada vértice
@@ -45,19 +42,10 @@ void main()
     //     gl_Position.w = model_coefficients.w;
     //
 
-    if ( render_as_black )
-    {
-        // Ignoramos o atributo cor dos vértices, colocando a cor final como
-        // preta. Utilizamos isto para renderizar as arestas pretas dos cubos.
-        cor_interpolada_pelo_rasterizador = vec4(0.0f,0.0f,0.0f,1.0f);
-    }
-    else
-    {
-        // Copiamos o atributo cor (de entrada) de cada vértice para a variável
-        // "cor_interpolada_pelo_rasterizador". Esta variável será interpolada pelo
-        // rasterizador, gerando valores interpolados para cada fragmento!  Veja o
-        // arquivo "shader_fragment.glsl".
-        cor_interpolada_pelo_rasterizador = color_coefficients;
-    }
+    // Copiamos o atributo cor (de entrada) de cada vértice para a variável
+    // "cor_interpolada_pelo_rasterizador". Esta variável será interpolada pelo
+    // rasterizador, gerando valores interpolados para cada fragmento!  Veja o
+    // arquivo "shader_fragment.glsl".
+    cor_interpolada_pelo_rasterizador = color_coefficients;
 }
 
