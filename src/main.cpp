@@ -414,7 +414,7 @@ Vao BuildCubeFaces()
         6, 7, 3
     };
 
-    return vao::VaoBuilder()
+    return VaoBuilder()
         .add_vbo(0, 4, sizeof(face_positions), face_positions, GL_STATIC_DRAW)
         .add_vbo(1, 4, sizeof(face_colors), face_colors, GL_STATIC_DRAW)
         .add_ebo(sizeof(face_indices), face_indices, GL_STATIC_DRAW)
