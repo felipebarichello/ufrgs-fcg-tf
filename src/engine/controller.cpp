@@ -53,8 +53,14 @@ namespace engine {
     }
 
     bool EngineController::tick() {
+        if (glfwWindowShouldClose(this->window)) {
+            return true;
+        }
+
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        return glfwWindowShouldClose(this->window);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear framebuffer with the color above and reset the depth buffer (Z-buffer)
+
+        return false;
     }
 
     GLFWwindow* EngineController::get_window() {
