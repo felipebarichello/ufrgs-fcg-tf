@@ -47,7 +47,6 @@
 
 // Declaração de várias funções utilizadas em main().  Essas estão definidas
 // logo após a definição de main() neste arquivo.
-GLuint BuildCube(); // Constrói triângulos para renderização
 void LoadShadersFromFiles(); // Carrega os shaders de vértice e fragmento, criando um programa de GPU
 GLuint LoadShader_Vertex(const char* filename);   // Carrega um vertex shader
 GLuint LoadShader_Fragment(const char* filename); // Carrega um fragment shader
@@ -192,7 +191,6 @@ int main() {
 
     g_window = g_engine_controller.get_window();
 
-    //g_vertex_array_object_id = BuildCube();
     cube_faces_vao = BuildCubeFaces();
     cube_edges_vao = BuildCubeEdges();
     cube_axes_vao  = BuildCubeAxes();
