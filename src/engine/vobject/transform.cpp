@@ -24,4 +24,14 @@ namespace engine {
         return this->matrix;
     }
 
+    void Transform::set_matrix(Mat4 matrix) {
+        this->matrix = matrix;
+    }
+
+    void Transform::set_basis_vectors(Vec3 u, Vec3 v, Vec3 w) {
+        this->matrix[0] = glm::vec4(u, 0.0f);
+        this->matrix[1] = glm::vec4(v, 0.0f);
+        this->matrix[2] = glm::vec4(w, 0.0f);
+    }
+
 } // namespace engine

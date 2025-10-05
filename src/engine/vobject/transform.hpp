@@ -15,6 +15,11 @@ namespace engine {
             void set_scale(Vec3 scale);
 
             Mat4 get_matrix();
+            void set_matrix(Mat4 matrix);
+
+            /// @brief Sets the basis vectors of the transform matrix.
+            /// The vectors should be orthonormal.
+            void set_basis_vectors(Vec3 u, Vec3 v, Vec3 w);
     };
 
     class ITransform {
