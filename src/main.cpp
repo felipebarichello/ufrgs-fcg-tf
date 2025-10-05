@@ -485,32 +485,6 @@ GLuint BuildCube()
     //  - slides 35-48 do documento Aula_08_Sistemas_de_Coordenadas.pdf;
     //  - slides 184-190 do documento Aula_08_Sistemas_de_Coordenadas.pdf;
     //
-    // Este vetor "model_coefficients" define a GEOMETRIA (veja slides 103-110 do documento Aula_04_Modelagem_Geometrica_3D.pdf).
-    //
-    // GLfloat model_coefficients[] = {
-    // // Vértices de um cubo
-    // //    X      Y     Z     W
-    //     -0.5f,  0.5f,  0.5f, 1.0f, // posição do vértice 0
-    //     -0.5f, -0.5f,  0.5f, 1.0f, // posição do vértice 1
-    //      0.5f, -0.5f,  0.5f, 1.0f, // posição do vértice 2
-    //      0.5f,  0.5f,  0.5f, 1.0f, // posição do vértice 3
-    //     -0.5f,  0.5f, -0.5f, 1.0f, // posição do vértice 4
-    //     -0.5f, -0.5f, -0.5f, 1.0f, // posição do vértice 5
-    //      0.5f, -0.5f, -0.5f, 1.0f, // posição do vértice 6
-    //      0.5f,  0.5f, -0.5f, 1.0f, // posição do vértice 7
-    // // Vértices para desenhar o eixo X
-    // //    X      Y     Z     W
-    //      0.0f,  0.0f,  0.0f, 1.0f, // posição do vértice 8
-    //      1.0f,  0.0f,  0.0f, 1.0f, // posição do vértice 9
-    // // Vértices para desenhar o eixo Y
-    // //    X      Y     Z     W
-    //      0.0f,  0.0f,  0.0f, 1.0f, // posição do vértice 10
-    //      0.0f,  1.0f,  0.0f, 1.0f, // posição do vértice 11
-    // // Vértices para desenhar o eixo Z
-    // //    X      Y     Z     W
-    //      0.0f,  0.0f,  0.0f, 1.0f, // posição do vértice 12
-    //      0.0f,  0.0f,  1.0f, 1.0f, // posição do vértice 13
-    // };
 
     vao::Position vertex_positions[] = {
         // Vértices de um cubo
@@ -538,6 +512,7 @@ GLuint BuildCube()
     };
 
     const size_t VERTEX_POSITIONS_SIZE = sizeof(vertex_positions);
+    const size_t VERTEX_POSITION_COUNT = VERTEX_POSITIONS_SIZE / sizeof(vao::Position);
 
     // Criamos o identificador (ID) de um Vertex Buffer Object (VBO).  Um VBO é
     // um buffer de memória que irá conter os valores de um certo atributo de
@@ -612,32 +587,36 @@ GLuint BuildCube()
     // Tal cor é definida como coeficientes RGBA: Red, Green, Blue, Alpha;
     // isto é: Vermelho, Verde, Azul, Alpha (valor de transparência).
     // Conversaremos sobre sistemas de cores nas aulas de Modelos de Iluminação.
-    GLfloat color_coefficients[] = {
+    vao::Color vertex_colors[] = {
     // Cores dos vértices do cubo
     //  R     G     B     A
-        1.0f, 0.5f, 0.0f, 1.0f, // cor do vértice 0
-        1.0f, 0.5f, 0.0f, 1.0f, // cor do vértice 1
-        0.0f, 0.5f, 1.0f, 1.0f, // cor do vértice 2
-        0.0f, 0.5f, 1.0f, 1.0f, // cor do vértice 3
-        1.0f, 0.5f, 0.0f, 1.0f, // cor do vértice 4
-        1.0f, 0.5f, 0.0f, 1.0f, // cor do vértice 5
-        0.0f, 0.5f, 1.0f, 1.0f, // cor do vértice 6
-        0.0f, 0.5f, 1.0f, 1.0f, // cor do vértice 7
+        vao::Color(1.0f, 0.5f, 0.0f, 1.0f), // cor do vértice 0
+        vao::Color(1.0f, 0.5f, 0.0f, 1.0f), // cor do vértice 1
+        vao::Color(0.0f, 0.5f, 1.0f, 1.0f), // cor do vértice 2
+        vao::Color(0.0f, 0.5f, 1.0f, 1.0f), // cor do vértice 3
+        vao::Color(1.0f, 0.5f, 0.0f, 1.0f), // cor do vértice 4
+        vao::Color(1.0f, 0.5f, 0.0f, 1.0f), // cor do vértice 5
+        vao::Color(0.0f, 0.5f, 1.0f, 1.0f), // cor do vértice 6
+        vao::Color(0.0f, 0.5f, 1.0f, 1.0f), // cor do vértice 7
     // Cores para desenhar o eixo X
-        1.0f, 0.0f, 0.0f, 1.0f, // cor do vértice 8
-        1.0f, 0.0f, 0.0f, 1.0f, // cor do vértice 9
-    // Cores para desenhar o eixo Y
-        0.0f, 1.0f, 0.0f, 1.0f, // cor do vértice 10
-        0.0f, 1.0f, 0.0f, 1.0f, // cor do vértice 11
+        vao::Color(1.0f, 0.0f, 0.0f, 1.0f), // cor do vértice 8
+        vao::Color(1.0f, 0.0f, 0.0f, 1.0f), // cor do vértice 9
+    // Cores para desenhar o eixo
+        vao::Color(0.0f, 1.0f, 0.0f, 1.0f), // cor do vértice 10
+        vao::Color(0.0f, 1.0f, 0.0f, 1.0f), // cor do vértice 11
     // Cores para desenhar o eixo Z
-        0.0f, 0.0f, 1.0f, 1.0f, // cor do vértice 12
-        0.0f, 0.0f, 1.0f, 1.0f, // cor do vértice 13
+        vao::Color(0.0f, 0.0f, 1.0f, 1.0f), // cor do vértice 12
+        vao::Color(0.0f, 0.0f, 1.0f, 1.0f), // cor do vértice 13
     };
+
+    const size_t VERTEX_COLORS_SIZE = sizeof(vertex_colors);
+    const size_t VERTEX_COLOR_COUNT = VERTEX_COLORS_SIZE / sizeof(vao::Color);
+
     GLuint VBO_color_coefficients_id;
     glGenBuffers(1, &VBO_color_coefficients_id);
     glBindBuffer(GL_ARRAY_BUFFER, VBO_color_coefficients_id);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(color_coefficients), NULL, GL_STATIC_DRAW);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(color_coefficients), color_coefficients);
+    glBufferData(GL_ARRAY_BUFFER, VERTEX_COLORS_SIZE, NULL, GL_STATIC_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, VERTEX_COLORS_SIZE, vertex_colors);
     location = 1; // "(location = 1)" em "shader_vertex.glsl"
     number_of_dimensions = 4; // vec4 em "shader_vertex.glsl"
     glVertexAttribPointer(location, number_of_dimensions, GL_FLOAT, GL_FALSE, 0, 0);
