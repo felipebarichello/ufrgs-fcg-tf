@@ -18,7 +18,7 @@ namespace engine {
 
     void Camera::set_vectors_from_up_view(Vec3 up, Vec3 view) {
         Vec3 w = negate(view);
-        Vec3 u = glm::cross(up, w);
+        Vec3 u = normalize(glm::cross(up, w));
         Vec3 v = glm::cross(w,u);
 
         this->_transform.set_basis_vectors(u, v, w);
