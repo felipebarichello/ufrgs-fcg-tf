@@ -630,7 +630,7 @@ GLuint BuildCube()
     //
     // Este vetor "indices" define a TOPOLOGIA (veja slides 103-110 do documento Aula_04_Modelagem_Geometrica_3D.pdf).
     //
-    GLuint indices[] = {
+    GLuint topology[] = {
     // Definimos os índices dos vértices que definem as FACES de um cubo
     // através de 12 triângulos que serão desenhados com o modo de renderização
     // GL_TRIANGLES.
@@ -706,10 +706,10 @@ GLuint BuildCube()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices_id);
 
     // Alocamos memória para o buffer.
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), NULL, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(topology), NULL, GL_STATIC_DRAW);
 
-    // Copiamos os valores do array indices[] para dentro do buffer.
-    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, sizeof(indices), indices);
+    // Copiamos os valores do array topology[] para dentro do buffer.
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, sizeof(topology), topology);
 
     // NÃO faça a chamada abaixo! Diferente de um VBO (GL_ARRAY_BUFFER), um
     // array de índices (GL_ELEMENT_ARRAY_BUFFER) não pode ser "desligado",
