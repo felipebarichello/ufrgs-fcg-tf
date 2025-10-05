@@ -40,7 +40,9 @@
 #include "matrices.h"
 
 #include "engine/controller.hpp"
+#include "engine/utils/linalg.hpp"
 #include "engine/input_controller.hpp"
+#include "engine/vobject/specialization/camera.hpp"
 
 // Declaração de várias funções utilizadas em main().  Essas estão definidas
 // logo após a definição de main() neste arquivo.
@@ -80,9 +82,12 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos);
 void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
 
-// using engine::start_engine;
 using engine::EngineController;
 using engine::WindowConfig;
+using engine::Camera;
+using engine::Vec3;
+using engine::Transform;
+
 
 // Definimos uma estrutura que armazenará dados necessários para renderizar
 // cada objeto da cena virtual.
@@ -124,6 +129,10 @@ bool camera_is_free = true;
 float g_CameraTheta = -3.14159265f; // Ângulo no plano ZX em relação ao eixo Z
 float g_CameraPhi = 0.0f;   // Ângulo em relação ao eixo Y
 float g_CameraDistance = 2.5f; // Distância da câmera para a origem
+
+const Vec3 camera_start_position = Vec3(0.0f, 0.0f, 2.5f);
+
+Camera camera = Camera(Transform::Identity());
 
 glm::vec4 free_camera_position     = glm::vec4(0.0f, 0.0f,  2.5f, 1.0f);
 glm::vec4 free_camera_view_vector  = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
@@ -191,6 +200,8 @@ int main() {
     glm::mat4 the_projection;
     glm::mat4 the_model;
     glm::mat4 the_view;
+
+    camera.transform().set_position(camera_start_position);
 
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!engine_controller.update_and_test_should_close()) {

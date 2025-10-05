@@ -1,20 +1,24 @@
-#include <glm/mat4x4.hpp>
+#include "../utils/linalg.hpp"
 
 namespace engine {
     class Transform {
         private:
-            glm::mat4 matrix;
+            Mat4 matrix;
 
         public:
-            void set_position(float x, float y, float z);
-            void set_rotation(float angle_in_degrees, float x, float y, float z);
-            void set_scale(float x, float y, float z);
+            static Transform Identity();
 
-            glm::mat4 get_matrix();
+            Transform(Mat4 matrix) : matrix(matrix) {}
+
+            void set_position(Vec3 position);
+            void set_rotation(float angle_in_radians, Vec3 axis);
+            void set_scale(Vec3 scale);
+
+            Mat4 get_matrix();
     };
 
     class ITransform {
         public:
-            virtual Transform get_transform() = 0;
+            virtual Transform& transform() = 0;
     };
 } // namespace engine

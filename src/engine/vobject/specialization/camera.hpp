@@ -6,10 +6,11 @@
 namespace engine {
     class Camera : public VObject, public ITransform {
         private:
-            Transform transform;
+            Transform _transform;
         
         public:
-            Camera(Transform transform) : transform(transform) {}
-            Transform get_transform() override;
+            Camera(Transform transform) : _transform(transform) {}
+            Transform& transform() override;
+            void set_transform(Transform transform);
     };
 } // namespace engine
