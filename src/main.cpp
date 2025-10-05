@@ -192,7 +192,10 @@ int main() {
 
     g_window = g_engine_controller.get_window();
 
-    g_vertex_array_object_id = BuildCube();
+    //g_vertex_array_object_id = BuildCube();
+    cube_faces_vao = new Vao(BuildCubeFaces());
+    cube_edges_vao = new Vao(BuildCubeEdges());
+    cube_axes_vao  = new Vao(BuildCubeAxes());
 
     // Buscamos o endereço das variáveis definidas dentro do Vertex Shader.
     // Utilizaremos estas variáveis para enviar dados para a placa de vídeo
@@ -351,12 +354,7 @@ void update() {
         // Veja a definição de g_VirtualScene["cube_faces"] dentro da
         // função BuildTriangles(), e veja a documentação da função
         // glDrawElements() em http://docs.gl/gl3/glDrawElements.
-        glDrawElements(
-            g_VirtualScene["cube_faces"].rendering_mode, // Veja slides 182-188 do documento Aula_04_Modelagem_Geometrica_3D.pdf
-            g_VirtualScene["cube_faces"].num_indices,
-            GL_UNSIGNED_INT,
-            (void*)g_VirtualScene["cube_faces"].first_index
-        );
+        cube_faces_vao->draw();
 
         // Pedimos para OpenGL desenhar linhas com largura de 4 pixels.
         glLineWidth(4.0f);
@@ -371,12 +369,7 @@ void update() {
         // definida acima, e portanto sofrerão as mesmas transformações
         // geométricas que o cubo. Isto é, estes eixos estarão
         // representando o sistema de coordenadas do modelo (e não o global)!
-        glDrawElements(
-            g_VirtualScene["axes"].rendering_mode,
-            g_VirtualScene["axes"].num_indices,
-            GL_UNSIGNED_INT,
-            (void*)g_VirtualScene["axes"].first_index
-        );
+        cube_axes_vao->draw();
 
         // Informamos para a placa de vídeo (GPU) que a variável booleana
         // "render_as_black" deve ser colocada como "true". Veja o arquivo
@@ -388,12 +381,7 @@ void update() {
         // definição de g_VirtualScene["cube_edges"] dentro da função
         // BuildTriangles(), e veja a documentação da função
         // glDrawElements() em http://docs.gl/gl3/glDrawElements.
-        glDrawElements(
-            g_VirtualScene["cube_edges"].rendering_mode,
-            g_VirtualScene["cube_edges"].num_indices,
-            GL_UNSIGNED_INT,
-            (void*)g_VirtualScene["cube_edges"].first_index
-        );
+        cube_edges_vao->draw();
 
         // Desenhamos um ponto de tamanho 15 pixels em cima do terceiro vértice
         // do terceiro cubo. Este vértice tem coordenada de modelo igual à
@@ -426,12 +414,7 @@ void update() {
     // g_VirtualScene["axes"] dentro da função BuildTriangles(), e veja
     // a documentação da função glDrawElements() em
     // http://docs.gl/gl3/glDrawElements.
-    glDrawElements(
-        g_VirtualScene["axes"].rendering_mode,
-        g_VirtualScene["axes"].num_indices,
-        GL_UNSIGNED_INT,
-        (void*)g_VirtualScene["axes"].first_index
-    );
+    cube_axes_vao->draw();
 
     glBindVertexArray(0);
 
