@@ -133,7 +133,7 @@ float g_CameraDistance = 2.5f; // Distância da câmera para a origem
 
 const Vec3 g_camera_start_position = Vec3(0.0f, 0.0f, 2.5f);
 
-Camera g_camera = Camera(Transform::Identity());
+Camera g_camera = Camera();
 
 glm::vec4 g_free_camera_position     = glm::vec4(0.0f, 0.0f,  2.5f, 1.0f);
 glm::vec4 g_free_camera_view_vector  = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
