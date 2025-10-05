@@ -152,8 +152,19 @@ bool g_UsePerspectiveProjection = true;
 // Variável que controla se o texto informativo será mostrado na tela.
 bool g_ShowInfoText = true;
 
-// Variáveis que definem um programa de GPU (shaders). Veja função LoadShadersFromFiles().
-//GLuint g_GpuProgramID = 0;
+GLuint vertex_array_object_id;
+
+GLint view_uniform;
+GLint projection_uniform;
+
+GLint model_uniform;
+GLint render_as_black_uniform;
+
+glm::mat4 the_projection;
+glm::mat4 the_model;
+glm::mat4 the_view;
+
+void update();
 
 
 int main() {
@@ -173,33 +184,20 @@ int main() {
 
     GLFWwindow* window = engine_controller.get_window();
 
-    // Carregamos os shaders de vértices e de fragmentos que serão utilizados
-    // para renderização. Veja slides 180-200 do documento Aula_03_Rendering_Pipeline_Grafico.pdf.
-    //
-    //LoadShadersFromFiles();
-
-    // Construímos a representação de um triângulo
-    GLuint vertex_array_object_id = BuildTriangles();
-
-    // Inicializamos o código para renderização de texto.
-    //TextRendering_Init();
+    vertex_array_object_id = BuildTriangles();
 
     // Buscamos o endereço das variáveis definidas dentro do Vertex Shader.
     // Utilizaremos estas variáveis para enviar dados para a placa de vídeo
     // (GPU)! Veja arquivo "shader_vertex.glsl".
-    GLint model_uniform           = glGetUniformLocation(engine_controller.get_gpu_program_id(), "model"); // Variável da matriz "model"
+    model_uniform           = glGetUniformLocation(engine_controller.get_gpu_program_id(), "model"); // Variável da matriz "model"
     GLint view_uniform            = glGetUniformLocation(engine_controller.get_gpu_program_id(), "view"); // Variável da matriz "view" em shader_vertex.glsl
     GLint projection_uniform      = glGetUniformLocation(engine_controller.get_gpu_program_id(), "projection"); // Variável da matriz "projection" em shader_vertex.glsl
-    GLint render_as_black_uniform = glGetUniformLocation(engine_controller.get_gpu_program_id(), "render_as_black"); // Variável booleana em shader_vertex.glsl
+    render_as_black_uniform = glGetUniformLocation(engine_controller.get_gpu_program_id(), "render_as_black"); // Variável booleana em shader_vertex.glsl
 
     // Habilitamos o Z-buffer. Veja slides 104-116 do documento Aula_09_Projecoes.pdf.
     glEnable(GL_DEPTH_TEST);
 
-    // Variáveis auxiliares utilizadas para chamada à função
-    // TextRendering_ShowModelViewProjection(), armazenando matrizes 4x4.
-    glm::mat4 the_projection;
-    glm::mat4 the_model;
-    glm::mat4 the_view;
+    camera.transform().set_position(camera_start_position);
 
     camera.transform().set_position(camera_start_position);
 

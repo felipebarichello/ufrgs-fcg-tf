@@ -5,8 +5,11 @@
 #include <cstdlib>
 #include <fstream>
 #include "input_controller.hpp"
+#include <functional>
 
 namespace engine {
+    
+    using UpdateCallback = std::function<void()>;
 
     struct WindowConfig {
         int width;
@@ -37,6 +40,8 @@ namespace engine {
             EngineController() : window(nullptr), input_controller(nullptr) {};
 
             static EngineController start_engine(WindowConfig window_config);
+
+            void hand_over_control(UpdateCallback update_callback);
 
             /// @brief Ticks the engine
             /// @return True if window should close
