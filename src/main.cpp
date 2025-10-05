@@ -203,13 +203,7 @@ int main() {
 
     camera.transform().set_position(camera_start_position);
 
-    // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
-    while (!engine_controller.update_and_test_should_close()) {
-        update();
-    }
-
-    // Finalizamos o uso dos recursos do sistema operacional
-    glfwTerminate();
+    engine_controller.hand_over_control(update);
 
     // Fim do programa
     return 0;
@@ -442,9 +436,6 @@ void update() {
     // matrizes the_model, the_view, e the_projection; e escrevemos na tela
     // as matrizes e pontos resultantes dessas transformações.
     glm::vec4 p_model(0.5f, 0.5f, 0.5f, 1.0f);
-
-    glfwSwapBuffers(window);
-    glfwPollEvents();
 }
 
 void update_free_camera_position() {
