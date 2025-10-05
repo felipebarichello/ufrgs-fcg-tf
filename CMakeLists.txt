@@ -7,7 +7,7 @@
 # ser compilados.
 set(SOURCES
   src/main.cpp
-  src/lib/lib.cpp
+  src/textrendering.cpp
   src/glad.c
 )
 
