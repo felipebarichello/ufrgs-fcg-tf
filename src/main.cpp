@@ -88,7 +88,11 @@ using engine::WindowConfig;
 using engine::Camera;
 using engine::Vec3;
 using engine::Transform;
+using vao::Vao; 
 
+Vao BuildCubeAxes();
+Vao BuildCubeEdges();
+Vao BuildCubeFaces();
 
 // Definimos uma estrutura que armazenará dados necessários para renderizar
 // cada objeto da cena virtual.
@@ -167,6 +171,9 @@ GLFWwindow* g_window;
 
 void update();
 
+Vao* cube_faces_vao = nullptr;
+Vao* cube_edges_vao = nullptr;
+Vao* cube_axes_vao = nullptr;
 
 int main() {
     WindowConfig window_config = WindowConfig(
@@ -691,6 +698,133 @@ GLuint BuildCube() {
     // Retornamos o ID do VAO. Isso é tudo que será necessário para renderizar
     // os triângulos definidos acima. Veja a chamada glDrawElements() em main().
     return vertex_array_object_id;
+}
+
+vao::Vao BuildCubeFaces()
+{
+    GLfloat face_positions[] = {
+        -0.5f,  0.5f,  0.5f, 1.0f,
+        -0.5f, -0.5f,  0.5f, 1.0f,
+         0.5f, -0.5f,  0.5f, 1.0f,
+         0.5f,  0.5f,  0.5f, 1.0f,
+        -0.5f,  0.5f, -0.5f, 1.0f,
+        -0.5f, -0.5f, -0.5f, 1.0f,
+         0.5f, -0.5f, -0.5f, 1.0f,
+         0.5f,  0.5f, -0.5f, 1.0f,
+    };
+
+    GLfloat face_colors[] = {
+        1.0f, 0.5f, 0.0f, 1.0f,
+        1.0f, 0.5f, 0.0f, 1.0f,
+        0.0f, 0.5f, 1.0f, 1.0f,
+        0.0f, 0.5f, 1.0f, 1.0f,
+        1.0f, 0.5f, 0.0f, 1.0f,
+        1.0f, 0.5f, 0.0f, 1.0f,
+        0.0f, 0.5f, 1.0f, 1.0f,
+        0.0f, 0.5f, 1.0f, 1.0f,
+    };
+
+    GLuint face_indices[] = {
+        // Front face
+        0, 1, 2,
+        2, 3, 0,
+        // Back face
+        4, 7, 6,
+        6, 5, 4,
+        // Top face
+        0, 3, 7,
+        7, 4, 0,
+        // Bottom face
+        1, 5, 6,
+        6, 2, 1,
+        // Left face
+        0, 4, 5,
+        5, 1, 0,
+        // Right face
+        3, 2, 6,
+        6, 7, 3
+    };
+
+    vao::VaoBuilder faces_builder;
+    faces_builder.add_vbo(0, 4, sizeof(face_positions), face_positions, GL_STATIC_DRAW);
+    faces_builder.add_vbo(1, 4, sizeof(face_colors), face_colors, GL_STATIC_DRAW);
+    faces_builder.add_ebo(sizeof(face_indices), face_indices, GL_STATIC_DRAW);
+    vao::Vao faces_vao = faces_builder.build(GL_TRIANGLES, sizeof(face_indices)/sizeof(GLuint), GL_UNSIGNED_INT);
+
+    return faces_vao;
+}
+
+// Build the edges VAO and register it
+vao::Vao BuildCubeEdges()
+{
+    GLfloat edge_positions[] = {
+        -0.5f,  0.5f,  0.5f, 1.0f,
+        -0.5f, -0.5f,  0.5f, 1.0f,
+         0.5f, -0.5f,  0.5f, 1.0f,
+         0.5f,  0.5f,  0.5f, 1.0f,
+        -0.5f,  0.5f, -0.5f, 1.0f,
+        -0.5f, -0.5f, -0.5f, 1.0f,
+         0.5f, -0.5f, -0.5f, 1.0f,
+         0.5f,  0.5f, -0.5f, 1.0f,
+    };
+
+    GLfloat edge_colors[] = {
+        0.0f,0.0f,0.0f,1.0f,
+        0.0f,0.0f,0.0f,1.0f,
+        0.0f,0.0f,0.0f,1.0f,
+        0.0f,0.0f,0.0f,1.0f,
+        0.0f,0.0f,0.0f,1.0f,
+        0.0f,0.0f,0.0f,1.0f,
+        0.0f,0.0f,0.0f,1.0f,
+        0.0f,0.0f,0.0f,1.0f,
+    };
+
+    GLuint edge_indices[] = {
+        0,1, 1,2, 2,3, 3,0, 0,4, 4,7, 7,6, 6,2, 6,5, 5,4, 5,1, 7,3
+    };
+
+    vao::VaoBuilder edges_builder;
+    edges_builder.add_vbo(0, 4, sizeof(edge_positions), edge_positions, GL_STATIC_DRAW);
+    edges_builder.add_vbo(1, 4, sizeof(edge_colors), edge_colors, GL_STATIC_DRAW);
+    edges_builder.add_ebo(sizeof(edge_indices), edge_indices, GL_STATIC_DRAW);
+    vao::Vao edges_vao = edges_builder.build(GL_LINES, sizeof(edge_indices)/sizeof(GLuint), GL_UNSIGNED_INT);
+
+    return edges_vao;
+}
+
+// Build the axes VAO and register it
+vao::Vao BuildCubeAxes()
+{
+    GLfloat axes_positions[] = {
+            // X axis
+            0.0f, 0.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 1.0f,
+            // Y axis
+            0.0f, 0.0f, 0.0f, 1.0f,
+            0.0f, 1.0f, 0.0f, 1.0f,
+            // Z axis
+            0.0f, 0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f, 1.0f,
+        };
+
+    GLfloat axes_colors[] = {
+        1.0f,0.0f,0.0f,1.0f,
+        1.0f,0.0f,0.0f,1.0f,
+        0.0f,1.0f,0.0f,1.0f,
+        0.0f,1.0f,0.0f,1.0f,
+        0.0f,0.0f,1.0f,1.0f,
+        0.0f,0.0f,1.0f,1.0f,
+    };
+
+    GLuint axes_indices[] = { 0,1, 2,3, 4,5 };
+
+    vao::VaoBuilder axes_builder;
+    axes_builder.add_vbo(0, 4, sizeof(axes_positions), axes_positions, GL_STATIC_DRAW);
+    axes_builder.add_vbo(1, 4, sizeof(axes_colors), axes_colors, GL_STATIC_DRAW);
+    axes_builder.add_ebo(sizeof(axes_indices), axes_indices, GL_STATIC_DRAW);
+    vao::Vao axes_vao = axes_builder.build(GL_LINES, sizeof(axes_indices)/sizeof(GLuint), GL_UNSIGNED_INT);
+
+    return axes_vao;
 }
 
 // Variáveis globais que armazenam a última posição do cursor do mouse, para
