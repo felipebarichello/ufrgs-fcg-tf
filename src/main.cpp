@@ -335,7 +335,7 @@ void update() {
         glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
         cube_faces_vao.draw();
 
-        glLineWidth(4.0f);
+        glLineWidth(2.0f);
         cube_axes_vao.draw();
         cube_edges_vao.draw();
 
@@ -413,13 +413,11 @@ vao::Vao BuildCubeFaces()
         6, 7, 3
     };
 
-    vao::VaoBuilder faces_builder;
-    faces_builder.add_vbo(0, 4, sizeof(face_positions), face_positions, GL_STATIC_DRAW);
-    faces_builder.add_vbo(1, 4, sizeof(face_colors), face_colors, GL_STATIC_DRAW);
-    faces_builder.add_ebo(sizeof(face_indices), face_indices, GL_STATIC_DRAW);
-    vao::Vao faces_vao = faces_builder.build(GL_TRIANGLES, sizeof(face_indices)/sizeof(GLuint), GL_UNSIGNED_INT);
-
-    return faces_vao;
+    return vao::VaoBuilder()
+        .add_vbo(0, 4, sizeof(face_positions), face_positions, GL_STATIC_DRAW)
+        .add_vbo(1, 4, sizeof(face_colors), face_colors, GL_STATIC_DRAW)
+        .add_ebo(sizeof(face_indices), face_indices, GL_STATIC_DRAW)
+        .build(GL_TRIANGLES, sizeof(face_indices)/sizeof(GLuint), GL_UNSIGNED_INT);
 }
 
 // Build the edges VAO and register it
@@ -451,13 +449,11 @@ vao::Vao BuildCubeEdges()
         0,1, 1,2, 2,3, 3,0, 0,4, 4,7, 7,6, 6,2, 6,5, 5,4, 5,1, 7,3
     };
 
-    vao::VaoBuilder edges_builder;
-    edges_builder.add_vbo(0, 4, sizeof(edge_positions), edge_positions, GL_STATIC_DRAW);
-    edges_builder.add_vbo(1, 4, sizeof(edge_colors), edge_colors, GL_STATIC_DRAW);
-    edges_builder.add_ebo(sizeof(edge_indices), edge_indices, GL_STATIC_DRAW);
-    vao::Vao edges_vao = edges_builder.build(GL_LINES, sizeof(edge_indices)/sizeof(GLuint), GL_UNSIGNED_INT);
-
-    return edges_vao;
+    return vao::VaoBuilder()
+        .add_vbo(0, 4, sizeof(edge_positions), edge_positions, GL_STATIC_DRAW)
+        .add_vbo(1, 4, sizeof(edge_colors), edge_colors, GL_STATIC_DRAW)
+        .add_ebo(sizeof(edge_indices), edge_indices, GL_STATIC_DRAW)
+        .build(GL_LINES, sizeof(edge_indices)/sizeof(GLuint), GL_UNSIGNED_INT);
 }
 
 // Build the axes VAO and register it
@@ -486,13 +482,11 @@ vao::Vao BuildCubeAxes()
 
     GLuint axes_indices[] = { 0,1, 2,3, 4,5 };
 
-    vao::VaoBuilder axes_builder;
-    axes_builder.add_vbo(0, 4, sizeof(axes_positions), axes_positions, GL_STATIC_DRAW);
-    axes_builder.add_vbo(1, 4, sizeof(axes_colors), axes_colors, GL_STATIC_DRAW);
-    axes_builder.add_ebo(sizeof(axes_indices), axes_indices, GL_STATIC_DRAW);
-    vao::Vao axes_vao = axes_builder.build(GL_LINES, sizeof(axes_indices)/sizeof(GLuint), GL_UNSIGNED_INT);
-
-    return axes_vao;
+    return vao::VaoBuilder()
+        .add_vbo(0, 4, sizeof(axes_positions), axes_positions, GL_STATIC_DRAW)
+        .add_vbo(1, 4, sizeof(axes_colors), axes_colors, GL_STATIC_DRAW)
+        .add_ebo(sizeof(axes_indices), axes_indices, GL_STATIC_DRAW)
+        .build(GL_LINES, sizeof(axes_indices)/sizeof(GLuint), GL_UNSIGNED_INT);
 }
 
 // Variáveis globais que armazenam a última posição do cursor do mouse, para
