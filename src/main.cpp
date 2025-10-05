@@ -39,6 +39,8 @@
 #include "utils.h"
 #include "matrices.h"
 
+#include "engine/controller.hpp"
+
 // Declaração de várias funções utilizadas em main().  Essas estão definidas
 // logo após a definição de main() neste arquivo.
 GLuint BuildTriangles(); // Constrói triângulos para renderização
@@ -71,11 +73,14 @@ void TextRendering_ShowFramesPerSecond(GLFWwindow* window);
 // Funções callback para comunicação com o sistema operacional e interação do
 // usuário. Veja mais comentários nas definições das mesmas, abaixo.
 void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
-void ErrorCallback(int error, const char* description);
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 void CursorPosCallback(GLFWwindow* window, double xpos, double ypos);
 void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+
+
+// using engine::start_engine;
+using engine::EngineController;
 
 // Definimos uma estrutura que armazenará dados necessários para renderizar
 // cada objeto da cena virtual.
@@ -88,6 +93,7 @@ struct SceneObject
 };
 
 // Abaixo definimos variáveis globais utilizadas em várias funções do código.
+EngineController engine_controller;
 
 // A cena virtual é uma lista de objetos nomeados, guardados em um dicionário
 // (map).  Veja dentro da função BuildTriangles() como que são incluídos
@@ -140,36 +146,12 @@ bool g_ShowInfoText = true;
 GLuint g_GpuProgramID = 0;
 
 
-int main()
-{
-    // Inicializamos a biblioteca GLFW, utilizada para criar uma janela do
-    // sistema operacional, onde poderemos renderizar com OpenGL.
-    int success = glfwInit();
-    if (!success)
-    {
-        fprintf(stderr, "ERROR: glfwInit() failed.\n");
-        std::exit(EXIT_FAILURE);
-    }
+int main() {
+    engine_controller = EngineController::start_engine();
 
-    // Definimos o callback para impressão de erros da GLFW no terminal
-    glfwSetErrorCallback(ErrorCallback);
-
-    // Pedimos para utilizar OpenGL versão 3.3 (ou superior)
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-
-    #ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    #endif
-
-    // Pedimos para utilizar o perfil "core", isto é, utilizaremos somente as
-    // funções modernas de OpenGL.
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    // Criamos uma janela do sistema operacional, com 800 colunas e 800 linhas
-    // de pixels, e com título "INF01047 ...".
     GLFWwindow* window;
     window = glfwCreateWindow(800, 800, "INF01047 - 579876 - Felipe Wendt Barichello", NULL, NULL);
+    engine_controller.set_window(window);
     if (!window)
     {
         glfwTerminate();
@@ -237,18 +219,7 @@ int main()
     glm::mat4 the_view;
 
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
-    while (!glfwWindowShouldClose(window))
-    {
-        // Aqui executamos as operações de renderização
-
-        // Definimos a cor do "fundo" do framebuffer como branco.  Tal cor é
-        // definida como coeficientes RGBA: Red, Green, Blue, Alpha; isto é:
-        // Vermelho, Verde, Azul, Alpha (valor de transparência).
-        // Conversaremos sobre sistemas de cores nas aulas de Modelos de Iluminação.
-        //
-        //           R     G     B     A
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-
+    while (!engine_controller.tick()) {
         // "Pintamos" todos os pixels do framebuffer com a cor definida acima,
         // e também resetamos todos os pixels do Z-buffer (depth buffer).
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1198,12 +1169,6 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
             }
             break;
     }
-}
-
-// Definimos o callback para impressão de erros da GLFW no terminal
-void ErrorCallback(int error, const char* description)
-{
-    fprintf(stderr, "ERROR: GLFW: %s\n", description);
 }
 
 // Esta função recebe um vértice com coordenadas de modelo p_model e passa o
