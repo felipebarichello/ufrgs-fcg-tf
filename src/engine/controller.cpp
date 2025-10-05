@@ -49,6 +49,13 @@ namespace engine {
         // (região de memória onde são armazenados os pixels da imagem).
         glfwSetFramebufferSizeCallback(engine_controller.window, EngineController::frame_buffer_size_callback);
 
+        // Indicamos que as chamadas OpenGL deverão renderizar nesta janela
+        glfwMakeContextCurrent(engine_controller.window);
+
+        // Carregamento de todas funções definidas por OpenGL 3.3, utilizando a
+        // biblioteca GLAD.
+        gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
+
         return engine_controller;
     }
 

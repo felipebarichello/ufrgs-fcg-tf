@@ -73,7 +73,7 @@ void TextRendering_ShowFramesPerSecond(GLFWwindow* window);
 
 // Funções callback para comunicação com o sistema operacional e interação do
 // usuário. Veja mais comentários nas definições das mesmas, abaixo.
-void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
+//void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 void CursorPosCallback(GLFWwindow* window, double xpos, double ypos);
@@ -163,13 +163,6 @@ int main() {
     engine_controller.input().attach_scrolling_handler(ScrollCallback);
 
     GLFWwindow* window = engine_controller.get_window();
-
-    // Indicamos que as chamadas OpenGL deverão renderizar nesta janela
-    glfwMakeContextCurrent(window);
-
-    // Carregamento de todas funções definidas por OpenGL 3.3, utilizando a
-    // biblioteca GLAD.
-    gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
 
     // Imprimimos no terminal informações sobre a GPU do sistema
     const GLubyte *vendor      = glGetString(GL_VENDOR);
