@@ -450,7 +450,7 @@ Vao BuildCubeEdges()
         0,1, 1,2, 2,3, 3,0, 0,4, 4,7, 7,6, 6,2, 6,5, 5,4, 5,1, 7,3
     };
 
-    return vao::VaoBuilder()
+    return VaoBuilder()
         .add_vbo(0, 4, sizeof(edge_positions), edge_positions, GL_STATIC_DRAW)
         .add_vbo(1, 4, sizeof(edge_colors), edge_colors, GL_STATIC_DRAW)
         .add_ebo(sizeof(edge_indices), edge_indices, GL_STATIC_DRAW)
