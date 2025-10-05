@@ -157,20 +157,13 @@ int main() {
 
     engine_controller = EngineController::start_engine(window_config);
     
-    engine_controller.input().attach_key_handler(KeyCallback);
-    engine_controller.input().attach_mouse_button_handler(MouseButtonCallback);
-    engine_controller.input().attach_cursor_position_handler(CursorPosCallback);
-    engine_controller.input().attach_scrolling_handler(ScrollCallback);
+    InputController& input_controller = engine_controller.input();
+    input_controller.attach_key_handler(KeyCallback);
+    input_controller.attach_mouse_button_handler(MouseButtonCallback);
+    input_controller.attach_cursor_position_handler(CursorPosCallback);
+    input_controller.attach_scrolling_handler(ScrollCallback);
 
     GLFWwindow* window = engine_controller.get_window();
-
-    // Imprimimos no terminal informações sobre a GPU do sistema
-    const GLubyte *vendor      = glGetString(GL_VENDOR);
-    const GLubyte *renderer    = glGetString(GL_RENDERER);
-    const GLubyte *glversion   = glGetString(GL_VERSION);
-    const GLubyte *glslversion = glGetString(GL_SHADING_LANGUAGE_VERSION);
-
-    printf("GPU: %s, %s, OpenGL %s, GLSL %s\n", vendor, renderer, glversion, glslversion);
 
     // Carregamos os shaders de vértices e de fragmentos que serão utilizados
     // para renderização. Veja slides 180-200 do documento Aula_03_Rendering_Pipeline_Grafico.pdf.
