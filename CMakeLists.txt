@@ -8,12 +8,15 @@ set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src) # Assuming 'src' is a subdirecto
 
 # Collect all .c/.cpp sources recursively under src/
 file(GLOB_RECURSE SOURCES
+  CONFIGURE_DEPENDS
   LIST_DIRECTORIES false
   "${SOURCE_DIR}/*.c"
   "${SOURCE_DIR}/*.cpp"
+  "${SOURCE_DIR}/*.cc"
+  "${SOURCE_DIR}/*.cxx"
 )
 
-cmake_minimum_required(VERSION 3.5.0)
+cmake_minimum_required(VERSION 3.12)
 
 project(LAB_FCG VERSION 1.0.0)
 
