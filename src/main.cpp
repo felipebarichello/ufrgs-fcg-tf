@@ -87,6 +87,7 @@ using engine::EngineController;
 using engine::WindowConfig;
 using engine::Camera;
 using engine::Vec3;
+using engine::Vec2;
 using engine::Transform;
 
 
@@ -135,10 +136,10 @@ const Vec3 g_camera_start_position = Vec3(0.0f, 0.0f, 2.5f);
 
 Camera g_camera = Camera();
 
-glm::vec4 g_free_camera_position     = glm::vec4(0.0f, 0.0f,  2.5f, 1.0f);
-glm::vec4 g_free_camera_view_vector  = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
-glm::vec4 g_free_camera_right_vector = glm::vec4(1.0f, 0.0f,  0.0f, 0.0f);
-glm::vec2 g_free_camera_move_vector  = glm::vec2(0.0f, 0.0f);
+Vec3 g_free_camera_position     = Vec3(0.0f, 0.0f, 2.5f);
+Vec3 g_free_camera_view_vector  = Vec3(0.0f, 0.0f, -1.0f);
+Vec3 g_free_camera_right_vector = Vec3(1.0f, 0.0f, 0.0f);
+Vec2 g_free_camera_move_vector  = Vec2(0.0f, 0.0f);
 
 float g_free_camera_speed = 0.1f;
 
@@ -218,8 +219,8 @@ void update() {
     // Veja slides 195-227 e 229-234 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
 
     glm::vec4 camera_up_vector   = glm::vec4(0.0f,1.0f,0.0f,0.0f); // Vetor "up" fixado para apontar para o "céu" (eito Y global)
-    glm::vec4 camera_position_c;  // Ponto "c", centro da câmera
-    glm::vec4 camera_view_vector; // Vetor "view", sentido para onde a câmera está virada
+    Vec3 camera_position_c;  // Ponto "c", centro da câmera
+    Vec3 camera_view_vector; // Vetor "view", sentido para onde a câmera está virada
 
     if (g_camera_is_free) {
         // Update da posição da câmera de acordo com o input de movimento
@@ -232,7 +233,7 @@ void update() {
         float z = cos(g_CameraPhi)*cos(g_CameraTheta);
         float x = cos(g_CameraPhi)*sin(g_CameraTheta);
         
-        camera_view_vector = glm::vec4(x,y,z,0.0f);
+        camera_view_vector = Vec3(x, y, z);
     } else {
         // Computamos a posição da câmera utilizando coordenadas esféricas.  As
         // variáveis g_CameraDistance, g_CameraPhi, e g_CameraTheta são
@@ -243,15 +244,17 @@ void update() {
         float z = r*cos(g_CameraPhi)*cos(g_CameraTheta);
         float x = r*cos(g_CameraPhi)*sin(g_CameraTheta);
 
-        camera_position_c  = glm::vec4(x,y,z,1.0f);
-        glm::vec4 camera_lookat_l = glm::vec4(0.0f,0.0f,0.0f,1.0f);    // Ponto "l", para onde a câmera (look-at) estará sempre olhando
-        camera_view_vector = camera_lookat_l - camera_position_c; 
+        camera_position_c = Vec3(x, y, z);
+        Vec3 camera_lookat_l = Vec3(0.0f, 0.0f, 0.0f);    // Ponto "l", para onde a câmera (look-at) estará sempre olhando
+        camera_view_vector = camera_lookat_l - camera_position_c;
     }
 
     // Computamos a matriz "View" utilizando os parâmetros da câmera para
     // definir o sistema de coordenadas da câmera.  Veja slides 2-14, 184-190 e 236-242 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
-    glm::mat4 view = Matrix_Camera_View(camera_position_c, camera_view_vector, camera_up_vector);
-    g_free_camera_right_vector = glm::vec4(view[0][0], view[1][0], view[2][0], 0.0f);
+    glm::vec4 camera_position_c_glm = glm::vec4(camera_position_c.x, camera_position_c.y, camera_position_c.z, 1.0f);
+    glm::vec4 camera_view_vector_glm = glm::vec4(camera_view_vector.x, camera_view_vector.y, camera_view_vector.z, 0.0f);
+    glm::mat4 view = Matrix_Camera_View(camera_position_c_glm, camera_view_vector_glm, camera_up_vector);
+    g_free_camera_right_vector = Vec3(view[0][0], view[1][0], view[2][0]);
 
     // Agora computamos a matriz de Projeção.
     glm::mat4 projection;
@@ -717,11 +720,10 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
 }
 
 void update_free_camera_view_vector() {
-    g_free_camera_view_vector = glm::vec4(
+    g_free_camera_view_vector = Vec3(
         cosf(g_CameraPhi) * sinf(g_CameraTheta),
         sinf(g_CameraPhi),
-        cosf(g_CameraPhi) * cosf(g_CameraTheta),
-        0.0f
+        cosf(g_CameraPhi) * cosf(g_CameraTheta)
     );
 }
 
