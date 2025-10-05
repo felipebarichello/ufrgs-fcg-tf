@@ -52,7 +52,7 @@ namespace engine {
         return engine_controller;
     }
 
-    bool EngineController::tick() {
+    bool EngineController::update_and_test_should_close() {
         if (glfwWindowShouldClose(this->window)) {
             return true;
         }

@@ -208,7 +208,7 @@ int main() {
     glm::mat4 the_view;
 
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
-    while (!engine_controller.tick()) {
+    while (!engine_controller.update_and_test_should_close()) {
         // Pedimos para a GPU utilizar o programa de GPU criado acima (contendo
         // os shaders de vértice e fragmentos).
         glUseProgram(g_GpuProgramID);
