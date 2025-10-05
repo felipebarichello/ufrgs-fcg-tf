@@ -422,7 +422,7 @@ Vao BuildCubeFaces()
 }
 
 // Build the edges VAO and register it
-vao::Vao BuildCubeEdges()
+Vao BuildCubeEdges()
 {
     GLfloat edge_positions[] = {
         -0.5f,  0.5f,  0.5f, 1.0f,
