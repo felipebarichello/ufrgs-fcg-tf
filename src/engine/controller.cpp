@@ -209,24 +209,6 @@ namespace engine {
     // utilizados para renderização. Veja slides 180-200 do documento Aula_03_Rendering_Pipeline_Grafico.pdf.
     void EngineController::load_shaders_from_files()
     {
-        // Note que o caminho para os arquivos "shader_vertex.glsl" e
-        // "shader_fragment.glsl" estão fixados, sendo que assumimos a existência
-        // da seguinte estrutura no sistema de arquivos:
-        //
-        //    + FCG_Lab_01/
-        //    |
-        //    +--+ bin/
-        //    |  |
-        //    |  +--+ Release/  (ou Debug/ ou Linux/)
-        //    |     |
-        //    |     o-- main.exe
-        //    |
-        //    +--+ src/
-        //       |
-        //       o-- shader_vertex.glsl
-        //       |
-        //       o-- shader_fragment.glsl
-        //
         GLuint vertex_shader_id = load_shader_vertex("../../src/engine/shaders/shader_vertex.glsl");
         GLuint fragment_shader_id = load_shader_fragment("../../src/engine/shaders/shader_fragment.glsl");
 
