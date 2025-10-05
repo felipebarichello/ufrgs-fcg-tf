@@ -56,12 +56,14 @@ namespace vao {
         GLenum topology_type;
         
     public:
+        GLuint id() const;
         Vao(GLuint vao_id, GLenum topology_mode, GLsizei topology_size, GLenum topology_type);
         void draw() const;
 
     private: 
         void bind() const;
         void unbind() const;
+
     } Vao;
 
     typedef class VaoBuilder {

@@ -487,30 +487,57 @@ GLuint BuildCube()
     //
     // Este vetor "model_coefficients" define a GEOMETRIA (veja slides 103-110 do documento Aula_04_Modelagem_Geometrica_3D.pdf).
     //
-    GLfloat model_coefficients[] = {
-    // Vértices de um cubo
-    //    X      Y     Z     W
-        -0.5f,  0.5f,  0.5f, 1.0f, // posição do vértice 0
-        -0.5f, -0.5f,  0.5f, 1.0f, // posição do vértice 1
-         0.5f, -0.5f,  0.5f, 1.0f, // posição do vértice 2
-         0.5f,  0.5f,  0.5f, 1.0f, // posição do vértice 3
-        -0.5f,  0.5f, -0.5f, 1.0f, // posição do vértice 4
-        -0.5f, -0.5f, -0.5f, 1.0f, // posição do vértice 5
-         0.5f, -0.5f, -0.5f, 1.0f, // posição do vértice 6
-         0.5f,  0.5f, -0.5f, 1.0f, // posição do vértice 7
-    // Vértices para desenhar o eixo X
-    //    X      Y     Z     W
-         0.0f,  0.0f,  0.0f, 1.0f, // posição do vértice 8
-         1.0f,  0.0f,  0.0f, 1.0f, // posição do vértice 9
-    // Vértices para desenhar o eixo Y
-    //    X      Y     Z     W
-         0.0f,  0.0f,  0.0f, 1.0f, // posição do vértice 10
-         0.0f,  1.0f,  0.0f, 1.0f, // posição do vértice 11
-    // Vértices para desenhar o eixo Z
-    //    X      Y     Z     W
-         0.0f,  0.0f,  0.0f, 1.0f, // posição do vértice 12
-         0.0f,  0.0f,  1.0f, 1.0f, // posição do vértice 13
+    // GLfloat model_coefficients[] = {
+    // // Vértices de um cubo
+    // //    X      Y     Z     W
+    //     -0.5f,  0.5f,  0.5f, 1.0f, // posição do vértice 0
+    //     -0.5f, -0.5f,  0.5f, 1.0f, // posição do vértice 1
+    //      0.5f, -0.5f,  0.5f, 1.0f, // posição do vértice 2
+    //      0.5f,  0.5f,  0.5f, 1.0f, // posição do vértice 3
+    //     -0.5f,  0.5f, -0.5f, 1.0f, // posição do vértice 4
+    //     -0.5f, -0.5f, -0.5f, 1.0f, // posição do vértice 5
+    //      0.5f, -0.5f, -0.5f, 1.0f, // posição do vértice 6
+    //      0.5f,  0.5f, -0.5f, 1.0f, // posição do vértice 7
+    // // Vértices para desenhar o eixo X
+    // //    X      Y     Z     W
+    //      0.0f,  0.0f,  0.0f, 1.0f, // posição do vértice 8
+    //      1.0f,  0.0f,  0.0f, 1.0f, // posição do vértice 9
+    // // Vértices para desenhar o eixo Y
+    // //    X      Y     Z     W
+    //      0.0f,  0.0f,  0.0f, 1.0f, // posição do vértice 10
+    //      0.0f,  1.0f,  0.0f, 1.0f, // posição do vértice 11
+    // // Vértices para desenhar o eixo Z
+    // //    X      Y     Z     W
+    //      0.0f,  0.0f,  0.0f, 1.0f, // posição do vértice 12
+    //      0.0f,  0.0f,  1.0f, 1.0f, // posição do vértice 13
+    // };
+
+    vao::Position vertex_positions[] = {
+        // Vértices de um cubo
+        //    X      Y     Z     W
+        vao::Position(-0.5f,  0.5f,  0.5f, 1.0f), // posição do vértice 0
+        vao::Position(-0.5f, -0.5f,  0.5f, 1.0f), // posição do vértice 1
+        vao::Position( 0.5f, -0.5f,  0.5f, 1.0f), // posição do vértice 2
+        vao::Position( 0.5f,  0.5f,  0.5f, 1.0f), // posição do vértice 3
+        vao::Position(-0.5f,  0.5f, -0.5f, 1.0f), // posição do vértice 4
+        vao::Position(-0.5f, -0.5f, -0.5f, 1.0f), // posição do vértice 5
+        vao::Position( 0.5f, -0.5f, -0.5f, 1.0f), // posição do vértice 6
+        vao::Position( 0.5f,  0.5f, -0.5f, 1.0f), // posição do vértice 7
+        // Vértices para desenhar o eixo X
+        //    X      Y     Z     W
+        vao::Position( 0.0f,  0.0f,  0.0f, 1.0f), // posição do vértice 8
+        vao::Position( 1.0f,  0.0f,  0.0f, 1.0f), // posição do vértice 9
+        // Vértices para desenhar o eixo Y
+        //    X      Y     Z     W
+        vao::Position( 0.0f,  0.0f,  0.0f, 1.0f), // posição do vértice 10
+        vao::Position( 0.0f,  1.0f,  0.0f, 1.0f), // posição do vértice 11
+        // Vértices para desenhar o eixo Z
+        //    X      Y     Z     W
+        vao::Position( 0.0f,  0.0f,  0.0f, 1.0f), // posição do vértice 12
+        vao::Position( 0.0f,  0.0f,  1.0f, 1.0f), // posição do vértice 13
     };
+
+    const size_t VERTEX_POSITIONS_SIZE = sizeof(vertex_positions);
 
     // Criamos o identificador (ID) de um Vertex Buffer Object (VBO).  Um VBO é
     // um buffer de memória que irá conter os valores de um certo atributo de
@@ -547,14 +574,14 @@ GLuint BuildCube()
     //
     //            glBufferData()  ==  malloc() do C  ==  new do C++.
     //
-    glBufferData(GL_ARRAY_BUFFER, sizeof(model_coefficients), NULL, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, VERTEX_POSITIONS_SIZE, NULL, GL_STATIC_DRAW);
 
     // Finalmente, copiamos os valores do array model_coefficients para dentro do
     // VBO "ligado" acima.  Pense que:
     //
     //            glBufferSubData()  ==  memcpy() do C.
     //
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(model_coefficients), model_coefficients);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, VERTEX_POSITIONS_SIZE, vertex_positions);
 
     // Precisamos então informar um índice de "local" ("location"), o qual será
     // utilizado no shader "shader_vertex.glsl" para acessar os valores

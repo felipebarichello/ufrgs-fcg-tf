@@ -74,6 +74,12 @@ namespace vao {
         glBindVertexArray(0);
     }
 
+    // Implementation of id() accessor
+    GLuint Vao::id() const {
+        return this->vao_id;
+    }
+    
+
     // VaoBuilder
     VaoBuilder::VaoBuilder() {
         glGenVertexArrays(1, &this->vao_id);
@@ -107,4 +113,4 @@ namespace vao {
         glBindBuffer(target, vbo_id);
         glBufferData(target, buffer_size, data, usage_hint);
     }
-} // namespace vao
+} // namespace vaoz
