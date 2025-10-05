@@ -164,13 +164,6 @@ int main() {
 
     GLFWwindow* window = engine_controller.get_window();
 
-    // Indicamos que as chamadas OpenGL deverão renderizar nesta janela
-    glfwMakeContextCurrent(window);
-
-    // Carregamento de todas funções definidas por OpenGL 3.3, utilizando a
-    // biblioteca GLAD.
-    gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
-
     // Imprimimos no terminal informações sobre a GPU do sistema
     const GLubyte *vendor      = glGetString(GL_VENDOR);
     const GLubyte *renderer    = glGetString(GL_RENDERER);
@@ -1262,7 +1255,3 @@ void TextRendering_ShowFramesPerSecond(GLFWwindow* window)
 
     TextRendering_PrintString(window, buffer, 1.0f-(numchars + 1)*charwidth, 1.0f-lineheight, 1.0f);
 }
-
-// set makeprg=cd\ ..\ &&\ make\ run\ >/dev/null
-// vim: set spell spelllang=pt_br :
-

@@ -20,34 +20,9 @@ namespace engine {
             std::exit(EXIT_FAILURE);
         }
 
-        // Definimos o callback para impressão de erros da GLFW no terminal
-        glfwSetErrorCallback(EngineController::error_callback);
-
-        // Pedimos para utilizar OpenGL versão 3.3 (ou superior)
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-
-        #ifdef __APPLE__
-            glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-        #endif
-
-        // Pedimos para utilizar o perfil "core", isto é, utilizaremos somente as
-        // funções modernas de OpenGL.
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-        engine_controller.window = glfwCreateWindow(window_config.width, window_config.height, window_config.title, NULL, NULL);
-        if (!engine_controller.window) {
-            glfwTerminate();
-            fprintf(stderr, "ERROR: glfwCreateWindow() failed.\n");
-            std::exit(EXIT_FAILURE);
-        }
+        engine_controller.window = EngineController::init_window(window_config);
 
         engine_controller.input_controller = InputController(engine_controller.window);
-
-        // Definimos a função de callback que será chamada sempre que a janela for
-        // redimensionada, por consequência alterando o tamanho do "framebuffer"
-        // (região de memória onde são armazenados os pixels da imagem).
-        glfwSetFramebufferSizeCallback(engine_controller.window, EngineController::frame_buffer_size_callback);
 
         return engine_controller;
     }
@@ -71,6 +46,40 @@ namespace engine {
         return this->input_controller;
     }
 
+    GLFWwindow* EngineController::init_window(WindowConfig window_config) {
+        glfwSetErrorCallback(EngineController::error_callback);
+
+        // Hint to use OpenGL version 3.3 or higher
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+
+        #ifdef __APPLE__
+            glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        #endif
+
+        // Hint to use a modern OpenGL profile, with only modern functionalities
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+        GLFWwindow* window = glfwCreateWindow(window_config.width, window_config.height, window_config.title, NULL, NULL);
+        if (!window) {
+            glfwTerminate();
+            fprintf(stderr, "ERROR: glfwCreateWindow() failed.\n");
+            std::exit(EXIT_FAILURE);
+        }
+
+        glfwMakeContextCurrent(window); // OpenGL calls will be rendered in this window
+
+        // Definimos a função de callback que será chamada sempre que a janela for
+        // redimensionada, por consequência alterando o tamanho do "framebuffer"
+        // (região de memória onde são armazenados os pixels da imagem).
+        glfwSetFramebufferSizeCallback(window, EngineController::frame_buffer_size_callback);
+
+        // Carregamento de todas funções definidas por OpenGL 3.3, utilizando a
+        // biblioteca GLAD.
+        gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
+
+        return window;
+    }
 
     // Definimos o callback para impressão de erros da GLFW no terminal
     void EngineController::error_callback(int error, const char* description) {

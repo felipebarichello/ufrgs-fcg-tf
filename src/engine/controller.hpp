@@ -22,8 +22,10 @@ namespace engine {
         static float screen_ratio; // TODO: Make non-static?
         static void frame_buffer_size_callback(GLFWwindow* window, int width, int height);
         static void error_callback(int error, const char* description);
+        static GLFWwindow* init_window(WindowConfig window_config);
+
     public:
-    EngineController() : window(nullptr), input_controller(nullptr) {};
+        EngineController() : window(nullptr), input_controller(nullptr) {};
 
         static EngineController start_engine(WindowConfig window_config);
 
