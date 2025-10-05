@@ -200,8 +200,6 @@ int main() {
     // Habilitamos o Z-buffer. Veja slides 104-116 do documento Aula_09_Projecoes.pdf.
     glEnable(GL_DEPTH_TEST);
 
-    g_camera.transform().set_position(g_camera_start_position);
-
     g_engine_controller.hand_over_control(update);
     return 0;
 }
@@ -242,8 +240,8 @@ void update() {
         float x = r*cos(g_CameraPhi)*sin(g_CameraTheta);
 
         camera_position_c = Vec3(x, y, z);
-        Vec3 camera_lookat_l = Vec3(0.0f, 0.0f, 0.0f);    // Ponto "l", para onde a câmera (look-at) estará sempre olhando
-        camera_view_unit_vector = camera_lookat_l - camera_position_c;
+        Vec3 camera_lookat_point = Vec3(0.0f, 0.0f, 0.0f);
+        camera_view_unit_vector = glm::normalize(camera_lookat_point - camera_position_c); 
     }
 
     // Computamos a matriz "View" utilizando os parâmetros da câmera para
