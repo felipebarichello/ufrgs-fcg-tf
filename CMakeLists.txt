@@ -3,14 +3,14 @@
 # com algumas modificações vindas do arquivo CMakeLists.txt criado
 # pelos alunos Luis Melo e Santiago Gonzaga em 2023/1.
 
-# Arquivos fonte C/C++. Inclua nesta lista todos os arquivos que devem
-# ser compilados.
-set(SOURCES
-  src/main.cpp
-  src/engine/controller.cpp
-  src/engine/input_controller.cpp
-  src/textrendering.cpp
-  src/glad.c
+# Define the directory containing the source files
+set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src) # Assuming 'src' is a subdirectory
+
+# Collect all .c/.cpp sources recursively under src/
+file(GLOB_RECURSE SOURCES
+  LIST_DIRECTORIES false
+  "${SOURCE_DIR}/*.c"
+  "${SOURCE_DIR}/*.cpp"
 )
 
 cmake_minimum_required(VERSION 3.5.0)
@@ -43,16 +43,9 @@ message(STATUS
 
 set(EXECUTABLE_NAME main)
 
-# Verifica se todos os arquivos fonte estão presentes no diretório
-# atual. Se não estão, avisa sobre CMakeLists mal configurado.
-foreach(source_file IN LISTS SOURCES)
-  if(NOT EXISTS ${PROJECT_SOURCE_DIR}/${source_file})
-    message(FATAL_ERROR "
-O arquivo ${PROJECT_SOURCE_DIR}/${source_file} não existe.
-Por favor, atualize a lista de arquivos fonte no arquivo CMakeLists.txt.")
-    break()
-  endif()
-endforeach()
+if(NOT SOURCES)
+  message(FATAL_ERROR "No source files found under ${SOURCE_DIR}.")
+endif()
 
 add_executable(${EXECUTABLE_NAME} ${SOURCES})
 
