@@ -89,6 +89,7 @@ using engine::Camera;
 using engine::Vec3;
 using engine::Transform;
 using vao::Vao; 
+using vao::VaoBuilder;
 
 Vao BuildCubeAxes();
 Vao BuildCubeEdges();
@@ -368,7 +369,7 @@ void update_free_camera_position() {
     g_free_camera_position += g_free_camera_speed * g_free_camera_move_vector.x * g_free_camera_right_vector;
 }
 
-vao::Vao BuildCubeFaces()
+Vao BuildCubeFaces()
 {
     GLfloat face_positions[] = {
         -0.5f,  0.5f,  0.5f, 1.0f,
