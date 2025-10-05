@@ -9,7 +9,7 @@ void error_callback(int error, const char* description) {
 }
 
 namespace engine {
-    EngineController EngineController::start_engine() {
+    EngineController EngineController::start_engine(WindowConfig window_config) {
         EngineController engine_controller = EngineController();
 
         // Inicializamos a biblioteca GLFW, utilizada para criar uma janela do
@@ -35,11 +35,17 @@ namespace engine {
         // funções modernas de OpenGL.
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+        engine_controller.window = glfwCreateWindow(window_config.width, window_config.height, window_config.title, NULL, NULL);
+
         return engine_controller;
     }
 
     bool EngineController::tick() {
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         return glfwWindowShouldClose(this->window);
+    }
+
+    GLFWwindow* EngineController::get_window() {
+        return this->window;
     }
 } // namespace engine

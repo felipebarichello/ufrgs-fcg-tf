@@ -81,6 +81,7 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
 // using engine::start_engine;
 using engine::EngineController;
+using engine::WindowConfig;
 
 // Definimos uma estrutura que armazenará dados necessários para renderizar
 // cada objeto da cena virtual.
@@ -147,10 +148,15 @@ GLuint g_GpuProgramID = 0;
 
 
 int main() {
-    engine_controller = EngineController::start_engine();
+    WindowConfig window_config = WindowConfig(
+        800,
+        800,
+        "INF01047 - 579876 - Felipe Wendt Barichello"
+    );
 
-    GLFWwindow* window;
-    window = glfwCreateWindow(800, 800, "INF01047 - 579876 - Felipe Wendt Barichello", NULL, NULL);
+    engine_controller = EngineController::start_engine(window_config);
+
+    GLFWwindow* window = engine_controller.get_window();
     engine_controller.set_window(window);
     if (!window)
     {
