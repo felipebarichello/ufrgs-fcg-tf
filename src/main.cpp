@@ -458,7 +458,7 @@ Vao BuildCubeEdges()
 }
 
 // Build the axes VAO and register it
-vao::Vao BuildCubeAxes()
+Vao BuildCubeAxes()
 {
     GLfloat axes_positions[] = {
             // X axis
