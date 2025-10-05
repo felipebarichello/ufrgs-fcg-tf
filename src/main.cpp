@@ -250,15 +250,12 @@ int main() {
         float nearplane = -0.1f;  // Posição do "near plane"
         float farplane  = -10.0f; // Posição do "far plane"
 
-        if (g_UsePerspectiveProjection)
-        {
+        if (g_UsePerspectiveProjection) {
             // Projeção Perspectiva.
             // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
             float field_of_view = 3.141592f / 3.0f;
             projection = Matrix_Perspective(field_of_view, engine_controller.get_screen_ratio(), nearplane, farplane);
-        }
-        else
-        {
+        } else {
             // Projeção Ortográfica.
             // Para definição dos valores l, r, b, t ("left", "right", "bottom", "top"),
             // PARA PROJEÇÃO ORTOGRÁFICA veja slides 219-224 do documento Aula_09_Projecoes.pdf.
@@ -278,33 +275,27 @@ int main() {
         glUniformMatrix4fv(projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
 
         // Vamos desenhar 3 instâncias (cópias) do cubo
-        for (int i = 1; i <= 3; ++i)
-        {
+        for (int i = 1; i <= 3; ++i) {
             // Cada cópia do cubo possui uma matriz de modelagem independente,
             // já que cada cópia estará em uma posição (rotação, escala, ...)
             // diferente em relação ao espaço global (World Coordinates). Veja
             // slides 2-14 e 184-190 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
             glm::mat4 model;
 
-            if (i == 1)
-            {
+            if (i == 1) {
                 // A primeira cópia do cubo não sofrerá nenhuma transformação
                 // de modelagem. Portanto, sua matriz "model" é a identidade, e
                 // suas coordenadas no espaço global (World Coordinates) serão
                 // *exatamente iguais* a suas coordenadas no espaço do modelo
                 // (Model Coordinates).
                 model = Matrix_Identity();
-            }
-            else if ( i == 2 )
-            {
+            } else if ( i == 2 ) {
                 // A segunda cópia do cubo sofrerá um escalamento não-uniforme,
                 // seguido de uma rotação no eixo (1,1,1), e uma translação em Z (nessa ordem!).
                 model = Matrix_Translate(0.0f, 0.0f, -2.0f) // TERCEIRO translação
                       * Matrix_Rotate(3.141592f / 8.0f, glm::vec4(1.0f,1.0f,1.0f,0.0f)) // SEGUNDO rotação
                       * Matrix_Scale(2.0f, 0.5f, 0.5f); // PRIMEIRO escala
-            }
-            else if ( i == 3 )
-            {
+            } else if ( i == 3 ) {
                 // A terceira cópia do cubo sofrerá rotações em X,Y e Z (nessa
                 // ordem) seguindo o sistema de ângulos de Euler, e após uma
                 // translação em X. Veja slides 106-107 do documento Aula_07_Transformacoes_Geometricas_3D.pdf.
@@ -387,8 +378,7 @@ int main() {
             // Desenhamos um ponto de tamanho 15 pixels em cima do terceiro vértice
             // do terceiro cubo. Este vértice tem coordenada de modelo igual à
             // (0.5, 0.5, 0.5, 1.0).
-            if ( i == 3 )
-            {
+            if ( i == 3 ) {
                 glPointSize(15.0f);
                 glDrawArrays(GL_POINTS, 3, 1);
             }
@@ -473,8 +463,7 @@ void update_free_camera_position() {
 }
 
 // Constrói triângulos para futura renderização
-GLuint BuildTriangles()
-{
+GLuint BuildTriangles() {
     // Primeiro, definimos os atributos de cada vértice.
 
     // A posição de cada vértice é definida por coeficientes em um sistema de
@@ -726,8 +715,7 @@ GLuint BuildTriangles()
 double g_LastCursorPosX, g_LastCursorPosY;
 
 // Função callback chamada sempre que o usuário aperta algum dos botões do mouse
-void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
-{
+void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
     {
         // Se o usuário pressionou o botão esquerdo do mouse, guardamos a
@@ -757,8 +745,7 @@ void update_free_camera_view_vector() {
 
 // Função callback chamada sempre que o usuário movimentar o cursor do mouse em
 // cima da janela OpenGL.
-void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
-{
+void CursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
     // Abaixo executamos o seguinte: caso o botão esquerdo do mouse esteja
     // pressionado, computamos quanto que o mouse se movimento desde o último
     // instante de tempo, e usamos esta movimentação para atualizar os
@@ -800,8 +787,7 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
 }
 
 // Função callback chamada sempre que o usuário movimenta a "rodinha" do mouse.
-void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
-{
+void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
     // Atualizamos a distância da câmera para a origem utilizando a
     // movimentação da "rodinha", simulando um ZOOM.
     g_CameraDistance -= 0.1f * (float)yoffset;
@@ -835,8 +821,7 @@ void update_free_camera_move_vector() {
 
 // Definição da função que será chamada sempre que o usuário pressionar alguma
 // tecla do teclado. Veja http://www.glfw.org/docs/latest/input_guide.html#input_key
-void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
-{
+void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod) {
     // =======================
     // Não modifique este loop! Ele é utilizando para correção automatizada dos
     // laboratórios. Deve ser sempre o primeiro comando desta função KeyCallback().
