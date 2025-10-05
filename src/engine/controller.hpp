@@ -19,7 +19,7 @@ namespace engine {
     private:
         GLFWwindow* window;
         InputController input_controller;
-        static float screen_ratio;
+        static float screen_ratio; // TODO: Make non-static?
         static void frame_buffer_size_callback(GLFWwindow* window, int width, int height);
         static void error_callback(int error, const char* description);
     public:
