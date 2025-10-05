@@ -101,7 +101,7 @@ struct SceneObject
 };
 
 // Abaixo definimos variáveis globais utilizadas em várias funções do código.
-EngineController engine_controller;
+EngineController g_engine_controller;
 
 // A cena virtual é uma lista de objetos nomeados, guardados em um dicionário
 // (map).  Veja dentro da função BuildTriangles() como que são incluídos
@@ -121,7 +121,7 @@ float g_AngleZ = 0.0f;
 // pressionado no momento atual. Veja função MouseButtonCallback().
 bool g_LeftMouseButtonPressed = false;
 
-bool camera_is_free = true;
+bool g_camera_is_free = true;
 
 // Variáveis que definem a câmera em coordenadas esféricas, controladas pelo
 // usuário através do mouse (veja função CursorPosCallback()). A posição
@@ -131,21 +131,21 @@ float g_CameraTheta = -3.14159265f; // Ângulo no plano ZX em relação ao eixo 
 float g_CameraPhi = 0.0f;   // Ângulo em relação ao eixo Y
 float g_CameraDistance = 2.5f; // Distância da câmera para a origem
 
-const Vec3 camera_start_position = Vec3(0.0f, 0.0f, 2.5f);
+const Vec3 g_camera_start_position = Vec3(0.0f, 0.0f, 2.5f);
 
-Camera camera = Camera(Transform::Identity());
+Camera g_camera = Camera(Transform::Identity());
 
-glm::vec4 free_camera_position     = glm::vec4(0.0f, 0.0f,  2.5f, 1.0f);
-glm::vec4 free_camera_view_vector  = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
-glm::vec4 free_camera_right_vector = glm::vec4(1.0f, 0.0f,  0.0f, 0.0f);
-glm::vec2 free_camera_move_vector  = glm::vec2(0.0f, 0.0f);
+glm::vec4 g_free_camera_position     = glm::vec4(0.0f, 0.0f,  2.5f, 1.0f);
+glm::vec4 g_free_camera_view_vector  = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
+glm::vec4 g_free_camera_right_vector = glm::vec4(1.0f, 0.0f,  0.0f, 0.0f);
+glm::vec2 g_free_camera_move_vector  = glm::vec2(0.0f, 0.0f);
 
-float free_camera_speed = 0.1f;
+float g_free_camera_speed = 0.1f;
 
-bool input_move_forward  = false;
-bool input_move_backward = false;
-bool input_move_left     = false;
-bool input_move_right    = false;
+bool g_input_move_forward  = false;
+bool g_input_move_backward = false;
+bool g_input_move_left     = false;
+bool g_input_move_right    = false;
 
 // Variável que controla o tipo de projeção utilizada: perspectiva ou ortográfica.
 bool g_UsePerspectiveProjection = true;
@@ -153,18 +153,17 @@ bool g_UsePerspectiveProjection = true;
 // Variável que controla se o texto informativo será mostrado na tela.
 bool g_ShowInfoText = true;
 
-GLuint vertex_array_object_id;
-GLint projection_uniform;
-GLint model_uniform;
+GLuint g_vertex_array_object_id;
+GLint g_model_uniform;
 GLint g_view_uniform;
 GLint g_projection_uniform;
-GLint render_as_black_uniform;
+GLint g_render_as_black_uniform;
 
 glm::mat4 g_the_projection;
 glm::mat4 g_the_model;
 glm::mat4 g_the_view;
 
-GLFWwindow* window;
+GLFWwindow* g_window;
 
 void update();
 
@@ -176,32 +175,32 @@ int main() {
         "INF01047 - 579876 - Felipe Wendt Barichello"
     );
 
-    engine_controller = EngineController::start_engine(window_config);
+    g_engine_controller = EngineController::start_engine(window_config);
     
-    InputController& input_controller = engine_controller.input();
+    InputController& input_controller = g_engine_controller.input();
     input_controller.attach_key_handler(KeyCallback);
     input_controller.attach_mouse_button_handler(MouseButtonCallback);
     input_controller.attach_cursor_position_handler(CursorPosCallback);
     input_controller.attach_scrolling_handler(ScrollCallback);
 
-    window = engine_controller.get_window();
+    g_window = g_engine_controller.get_window();
 
-    vertex_array_object_id = BuildCube();
+    g_vertex_array_object_id = BuildCube();
 
     // Buscamos o endereço das variáveis definidas dentro do Vertex Shader.
     // Utilizaremos estas variáveis para enviar dados para a placa de vídeo
     // (GPU)! Veja arquivo "shader_vertex.glsl".
-    model_uniform            = glGetUniformLocation(engine_controller.get_gpu_program_id(), "model"); // Variável da matriz "model"
-    g_view_uniform       = glGetUniformLocation(engine_controller.get_gpu_program_id(), "view"); // Variável da matriz "view" em shader_vertex.glsl
-    g_projection_uniform = glGetUniformLocation(engine_controller.get_gpu_program_id(), "projection"); // Variável da matriz "projection" em shader_vertex.glsl
-    render_as_black_uniform  = glGetUniformLocation(engine_controller.get_gpu_program_id(), "render_as_black"); // Variável booleana em shader_vertex.glsl
+    g_model_uniform            = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "model"); // Variável da matriz "model"
+    g_view_uniform       = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "view"); // Variável da matriz "view" em shader_vertex.glsl
+    g_projection_uniform = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "projection"); // Variável da matriz "projection" em shader_vertex.glsl
+    g_render_as_black_uniform  = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "render_as_black"); // Variável booleana em shader_vertex.glsl
 
     // Habilitamos o Z-buffer. Veja slides 104-116 do documento Aula_09_Projecoes.pdf.
     glEnable(GL_DEPTH_TEST);
 
-    camera.transform().set_position(camera_start_position);
+    g_camera.transform().set_position(g_camera_start_position);
 
-    engine_controller.hand_over_control(update);
+    g_engine_controller.hand_over_control(update);
 
     // Fim do programa
     return 0;
@@ -210,12 +209,12 @@ int main() {
 void update() {
     // Pedimos para a GPU utilizar o programa de GPU criado acima (contendo
     // os shaders de vértice e fragmentos).
-    glUseProgram(engine_controller.get_gpu_program_id());
+    glUseProgram(g_engine_controller.get_gpu_program_id());
 
     // "Ligamos" o VAO. Informamos que queremos utilizar os atributos de
     // vértices apontados pelo VAO criado pela função BuildTriangles(). Veja
     // comentários detalhados dentro da definição de BuildTriangles().
-    glBindVertexArray(vertex_array_object_id);
+    glBindVertexArray(g_vertex_array_object_id);
 
     // Abaixo definimos as varáveis que efetivamente definem a câmera virtual.
     // Veja slides 195-227 e 229-234 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
@@ -224,12 +223,12 @@ void update() {
     glm::vec4 camera_position_c;  // Ponto "c", centro da câmera
     glm::vec4 camera_view_vector; // Vetor "view", sentido para onde a câmera está virada
 
-    if (camera_is_free) {
+    if (g_camera_is_free) {
         // Update da posição da câmera de acordo com o input de movimento
         update_free_camera_position();
 
-        camera_position_c = free_camera_position;
-        camera_view_vector = free_camera_view_vector;
+        camera_position_c = g_free_camera_position;
+        camera_view_vector = g_free_camera_view_vector;
 
         float y = sin(g_CameraPhi);
         float z = cos(g_CameraPhi)*cos(g_CameraTheta);
@@ -254,7 +253,7 @@ void update() {
     // Computamos a matriz "View" utilizando os parâmetros da câmera para
     // definir o sistema de coordenadas da câmera.  Veja slides 2-14, 184-190 e 236-242 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
     glm::mat4 view = Matrix_Camera_View(camera_position_c, camera_view_vector, camera_up_vector);
-    free_camera_right_vector = glm::vec4(view[0][0], view[1][0], view[2][0], 0.0f);
+    g_free_camera_right_vector = glm::vec4(view[0][0], view[1][0], view[2][0], 0.0f);
 
     // Agora computamos a matriz de Projeção.
     glm::mat4 projection;
@@ -268,7 +267,7 @@ void update() {
         // Projeção Perspectiva.
         // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
         float field_of_view = 3.141592f / 3.0f;
-        projection = Matrix_Perspective(field_of_view, engine_controller.get_screen_ratio(), nearplane, farplane);
+        projection = Matrix_Perspective(field_of_view, g_engine_controller.get_screen_ratio(), nearplane, farplane);
     } else {
         // Projeção Ortográfica.
         // Para definição dos valores l, r, b, t ("left", "right", "bottom", "top"),
@@ -277,7 +276,7 @@ void update() {
         // utilizando a variável g_CameraDistance.
         float t = 1.5f*g_CameraDistance/2.5f;
         float b = -t;
-        float r = t*engine_controller.get_screen_ratio();
+        float r = t*g_engine_controller.get_screen_ratio();
         float l = -r;
         projection = Matrix_Orthographic(l, r, b, t, nearplane, farplane);
     }
@@ -328,12 +327,12 @@ void update() {
         // Enviamos a matriz "model" para a placa de vídeo (GPU). Veja o
         // arquivo "shader_vertex.glsl", onde esta é efetivamente
         // aplicada em todos os pontos.
-        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
 
         // Informamos para a placa de vídeo (GPU) que a variável booleana
         // "render_as_black" deve ser colocada como "false". Veja o arquivo
         // "shader_vertex.glsl".
-        glUniform1i(render_as_black_uniform, false);
+        glUniform1i(g_render_as_black_uniform, false);
 
         // Pedimos para a GPU rasterizar os vértices do cubo apontados pelo
         // VAO como triângulos, formando as faces do cubo. Esta
@@ -375,7 +374,7 @@ void update() {
         // Informamos para a placa de vídeo (GPU) que a variável booleana
         // "render_as_black" deve ser colocada como "true". Veja o arquivo
         // "shader_vertex.glsl".
-        glUniform1i(render_as_black_uniform, true);
+        glUniform1i(g_render_as_black_uniform, true);
 
         // Pedimos para a GPU rasterizar os vértices do cubo apontados pelo
         // VAO como linhas, formando as arestas pretas do cubo. Veja a
@@ -405,7 +404,7 @@ void update() {
 
     // Enviamos a nova matriz "model" para a placa de vídeo (GPU). Veja o
     // arquivo "shader_vertex.glsl".
-    glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+    glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
 
     // Pedimos para OpenGL desenhar linhas com largura de 10 pixels.
     glLineWidth(10.0f);
@@ -413,7 +412,7 @@ void update() {
     // Informamos para a placa de vídeo (GPU) que a variável booleana
     // "render_as_black" deve ser colocada como "false". Veja o arquivo
     // "shader_vertex.glsl".
-    glUniform1i(render_as_black_uniform, false);
+    glUniform1i(g_render_as_black_uniform, false);
 
     // Pedimos para a GPU rasterizar os vértices dos eixos XYZ
     // apontados pelo VAO como linhas. Veja a definição de
@@ -437,8 +436,8 @@ void update() {
 }
 
 void update_free_camera_position() {
-    free_camera_position += free_camera_speed * free_camera_move_vector.y * free_camera_view_vector;
-    free_camera_position += free_camera_speed * free_camera_move_vector.x * free_camera_right_vector;
+    g_free_camera_position += g_free_camera_speed * g_free_camera_move_vector.y * g_free_camera_view_vector;
+    g_free_camera_position += g_free_camera_speed * g_free_camera_move_vector.x * g_free_camera_right_vector;
 }
 
 // Constrói triângulos para futura renderização
@@ -720,7 +719,7 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
 }
 
 void update_free_camera_view_vector() {
-    free_camera_view_vector = glm::vec4(
+    g_free_camera_view_vector = glm::vec4(
         cosf(g_CameraPhi) * sinf(g_CameraTheta),
         sinf(g_CameraPhi),
         cosf(g_CameraPhi) * cosf(g_CameraTheta),
@@ -747,7 +746,7 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
     // Atualizamos parâmetros da câmera com os deslocamentos
     g_CameraTheta -= 0.01f*dx;
 
-    if (camera_is_free) {
+    if (g_camera_is_free) {
         g_CameraPhi   -= 0.01f*dy;
     } else {
         g_CameraPhi   += 0.01f*dy;
@@ -788,20 +787,20 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
 }
 
 void update_free_camera_move_vector() {
-    free_camera_move_vector = glm::vec2(0.0f, 0.0f);
+    g_free_camera_move_vector = glm::vec2(0.0f, 0.0f);
 
-    if (input_move_forward)
-        free_camera_move_vector.y += 1.0f;
-    if (input_move_backward)
-        free_camera_move_vector.y -= 1.0f;
-    if (input_move_left)
-        free_camera_move_vector.x -= 1.0f;
-    if (input_move_right)
-        free_camera_move_vector.x += 1.0f;
+    if (g_input_move_forward)
+        g_free_camera_move_vector.y += 1.0f;
+    if (g_input_move_backward)
+        g_free_camera_move_vector.y -= 1.0f;
+    if (g_input_move_left)
+        g_free_camera_move_vector.x -= 1.0f;
+    if (g_input_move_right)
+        g_free_camera_move_vector.x += 1.0f;
 
     // Normalize
-    if (free_camera_move_vector != glm::vec2(0.0f, 0.0f))
-        free_camera_move_vector = glm::normalize(free_camera_move_vector);
+    if (g_free_camera_move_vector != glm::vec2(0.0f, 0.0f))
+        g_free_camera_move_vector = glm::normalize(g_free_camera_move_vector);
 }
 
 // Definição da função que será chamada sempre que o usuário pressionar alguma
@@ -869,41 +868,41 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
             break;
         case GLFW_KEY_F:
             if (action == GLFW_PRESS)
-                camera_is_free = !camera_is_free;
+                g_camera_is_free = !g_camera_is_free;
             break;
         case GLFW_KEY_W:
             if (action == GLFW_PRESS) {
-                input_move_forward = true;
+                g_input_move_forward = true;
                 update_free_camera_move_vector();
             } else if (action == GLFW_RELEASE) {
-                input_move_forward = false;
+                g_input_move_forward = false;
                 update_free_camera_move_vector();
             }
             break;
         case GLFW_KEY_S:
             if (action == GLFW_PRESS) {
-                input_move_backward = true;
+                g_input_move_backward = true;
                 update_free_camera_move_vector();
             } else if (action == GLFW_RELEASE) {
-                input_move_backward = false;
+                g_input_move_backward = false;
                 update_free_camera_move_vector();
             }
             break;
         case GLFW_KEY_A:
             if (action == GLFW_PRESS) {
-                input_move_left = true;
+                g_input_move_left = true;
                 update_free_camera_move_vector();
             } else if (action == GLFW_RELEASE) {
-                input_move_left = false;
+                g_input_move_left = false;
                 update_free_camera_move_vector();
             }
             break;
         case GLFW_KEY_D:
             if (action == GLFW_PRESS) {
-                input_move_right = true;
+                g_input_move_right = true;
                 update_free_camera_move_vector();
             } else if (action == GLFW_RELEASE) {
-                input_move_right = false;
+                g_input_move_right = false;
                 update_free_camera_move_vector();
             }
             break;
