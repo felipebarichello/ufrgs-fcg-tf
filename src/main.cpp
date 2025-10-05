@@ -220,7 +220,7 @@ int main() {
             float y = sin(g_CameraPhi);
             float z = cos(g_CameraPhi)*cos(g_CameraTheta);
             float x = cos(g_CameraPhi)*sin(g_CameraTheta);
-            printf("N: %f\n", sqrt(x*x + y*y + z*z));
+            
             camera_view_vector = glm::vec4(x,y,z,0.0f);
         } else {
             // Computamos a posição da câmera utilizando coordenadas esféricas.  As
