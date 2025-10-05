@@ -483,7 +483,7 @@ Vao BuildCubeAxes()
 
     GLuint axes_indices[] = { 0,1, 2,3, 4,5 };
 
-    return vao::VaoBuilder()
+    return VaoBuilder()
         .add_vbo(0, 4, sizeof(axes_positions), axes_positions, GL_STATIC_DRAW)
         .add_vbo(1, 4, sizeof(axes_colors), axes_colors, GL_STATIC_DRAW)
         .add_ebo(sizeof(axes_indices), axes_indices, GL_STATIC_DRAW)
