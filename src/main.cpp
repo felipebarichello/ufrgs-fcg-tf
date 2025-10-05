@@ -164,6 +164,8 @@ glm::mat4 the_projection;
 glm::mat4 the_model;
 glm::mat4 the_view;
 
+GLFWwindow* window;
+
 void update();
 
 
@@ -182,17 +184,17 @@ int main() {
     input_controller.attach_cursor_position_handler(CursorPosCallback);
     input_controller.attach_scrolling_handler(ScrollCallback);
 
-    GLFWwindow* window = engine_controller.get_window();
+    window = engine_controller.get_window();
 
     vertex_array_object_id = BuildTriangles();
 
     // Buscamos o endereço das variáveis definidas dentro do Vertex Shader.
     // Utilizaremos estas variáveis para enviar dados para a placa de vídeo
     // (GPU)! Veja arquivo "shader_vertex.glsl".
-    model_uniform           = glGetUniformLocation(engine_controller.get_gpu_program_id(), "model"); // Variável da matriz "model"
-    GLint view_uniform            = glGetUniformLocation(engine_controller.get_gpu_program_id(), "view"); // Variável da matriz "view" em shader_vertex.glsl
-    GLint projection_uniform      = glGetUniformLocation(engine_controller.get_gpu_program_id(), "projection"); // Variável da matriz "projection" em shader_vertex.glsl
-    render_as_black_uniform = glGetUniformLocation(engine_controller.get_gpu_program_id(), "render_as_black"); // Variável booleana em shader_vertex.glsl
+    model_uniform            = glGetUniformLocation(engine_controller.get_gpu_program_id(), "model"); // Variável da matriz "model"
+    GLint view_uniform       = glGetUniformLocation(engine_controller.get_gpu_program_id(), "view"); // Variável da matriz "view" em shader_vertex.glsl
+    GLint projection_uniform = glGetUniformLocation(engine_controller.get_gpu_program_id(), "projection"); // Variável da matriz "projection" em shader_vertex.glsl
+    render_as_black_uniform  = glGetUniformLocation(engine_controller.get_gpu_program_id(), "render_as_black"); // Variável booleana em shader_vertex.glsl
 
     // Habilitamos o Z-buffer. Veja slides 104-116 do documento Aula_09_Projecoes.pdf.
     glEnable(GL_DEPTH_TEST);
