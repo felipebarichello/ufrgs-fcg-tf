@@ -332,43 +332,11 @@ void update() {
             g_the_view = view;
         }
 
-        // Enviamos a matriz "model" para a placa de vídeo (GPU). Veja o
-        // arquivo "shader_vertex.glsl", onde esta é efetivamente
-        // aplicada em todos os pontos.
         glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-
-        // Pedimos para a GPU rasterizar os vértices do cubo apontados pelo
-        // VAO como triângulos, formando as faces do cubo. Esta
-        // renderização irá executar o Vertex Shader definido no arquivo
-        // "shader_vertex.glsl", e o mesmo irá utilizar as matrizes
-        // "model", "view" e "projection" definidas acima e já enviadas
-        // para a placa de vídeo (GPU).
-        //
-        // Veja a definição de g_VirtualScene["cube_faces"] dentro da
-        // função BuildTriangles(), e veja a documentação da função
-        // glDrawElements() em http://docs.gl/gl3/glDrawElements.
         cube_faces_vao->draw();
 
-        // Pedimos para OpenGL desenhar linhas com largura de 4 pixels.
         glLineWidth(4.0f);
-
-        // Pedimos para a GPU rasterizar os vértices dos eixos XYZ
-        // apontados pelo VAO como linhas. Veja a definição de
-        // g_VirtualScene["axes"] dentro da função BuildTriangles(), e veja
-        // a documentação da função glDrawElements() em
-        // http://docs.gl/gl3/glDrawElements.
-        //
-        // Importante: estes eixos serão desenhamos com a matriz "model"
-        // definida acima, e portanto sofrerão as mesmas transformações
-        // geométricas que o cubo. Isto é, estes eixos estarão
-        // representando o sistema de coordenadas do modelo (e não o global)!
         cube_axes_vao->draw();
-
-        // Pedimos para a GPU rasterizar os vértices do cubo apontados pelo
-        // VAO como linhas, formando as arestas pretas do cubo. Veja a
-        // definição de g_VirtualScene["cube_edges"] dentro da função
-        // BuildTriangles(), e veja a documentação da função
-        // glDrawElements() em http://docs.gl/gl3/glDrawElements.
         cube_edges_vao->draw();
 
         // Desenhamos um ponto de tamanho 15 pixels em cima do terceiro vértice
@@ -380,23 +348,10 @@ void update() {
         }
     }
 
-    // Agora queremos desenhar os eixos XYZ de coordenadas GLOBAIS.
-    // Para tanto, colocamos a matriz de modelagem igual à identidade.
-    // Veja slides 2-14 e 184-190 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
+    
     glm::mat4 model = Matrix_Identity();
-
-    // Enviamos a nova matriz "model" para a placa de vídeo (GPU). Veja o
-    // arquivo "shader_vertex.glsl".
     glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-
-    // Pedimos para OpenGL desenhar linhas com largura de 10 pixels.
     glLineWidth(10.0f);
-
-    // Pedimos para a GPU rasterizar os vértices dos eixos XYZ
-    // apontados pelo VAO como linhas. Veja a definição de
-    // g_VirtualScene["axes"] dentro da função BuildTriangles(), e veja
-    // a documentação da função glDrawElements() em
-    // http://docs.gl/gl3/glDrawElements.
     cube_axes_vao->draw();
 
     glBindVertexArray(0);
