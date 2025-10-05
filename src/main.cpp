@@ -157,13 +157,6 @@ int main() {
     engine_controller = EngineController::start_engine(window_config);
 
     GLFWwindow* window = engine_controller.get_window();
-    engine_controller.set_window(window);
-    if (!window)
-    {
-        glfwTerminate();
-        fprintf(stderr, "ERROR: glfwCreateWindow() failed.\n");
-        std::exit(EXIT_FAILURE);
-    }
 
     // Definimos a função de callback que será chamada sempre que o usuário
     // pressionar alguma tecla do teclado ...
@@ -179,7 +172,6 @@ int main() {
     // redimensionada, por consequência alterando o tamanho do "framebuffer"
     // (região de memória onde são armazenados os pixels da imagem).
     glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
-    glfwSetWindowSize(window, 800, 800); // Forçamos a chamada do callback acima, para definir g_ScreenRatio.
 
     // Indicamos que as chamadas OpenGL deverão renderizar nesta janela
     glfwMakeContextCurrent(window);

@@ -36,6 +36,11 @@ namespace engine {
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
         engine_controller.window = glfwCreateWindow(window_config.width, window_config.height, window_config.title, NULL, NULL);
+        if (!engine_controller.window) {
+            glfwTerminate();
+            fprintf(stderr, "ERROR: glfwCreateWindow() failed.\n");
+            std::exit(EXIT_FAILURE);
+        }
 
         return engine_controller;
     }
