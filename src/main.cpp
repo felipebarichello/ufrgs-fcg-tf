@@ -201,8 +201,6 @@ int main() {
     g_camera.transform().set_position(g_camera_start_position);
 
     g_engine_controller.hand_over_control(update);
-
-    // Fim do programa
     return 0;
 }
 
