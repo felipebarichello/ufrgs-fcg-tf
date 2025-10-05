@@ -3,6 +3,6 @@
 namespace engine {
     class VObject {
         public:
-            virtual ~VObject();
+            virtual ~VObject() = default;
     };
 }

@@ -39,12 +39,13 @@
 #include "utils.h"
 #include "matrices.h"
 
+#include "engine/vao.hpp"
 #include "engine/controller.hpp"
 #include "engine/input_controller.hpp"
 
 // Declaração de várias funções utilizadas em main().  Essas estão definidas
 // logo após a definição de main() neste arquivo.
-GLuint BuildTriangles(); // Constrói triângulos para renderização
+GLuint BuildCube(); // Constrói triângulos para renderização
 void LoadShadersFromFiles(); // Carrega os shaders de vértice e fragmento, criando um programa de GPU
 GLuint LoadShader_Vertex(const char* filename);   // Carrega um vertex shader
 GLuint LoadShader_Fragment(const char* filename); // Carrega um fragment shader
@@ -89,8 +90,8 @@ using engine::WindowConfig;
 struct SceneObject
 {
     const char*  name;        // Nome do objeto
-    void*        first_index; // Índice do primeiro vértice dentro do vetor indices[] definido em BuildTriangles()
-    int          num_indices; // Número de índices do objeto dentro do vetor indices[] definido em BuildTriangles()
+    void*        first_index; // Índice do primeiro vértice dentro do vetor indices[] definido em BuildCube()
+    int          num_indices; // Número de índices do objeto dentro do vetor indices[] definido em BuildCube()
     GLenum       rendering_mode; // Modo de rasterização (GL_TRIANGLES, GL_TRIANGLE_STRIP, etc.)
 };
 
@@ -98,7 +99,7 @@ struct SceneObject
 EngineController engine_controller;
 
 // A cena virtual é uma lista de objetos nomeados, guardados em um dicionário
-// (map).  Veja dentro da função BuildTriangles() como que são incluídos
+// (map).  Veja dentro da função BuildCube() como que são incluídos
 // objetos dentro da variável g_VirtualScene, e veja na função main() como
 // estes são acessados.
 std::map<const char*, SceneObject> g_VirtualScene;
@@ -170,7 +171,7 @@ int main() {
     //LoadShadersFromFiles();
 
     // Construímos a representação de um triângulo
-    GLuint vertex_array_object_id = BuildTriangles();
+    GLuint vertex_array_object_id = BuildCube();
 
     // Inicializamos o código para renderização de texto.
     //TextRendering_Init();
@@ -199,8 +200,8 @@ int main() {
         glUseProgram(engine_controller.get_gpu_program_id());
 
         // "Ligamos" o VAO. Informamos que queremos utilizar os atributos de
-        // vértices apontados pelo VAO criado pela função BuildTriangles(). Veja
-        // comentários detalhados dentro da definição de BuildTriangles().
+        // vértices apontados pelo VAO criado pela função BuildCube(). Veja
+        // comentários detalhados dentro da definição de BuildCube().
         glBindVertexArray(vertex_array_object_id);
 
         // Abaixo definimos as varáveis que efetivamente definem a câmera virtual.
@@ -338,7 +339,7 @@ int main() {
             // para a placa de vídeo (GPU).
             //
             // Veja a definição de g_VirtualScene["cube_faces"] dentro da
-            // função BuildTriangles(), e veja a documentação da função
+            // função BuildCube(), e veja a documentação da função
             // glDrawElements() em http://docs.gl/gl3/glDrawElements.
             glDrawElements(
                 g_VirtualScene["cube_faces"].rendering_mode, // Veja slides 182-188 do documento Aula_04_Modelagem_Geometrica_3D.pdf
@@ -352,7 +353,7 @@ int main() {
 
             // Pedimos para a GPU rasterizar os vértices dos eixos XYZ
             // apontados pelo VAO como linhas. Veja a definição de
-            // g_VirtualScene["axes"] dentro da função BuildTriangles(), e veja
+            // g_VirtualScene["axes"] dentro da função BuildCube(), e veja
             // a documentação da função glDrawElements() em
             // http://docs.gl/gl3/glDrawElements.
             //
@@ -375,7 +376,7 @@ int main() {
             // Pedimos para a GPU rasterizar os vértices do cubo apontados pelo
             // VAO como linhas, formando as arestas pretas do cubo. Veja a
             // definição de g_VirtualScene["cube_edges"] dentro da função
-            // BuildTriangles(), e veja a documentação da função
+            // BuildCube(), e veja a documentação da função
             // glDrawElements() em http://docs.gl/gl3/glDrawElements.
             glDrawElements(
                 g_VirtualScene["cube_edges"].rendering_mode,
@@ -413,7 +414,7 @@ int main() {
 
         // Pedimos para a GPU rasterizar os vértices dos eixos XYZ
         // apontados pelo VAO como linhas. Veja a definição de
-        // g_VirtualScene["axes"] dentro da função BuildTriangles(), e veja
+        // g_VirtualScene["axes"] dentro da função BuildCube(), e veja
         // a documentação da função glDrawElements() em
         // http://docs.gl/gl3/glDrawElements.
         glDrawElements(
@@ -473,7 +474,7 @@ void update_free_camera_position() {
 }
 
 // Constrói triângulos para futura renderização
-GLuint BuildTriangles()
+GLuint BuildCube()
 {
     // Primeiro, definimos os atributos de cada vértice.
 
