@@ -205,196 +205,6 @@ int main() {
 
     // Ficamos em um loop infinito, renderizando, até que o usuário feche a janela
     while (!engine_controller.update_and_test_should_close()) {
-        // Pedimos para a GPU utilizar o programa de GPU criado acima (contendo
-        // os shaders de vértice e fragmentos).
-        glUseProgram(engine_controller.get_gpu_program_id());
-
-        // "Ligamos" o VAO. Informamos que queremos utilizar os atributos de
-        // vértices apontados pelo VAO criado pela função BuildTriangles(). Veja
-        // comentários detalhados dentro da definição de BuildTriangles().
-        glBindVertexArray(vertex_array_object_id);
-
-        // Abaixo definimos as varáveis que efetivamente definem a câmera virtual.
-        // Veja slides 195-227 e 229-234 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
-
-        glm::vec4 camera_up_vector   = glm::vec4(0.0f,1.0f,0.0f,0.0f); // Vetor "up" fixado para apontar para o "céu" (eito Y global)
-        glm::vec4 camera_position_c;  // Ponto "c", centro da câmera
-        glm::vec4 camera_view_vector; // Vetor "view", sentido para onde a câmera está virada
-
-        if (camera_is_free) {
-            // Update da posição da câmera de acordo com o input de movimento
-            update_free_camera_position();
-
-            camera_position_c = free_camera_position;
-            camera_view_vector = free_camera_view_vector;
-
-            float y = sin(g_CameraPhi);
-            float z = cos(g_CameraPhi)*cos(g_CameraTheta);
-            float x = cos(g_CameraPhi)*sin(g_CameraTheta);
-            
-            camera_view_vector = glm::vec4(x,y,z,0.0f);
-        } else {
-            // Computamos a posição da câmera utilizando coordenadas esféricas.  As
-            // variáveis g_CameraDistance, g_CameraPhi, e g_CameraTheta são
-            // controladas pelo mouse do usuário. Veja as funções CursorPosCallback()
-            // e ScrollCallback().
-            float r = g_CameraDistance;
-            float y = r*sin(g_CameraPhi);
-            float z = r*cos(g_CameraPhi)*cos(g_CameraTheta);
-            float x = r*cos(g_CameraPhi)*sin(g_CameraTheta);
-
-            camera_position_c  = glm::vec4(x,y,z,1.0f);
-            glm::vec4 camera_lookat_l = glm::vec4(0.0f,0.0f,0.0f,1.0f);    // Ponto "l", para onde a câmera (look-at) estará sempre olhando
-            camera_view_vector = camera_lookat_l - camera_position_c; 
-        }
-
-        // Computamos a matriz "View" utilizando os parâmetros da câmera para
-        // definir o sistema de coordenadas da câmera.  Veja slides 2-14, 184-190 e 236-242 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
-        glm::mat4 view = Matrix_Camera_View(camera_position_c, camera_view_vector, camera_up_vector);
-        free_camera_right_vector = glm::vec4(view[0][0], view[1][0], view[2][0], 0.0f);
-
-        // Agora computamos a matriz de Projeção.
-        glm::mat4 projection;
-
-        // Note que, no sistema de coordenadas da câmera, os planos near e far
-        // estão no sentido negativo! Veja slides 176-204 do documento Aula_09_Projecoes.pdf.
-        float nearplane = -0.1f;  // Posição do "near plane"
-        float farplane  = -10.0f; // Posição do "far plane"
-
-        if (g_UsePerspectiveProjection) {
-            // Projeção Perspectiva.
-            // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
-            float field_of_view = 3.141592f / 3.0f;
-            projection = Matrix_Perspective(field_of_view, engine_controller.get_screen_ratio(), nearplane, farplane);
-        } else {
-            // Projeção Ortográfica.
-            // Para definição dos valores l, r, b, t ("left", "right", "bottom", "top"),
-            // PARA PROJEÇÃO ORTOGRÁFICA veja slides 219-224 do documento Aula_09_Projecoes.pdf.
-            // Para simular um "zoom" ortográfico, computamos o valor de "t"
-            // utilizando a variável g_CameraDistance.
-            float t = 1.5f*g_CameraDistance/2.5f;
-            float b = -t;
-            float r = t*engine_controller.get_screen_ratio();
-            float l = -r;
-            projection = Matrix_Orthographic(l, r, b, t, nearplane, farplane);
-        }
-
-        // Enviamos as matrizes "view" e "projection" para a placa de vídeo
-        // (GPU). Veja o arquivo "shader_vertex.glsl", onde estas são
-        // efetivamente aplicadas em todos os pontos.
-        glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
-        glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
-
-        // Vamos desenhar 3 instâncias (cópias) do cubo
-        for (int i = 1; i <= 3; ++i) {
-            // Cada cópia do cubo possui uma matriz de modelagem independente,
-            // já que cada cópia estará em uma posição (rotação, escala, ...)
-            // diferente em relação ao espaço global (World Coordinates). Veja
-            // slides 2-14 e 184-190 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
-            glm::mat4 model;
-
-            if (i == 1) {
-                // A primeira cópia do cubo não sofrerá nenhuma transformação
-                // de modelagem. Portanto, sua matriz "model" é a identidade, e
-                // suas coordenadas no espaço global (World Coordinates) serão
-                // *exatamente iguais* a suas coordenadas no espaço do modelo
-                // (Model Coordinates).
-                model = Matrix_Identity();
-            } else if ( i == 2 ) {
-                // A segunda cópia do cubo sofrerá um escalamento não-uniforme,
-                // seguido de uma rotação no eixo (1,1,1), e uma translação em Z (nessa ordem!).
-                model = Matrix_Translate(0.0f, 0.0f, -2.0f) // TERCEIRO translação
-                      * Matrix_Rotate(3.141592f / 8.0f, glm::vec4(1.0f,1.0f,1.0f,0.0f)) // SEGUNDO rotação
-                      * Matrix_Scale(2.0f, 0.5f, 0.5f); // PRIMEIRO escala
-            } else if ( i == 3 ) {
-                // A terceira cópia do cubo sofrerá rotações em X,Y e Z (nessa
-                // ordem) seguindo o sistema de ângulos de Euler, e após uma
-                // translação em X. Veja slides 106-107 do documento Aula_07_Transformacoes_Geometricas_3D.pdf.
-                model = Matrix_Translate(-2.0f, 0.0f, 0.0f) // QUARTO translação
-                      * Matrix_Rotate_Z(g_AngleZ)  // TERCEIRO rotação Z de Euler
-                      * Matrix_Rotate_Y(g_AngleY)  // SEGUNDO rotação Y de Euler
-                      * Matrix_Rotate_X(g_AngleX); // PRIMEIRO rotação X de Euler
-
-                // Armazenamos as matrizes model, view, e projection do terceiro cubo
-                // para mostrar elas na tela através da função TextRendering_ShowModelViewProjection().
-                g_the_model = model;
-                g_the_projection = projection;
-                g_the_view = view;
-            }
-
-            // Enviamos a matriz "model" para a placa de vídeo (GPU). Veja o
-            // arquivo "shader_vertex.glsl", onde esta é efetivamente
-            // aplicada em todos os pontos.
-            glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-
-            // Informamos para a placa de vídeo (GPU) que a variável booleana
-            // "render_as_black" deve ser colocada como "false". Veja o arquivo
-            // "shader_vertex.glsl".
-            glUniform1i(render_as_black_uniform, false);
-
-            // Pedimos para a GPU rasterizar os vértices do cubo apontados pelo
-            // VAO como triângulos, formando as faces do cubo. Esta
-            // renderização irá executar o Vertex Shader definido no arquivo
-            // "shader_vertex.glsl", e o mesmo irá utilizar as matrizes
-            // "model", "view" e "projection" definidas acima e já enviadas
-            // para a placa de vídeo (GPU).
-            //
-            // Veja a definição de g_VirtualScene["cube_faces"] dentro da
-            // função BuildTriangles(), e veja a documentação da função
-            // glDrawElements() em http://docs.gl/gl3/glDrawElements.
-            glDrawElements(
-                g_VirtualScene["cube_faces"].rendering_mode, // Veja slides 182-188 do documento Aula_04_Modelagem_Geometrica_3D.pdf
-                g_VirtualScene["cube_faces"].num_indices,
-                GL_UNSIGNED_INT,
-                (void*)g_VirtualScene["cube_faces"].first_index
-            );
-
-            // Pedimos para OpenGL desenhar linhas com largura de 4 pixels.
-            glLineWidth(4.0f);
-
-            // Pedimos para a GPU rasterizar os vértices dos eixos XYZ
-            // apontados pelo VAO como linhas. Veja a definição de
-            // g_VirtualScene["axes"] dentro da função BuildTriangles(), e veja
-            // a documentação da função glDrawElements() em
-            // http://docs.gl/gl3/glDrawElements.
-            //
-            // Importante: estes eixos serão desenhamos com a matriz "model"
-            // definida acima, e portanto sofrerão as mesmas transformações
-            // geométricas que o cubo. Isto é, estes eixos estarão
-            // representando o sistema de coordenadas do modelo (e não o global)!
-            glDrawElements(
-                g_VirtualScene["axes"].rendering_mode,
-                g_VirtualScene["axes"].num_indices,
-                GL_UNSIGNED_INT,
-                (void*)g_VirtualScene["axes"].first_index
-            );
-
-            // Informamos para a placa de vídeo (GPU) que a variável booleana
-            // "render_as_black" deve ser colocada como "true". Veja o arquivo
-            // "shader_vertex.glsl".
-            glUniform1i(render_as_black_uniform, true);
-
-            // Pedimos para a GPU rasterizar os vértices do cubo apontados pelo
-            // VAO como linhas, formando as arestas pretas do cubo. Veja a
-            // definição de g_VirtualScene["cube_edges"] dentro da função
-            // BuildTriangles(), e veja a documentação da função
-            // glDrawElements() em http://docs.gl/gl3/glDrawElements.
-            glDrawElements(
-                g_VirtualScene["cube_edges"].rendering_mode,
-                g_VirtualScene["cube_edges"].num_indices,
-                GL_UNSIGNED_INT,
-                (void*)g_VirtualScene["cube_edges"].first_index
-            );
-
-            // Desenhamos um ponto de tamanho 15 pixels em cima do terceiro vértice
-            // do terceiro cubo. Este vértice tem coordenada de modelo igual à
-            // (0.5, 0.5, 0.5, 1.0).
-            if ( i == 3 ) {
-                glPointSize(15.0f);
-                glDrawArrays(GL_POINTS, 3, 1);
-            }
-        }
-
         update();
     }
 
@@ -406,6 +216,196 @@ int main() {
 }
 
 void update() {
+    // Pedimos para a GPU utilizar o programa de GPU criado acima (contendo
+    // os shaders de vértice e fragmentos).
+    glUseProgram(engine_controller.get_gpu_program_id());
+
+    // "Ligamos" o VAO. Informamos que queremos utilizar os atributos de
+    // vértices apontados pelo VAO criado pela função BuildTriangles(). Veja
+    // comentários detalhados dentro da definição de BuildTriangles().
+    glBindVertexArray(vertex_array_object_id);
+
+    // Abaixo definimos as varáveis que efetivamente definem a câmera virtual.
+    // Veja slides 195-227 e 229-234 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
+
+    glm::vec4 camera_up_vector   = glm::vec4(0.0f,1.0f,0.0f,0.0f); // Vetor "up" fixado para apontar para o "céu" (eito Y global)
+    glm::vec4 camera_position_c;  // Ponto "c", centro da câmera
+    glm::vec4 camera_view_vector; // Vetor "view", sentido para onde a câmera está virada
+
+    if (camera_is_free) {
+        // Update da posição da câmera de acordo com o input de movimento
+        update_free_camera_position();
+
+        camera_position_c = free_camera_position;
+        camera_view_vector = free_camera_view_vector;
+
+        float y = sin(g_CameraPhi);
+        float z = cos(g_CameraPhi)*cos(g_CameraTheta);
+        float x = cos(g_CameraPhi)*sin(g_CameraTheta);
+        
+        camera_view_vector = glm::vec4(x,y,z,0.0f);
+    } else {
+        // Computamos a posição da câmera utilizando coordenadas esféricas.  As
+        // variáveis g_CameraDistance, g_CameraPhi, e g_CameraTheta são
+        // controladas pelo mouse do usuário. Veja as funções CursorPosCallback()
+        // e ScrollCallback().
+        float r = g_CameraDistance;
+        float y = r*sin(g_CameraPhi);
+        float z = r*cos(g_CameraPhi)*cos(g_CameraTheta);
+        float x = r*cos(g_CameraPhi)*sin(g_CameraTheta);
+
+        camera_position_c  = glm::vec4(x,y,z,1.0f);
+        glm::vec4 camera_lookat_l = glm::vec4(0.0f,0.0f,0.0f,1.0f);    // Ponto "l", para onde a câmera (look-at) estará sempre olhando
+        camera_view_vector = camera_lookat_l - camera_position_c; 
+    }
+
+    // Computamos a matriz "View" utilizando os parâmetros da câmera para
+    // definir o sistema de coordenadas da câmera.  Veja slides 2-14, 184-190 e 236-242 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
+    glm::mat4 view = Matrix_Camera_View(camera_position_c, camera_view_vector, camera_up_vector);
+    free_camera_right_vector = glm::vec4(view[0][0], view[1][0], view[2][0], 0.0f);
+
+    // Agora computamos a matriz de Projeção.
+    glm::mat4 projection;
+
+    // Note que, no sistema de coordenadas da câmera, os planos near e far
+    // estão no sentido negativo! Veja slides 176-204 do documento Aula_09_Projecoes.pdf.
+    float nearplane = -0.1f;  // Posição do "near plane"
+    float farplane  = -10.0f; // Posição do "far plane"
+
+    if (g_UsePerspectiveProjection) {
+        // Projeção Perspectiva.
+        // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
+        float field_of_view = 3.141592f / 3.0f;
+        projection = Matrix_Perspective(field_of_view, engine_controller.get_screen_ratio(), nearplane, farplane);
+    } else {
+        // Projeção Ortográfica.
+        // Para definição dos valores l, r, b, t ("left", "right", "bottom", "top"),
+        // PARA PROJEÇÃO ORTOGRÁFICA veja slides 219-224 do documento Aula_09_Projecoes.pdf.
+        // Para simular um "zoom" ortográfico, computamos o valor de "t"
+        // utilizando a variável g_CameraDistance.
+        float t = 1.5f*g_CameraDistance/2.5f;
+        float b = -t;
+        float r = t*engine_controller.get_screen_ratio();
+        float l = -r;
+        projection = Matrix_Orthographic(l, r, b, t, nearplane, farplane);
+    }
+
+    // Enviamos as matrizes "view" e "projection" para a placa de vídeo
+    // (GPU). Veja o arquivo "shader_vertex.glsl", onde estas são
+    // efetivamente aplicadas em todos os pontos.
+    glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
+    glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
+
+    // Vamos desenhar 3 instâncias (cópias) do cubo
+    for (int i = 1; i <= 3; ++i) {
+        // Cada cópia do cubo possui uma matriz de modelagem independente,
+        // já que cada cópia estará em uma posição (rotação, escala, ...)
+        // diferente em relação ao espaço global (World Coordinates). Veja
+        // slides 2-14 e 184-190 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
+        glm::mat4 model;
+
+        if (i == 1) {
+            // A primeira cópia do cubo não sofrerá nenhuma transformação
+            // de modelagem. Portanto, sua matriz "model" é a identidade, e
+            // suas coordenadas no espaço global (World Coordinates) serão
+            // *exatamente iguais* a suas coordenadas no espaço do modelo
+            // (Model Coordinates).
+            model = Matrix_Identity();
+        } else if ( i == 2 ) {
+            // A segunda cópia do cubo sofrerá um escalamento não-uniforme,
+            // seguido de uma rotação no eixo (1,1,1), e uma translação em Z (nessa ordem!).
+            model = Matrix_Translate(0.0f, 0.0f, -2.0f) // TERCEIRO translação
+                    * Matrix_Rotate(3.141592f / 8.0f, glm::vec4(1.0f,1.0f,1.0f,0.0f)) // SEGUNDO rotação
+                    * Matrix_Scale(2.0f, 0.5f, 0.5f); // PRIMEIRO escala
+        } else if ( i == 3 ) {
+            // A terceira cópia do cubo sofrerá rotações em X,Y e Z (nessa
+            // ordem) seguindo o sistema de ângulos de Euler, e após uma
+            // translação em X. Veja slides 106-107 do documento Aula_07_Transformacoes_Geometricas_3D.pdf.
+            model = Matrix_Translate(-2.0f, 0.0f, 0.0f) // QUARTO translação
+                    * Matrix_Rotate_Z(g_AngleZ)  // TERCEIRO rotação Z de Euler
+                    * Matrix_Rotate_Y(g_AngleY)  // SEGUNDO rotação Y de Euler
+                    * Matrix_Rotate_X(g_AngleX); // PRIMEIRO rotação X de Euler
+
+            // Armazenamos as matrizes model, view, e projection do terceiro cubo
+            // para mostrar elas na tela através da função TextRendering_ShowModelViewProjection().
+            g_the_model = model;
+            g_the_projection = projection;
+            g_the_view = view;
+        }
+
+        // Enviamos a matriz "model" para a placa de vídeo (GPU). Veja o
+        // arquivo "shader_vertex.glsl", onde esta é efetivamente
+        // aplicada em todos os pontos.
+        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+
+        // Informamos para a placa de vídeo (GPU) que a variável booleana
+        // "render_as_black" deve ser colocada como "false". Veja o arquivo
+        // "shader_vertex.glsl".
+        glUniform1i(render_as_black_uniform, false);
+
+        // Pedimos para a GPU rasterizar os vértices do cubo apontados pelo
+        // VAO como triângulos, formando as faces do cubo. Esta
+        // renderização irá executar o Vertex Shader definido no arquivo
+        // "shader_vertex.glsl", e o mesmo irá utilizar as matrizes
+        // "model", "view" e "projection" definidas acima e já enviadas
+        // para a placa de vídeo (GPU).
+        //
+        // Veja a definição de g_VirtualScene["cube_faces"] dentro da
+        // função BuildTriangles(), e veja a documentação da função
+        // glDrawElements() em http://docs.gl/gl3/glDrawElements.
+        glDrawElements(
+            g_VirtualScene["cube_faces"].rendering_mode, // Veja slides 182-188 do documento Aula_04_Modelagem_Geometrica_3D.pdf
+            g_VirtualScene["cube_faces"].num_indices,
+            GL_UNSIGNED_INT,
+            (void*)g_VirtualScene["cube_faces"].first_index
+        );
+
+        // Pedimos para OpenGL desenhar linhas com largura de 4 pixels.
+        glLineWidth(4.0f);
+
+        // Pedimos para a GPU rasterizar os vértices dos eixos XYZ
+        // apontados pelo VAO como linhas. Veja a definição de
+        // g_VirtualScene["axes"] dentro da função BuildTriangles(), e veja
+        // a documentação da função glDrawElements() em
+        // http://docs.gl/gl3/glDrawElements.
+        //
+        // Importante: estes eixos serão desenhamos com a matriz "model"
+        // definida acima, e portanto sofrerão as mesmas transformações
+        // geométricas que o cubo. Isto é, estes eixos estarão
+        // representando o sistema de coordenadas do modelo (e não o global)!
+        glDrawElements(
+            g_VirtualScene["axes"].rendering_mode,
+            g_VirtualScene["axes"].num_indices,
+            GL_UNSIGNED_INT,
+            (void*)g_VirtualScene["axes"].first_index
+        );
+
+        // Informamos para a placa de vídeo (GPU) que a variável booleana
+        // "render_as_black" deve ser colocada como "true". Veja o arquivo
+        // "shader_vertex.glsl".
+        glUniform1i(render_as_black_uniform, true);
+
+        // Pedimos para a GPU rasterizar os vértices do cubo apontados pelo
+        // VAO como linhas, formando as arestas pretas do cubo. Veja a
+        // definição de g_VirtualScene["cube_edges"] dentro da função
+        // BuildTriangles(), e veja a documentação da função
+        // glDrawElements() em http://docs.gl/gl3/glDrawElements.
+        glDrawElements(
+            g_VirtualScene["cube_edges"].rendering_mode,
+            g_VirtualScene["cube_edges"].num_indices,
+            GL_UNSIGNED_INT,
+            (void*)g_VirtualScene["cube_edges"].first_index
+        );
+
+        // Desenhamos um ponto de tamanho 15 pixels em cima do terceiro vértice
+        // do terceiro cubo. Este vértice tem coordenada de modelo igual à
+        // (0.5, 0.5, 0.5, 1.0).
+        if ( i == 3 ) {
+            glPointSize(15.0f);
+            glDrawArrays(GL_POINTS, 3, 1);
+        }
+    }
+
     // Agora queremos desenhar os eixos XYZ de coordenadas GLOBAIS.
     // Para tanto, colocamos a matriz de modelagem igual à identidade.
     // Veja slides 2-14 e 184-190 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
