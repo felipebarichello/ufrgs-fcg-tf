@@ -10,6 +10,7 @@ namespace engine {
 
     Mat4 identity_matrix();
     Vec3 negate(Vec3 v);
+    Mat4 invert_orthonormal_matrix(const Mat4& m);
 
     struct HyperVec3 {
         Vec3 x;
