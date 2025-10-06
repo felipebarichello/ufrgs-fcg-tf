@@ -86,9 +86,12 @@ using engine::EngineController;
 using engine::WindowConfig;
 using engine::Camera;
 using engine::Vec3;
+using engine::Vec2;
+using engine::Mat4;
 using engine::Transform;
 using vao::Vao; 
 using vao::VaoBuilder;
+using engine::CameraTransform;
 
 Vao BuildCubeAxes();
 Vao BuildCubeEdges();
@@ -137,12 +140,13 @@ float g_CameraDistance = 2.5f; // Distância da câmera para a origem
 
 const Vec3 g_camera_start_position = Vec3(0.0f, 0.0f, 2.5f);
 
-Camera g_camera = Camera(Transform::Identity());
+Camera g_camera = Camera();
 
-glm::vec4 g_free_camera_position     = glm::vec4(0.0f, 0.0f,  2.5f, 1.0f);
-glm::vec4 g_free_camera_view_vector  = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
-glm::vec4 g_free_camera_right_vector = glm::vec4(1.0f, 0.0f,  0.0f, 0.0f);
-glm::vec2 g_free_camera_move_vector  = glm::vec2(0.0f, 0.0f);
+Vec3 g_free_camera_position         = Vec3(0.0f, 0.0f, 2.5f);
+Vec3 g_free_camera_view_unit_vector = Vec3(0.0f, 0.0f, -1.0f);
+Vec3 g_free_camera_right_vector     = Vec3(1.0f, 0.0f, 0.0f);
+Vec3 g_free_camera_up_vector        = Vec3(0.0f, 1.0f, 0.0f);
+Vec2 g_free_camera_move_vector      = Vec2(0.0f, 0.0f);
 
 float g_free_camera_speed = 0.1f;
 
@@ -198,19 +202,29 @@ int main() {
     // Buscamos o endereço das variáveis definidas dentro do Vertex Shader.
     // Utilizaremos estas variáveis para enviar dados para a placa de vídeo
     // (GPU)! Veja arquivo "shader_vertex.glsl".
-    g_model_uniform            = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "model"); // Variável da matriz "model"
-    g_view_uniform       = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "view"); // Variável da matriz "view" em shader_vertex.glsl
-    g_projection_uniform = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "projection"); // Variável da matriz "projection" em shader_vertex.glsl
+    g_model_uniform           = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "model"); // Variável da matriz "model"
+    g_view_uniform            = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "view"); // Variável da matriz "view" em shader_vertex.glsl
+    g_projection_uniform      = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "projection"); // Variável da matriz "projection" em shader_vertex.glsl
 
     // Habilitamos o Z-buffer. Veja slides 104-116 do documento Aula_09_Projecoes.pdf.
     glEnable(GL_DEPTH_TEST);
 
-    g_camera.transform().set_position(g_camera_start_position);
-
     g_engine_controller.hand_over_control(update);
-
-    // Fim do programa
     return 0;
+}
+
+Mat4 invert_orthonormal_matrix(const Mat4& m) {
+    Vec3 u = Vec3(m[0][0], m[0][1], m[0][2]);
+    Vec3 v = Vec3(m[1][0], m[1][1], m[1][2]);
+    Vec3 w = Vec3(m[2][0], m[2][1], m[2][2]);
+    Vec3 p = Vec3(m[3][0], m[3][1], m[3][2]);
+    
+    return Mat4(
+        u.x, v.x, w.x, 0.0f,
+        u.y, v.y, w.y, 0.0f,
+        u.z, v.z, w.z, 0.0f,
+        -dot(u, p), -dot(v, p), -dot(w, p), 1.0f
+    );
 }
 
 void update() {
@@ -223,25 +237,21 @@ void update() {
     // comentários detalhados dentro da definição de BuildTriangles().
     glBindVertexArray(g_vertex_array_object_id);
 
-    // Abaixo definimos as varáveis que efetivamente definem a câmera virtual.
-    // Veja slides 195-227 e 229-234 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
-
-    glm::vec4 camera_up_vector   = glm::vec4(0.0f,1.0f,0.0f,0.0f); // Vetor "up" fixado para apontar para o "céu" (eito Y global)
-    glm::vec4 camera_position_c;  // Ponto "c", centro da câmera
-    glm::vec4 camera_view_vector; // Vetor "view", sentido para onde a câmera está virada
+    Vec3 camera_position_c; // Camera center (position)
+    Vec3 camera_view_unit_vector; // Direction the camera is pointing
 
     if (g_camera_is_free) {
         // Update da posição da câmera de acordo com o input de movimento
         update_free_camera_position();
 
         camera_position_c = g_free_camera_position;
-        camera_view_vector = g_free_camera_view_vector;
+        camera_view_unit_vector = g_free_camera_view_unit_vector;
 
         float y = sin(g_CameraPhi);
         float z = cos(g_CameraPhi)*cos(g_CameraTheta);
         float x = cos(g_CameraPhi)*sin(g_CameraTheta);
         
-        camera_view_vector = glm::vec4(x,y,z,0.0f);
+        camera_view_unit_vector = Vec3(x, y, z);
     } else {
         // Computamos a posição da câmera utilizando coordenadas esféricas.  As
         // variáveis g_CameraDistance, g_CameraPhi, e g_CameraTheta são
@@ -252,15 +262,16 @@ void update() {
         float z = r*cos(g_CameraPhi)*cos(g_CameraTheta);
         float x = r*cos(g_CameraPhi)*sin(g_CameraTheta);
 
-        camera_position_c  = glm::vec4(x,y,z,1.0f);
-        glm::vec4 camera_lookat_l = glm::vec4(0.0f,0.0f,0.0f,1.0f);    // Ponto "l", para onde a câmera (look-at) estará sempre olhando
-        camera_view_vector = camera_lookat_l - camera_position_c; 
+        camera_position_c = Vec3(x, y, z);
+        Vec3 camera_lookat_point = Vec3(0.0f, 0.0f, 0.0f);
+        camera_view_unit_vector = glm::normalize(camera_lookat_point - camera_position_c); 
     }
 
-    // Computamos a matriz "View" utilizando os parâmetros da câmera para
-    // definir o sistema de coordenadas da câmera.  Veja slides 2-14, 184-190 e 236-242 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
-    glm::mat4 view = Matrix_Camera_View(camera_position_c, camera_view_vector, camera_up_vector);
-    g_free_camera_right_vector = glm::vec4(view[0][0], view[1][0], view[2][0], 0.0f);
+    CameraTransform cam_transform = g_camera.cam_transform();
+    cam_transform.set_position(camera_position_c);
+    cam_transform.set_basis_from_up_view(g_free_camera_up_vector, camera_view_unit_vector);
+    glm::mat4 view = invert_orthonormal_matrix(cam_transform.get_matrix());
+    g_free_camera_right_vector = Vec3(view[0][0], view[1][0], view[2][0]);
 
     // Agora computamos a matriz de Projeção.
     glm::mat4 projection;
@@ -363,7 +374,7 @@ void update() {
 }
 
 void update_free_camera_position() {
-    g_free_camera_position += g_free_camera_speed * g_free_camera_move_vector.y * g_free_camera_view_vector;
+    g_free_camera_position += g_free_camera_speed * g_free_camera_move_vector.y * g_free_camera_view_unit_vector;
     g_free_camera_position += g_free_camera_speed * g_free_camera_move_vector.x * g_free_camera_right_vector;
 }
 
@@ -514,11 +525,10 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
 }
 
 void update_free_camera_view_vector() {
-    g_free_camera_view_vector = glm::vec4(
+    g_free_camera_view_unit_vector = Vec3(
         cosf(g_CameraPhi) * sinf(g_CameraTheta),
         sinf(g_CameraPhi),
-        cosf(g_CameraPhi) * cosf(g_CameraTheta),
-        0.0f
+        cosf(g_CameraPhi) * cosf(g_CameraTheta)
     );
 }
 
