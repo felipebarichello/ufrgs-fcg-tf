@@ -88,7 +88,9 @@ using engine::WindowConfig;
 using engine::Camera;
 using engine::Vec3;
 using engine::Vec2;
+using engine::Mat4;
 using engine::Transform;
+using engine::CameraTransform;
 
 
 // Definimos uma estrutura que armazenará dados necessários para renderizar
@@ -204,6 +206,15 @@ int main() {
     return 0;
 }
 
+Mat4 invert_orthonormal_matrix(const Mat4& m) {
+    return Mat4(
+        m[0][0],  m[1][0],  m[2][0],  0.0f,
+        m[0][1],  m[1][1],  m[2][1],  0.0f,
+        m[0][2],  m[1][2],  m[2][2],  0.0f,
+        -m[3][0], -m[3][1], -m[3][2], 1.0f
+    );
+}
+
 void update() {
     // Pedimos para a GPU utilizar o programa de GPU criado acima (contendo
     // os shaders de vértice e fragmentos).
@@ -244,12 +255,10 @@ void update() {
         camera_view_unit_vector = glm::normalize(camera_lookat_point - camera_position_c); 
     }
 
-    // Computamos a matriz "View" utilizando os parâmetros da câmera para
-    // definir o sistema de coordenadas da câmera.  Veja slides 2-14, 184-190 e 236-242 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
-    glm::vec4 camera_position_c_glm = glm::vec4(camera_position_c.x, camera_position_c.y, camera_position_c.z, 1.0f);
-    glm::vec4 camera_view_vector_glm = glm::vec4(camera_view_unit_vector.x, camera_view_unit_vector.y, camera_view_unit_vector.z, 0.0f);
-    glm::vec4 camera_up_vector_glm   = glm::vec4(g_free_camera_up_vector.x, g_free_camera_up_vector.y, g_free_camera_up_vector.z, 0.0f);
-    glm::mat4 view = Matrix_Camera_View(camera_position_c_glm, camera_view_vector_glm, camera_up_vector_glm);
+    CameraTransform cam_transform = g_camera.cam_transform();
+    cam_transform.set_position(camera_position_c);
+    cam_transform.set_basis_from_up_view(g_free_camera_up_vector, camera_view_unit_vector);
+    glm::mat4 view = invert_orthonormal_matrix(cam_transform.get_matrix());
     g_free_camera_right_vector = Vec3(view[0][0], view[1][0], view[2][0]);
 
     // Agora computamos a matriz de Projeção.

@@ -10,4 +10,12 @@ namespace engine {
 
     Mat4 identity_matrix();
     Vec3 negate(Vec3 v);
+
+    struct HyperVec3 {
+        Vec3 x;
+        Vec3 y;
+        Vec3 z;
+
+        HyperVec3(Vec3 x, Vec3 y, Vec3 z) : x(x), y(y), z(z) {}
+    };
 }
