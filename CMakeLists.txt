@@ -52,7 +52,10 @@ endif()
 
 add_executable(${EXECUTABLE_NAME} ${SOURCES})
 
-target_include_directories(${EXECUTABLE_NAME} BEFORE PRIVATE ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(${EXECUTABLE_NAME} BEFORE PRIVATE
+  ${SOURCE_DIR}/include
+  ${PROJECT_SOURCE_DIR}/include
+)
 
 if(WIN32)
 

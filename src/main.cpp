@@ -36,14 +36,10 @@
 #include <glm/gtc/type_ptr.hpp>
 
 // Headers locais, definidos na pasta "include/"
-#include "utils.h"
-#include "matrices.h"
+#include <utils.h>
+#include <matrices.h>
 
-#include "engine/controller.hpp"
-#include "engine/utils/linalg.hpp"
-#include "engine/input_controller.hpp"
-#include "engine/vobject/specialization/camera.hpp"
-#include "engine/vao.hpp"
+#include <engine.hpp>
 
 // Declaração de várias funções utilizadas em main().  Essas estão definidas
 // logo após a definição de main() neste arquivo.

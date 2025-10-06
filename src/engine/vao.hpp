@@ -1,6 +1,6 @@
-// #include "lib/lib.hpp"
-/* --- FLATTEN: lib/lib.hpp --- */
-#include <glad/glad.h>   // Criação de contexto OpenGL 3.3
+#pragma once
+
+#include <glad/glad.h>
 
 namespace vao {
     typedef struct Position {
