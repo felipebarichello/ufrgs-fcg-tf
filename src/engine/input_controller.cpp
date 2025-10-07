@@ -1,11 +1,18 @@
 #include "input_controller.hpp"
 
+std::map<std::pair<int,int>, std::vector<std::function<void()>>> InputController::key_action_handler_map;
+
 InputController InputController::start(GLFWwindow *window) {
     InputController input_controller = InputController();
     input_controller.window = window;
     glfwSetKeyCallback(input_controller.window, InputController::key_callback);
     return input_controller;
 }
+
+size_t InputController::hash(int key, int action) {
+    return ((size_t) key << 32) | (size_t) action;
+}
+
 void InputController::attach_key_handler(GLFWkeyfun handler)
 {
     // glfwSetKeyCallback(this->window, handler);
@@ -24,6 +31,10 @@ void InputController::attach_cursor_position_handler(GLFWcursorposfun handler)
 void InputController::attach_scrolling_handler(GLFWscrollfun handler)
 {
     glfwSetScrollCallback(this->window, handler);
+}
+
+void InputController::subscribe(int key, int action, std::function<void()> function) {
+    key_action_handler_map[{key,action}].push_back(function);
 }
 
 void InputController::key_callback(GLFWwindow *window, int key, int scancode, int action, int mod)
@@ -59,4 +70,5 @@ void InputController::key_callback(GLFWwindow *window, int key, int scancode, in
 
     // Print key and action
     printf("Key %d was %s\n", key, action_str);
+
 }
