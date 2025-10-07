@@ -37,7 +37,7 @@ namespace engine {
             static std::string get_executable_directory();
 
         public:
-            EngineController() : window(nullptr), input_controller(nullptr) {};
+            EngineController() : window(nullptr) {};
 
             static EngineController start_engine(WindowConfig window_config);
 
