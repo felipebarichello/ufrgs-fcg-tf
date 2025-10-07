@@ -418,6 +418,98 @@ void update_free_camera_move_vector() {
 
 // Definição da função que será chamada sempre que o usuário pressionar alguma
 // tecla do teclado. Veja http://www.glfw.org/docs/latest/input_guide.html#input_key
+void OnKeyX(int action, int mod) {
+    float delta = 3.141592f / 16.0f;
+    if (action == GLFW_PRESS) {
+        g_AngleX += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
+    }
+}
+
+void OnKeyY(int action, int mod) {
+    float delta = 3.141592f / 16.0f;
+    if (action == GLFW_PRESS) {
+        g_AngleY += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
+    }
+}
+
+void OnKeyZ(int action, int mod) {
+    float delta = 3.141592f / 16.0f;
+    if (action == GLFW_PRESS) {
+        g_AngleZ += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
+    }
+}
+
+void OnKeySpace(int action) {
+    if (action == GLFW_PRESS) {
+        g_AngleX = 0.0f;
+        g_AngleY = 0.0f;
+        g_AngleZ = 0.0f;
+    }
+}
+
+void OnKeyP(int action) {
+    if (action == GLFW_PRESS) {
+        g_UsePerspectiveProjection = true;
+    }
+}
+
+void OnKeyO(int action) {
+    if (action == GLFW_PRESS) {
+        g_UsePerspectiveProjection = false;
+    }
+}
+
+void OnKeyH(int action) {
+    if (action == GLFW_PRESS) {
+        g_ShowInfoText = !g_ShowInfoText;
+    }
+}
+
+void OnKeyF(int action) {
+    if (action == GLFW_PRESS)
+        g_camera_is_free = !g_camera_is_free;
+}
+
+void OnKeyW(int action) {
+    if (action == GLFW_PRESS) {
+        g_input_move_forward = true;
+        update_free_camera_move_vector();
+    } else if (action == GLFW_RELEASE) {
+        g_input_move_forward = false;
+        update_free_camera_move_vector();
+    }
+}
+
+void OnKeyS(int action) {
+    if (action == GLFW_PRESS) {
+        g_input_move_backward = true;
+        update_free_camera_move_vector();
+    } else if (action == GLFW_RELEASE) {
+        g_input_move_backward = false;
+        update_free_camera_move_vector();
+    }
+}
+
+void OnKeyA(int action) {
+    if (action == GLFW_PRESS) {
+        g_input_move_left = true;
+        update_free_camera_move_vector();
+    } else if (action == GLFW_RELEASE) {
+        g_input_move_left = false;
+        update_free_camera_move_vector();
+    }
+}
+
+void OnKeyD(int action) {
+    if (action == GLFW_PRESS) {
+        g_input_move_right = true;
+        update_free_camera_move_vector();
+    } else if (action == GLFW_RELEASE) {
+        g_input_move_right = false;
+        update_free_camera_move_vector();
+    }
+}
+
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod) {
     // =======================
     // Não modifique este loop! Ele é utilizando para correção automatizada dos
@@ -431,93 +523,42 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
 
-    // O código abaixo implementa a seguinte lógica:
-    //   Se apertar tecla X       então g_AngleX += delta;
-    //   Se apertar tecla shift+X então g_AngleX -= delta;
-    //   Se apertar tecla Y       então g_AngleY += delta;
-    //   Se apertar tecla shift+Y então g_AngleY -= delta;
-    //   Se apertar tecla Z       então g_AngleZ += delta;
-    //   Se apertar tecla shift+Z então g_AngleZ -= delta;
-
-    float delta = 3.141592f / 16.0f; // 22.5 graus, em radianos.
-
     switch (key) {
         case GLFW_KEY_X:
-            if (action == GLFW_PRESS) {
-                g_AngleX += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
-            }
+            OnKeyX(action, mod);
             break;
         case GLFW_KEY_Y:
-            if (action == GLFW_PRESS) {
-                g_AngleY += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
-            }
+            OnKeyY(action, mod);
             break;
         case GLFW_KEY_Z:
-            if (action == GLFW_PRESS) {
-                g_AngleZ += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
-            }
+            OnKeyZ(action, mod);
             break;
         case GLFW_KEY_SPACE:
-            if (action == GLFW_PRESS) {
-                g_AngleX = 0.0f;
-                g_AngleY = 0.0f;
-                g_AngleZ = 0.0f;
-            }
+            OnKeySpace(action);
             break;
         case GLFW_KEY_P:
-            if (action == GLFW_PRESS) {
-                g_UsePerspectiveProjection = true;
-            }
+            OnKeyP(action);
             break;
         case GLFW_KEY_O:
-            if (action == GLFW_PRESS) {
-                g_UsePerspectiveProjection = false;
-            }
+            OnKeyO(action);
             break;
         case GLFW_KEY_H:
-            if (action == GLFW_PRESS) {
-                g_ShowInfoText = !g_ShowInfoText;
-            }
+            OnKeyH(action);
             break;
         case GLFW_KEY_F:
-            if (action == GLFW_PRESS)
-                g_camera_is_free = !g_camera_is_free;
+            OnKeyF(action);
             break;
         case GLFW_KEY_W:
-            if (action == GLFW_PRESS) {
-                g_input_move_forward = true;
-                update_free_camera_move_vector();
-            } else if (action == GLFW_RELEASE) {
-                g_input_move_forward = false;
-                update_free_camera_move_vector();
-            }
+            OnKeyW(action);
             break;
         case GLFW_KEY_S:
-            if (action == GLFW_PRESS) {
-                g_input_move_backward = true;
-                update_free_camera_move_vector();
-            } else if (action == GLFW_RELEASE) {
-                g_input_move_backward = false;
-                update_free_camera_move_vector();
-            }
+            OnKeyS(action);
             break;
         case GLFW_KEY_A:
-            if (action == GLFW_PRESS) {
-                g_input_move_left = true;
-                update_free_camera_move_vector();
-            } else if (action == GLFW_RELEASE) {
-                g_input_move_left = false;
-                update_free_camera_move_vector();
-            }
+            OnKeyA(action);
             break;
         case GLFW_KEY_D:
-            if (action == GLFW_PRESS) {
-                g_input_move_right = true;
-                update_free_camera_move_vector();
-            } else if (action == GLFW_RELEASE) {
-                g_input_move_right = false;
-                update_free_camera_move_vector();
-            }
+            OnKeyD(action);
             break;
     }
 }
