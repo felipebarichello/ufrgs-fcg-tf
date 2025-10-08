@@ -10,12 +10,12 @@
 #include <glm/mat4x4.hpp>
 
 
-struct VectorState {
-    glm::vec2* key_vector;
-    bool forward = false;
-    bool backward = false;
-    bool left = false;
-    bool right = false;
+struct DPadState {
+    glm::vec2* direction;
+    bool forward_key_is_down = false;
+    bool backward_key_is_down = false;
+    bool left_key_is_down = false;
+    bool right_key_is_down = false;
 };
 
 class InputController {
@@ -26,10 +26,9 @@ private:
     bool input_move_backward = false;
     bool input_move_left = false;
     bool input_move_right = false;
-    static std::vector<VectorState> vector_state;
+    static std::vector<DPadState> vector_state;
 
-
-    static void update_key_move_vector(VectorState& vector_state);
+    static void update_key_move_vector(DPadState& vector_state);
 
 public:
     InputController() = default;
