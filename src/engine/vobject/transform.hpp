@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../utils/linalg.hpp"
+#include "../math/linalg.hpp"
 
 namespace engine {
     class Transform {
