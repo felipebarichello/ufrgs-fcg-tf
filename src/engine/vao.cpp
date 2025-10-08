@@ -1,6 +1,6 @@
 #include "vao.hpp"
 
-namespace vao {
+namespace engine {
 
     // Position
     Position::Position() {

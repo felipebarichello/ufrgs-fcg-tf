@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-namespace vao {
+namespace engine {
     typedef struct Position {
         GLfloat x;
         GLfloat y;
