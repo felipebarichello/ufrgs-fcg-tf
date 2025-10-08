@@ -172,22 +172,6 @@ Vao cube_faces_vao = Vao();
 Vao cube_edges_vao = Vao();
 Vao cube_axes_vao = Vao();
 
-void OnKeyW_Press();
-void OnKeyW_Release();
-void OnKeyS_Press();
-void OnKeyS_Release();
-void OnKeyA_Press();
-void OnKeyA_Release();
-void OnKeyD_Press();
-void OnKeyD_Release();
-void OnKeyC_Press();
-void OnKeyT_Press();
-void OnKeyUp_Press();
-void OnKeyDown_Press();
-void OnKeyLeft_Press();
-void OnKeyRight_Press();
-
-
 int main() {
     WindowConfig window_config = WindowConfig(
         800,
