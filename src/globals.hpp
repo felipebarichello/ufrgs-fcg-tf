@@ -37,7 +37,6 @@
 
 // Headers locais, definidos na pasta "include/"
 #include <utils.h>
-#include <matrices.h>
 
 #include <engine.hpp>
 // Declaração de várias funções utilizadas em main().  Essas estão definidas

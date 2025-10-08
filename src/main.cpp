@@ -37,9 +37,11 @@
 
 // Headers locais, definidos na pasta "include/"
 #include <utils.h>
-#include <matrices.h>
 
 #include <engine.hpp>
+
+// TODO: Remove unused function declarations
+
 // Declaração de várias funções utilizadas em main().  Essas estão definidas
 // logo após a definição de main() neste arquivo.
 void LoadShadersFromFiles(); // Carrega os shaders de vértice e fragmento, criando um programa de GPU
@@ -75,6 +77,7 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 void CursorPosCallback(GLFWwindow* window, double xpos, double ypos);
 void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
+
 using engine::EngineController;
 using engine::WindowConfig;
 using engine::Camera;
@@ -87,6 +90,15 @@ using vao::VaoBuilder;
 using engine::CameraTransform;
 using engine::invert_orthonormal_matrix;
 using engine::EventManager;
+using engine::Matrix_Identity;
+using engine::Matrix_Perspective;
+using engine::Matrix_Orthographic;
+using engine::Matrix_Translate;
+using engine::Matrix_Rotate;
+using engine::Matrix_Rotate_X;
+using engine::Matrix_Rotate_Y;
+using engine::Matrix_Rotate_Z;
+using engine::Matrix_Scale;
 
 
 Vao BuildCubeAxes();
