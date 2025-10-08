@@ -204,14 +204,15 @@ int main() {
     
     InputController& input_controller = g_engine_controller.input();
 
-    input_controller.subscribe_key_action(GLFW_KEY_W, GLFW_PRESS, OnKeyW_Press);
-    input_controller.subscribe_key_action(GLFW_KEY_W, GLFW_RELEASE, OnKeyW_Release);
-    input_controller.subscribe_key_action(GLFW_KEY_S, GLFW_PRESS, OnKeyS_Press);
-    input_controller.subscribe_key_action(GLFW_KEY_S, GLFW_RELEASE, OnKeyS_Release);
-    input_controller.subscribe_key_action(GLFW_KEY_A, GLFW_PRESS, OnKeyA_Press);
-    input_controller.subscribe_key_action(GLFW_KEY_A, GLFW_RELEASE, OnKeyA_Release);
-    input_controller.subscribe_key_action(GLFW_KEY_D, GLFW_PRESS, OnKeyD_Press);
-    input_controller.subscribe_key_action(GLFW_KEY_D, GLFW_RELEASE, OnKeyD_Release);
+    // input_controller.subscribe_key_action(GLFW_KEY_W, GLFW_PRESS, OnKeyW_Press);
+    // input_controller.subscribe_key_action(GLFW_KEY_W, GLFW_RELEASE, OnKeyW_Release);
+    // input_controller.subscribe_key_action(GLFW_KEY_S, GLFW_PRESS, OnKeyS_Press);
+    // input_controller.subscribe_key_action(GLFW_KEY_S, GLFW_RELEASE, OnKeyS_Release);
+    // input_controller.subscribe_key_action(GLFW_KEY_A, GLFW_PRESS, OnKeyA_Press);
+    // input_controller.subscribe_key_action(GLFW_KEY_A, GLFW_RELEASE, OnKeyA_Release);
+    // input_controller.subscribe_key_action(GLFW_KEY_D, GLFW_PRESS, OnKeyD_Press);
+    // input_controller.subscribe_key_action(GLFW_KEY_D, GLFW_RELEASE, OnKeyD_Release);
+    input_controller.subscribe_key_move_vector(&g_free_camera_move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
 
     // input_controller.attach_mouse_button_handler(MouseButtonCallback);
     input_controller.subscribe_key_action(GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS, OnMouseButton_Left_Press);
@@ -653,31 +654,4 @@ void OnKeyW_Press() {
     g_input_move_forward = true;
     update_free_camera_move_vector();
 }
-void OnKeyW_Release() {
-    g_input_move_forward = false;
-    update_free_camera_move_vector();
-}
-void OnKeyS_Press() {
-    g_input_move_backward = true;
-    update_free_camera_move_vector();
-}
-void OnKeyS_Release() {
-    g_input_move_backward = false;
-    update_free_camera_move_vector();
-}
-void OnKeyA_Press() {
-    g_input_move_left = true;
-    update_free_camera_move_vector();
-}
-void OnKeyA_Release() {
-    g_input_move_left = false;
-    update_free_camera_move_vector();
-}
-void OnKeyD_Press() {
-    g_input_move_right = true;
-    update_free_camera_move_vector();
-}
-void OnKeyD_Release() {
-    g_input_move_right = false;
-    update_free_camera_move_vector();
-}
+
