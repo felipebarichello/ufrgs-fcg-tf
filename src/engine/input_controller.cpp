@@ -28,11 +28,6 @@ void InputController::subscribe_hold_button(int key, bool* is_down) {
     add_key_handler(key, GLFW_RELEASE, [is_down]() { *is_down = false; });
 }
 
-void InputController::subscribe_cursor(glm::vec2* position, glm::vec2* delta) {
-    this->cursor_position = position;
-    this->cursor_delta = delta;
-}
-
 void InputController::subscribe_dpad(glm::vec2* direction, int forward_key, int backward_key, int left_key, int right_key) {
     // Store the state for this vector
     dpads.push_back(DPad());

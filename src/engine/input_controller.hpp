@@ -38,7 +38,6 @@ namespace engine {
         private:
             void cursor_callback(GLFWwindow* window, double xpos, double ypos);
             void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod);
-            void subscribe_cursor(glm::vec2* position, glm::vec2* delta);
             void update_dpad_direction(DPad* dpad);
             void add_key_handler(int key, int action, std::function<void()>);
     };
