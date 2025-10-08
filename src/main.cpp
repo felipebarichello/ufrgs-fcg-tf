@@ -92,7 +92,6 @@ using engine::invert_orthonormal_matrix;
 using engine::EventManager;
 using engine::Matrix_Identity;
 using engine::Matrix_Perspective;
-using engine::Matrix_Orthographic;
 using engine::Matrix_Translate;
 using engine::Matrix_Rotate;
 using engine::Matrix_Rotate_X;
@@ -162,20 +161,10 @@ bool g_input_move_backward = false;
 bool g_input_move_left     = false;
 bool g_input_move_right    = false;
 
-// Variável que controla o tipo de projeção utilizada: perspectiva ou ortográfica.
-bool g_UsePerspectiveProjection = true;
-
-// Variável que controla se o texto informativo será mostrado na tela.
-bool g_ShowInfoText = true;
-
 GLuint g_vertex_array_object_id;
 GLint g_model_uniform;
 GLint g_view_uniform;
 GLint g_projection_uniform;
-
-glm::mat4 g_the_projection;
-glm::mat4 g_the_model;
-glm::mat4 g_the_view;
 
 Vao cube_faces_vao = Vao();
 Vao cube_edges_vao = Vao();
@@ -214,7 +203,7 @@ int main() {
     g_view_uniform       = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "view"); // Variável da matriz "view" em shader_vertex.glsl
     g_projection_uniform = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "projection"); // Variável da matriz "projection" em shader_vertex.glsl
 
-    // Habilitamos o Z-buffer. Veja slides 104-116 do documento Aula_09_Projecoes.pdf.
+    // Enable z-buffer
     glEnable(GL_DEPTH_TEST);
 
     EventManager& events = g_engine_controller.events();
@@ -270,7 +259,6 @@ void update() {
     glm::mat4 view = invert_orthonormal_matrix(cam_transform.get_matrix());
     g_free_camera_right_vector = Vec3(view[0][0], view[1][0], view[2][0]);
 
-    // Agora computamos a matriz de Projeção.
     glm::mat4 projection;
 
     // Note que, no sistema de coordenadas da câmera, os planos near e far
@@ -278,23 +266,10 @@ void update() {
     float nearplane = -0.1f;  // Posição do "near plane"
     float farplane  = -10.0f; // Posição do "far plane"
 
-    if (g_UsePerspectiveProjection) {
-        // Projeção Perspectiva.
-        // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
-        float field_of_view = 3.141592f / 3.0f;
-        projection = Matrix_Perspective(field_of_view, g_engine_controller.get_screen_ratio(), nearplane, farplane);
-    } else {
-        // Projeção Ortográfica.
-        // Para definição dos valores l, r, b, t ("left", "right", "bottom", "top"),
-        // PARA PROJEÇÃO ORTOGRÁFICA veja slides 219-224 do documento Aula_09_Projecoes.pdf.
-        // Para simular um "zoom" ortográfico, computamos o valor de "t"
-        // utilizando a variável g_CameraDistance.
-        float t = 1.5f * g_CameraDistance / 2.5f;
-        float b = -t;
-        float r = t * g_engine_controller.get_screen_ratio();
-        float l = -r;
-        projection = Matrix_Orthographic(l, r, b, t, nearplane, farplane);
-    }
+    // Projeção Perspectiva.
+    // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
+    float field_of_view = 3.141592f / 3.0f;
+    projection = Matrix_Perspective(field_of_view, g_engine_controller.get_screen_ratio(), nearplane, farplane);
 
     // Enviamos as matrizes "view" e "projection" para a placa de vídeo
     // (GPU). Veja o arquivo "shader_vertex.glsl", onde estas são
@@ -331,12 +306,6 @@ void update() {
                     * Matrix_Rotate_Z(g_AngleZ)  // TERCEIRO rotação Z de Euler
                     * Matrix_Rotate_Y(g_AngleY)  // SEGUNDO rotação Y de Euler
                     * Matrix_Rotate_X(g_AngleX); // PRIMEIRO rotação X de Euler
-
-            // Armazenamos as matrizes model, view, e projection do terceiro cubo
-            // para mostrar elas na tela através da função TextRendering_ShowModelViewProjection().
-            g_the_model = model;
-            g_the_projection = projection;
-            g_the_view = view;
         }
 
         glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
