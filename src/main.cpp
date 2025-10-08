@@ -166,8 +166,6 @@ glm::mat4 g_the_projection;
 glm::mat4 g_the_model;
 glm::mat4 g_the_view;
 
-GLFWwindow* g_window;
-
 void update();
 
 Vao cube_faces_vao = Vao();
@@ -201,25 +199,12 @@ int main() {
     
     InputController& input_controller = g_engine_controller.input();
 
-    // input_controller.subscribe_key_action(GLFW_KEY_W, GLFW_PRESS, OnKeyW_Press);
-    // input_controller.subscribe_key_action(GLFW_KEY_W, GLFW_RELEASE, OnKeyW_Release);
-    // input_controller.subscribe_key_action(GLFW_KEY_S, GLFW_PRESS, OnKeyS_Press);
-    // input_controller.subscribe_key_action(GLFW_KEY_S, GLFW_RELEASE, OnKeyS_Release);
-    // input_controller.subscribe_key_action(GLFW_KEY_A, GLFW_PRESS, OnKeyA_Press);
-    // input_controller.subscribe_key_action(GLFW_KEY_A, GLFW_RELEASE, OnKeyA_Release);
-    // input_controller.subscribe_key_action(GLFW_KEY_D, GLFW_PRESS, OnKeyD_Press);
-    // input_controller.subscribe_key_action(GLFW_KEY_D, GLFW_RELEASE, OnKeyD_Release);
     input_controller.subscribe_key_move_vector(&g_free_camera_move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
     input_controller.subscribe_key_move_vector(&g_free_camera_move_vector, GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT);
 
     input_controller.attach_mouse_button_handler(MouseButtonCallback);
-    //input_controller.subscribe_key_action(GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS, onMouseButton_Left_Press);
-    //input_controller.subscribe_key_action(GLFW_MOUSE_BUTTON_LEFT, GLFW_RELEASE, onMouseButton_Left_Release);
-
     input_controller.attach_cursor_position_handler(CursorPosCallback);
     input_controller.attach_scrolling_handler(ScrollCallback);
-
-    g_window = g_engine_controller.get_window();
 
     cube_faces_vao = BuildCubeFaces();
     cube_edges_vao = BuildCubeEdges();
