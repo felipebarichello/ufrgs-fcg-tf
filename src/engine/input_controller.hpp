@@ -21,19 +21,17 @@ struct DPad {
 class InputController {
 private:
     GLFWwindow* window;
-    static std::map<std::pair<int,int>, std::vector<std::function<void()>>> key_action_handler_map;
+    std::map<std::pair<int,int>, std::vector<std::function<void()>>> key_action_handler_map;
     std::vector<DPad> dpads;
     void update_dpad_direction(DPad& dpad);
     void subscribe_key_action(int key, int action, std::function<void()>);
 
 public:
-    InputController() = default;
-    static InputController init(GLFWwindow *window);
-    static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod);
+    InputController(GLFWwindow* window);
+    void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod);
     void subscribe_dpad(glm::vec2* direction, int forward_key, int backward_key, int left_key, int right_key);
     void subscribe_hold_button(int key, bool* is_down);
     void subscribe_press_button(int key, std::function<void()>);
-
     void attach_mouse_button_handler(GLFWmousebuttonfun handler);
     void attach_cursor_position_handler(GLFWcursorposfun handler);
     void attach_scrolling_handler(GLFWscrollfun handler);

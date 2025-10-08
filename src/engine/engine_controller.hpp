@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <cstdlib>
 #include <fstream>
+#include <memory>
 #include "input_controller.hpp"
 #include "event_manager.hpp"
 
@@ -22,7 +23,7 @@ namespace engine {
     class EngineController {
         private:
             GLFWwindow* window;
-            InputController input_controller;
+            InputController* input_controller;
             EventManager event_manager;
             static float screen_ratio; // TODO: Make non-static?
             static GLuint gpu_program_id;
@@ -41,7 +42,7 @@ namespace engine {
             bool update_and_test_should_close();
 
         public:
-            EngineController() : window(nullptr) {};
+            EngineController() : window(nullptr), input_controller(nullptr) {}
 
             static EngineController start_engine(WindowConfig window_config);
 
@@ -49,7 +50,7 @@ namespace engine {
 
             EventManager& events() { return this->event_manager; }
             GLFWwindow* get_window();
-            InputController& input();
+            InputController* input();
             float get_screen_ratio() { return screen_ratio; }
             void set_screen_ratio(float ratio) { screen_ratio = ratio; }
             GLuint get_gpu_program_id() { return gpu_program_id; }

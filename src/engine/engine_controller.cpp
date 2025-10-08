@@ -14,7 +14,7 @@ namespace engine {
         EngineController engine_controller = EngineController();
 
         engine_controller.window = EngineController::init_window(window_config);
-        engine_controller.input_controller = InputController::init(engine_controller.window);
+        engine_controller.input_controller = new InputController(engine_controller.window);
 
         return engine_controller;
     }
@@ -44,7 +44,7 @@ namespace engine {
         return this->window;
     }
 
-    InputController& EngineController::input() {
+    InputController* EngineController::input() {
         return this->input_controller;
     }
 

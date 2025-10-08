@@ -182,15 +182,15 @@ int main() {
     );
 
     g_engine_controller = EngineController::start_engine(window_config);
-    
-    InputController& input_controller = g_engine_controller.input();
 
-    input_controller.subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
-    input_controller.subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT);
+    InputController* input_controller = g_engine_controller.input();
 
-    input_controller.attach_mouse_button_handler(MouseButtonCallback);
-    input_controller.attach_cursor_position_handler(CursorPosCallback);
-    input_controller.attach_scrolling_handler(ScrollCallback);
+    input_controller->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
+    input_controller->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT);
+
+    input_controller->attach_mouse_button_handler(MouseButtonCallback);
+    input_controller->attach_cursor_position_handler(CursorPosCallback);
+    input_controller->attach_scrolling_handler(ScrollCallback);
 
     cube_faces_vao = BuildCubeFaces();
     cube_edges_vao = BuildCubeEdges();
