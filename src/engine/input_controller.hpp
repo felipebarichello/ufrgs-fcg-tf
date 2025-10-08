@@ -22,7 +22,7 @@ namespace engine {
     class InputController {
         private:
             GLFWwindow* window;
-            std::map<std::pair<int,int>, std::vector<std::function<void()>>> key_action_handler_map;
+            std::map<std::pair<int,int>, std::vector<std::function<void()>>> key_handler_map;
             std::vector<DPad> dpads;
             glm::vec2* cursor_position;
             glm::vec2* cursor_delta;
@@ -40,6 +40,6 @@ namespace engine {
             void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod);
             void subscribe_cursor(glm::vec2* position, glm::vec2* delta);
             void update_dpad_direction(DPad* dpad);
-            void subscribe_key_action(int key, int action, std::function<void()>);
+            void add_key_handler(int key, int action, std::function<void()>);
     };
 }

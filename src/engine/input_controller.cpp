@@ -15,17 +15,17 @@ InputController::InputController(GLFWwindow *window) {
     }
 }
 
-void InputController::subscribe_key_action(int key, int action, std::function<void()> function) {
-    key_action_handler_map[{key,action}].push_back(function);
+void InputController::add_key_handler(int key, int action, std::function<void()> function) {
+    key_handler_map[{key,action}].push_back(function);
 }
 
 void InputController::subscribe_press_button(int key, std::function<void()> function) {
-    subscribe_key_action(key, GLFW_PRESS, function);
+    add_key_handler(key, GLFW_PRESS, function);
 }
 
 void InputController::subscribe_hold_button(int key, bool* is_down) {
-    subscribe_key_action(key, GLFW_PRESS, [is_down]() { *is_down = true; });
-    subscribe_key_action(key, GLFW_RELEASE, [is_down]() { *is_down = false; });
+    add_key_handler(key, GLFW_PRESS, [is_down]() { *is_down = true; });
+    add_key_handler(key, GLFW_RELEASE, [is_down]() { *is_down = false; });
 }
 
 void InputController::subscribe_cursor(glm::vec2* position, glm::vec2* delta) {
@@ -41,35 +41,35 @@ void InputController::subscribe_dpad(glm::vec2* direction, int forward_key, int 
 
     dpad.direction = direction;
 
-    subscribe_key_action(forward_key, GLFW_PRESS, [this,index]() { 
+    add_key_handler(forward_key, GLFW_PRESS, [this,index]() { 
         dpads[index].forward_key_is_down = true;
         update_dpad_direction(&dpads[index]);
     });
-    subscribe_key_action(forward_key, GLFW_RELEASE, [this,index]() {
+    add_key_handler(forward_key, GLFW_RELEASE, [this,index]() {
         dpads[index].forward_key_is_down = false;
         update_dpad_direction(&dpads[index]);
     });
-    subscribe_key_action(backward_key, GLFW_PRESS, [this,index]() {
+    add_key_handler(backward_key, GLFW_PRESS, [this,index]() {
         dpads[index].backward_key_is_down = true;
         update_dpad_direction(&dpads[index]);
     });
-    subscribe_key_action(backward_key, GLFW_RELEASE, [this,index]() {
+    add_key_handler(backward_key, GLFW_RELEASE, [this,index]() {
         dpads[index].backward_key_is_down = false;
         update_dpad_direction(&dpads[index]);
     });
-    subscribe_key_action(left_key, GLFW_PRESS, [this,index]() {
+    add_key_handler(left_key, GLFW_PRESS, [this,index]() {
         dpads[index].left_key_is_down = true;
         update_dpad_direction(&dpads[index]);
     });
-    subscribe_key_action(left_key, GLFW_RELEASE, [this,index]() {
+    add_key_handler(left_key, GLFW_RELEASE, [this,index]() {
         dpads[index].left_key_is_down = false;
         update_dpad_direction(&dpads[index]);
     });
-    subscribe_key_action(right_key, GLFW_PRESS, [this,index]() {
+    add_key_handler(right_key, GLFW_PRESS, [this,index]() {
         dpads[index].right_key_is_down = true;
         update_dpad_direction(&dpads[index]);
     });
-    subscribe_key_action(right_key, GLFW_RELEASE, [this,index]() {
+    add_key_handler(right_key, GLFW_RELEASE, [this,index]() {
         dpads[index].right_key_is_down = false;
         update_dpad_direction(&dpads[index]);
     });
@@ -89,7 +89,7 @@ void InputController::key_callback(GLFWwindow *window, int key, int scancode, in
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
 
-    for (std::function<void()> function : key_action_handler_map[{key,action}]) {
+    for (std::function<void()> function : key_handler_map[{key,action}]) {
         function();
     }
 }
