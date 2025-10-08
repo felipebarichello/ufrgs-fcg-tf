@@ -5,6 +5,8 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <cstdlib>
+#include <cstdio>
 
 namespace engine {
     glm::mat4 Matrix(
