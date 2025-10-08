@@ -174,7 +174,7 @@ Vao cube_axes_vao = Vao();
 void update();
 
 int main() {
-    WindowConfig window_config = WindowConfig(
+    WindowConfig window_config(
         800,
         800,
         "INF01047 - 579876 - Felipe Wendt Barichello"
