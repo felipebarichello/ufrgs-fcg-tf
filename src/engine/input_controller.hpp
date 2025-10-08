@@ -10,9 +10,11 @@
 #include <glm/mat4x4.hpp>
 
 
-struct KeyAction {
-    int key;
-    int action;
+struct VectorState {
+    bool forward = false;
+    bool backward = false;
+    bool left = false;
+    bool right = false;
 };
 
 class InputController {
@@ -26,12 +28,12 @@ private:
     static glm::vec2* key_vector;
 public:
     InputController() = default;
-    InputController static start(GLFWwindow *window);
+    static InputController start(GLFWwindow *window);
     void attach_mouse_button_handler(GLFWmousebuttonfun handler);
     void attach_cursor_position_handler(GLFWcursorposfun handler);
     void attach_scrolling_handler(GLFWscrollfun handler);
     void subscribe_key_action(int key, int action, std::function<void()>);
-    void static key_callback(GLFWwindow* window, int key, int scancode, int action, int mod);
+    static void  key_callback(GLFWwindow* window, int key, int scancode, int action, int mod);
     void subscribe_key_move_vector(glm::vec2* key_vector, int forward_key, int backward_key, int left_key, int right_key);
     void update_key_move_vector();
 
