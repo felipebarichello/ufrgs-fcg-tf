@@ -213,6 +213,7 @@ int main() {
     // input_controller.subscribe_key_action(GLFW_KEY_D, GLFW_PRESS, OnKeyD_Press);
     // input_controller.subscribe_key_action(GLFW_KEY_D, GLFW_RELEASE, OnKeyD_Release);
     input_controller.subscribe_key_move_vector(&g_free_camera_move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
+    input_controller.subscribe_key_move_vector(&g_free_camera_move_vector, GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT);
 
     // input_controller.attach_mouse_button_handler(MouseButtonCallback);
     input_controller.subscribe_key_action(GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS, OnMouseButton_Left_Press);
