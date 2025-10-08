@@ -276,9 +276,9 @@ void update() {
         // PARA PROJEÇÃO ORTOGRÁFICA veja slides 219-224 do documento Aula_09_Projecoes.pdf.
         // Para simular um "zoom" ortográfico, computamos o valor de "t"
         // utilizando a variável g_CameraDistance.
-        float t = 1.5f*g_CameraDistance/2.5f;
+        float t = 1.5f * g_CameraDistance / 2.5f;
         float b = -t;
-        float r = t*g_engine_controller.get_screen_ratio();
+        float r = t * g_engine_controller.get_screen_ratio();
         float l = -r;
         projection = Matrix_Orthographic(l, r, b, t, nearplane, farplane);
     }
