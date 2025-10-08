@@ -41,14 +41,38 @@ void InputController::subscribe_key_move_vector(glm::vec2* key_vector_ref, int f
     state.right = false;
 
     // capture index by value to avoid dangling reference
-    subscribe_key_action(forward_key, GLFW_PRESS, [index, this]() { InputController::OnKeyForward_Press(vector_state[index]); });
-    subscribe_key_action(forward_key, GLFW_RELEASE, [index, this]() { InputController::OnKeyForward_Release(vector_state[index]); });
-    subscribe_key_action(backward_key, GLFW_PRESS, [index, this]() { InputController::OnKeyBackward_Press(vector_state[index]); });
-    subscribe_key_action(backward_key, GLFW_RELEASE, [index, this]() { InputController::OnKeyBackward_Release(vector_state[index]); });
-    subscribe_key_action(left_key, GLFW_PRESS, [index, this]() { InputController::OnKeyLeft_Press(vector_state[index]); });
-    subscribe_key_action(left_key, GLFW_RELEASE, [index, this]() { InputController::OnKeyLeft_Release(vector_state[index]); });
-    subscribe_key_action(right_key, GLFW_PRESS, [index, this]() { InputController::OnKeyRight_Press(vector_state[index]); });
-    subscribe_key_action(right_key, GLFW_RELEASE, [index, this]() { InputController::OnKeyRight_Release(vector_state[index]); });
+    subscribe_key_action(forward_key, GLFW_PRESS, [index]() { 
+        vector_state[index].forward = true;
+        InputController::update_key_move_vector(vector_state[index]);
+    });
+    subscribe_key_action(forward_key, GLFW_RELEASE, [index]() { 
+        vector_state[index].forward = false;
+        InputController::update_key_move_vector(vector_state[index]);
+    });
+    subscribe_key_action(backward_key, GLFW_PRESS, [index]() { 
+        vector_state[index].backward = true;
+        InputController::update_key_move_vector(vector_state[index]);
+    });
+    subscribe_key_action(backward_key, GLFW_RELEASE, [index]() { 
+        vector_state[index].backward = false;
+        InputController::update_key_move_vector(vector_state[index]);
+    });
+    subscribe_key_action(left_key, GLFW_PRESS, [index]() { 
+        vector_state[index].left = true;
+        InputController::update_key_move_vector(vector_state[index]);
+    });
+    subscribe_key_action(left_key, GLFW_RELEASE, [index]() { 
+        vector_state[index].left = false;
+        InputController::update_key_move_vector(vector_state[index]);
+    });
+    subscribe_key_action(right_key, GLFW_PRESS, [index]() { 
+        vector_state[index].right = true;
+        InputController::update_key_move_vector(vector_state[index]);
+    });
+    subscribe_key_action(right_key, GLFW_RELEASE, [index]() { 
+        vector_state[index].right = false;
+        InputController::update_key_move_vector(vector_state[index]);
+    });
 }
 
 void InputController::key_callback(GLFWwindow *window, int key, int scancode, int action, int mod)
@@ -89,44 +113,6 @@ void InputController::update_key_move_vector(VectorState& vector_state) {
         *(vector_state.key_vector) = glm::normalize(*(vector_state.key_vector));
 }
 
-void InputController::OnKeyForward_Press(VectorState& vector_state) {
-    vector_state.forward = true;
-    InputController::update_key_move_vector(vector_state);
-}
 
-void InputController::OnKeyForward_Release(VectorState& vector_state) {
-    vector_state.forward = false;
-    InputController::update_key_move_vector(vector_state);
-}
-
-void InputController::OnKeyBackward_Press(VectorState& vector_state) {
-    vector_state.backward = true;
-    InputController::update_key_move_vector(vector_state);
-}
-
-void InputController::OnKeyBackward_Release(VectorState& vector_state) {
-    vector_state.backward = false;
-    InputController::update_key_move_vector(vector_state);
-}
-
-void InputController::OnKeyLeft_Press(VectorState& vector_state) {
-    vector_state.left = true;
-    InputController::update_key_move_vector(vector_state);
-}
-
-void InputController::OnKeyLeft_Release(VectorState& vector_state) {
-    vector_state.left = false;
-    InputController::update_key_move_vector(vector_state);
-}
-
-void InputController::OnKeyRight_Press(VectorState& vector_state) {
-    vector_state.right = true;
-    InputController::update_key_move_vector(vector_state);
-}
-
-void InputController::OnKeyRight_Release(VectorState& vector_state) {
-    vector_state.right = false;
-    InputController::update_key_move_vector(vector_state);
-}
 
 

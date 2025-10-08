@@ -28,14 +28,7 @@ private:
     bool input_move_right = false;
     static std::vector<VectorState> vector_state;
 
-    static void OnKeyForward_Press(VectorState& vector_state);
-    static void OnKeyForward_Release(VectorState& vector_state);
-    static void OnKeyBackward_Press(VectorState& vector_state);
-    static void OnKeyBackward_Release(VectorState& vector_state);
-    static void OnKeyLeft_Press(VectorState& vector_state);
-    static void OnKeyLeft_Release(VectorState& vector_state);
-    static void OnKeyRight_Press(VectorState& vector_state);
-    static void OnKeyRight_Release(VectorState& vector_state);
+
     static void update_key_move_vector(VectorState& vector_state);
 
 public:
@@ -47,5 +40,4 @@ public:
     void subscribe_key_action(int key, int action, std::function<void()>);
     static void  key_callback(GLFWwindow* window, int key, int scancode, int action, int mod);
     void subscribe_key_move_vector(glm::vec2* key_vector, int forward_key, int backward_key, int left_key, int right_key);
-
 };
