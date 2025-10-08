@@ -585,23 +585,6 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
         g_CameraDistance = verysmallnumber;
 }
 
-void update_free_camera_move_vector() {
-    g_free_camera_move_vector = glm::vec2(0.0f, 0.0f);
-
-    if (g_input_move_forward)
-        g_free_camera_move_vector.y += 1.0f;
-    if (g_input_move_backward)
-        g_free_camera_move_vector.y -= 1.0f;
-    if (g_input_move_left)
-        g_free_camera_move_vector.x -= 1.0f;
-    if (g_input_move_right)
-        g_free_camera_move_vector.x += 1.0f;
-
-    // Normalize
-    if (g_free_camera_move_vector != glm::vec2(0.0f, 0.0f))
-        g_free_camera_move_vector = glm::normalize(g_free_camera_move_vector);
-}
-
 // For each (action, key) pair, create a separate case and handler function
 
 void OnMouseButton_Left_Press() {
@@ -650,8 +633,4 @@ void OnKeyF_Press() {
     g_camera_is_free = !g_camera_is_free;
 }
 void OnKeyF_Release() { /* No action needed */ }
-void OnKeyW_Press() {
-    g_input_move_forward = true;
-    update_free_camera_move_vector();
-}
 
