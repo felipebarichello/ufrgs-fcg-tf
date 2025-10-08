@@ -167,11 +167,11 @@ glm::mat4 g_the_projection;
 glm::mat4 g_the_model;
 glm::mat4 g_the_view;
 
-void update();
-
 Vao cube_faces_vao = Vao();
 Vao cube_edges_vao = Vao();
 Vao cube_axes_vao = Vao();
+
+void update();
 
 int main() {
     WindowConfig window_config = WindowConfig(
