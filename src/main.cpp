@@ -40,7 +40,6 @@
 #include <matrices.h>
 
 #include <engine.hpp>
-
 // Declaração de várias funções utilizadas em main().  Essas estão definidas
 // logo após a definição de main() neste arquivo.
 void LoadShadersFromFiles(); // Carrega os shaders de vértice e fragmento, criando um programa de GPU
@@ -76,7 +75,6 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 void CursorPosCallback(GLFWwindow* window, double xpos, double ypos);
 void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
-
 
 using engine::EngineController;
 using engine::WindowConfig;
@@ -172,6 +170,7 @@ Vao cube_faces_vao = Vao();
 Vao cube_edges_vao = Vao();
 Vao cube_axes_vao = Vao();
 
+
 void start();
 void update();
 
@@ -185,7 +184,10 @@ int main() {
     g_engine_controller = EngineController::start_engine(window_config);
     
     InputController& input_controller = g_engine_controller.input();
-    input_controller.attach_key_handler(KeyCallback);
+
+    input_controller.subscribe_key_move_vector(&g_free_camera_move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
+    input_controller.subscribe_key_move_vector(&g_free_camera_move_vector, GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT);
+
     input_controller.attach_mouse_button_handler(MouseButtonCallback);
     input_controller.attach_cursor_position_handler(CursorPosCallback);
     input_controller.attach_scrolling_handler(ScrollCallback);
@@ -488,26 +490,6 @@ Vao BuildCubeAxes()
 // de tempo. Utilizadas no callback CursorPosCallback() abaixo.
 double g_LastCursorPosX, g_LastCursorPosY;
 
-// Função callback chamada sempre que o usuário aperta algum dos botões do mouse
-void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
-    {
-        // Se o usuário pressionou o botão esquerdo do mouse, guardamos a
-        // posição atual do cursor nas variáveis g_LastCursorPosX e
-        // g_LastCursorPosY.  Também, setamos a variável
-        // g_LeftMouseButtonPressed como true, para saber que o usuário está
-        // com o botão esquerdo pressionado.
-        glfwGetCursorPos(window, &g_LastCursorPosX, &g_LastCursorPosY);
-        g_LeftMouseButtonPressed = true;
-    }
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
-    {
-        // Quando o usuário soltar o botão esquerdo do mouse, atualizamos a
-        // variável abaixo para false.
-        g_LeftMouseButtonPressed = false;
-    }
-}
-
 void update_free_camera_view_vector() {
     g_free_camera_view_unit_vector = Vec3(
         cosf(g_CameraPhi) * sinf(g_CameraTheta),
@@ -575,125 +557,17 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
         g_CameraDistance = verysmallnumber;
 }
 
-void update_free_camera_move_vector() {
-    g_free_camera_move_vector = glm::vec2(0.0f, 0.0f);
+void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        g_LeftMouseButtonPressed = true;
 
-    if (g_input_move_forward)
-        g_free_camera_move_vector.y += 1.0f;
-    if (g_input_move_backward)
-        g_free_camera_move_vector.y -= 1.0f;
-    if (g_input_move_left)
-        g_free_camera_move_vector.x -= 1.0f;
-    if (g_input_move_right)
-        g_free_camera_move_vector.x += 1.0f;
+        // Atualizamos as variáveis globais que armazenam a última posição
+        // conhecida do cursor do mouse.
+        glfwGetCursorPos(window, &g_LastCursorPosX, &g_LastCursorPosY);
+    }
 
-    // Normalize
-    if (g_free_camera_move_vector != glm::vec2(0.0f, 0.0f))
-        g_free_camera_move_vector = glm::normalize(g_free_camera_move_vector);
-}
-
-// Definição da função que será chamada sempre que o usuário pressionar alguma
-// tecla do teclado. Veja http://www.glfw.org/docs/latest/input_guide.html#input_key
-void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod) {
-    // =======================
-    // Não modifique este loop! Ele é utilizando para correção automatizada dos
-    // laboratórios. Deve ser sempre o primeiro comando desta função KeyCallback().
-    for (int i = 0; i < 10; ++i)
-        if (key == GLFW_KEY_0 + i && action == GLFW_PRESS && mod == GLFW_MOD_SHIFT)
-            std::exit(100 + i);
-    // =======================
-
-    // Se o usuário pressionar a tecla ESC, fechamos a janela.
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GL_TRUE);
-
-    // O código abaixo implementa a seguinte lógica:
-    //   Se apertar tecla X       então g_AngleX += delta;
-    //   Se apertar tecla shift+X então g_AngleX -= delta;
-    //   Se apertar tecla Y       então g_AngleY += delta;
-    //   Se apertar tecla shift+Y então g_AngleY -= delta;
-    //   Se apertar tecla Z       então g_AngleZ += delta;
-    //   Se apertar tecla shift+Z então g_AngleZ -= delta;
-
-    float delta = 3.141592f / 16.0f; // 22.5 graus, em radianos.
-
-    switch (key) {
-        case GLFW_KEY_X:
-            if (action == GLFW_PRESS) {
-                g_AngleX += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
-            }
-            break;
-        case GLFW_KEY_Y:
-            if (action == GLFW_PRESS) {
-                g_AngleY += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
-            }
-            break;
-        case GLFW_KEY_Z:
-            if (action == GLFW_PRESS) {
-                g_AngleZ += (mod & GLFW_MOD_SHIFT) ? -delta : delta;
-            }
-            break;
-        case GLFW_KEY_SPACE:
-            if (action == GLFW_PRESS) {
-                g_AngleX = 0.0f;
-                g_AngleY = 0.0f;
-                g_AngleZ = 0.0f;
-            }
-            break;
-        case GLFW_KEY_P:
-            if (action == GLFW_PRESS) {
-                g_UsePerspectiveProjection = true;
-            }
-            break;
-        case GLFW_KEY_O:
-            if (action == GLFW_PRESS) {
-                g_UsePerspectiveProjection = false;
-            }
-            break;
-        case GLFW_KEY_H:
-            if (action == GLFW_PRESS) {
-                g_ShowInfoText = !g_ShowInfoText;
-            }
-            break;
-        case GLFW_KEY_F:
-            if (action == GLFW_PRESS)
-                g_camera_is_free = !g_camera_is_free;
-            break;
-        case GLFW_KEY_W:
-            if (action == GLFW_PRESS) {
-                g_input_move_forward = true;
-                update_free_camera_move_vector();
-            } else if (action == GLFW_RELEASE) {
-                g_input_move_forward = false;
-                update_free_camera_move_vector();
-            }
-            break;
-        case GLFW_KEY_S:
-            if (action == GLFW_PRESS) {
-                g_input_move_backward = true;
-                update_free_camera_move_vector();
-            } else if (action == GLFW_RELEASE) {
-                g_input_move_backward = false;
-                update_free_camera_move_vector();
-            }
-            break;
-        case GLFW_KEY_A:
-            if (action == GLFW_PRESS) {
-                g_input_move_left = true;
-                update_free_camera_move_vector();
-            } else if (action == GLFW_RELEASE) {
-                g_input_move_left = false;
-                update_free_camera_move_vector();
-            }
-            break;
-        case GLFW_KEY_D:
-            if (action == GLFW_PRESS) {
-                g_input_move_right = true;
-                update_free_camera_move_vector();
-            } else if (action == GLFW_RELEASE) {
-                g_input_move_right = false;
-                update_free_camera_move_vector();
-            }
-            break;
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
+        g_LeftMouseButtonPressed = false;
     }
 }
+

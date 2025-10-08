@@ -41,7 +41,7 @@ namespace engine {
             bool update_and_test_should_close();
 
         public:
-            EngineController() : window(nullptr), input_controller(nullptr) {};
+            EngineController() : window(nullptr) {};
 
             static EngineController start_engine(WindowConfig window_config);
 
