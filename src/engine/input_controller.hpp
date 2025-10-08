@@ -23,11 +23,16 @@ private:
     GLFWwindow* window;
     std::map<std::pair<int,int>, std::vector<std::function<void()>>> key_action_handler_map;
     std::vector<DPad> dpads;
-    void update_dpad_direction(DPad& dpad);
+    glm::vec2* cursor_position;
+    glm::vec2* cursor_delta;
+    glm::vec2 last_cursor_position;
+    void update_dpad_direction(DPad* dpad);
     void subscribe_key_action(int key, int action, std::function<void()>);
 
 public:
     InputController(GLFWwindow* window);
+    void subscribe_cursor(glm::vec2* position, glm::vec2* delta);
+    void cursor_callback(GLFWwindow* window, double xpos, double ypos);
     void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod);
     void subscribe_dpad(glm::vec2* direction, int forward_key, int backward_key, int left_key, int right_key);
     void subscribe_hold_button(int key, bool* is_down);
