@@ -19,9 +19,9 @@ namespace engine {
         return engine_controller;
     }
 
-    void EngineController::hand_over_control(UpdateCallback update_callback) {
+    void EngineController::hand_over_control() {
         while (!this->update_and_test_should_close()) {
-            update_callback();
+            this->event_manager.update();
             glfwSwapBuffers(this->window);
             glfwPollEvents();
         }

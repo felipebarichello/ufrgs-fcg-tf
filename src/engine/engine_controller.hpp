@@ -5,11 +5,10 @@
 #include <cstdlib>
 #include <fstream>
 #include "input_controller.hpp"
-#include <functional>
+#include "event_manager.hpp"
+
 
 namespace engine {
-    
-    using UpdateCallback = std::function<void()>;
 
     struct WindowConfig {
         int width;
@@ -24,6 +23,7 @@ namespace engine {
         private:
             GLFWwindow* window;
             InputController input_controller;
+            EventManager event_manager;
             static float screen_ratio; // TODO: Make non-static?
             static GLuint gpu_program_id;
             static void frame_buffer_size_callback(GLFWwindow* window, int width, int height);
@@ -35,18 +35,19 @@ namespace engine {
             static GLuint create_gpu_program(GLuint vertex_shader_id, GLuint fragment_shader_id);
             static void load_shaders_from_files();
             static std::string get_executable_directory();
+            
+            /// @brief Ticks the engine
+            /// @return True if window should close
+            bool update_and_test_should_close();
 
         public:
             EngineController() : window(nullptr), input_controller(nullptr) {};
 
             static EngineController start_engine(WindowConfig window_config);
 
-            void hand_over_control(UpdateCallback update_callback);
+            void hand_over_control();
 
-            /// @brief Ticks the engine
-            /// @return True if window should close
-            bool update_and_test_should_close();
-
+            EventManager& events() { return this->event_manager; }
             GLFWwindow* get_window();
             InputController& input();
             float get_screen_ratio() { return screen_ratio; }

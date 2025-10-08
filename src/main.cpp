@@ -89,6 +89,7 @@ using vao::Vao;
 using vao::VaoBuilder;
 using engine::CameraTransform;
 using engine::invert_orthonormal_matrix;
+using engine::EventManager;
 
 
 Vao BuildCubeAxes();
@@ -171,6 +172,7 @@ Vao cube_faces_vao = Vao();
 Vao cube_edges_vao = Vao();
 Vao cube_axes_vao = Vao();
 
+void start();
 void update();
 
 int main() {
@@ -202,7 +204,10 @@ int main() {
     // Habilitamos o Z-buffer. Veja slides 104-116 do documento Aula_09_Projecoes.pdf.
     glEnable(GL_DEPTH_TEST);
 
-    g_engine_controller.hand_over_control(update);
+    EventManager& events = g_engine_controller.events();
+    events.subscribe_update(update);
+
+    g_engine_controller.hand_over_control();
     return 0;
 }
 
