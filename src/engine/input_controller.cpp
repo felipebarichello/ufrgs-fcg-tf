@@ -13,11 +13,6 @@ size_t InputController::hash(int key, int action) {
     return ((size_t) key << 32) | (size_t) action;
 }
 
-void InputController::attach_key_handler(GLFWkeyfun handler)
-{
-    // glfwSetKeyCallback(this->window, handler);
-}
-
 void InputController::attach_mouse_button_handler(GLFWmousebuttonfun handler)
 {
     glfwSetMouseButtonCallback(this->window, handler);
@@ -68,7 +63,8 @@ void InputController::key_callback(GLFWwindow *window, int key, int scancode, in
         break;
     }
 
-    // Print key and action
-    printf("Key %d was %s\n", key, action_str);
+    for (std::function<void()> function : key_action_handler_map[{key,action}]) {
+        function();
+    }
 
 }

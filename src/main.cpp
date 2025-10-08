@@ -174,7 +174,22 @@ void update();
 Vao cube_faces_vao = Vao();
 Vao cube_edges_vao = Vao();
 Vao cube_axes_vao = Vao();
- 
+
+void OnKeyW_Press();
+void OnKeyW_Release();
+void OnKeyS_Press();
+void OnKeyS_Release();
+void OnKeyA_Press();
+void OnKeyA_Release();
+void OnKeyD_Press();
+void OnKeyD_Release();
+void OnKeyC_Press();
+void OnKeyT_Press();
+void OnKeyUp_Press();
+void OnKeyDown_Press();
+void OnKeyLeft_Press();
+void OnKeyRight_Press();
+
 int main() {
     WindowConfig window_config = WindowConfig(
         800,
@@ -184,8 +199,17 @@ int main() {
 
     g_engine_controller = EngineController::start_engine(window_config);
     
-    //InputController& input_controller = g_engine_controller.input();
-    //input_controller.attach_key_handler(KeyCallback);
+    InputController& input_controller = g_engine_controller.input();
+
+    input_controller.subscribe(GLFW_KEY_W, GLFW_PRESS, OnKeyW_Press);
+    input_controller.subscribe(GLFW_KEY_W, GLFW_RELEASE, OnKeyW_Release);
+    input_controller.subscribe(GLFW_KEY_S, GLFW_PRESS, OnKeyS_Press);
+    input_controller.subscribe(GLFW_KEY_S, GLFW_RELEASE, OnKeyS_Release);
+    input_controller.subscribe(GLFW_KEY_A, GLFW_PRESS, OnKeyA_Press);
+    input_controller.subscribe(GLFW_KEY_A, GLFW_RELEASE, OnKeyA_Release);
+    input_controller.subscribe(GLFW_KEY_D, GLFW_PRESS, OnKeyD_Press);
+    input_controller.subscribe(GLFW_KEY_D, GLFW_RELEASE, OnKeyD_Release);
+
     // input_controller.attach_mouse_button_handler(MouseButtonCallback);
     // input_controller.attach_cursor_position_handler(CursorPosCallback);
     // input_controller.attach_scrolling_handler(ScrollCallback);
@@ -661,94 +685,4 @@ void OnKeyD_Press() {
 void OnKeyD_Release() {
     g_input_move_right = false;
     update_free_camera_move_vector();
-}
-
-
-void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod) {
-    // =======================
-    // Não modifique este loop! Ele é utilizando para correção automatizada dos
-    // laboratórios. Deve ser sempre o primeiro comando desta função KeyCallback().
-    for (int i = 0; i < 10; ++i)
-        if (key == GLFW_KEY_0 + i && action == GLFW_PRESS && mod == GLFW_MOD_SHIFT)
-            std::exit(100 + i);
-    // =======================
-
-    // Se o usuário pressionar a tecla ESC, fechamos a janela.
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GL_TRUE);
-
-    switch (key) {
-        case GLFW_KEY_X:
-            switch (action) {
-                case GLFW_PRESS:   OnKeyX_Press(mod); break;
-                case GLFW_RELEASE: OnKeyX_Release(mod); break;
-            }
-            break;
-        case GLFW_KEY_Y:
-            switch (action) {
-                case GLFW_PRESS:   OnKeyY_Press(mod); break;
-                case GLFW_RELEASE: OnKeyY_Release(mod); break;
-            }
-            break;
-        case GLFW_KEY_Z:
-            switch (action) {
-                case GLFW_PRESS:   OnKeyZ_Press(mod); break;
-                case GLFW_RELEASE: OnKeyZ_Release(mod); break;
-            }
-            break;
-        case GLFW_KEY_SPACE:
-            switch (action) {
-                case GLFW_PRESS:   OnKeySpace_Press(); break;
-                case GLFW_RELEASE: OnKeySpace_Release(); break;
-            }
-            break;
-        case GLFW_KEY_P:
-            switch (action) {
-                case GLFW_PRESS:   OnKeyP_Press(); break;
-                case GLFW_RELEASE: OnKeyP_Release(); break;
-            }
-            break;
-        case GLFW_KEY_O:
-            switch (action) {
-                case GLFW_PRESS:   OnKeyO_Press(); break;
-                case GLFW_RELEASE: OnKeyO_Release(); break;
-            }
-            break;
-        case GLFW_KEY_H:
-            switch (action) {
-                case GLFW_PRESS:   OnKeyH_Press(); break;
-                case GLFW_RELEASE: OnKeyH_Release(); break;
-            }
-            break;
-        case GLFW_KEY_F:
-            switch (action) {
-                case GLFW_PRESS:   OnKeyF_Press(); break;
-                case GLFW_RELEASE: OnKeyF_Release(); break;
-            }
-            break;
-        case GLFW_KEY_W:
-            switch (action) {
-                case GLFW_PRESS:   OnKeyW_Press(); break;
-                case GLFW_RELEASE: OnKeyW_Release(); break;
-            }
-            break;
-        case GLFW_KEY_S:
-            switch (action) {
-                case GLFW_PRESS:   OnKeyS_Press(); break;
-                case GLFW_RELEASE: OnKeyS_Release(); break;
-            }
-            break;
-        case GLFW_KEY_A:
-            switch (action) {
-                case GLFW_PRESS:   OnKeyA_Press(); break;
-                case GLFW_RELEASE: OnKeyA_Release(); break;
-            }
-            break;
-        case GLFW_KEY_D:
-            switch (action) {
-                case GLFW_PRESS:   OnKeyD_Press(); break;
-                case GLFW_RELEASE: OnKeyD_Release(); break;
-            }
-            break;
-    }
 }

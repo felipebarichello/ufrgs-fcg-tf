@@ -19,7 +19,6 @@ private:
 public:
     InputController() = default;
     InputController static start(GLFWwindow *window);
-    void attach_key_handler(GLFWkeyfun handler);
     void attach_mouse_button_handler(GLFWmousebuttonfun handler);
     void attach_cursor_position_handler(GLFWcursorposfun handler);
     void attach_scrolling_handler(GLFWscrollfun handler);
