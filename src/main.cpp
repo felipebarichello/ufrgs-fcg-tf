@@ -190,6 +190,9 @@ void OnKeyDown_Press();
 void OnKeyLeft_Press();
 void OnKeyRight_Press();
 
+void OnMouseButton_Left_Press();
+void OnMouseButton_Left_Release();
+
 int main() {
     WindowConfig window_config = WindowConfig(
         800,
@@ -201,16 +204,19 @@ int main() {
     
     InputController& input_controller = g_engine_controller.input();
 
-    input_controller.subscribe(GLFW_KEY_W, GLFW_PRESS, OnKeyW_Press);
-    input_controller.subscribe(GLFW_KEY_W, GLFW_RELEASE, OnKeyW_Release);
-    input_controller.subscribe(GLFW_KEY_S, GLFW_PRESS, OnKeyS_Press);
-    input_controller.subscribe(GLFW_KEY_S, GLFW_RELEASE, OnKeyS_Release);
-    input_controller.subscribe(GLFW_KEY_A, GLFW_PRESS, OnKeyA_Press);
-    input_controller.subscribe(GLFW_KEY_A, GLFW_RELEASE, OnKeyA_Release);
-    input_controller.subscribe(GLFW_KEY_D, GLFW_PRESS, OnKeyD_Press);
-    input_controller.subscribe(GLFW_KEY_D, GLFW_RELEASE, OnKeyD_Release);
+    input_controller.subscribe_key_action(GLFW_KEY_W, GLFW_PRESS, OnKeyW_Press);
+    input_controller.subscribe_key_action(GLFW_KEY_W, GLFW_RELEASE, OnKeyW_Release);
+    input_controller.subscribe_key_action(GLFW_KEY_S, GLFW_PRESS, OnKeyS_Press);
+    input_controller.subscribe_key_action(GLFW_KEY_S, GLFW_RELEASE, OnKeyS_Release);
+    input_controller.subscribe_key_action(GLFW_KEY_A, GLFW_PRESS, OnKeyA_Press);
+    input_controller.subscribe_key_action(GLFW_KEY_A, GLFW_RELEASE, OnKeyA_Release);
+    input_controller.subscribe_key_action(GLFW_KEY_D, GLFW_PRESS, OnKeyD_Press);
+    input_controller.subscribe_key_action(GLFW_KEY_D, GLFW_RELEASE, OnKeyD_Release);
 
     // input_controller.attach_mouse_button_handler(MouseButtonCallback);
+    input_controller.subscribe_key_action(GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS, OnMouseButton_Left_Press);
+    input_controller.subscribe_key_action(GLFW_MOUSE_BUTTON_LEFT, GLFW_RELEASE, OnMouseButton_Left_Release);
+
     // input_controller.attach_cursor_position_handler(CursorPosCallback);
     // input_controller.attach_scrolling_handler(ScrollCallback);
 
@@ -511,26 +517,6 @@ Vao BuildCubeAxes()
 // de tempo. Utilizadas no callback CursorPosCallback() abaixo.
 double g_LastCursorPosX, g_LastCursorPosY;
 
-// Função callback chamada sempre que o usuário aperta algum dos botões do mouse
-void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
-    {
-        // Se o usuário pressionou o botão esquerdo do mouse, guardamos a
-        // posição atual do cursor nas variáveis g_LastCursorPosX e
-        // g_LastCursorPosY.  Também, setamos a variável
-        // g_LeftMouseButtonPressed como true, para saber que o usuário está
-        // com o botão esquerdo pressionado.
-        glfwGetCursorPos(window, &g_LastCursorPosX, &g_LastCursorPosY);
-        g_LeftMouseButtonPressed = true;
-    }
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
-    {
-        // Quando o usuário soltar o botão esquerdo do mouse, atualizamos a
-        // variável abaixo para false.
-        g_LeftMouseButtonPressed = false;
-    }
-}
-
 void update_free_camera_view_vector() {
     g_free_camera_view_unit_vector = Vec3(
         cosf(g_CameraPhi) * sinf(g_CameraTheta),
@@ -616,6 +602,15 @@ void update_free_camera_move_vector() {
 }
 
 // For each (action, key) pair, create a separate case and handler function
+
+void OnMouseButton_Left_Press() {
+    g_LeftMouseButtonPressed = true;
+    glfwGetCursorPos(g_window, &g_LastCursorPosX, &g_LastCursorPosY);
+}
+
+void OnMouseButton_Left_Release() {
+    g_LeftMouseButtonPressed = false;
+}
 
 void OnKeyX_Press(int mod) {
     float delta = 3.141592f / 16.0f;
