@@ -1,7 +1,6 @@
 #include "input_controller.hpp"
 
 std::map<std::pair<int,int>, std::vector<std::function<void()>>> InputController::key_action_handler_map;
-std::vector<DPad> InputController::dpads;
 
 InputController InputController::init(GLFWwindow *window) {
     InputController input_controller = InputController();

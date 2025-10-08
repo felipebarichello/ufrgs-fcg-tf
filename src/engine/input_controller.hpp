@@ -22,7 +22,7 @@ class InputController {
 private:
     GLFWwindow* window;
     static std::map<std::pair<int,int>, std::vector<std::function<void()>>> key_action_handler_map;
-    static std::vector<DPad> dpads;
+    std::vector<DPad> dpads;
     void update_dpad_direction(DPad& dpad);
     void subscribe_key_action(int key, int action, std::function<void()>);
 
