@@ -9,35 +9,38 @@
 #include <glm/vec2.hpp>
 #include <glm/mat4x4.hpp>
 
+namespace engine {
 
-struct DPad {
-    glm::vec2* direction;
-    bool forward_key_is_down = false;
-    bool backward_key_is_down = false;
-    bool left_key_is_down = false;
-    bool right_key_is_down = false;
-};
+    struct DPad {
+        glm::vec2* direction;
+        bool forward_key_is_down = false;
+        bool backward_key_is_down = false;
+        bool left_key_is_down = false;
+        bool right_key_is_down = false;
+    };
 
-class InputController {
-private:
-    GLFWwindow* window;
-    std::map<std::pair<int,int>, std::vector<std::function<void()>>> key_action_handler_map;
-    std::vector<DPad> dpads;
-    glm::vec2* cursor_position;
-    glm::vec2* cursor_delta;
-    glm::vec2 last_cursor_position;
-    void update_dpad_direction(DPad* dpad);
-    void subscribe_key_action(int key, int action, std::function<void()>);
+    class InputController {
+        private:
+            GLFWwindow* window;
+            std::map<std::pair<int,int>, std::vector<std::function<void()>>> key_action_handler_map;
+            std::vector<DPad> dpads;
+            glm::vec2* cursor_position;
+            glm::vec2* cursor_delta;
+            glm::vec2 last_cursor_position;
+        public:
+            InputController(GLFWwindow* window);
+            void subscribe_dpad(glm::vec2* direction, int forward_key, int backward_key, int left_key, int right_key);
+            void subscribe_hold_button(int key, bool* is_down);
+            void subscribe_press_button(int key, std::function<void()>);
+            void attach_mouse_button_handler(GLFWmousebuttonfun handler);
+            void attach_cursor_position_handler(GLFWcursorposfun handler);
+            void attach_scrolling_handler(GLFWscrollfun handler);
+        private:
+            void cursor_callback(GLFWwindow* window, double xpos, double ypos);
+            void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod);
+            void subscribe_cursor(glm::vec2* position, glm::vec2* delta);
+            void update_dpad_direction(DPad* dpad);
+            void subscribe_key_action(int key, int action, std::function<void()>);
+    };
 
-public:
-    InputController(GLFWwindow* window);
-    void subscribe_cursor(glm::vec2* position, glm::vec2* delta);
-    void cursor_callback(GLFWwindow* window, double xpos, double ypos);
-    void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod);
-    void subscribe_dpad(glm::vec2* direction, int forward_key, int backward_key, int left_key, int right_key);
-    void subscribe_hold_button(int key, bool* is_down);
-    void subscribe_press_button(int key, std::function<void()>);
-    void attach_mouse_button_handler(GLFWmousebuttonfun handler);
-    void attach_cursor_position_handler(GLFWcursorposfun handler);
-    void attach_scrolling_handler(GLFWscrollfun handler);
-};
+}
