@@ -3,7 +3,7 @@
 std::map<std::pair<int,int>, std::vector<std::function<void()>>> InputController::key_action_handler_map;
 std::vector<VectorState> InputController::vector_state;
 
-InputController InputController::start(GLFWwindow *window) {
+InputController InputController::init(GLFWwindow *window) {
     InputController input_controller = InputController();
     input_controller.window = window;
     glfwSetKeyCallback(input_controller.window, InputController::key_callback);
