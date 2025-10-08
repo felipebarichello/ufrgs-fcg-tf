@@ -183,7 +183,7 @@ int main() {
 
     g_engine_controller = EngineController::start_engine(window_config);
 
-    InputController* input_controller = g_engine_controller.input();
+    engine::InputController* input_controller = g_engine_controller.input();
 
     input_controller->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
     input_controller->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT);

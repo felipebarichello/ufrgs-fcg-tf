@@ -42,5 +42,4 @@ namespace engine {
             void update_dpad_direction(DPad* dpad);
             void subscribe_key_action(int key, int action, std::function<void()>);
     };
-
 }

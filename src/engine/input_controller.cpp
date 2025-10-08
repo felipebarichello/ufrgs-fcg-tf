@@ -1,5 +1,7 @@
 #include "input_controller.hpp"
 
+using namespace engine;
+
 InputController::InputController(GLFWwindow *window) {
     this->window = window;
     if (window != nullptr) {
