@@ -76,7 +76,6 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 void CursorPosCallback(GLFWwindow* window, double xpos, double ypos);
 void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
-
 using engine::EngineController;
 using engine::WindowConfig;
 using engine::Camera;
@@ -190,8 +189,6 @@ void OnKeyDown_Press();
 void OnKeyLeft_Press();
 void OnKeyRight_Press();
 
-void OnMouseButton_Left_Press();
-void OnMouseButton_Left_Release();
 
 int main() {
     WindowConfig window_config = WindowConfig(
@@ -215,12 +212,12 @@ int main() {
     input_controller.subscribe_key_move_vector(&g_free_camera_move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
     input_controller.subscribe_key_move_vector(&g_free_camera_move_vector, GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT);
 
-    // input_controller.attach_mouse_button_handler(MouseButtonCallback);
-    input_controller.subscribe_key_action(GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS, OnMouseButton_Left_Press);
-    input_controller.subscribe_key_action(GLFW_MOUSE_BUTTON_LEFT, GLFW_RELEASE, OnMouseButton_Left_Release);
+    input_controller.attach_mouse_button_handler(MouseButtonCallback);
+    //input_controller.subscribe_key_action(GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS, onMouseButton_Left_Press);
+    //input_controller.subscribe_key_action(GLFW_MOUSE_BUTTON_LEFT, GLFW_RELEASE, onMouseButton_Left_Release);
 
-    // input_controller.attach_cursor_position_handler(CursorPosCallback);
-    // input_controller.attach_scrolling_handler(ScrollCallback);
+    input_controller.attach_cursor_position_handler(CursorPosCallback);
+    input_controller.attach_scrolling_handler(ScrollCallback);
 
     g_window = g_engine_controller.get_window();
 
@@ -586,15 +583,18 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
         g_CameraDistance = verysmallnumber;
 }
 
-// For each (action, key) pair, create a separate case and handler function
+void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        g_LeftMouseButtonPressed = true;
 
-void OnMouseButton_Left_Press() {
-    g_LeftMouseButtonPressed = true;
-    glfwGetCursorPos(g_window, &g_LastCursorPosX, &g_LastCursorPosY);
-}
+        // Atualizamos as variáveis globais que armazenam a última posição
+        // conhecida do cursor do mouse.
+        glfwGetCursorPos(window, &g_LastCursorPosX, &g_LastCursorPosY);
+    }
 
-void OnMouseButton_Left_Release() {
-    g_LeftMouseButtonPressed = false;
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
+        g_LeftMouseButtonPressed = false;
+    }
 }
 
 void OnKeyX_Press(int mod) {
