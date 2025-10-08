@@ -29,12 +29,12 @@ void InputController::subscribe_key_action(int key, int action, std::function<vo
     key_action_handler_map[{key,action}].push_back(function);
 }
 
-void InputController::subscribe_key_move_vector(glm::vec2* key_vector_ref, int forward_key, int backward_key, int left_key, int right_key) {
+void InputController::subscribe_dpad(glm::vec2* direction, int forward_key, int backward_key, int left_key, int right_key) {
     // Store the state for this vector
     vector_state.push_back(VectorState());
     VectorState& state = vector_state.back();
     int index = (int)vector_state.size() - 1;
-    state.key_vector = key_vector_ref;
+    state.key_vector = direction;
     state.forward = false;
     state.backward = false;
     state.left = false;

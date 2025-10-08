@@ -39,5 +39,5 @@ public:
     void attach_scrolling_handler(GLFWscrollfun handler);
     void subscribe_key_action(int key, int action, std::function<void()>);
     static void  key_callback(GLFWwindow* window, int key, int scancode, int action, int mod);
-    void subscribe_key_move_vector(glm::vec2* key_vector, int forward_key, int backward_key, int left_key, int right_key);
+    void subscribe_dpad(glm::vec2* direction, int forward_key, int backward_key, int left_key, int right_key);
 };
