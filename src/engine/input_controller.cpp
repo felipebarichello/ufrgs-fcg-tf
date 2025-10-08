@@ -18,27 +18,46 @@ void InputController::subscribe_press_button(int key, std::function<void()> func
     subscribe_key_action(key, GLFW_PRESS, function);
 }
 
-void InputController::subscribe_hold_button(int key, bool* is_down) {
-    subscribe_key_action(key, GLFW_PRESS, [is_down]() { *is_down = true; });
-    subscribe_key_action(key, GLFW_RELEASE, [is_down]() { *is_down = false; });
-}
-
 void InputController::subscribe_dpad(glm::vec2* direction, int forward_key, int backward_key, int left_key, int right_key) {
     // Store the state for this vector
     dpads.push_back(DPad());
     DPad& dpad = dpads.back();
+    size_t index = dpads.size() - 1;
 
     dpad.direction = direction;
-    dpad.forward_key = forward_key;
-    dpad.backward_key = backward_key;
-    dpad.left_key = left_key;
-    dpad.right_key = right_key;
 
-    // capture index by value to avoid dangling reference
-    subscribe_hold_button(forward_key, &dpad.forward_key_is_down);
-    subscribe_hold_button(backward_key, &dpad.backward_key_is_down);
-    subscribe_hold_button(left_key, &dpad.left_key_is_down);
-    subscribe_hold_button(right_key, &dpad.right_key_is_down);
+    subscribe_key_action(forward_key, GLFW_PRESS, [&,index]() { 
+        dpads[index].forward_key_is_down = true;
+        update_dpad_direction(dpads[index]);
+    });
+    subscribe_key_action(forward_key, GLFW_RELEASE, [&,index]() {
+        dpads[index].forward_key_is_down = false;
+        update_dpad_direction(dpads[index]);
+    });
+    subscribe_key_action(backward_key, GLFW_PRESS, [&,index]() {
+        dpads[index].backward_key_is_down = true;
+        update_dpad_direction(dpads[index]);
+    });
+    subscribe_key_action(backward_key, GLFW_RELEASE, [&,index]() {
+        dpads[index].backward_key_is_down = false;
+        update_dpad_direction(dpads[index]);
+    });
+    subscribe_key_action(left_key, GLFW_PRESS, [&,index]() {
+        dpads[index].left_key_is_down = true;
+        update_dpad_direction(dpads[index]);
+    });
+    subscribe_key_action(left_key, GLFW_RELEASE, [&,index]() {
+        dpads[index].left_key_is_down = false;
+        update_dpad_direction(dpads[index]);
+    });
+    subscribe_key_action(right_key, GLFW_PRESS, [&,index]() {
+        dpads[index].right_key_is_down = true;
+        update_dpad_direction(dpads[index]);
+    });
+    subscribe_key_action(right_key, GLFW_RELEASE, [&,index]() {
+        dpads[index].right_key_is_down = false;
+        update_dpad_direction(dpads[index]);
+    });
 }
 
 void InputController::key_callback(GLFWwindow *window, int key, int scancode, int action, int mod)
@@ -58,11 +77,6 @@ void InputController::key_callback(GLFWwindow *window, int key, int scancode, in
     for (std::function<void()> function : key_action_handler_map[{key,action}]) {
         function();
     }
-
-    for (DPad& dpad : dpads) {
-        update_dpad_direction(dpad);
-    }
-
 }
 
 void InputController::update_dpad_direction(DPad& dpad) {

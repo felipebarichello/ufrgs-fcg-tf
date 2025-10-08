@@ -12,10 +12,6 @@
 
 struct DPad {
     glm::vec2* direction;
-    int forward_key;
-    int backward_key;
-    int left_key;
-    int right_key;
     bool forward_key_is_down = false;
     bool backward_key_is_down = false;
     bool left_key_is_down = false;
