@@ -1,5 +1,4 @@
-#ifndef _MATRICES_H
-#define _MATRICES_H
+#pragma once
 
 #include <cstdio>
 #include <cstdlib>
@@ -162,14 +161,6 @@ float norm(glm::vec4 v)
     return sqrt( vx*vx + vy*vy + vz*vz );
 }
 
-/// @brief Normalize a vector. Caller must ensure that the vector is not zero.
-/// @param v 
-/// @return 
-glm::vec4 normalize(glm::vec4 v)
-{
-    return v / norm(v);
-}
-
 // Matriz R de "rotação de um ponto" em relação à origem do sistema de
 // coordenadas e em torno do eixo definido pelo vetor 'axis'. Esta matriz pode
 // ser definida pela fórmula de Rodrigues. Lembre-se que o vetor que define o
@@ -234,37 +225,6 @@ float dotproduct(glm::vec4 u, glm::vec4 v)
     }
 
     return u1*v1 + u2*v2 + u3*v3;
-}
-
-glm::vec4 negate(glm::vec4 v)
-{
-    return glm::vec4(-v.x, -v.y, -v.z, v.w);
-}
-
-// Matriz de mudança de coordenadas para o sistema de coordenadas da Câmera.
-glm::mat4 Matrix_Camera_View(glm::vec4 position_c, glm::vec4 view_vector, glm::vec4 up_vector)
-{
-    glm::vec4 w = normalize(negate(view_vector));
-    glm::vec4 u = normalize(crossproduct(up_vector, w));
-    glm::vec4 v = crossproduct(w,u); // No need to normalize cause u and w are orthonormal
-
-    glm::vec4 c_vec = glm::vec4(position_c.x, position_c.y, position_c.z, 0.0f); // position_c as a vector
-
-    return Matrix(
-        // PREENCHA AQUI A MATRIZ DE MUDANÇA DE SISTEMA DE COORDENADAS (3D)
-        // PARA AS COORDENADAS DE CÂMERA (MATRIZ VIEW HOMOGÊNEA), UTILIZANDO
-        // OS PARÂMETROS ux,uy,uz, vx,vy,vz, wx,wy,wz, position_c, origin_o,
-        // e a função dotproduct().
-        //
-        // ATENÇÃO: O produto escalar, computado pela função dotproduct(), está
-        // definido somente para argumentos que são VETORES. Não existe produto
-        // escalar de PONTOS.
-        //
-        u.x,  u.y,  u.z,  -dotproduct(u, c_vec),
-        v.x,  v.y,  v.z,  -dotproduct(v, c_vec),
-        w.x,  w.y,  w.z,  -dotproduct(w, c_vec),
-        0.0f, 0.0f, 0.0f, 1.0f
-    );
 }
 
 // Matriz de projeção paralela ortográfica
@@ -338,51 +298,3 @@ glm::mat4 Matrix_Perspective(float field_of_view, float aspect, float n, float f
     //
     return -M*P;
 }
-
-// Função que imprime uma matriz M no terminal
-void PrintMatrix(glm::mat4 M)
-{
-    printf("\n");
-    printf("[ %+0.2f  %+0.2f  %+0.2f  %+0.2f ]\n", M[0][0], M[1][0], M[2][0], M[3][0]);
-    printf("[ %+0.2f  %+0.2f  %+0.2f  %+0.2f ]\n", M[0][1], M[1][1], M[2][1], M[3][1]);
-    printf("[ %+0.2f  %+0.2f  %+0.2f  %+0.2f ]\n", M[0][2], M[1][2], M[2][2], M[3][2]);
-    printf("[ %+0.2f  %+0.2f  %+0.2f  %+0.2f ]\n", M[0][3], M[1][3], M[2][3], M[3][3]);
-}
-
-// Função que imprime um vetor v no terminal
-void PrintVector(glm::vec4 v)
-{
-    printf("\n");
-    printf("[ %+0.2f ]\n", v[0]);
-    printf("[ %+0.2f ]\n", v[1]);
-    printf("[ %+0.2f ]\n", v[2]);
-    printf("[ %+0.2f ]\n", v[3]);
-}
-
-// Função que imprime o produto de uma matriz por um vetor no terminal
-void PrintMatrixVectorProduct(glm::mat4 M, glm::vec4 v)
-{
-    auto r = M*v;
-    printf("\n");
-    printf("[ %+0.2f  %+0.2f  %+0.2f  %+0.2f ][ %+0.2f ]   [ %+0.2f ]\n", M[0][0], M[1][0], M[2][0], M[3][0], v[0], r[0]);
-    printf("[ %+0.2f  %+0.2f  %+0.2f  %+0.2f ][ %+0.2f ] = [ %+0.2f ]\n", M[0][1], M[1][1], M[2][1], M[3][1], v[1], r[1]);
-    printf("[ %+0.2f  %+0.2f  %+0.2f  %+0.2f ][ %+0.2f ]   [ %+0.2f ]\n", M[0][2], M[1][2], M[2][2], M[3][2], v[2], r[2]);
-    printf("[ %+0.2f  %+0.2f  %+0.2f  %+0.2f ][ %+0.2f ]   [ %+0.2f ]\n", M[0][3], M[1][3], M[2][3], M[3][3], v[3], r[3]);
-}
-
-// Função que imprime o produto de uma matriz por um vetor, junto com divisão
-// por w, no terminal.
-void PrintMatrixVectorProductDivW(glm::mat4 M, glm::vec4 v)
-{
-    auto r = M*v;
-    auto w = r[3];
-    printf("\n");
-    printf("[ %+0.2f  %+0.2f  %+0.2f  %+0.2f ][ %+0.2f ]   [ %+0.2f ]            [ %+0.2f ]\n", M[0][0], M[1][0], M[2][0], M[3][0], v[0], r[0], r[0]/w);
-    printf("[ %+0.2f  %+0.2f  %+0.2f  %+0.2f ][ %+0.2f ] = [ %+0.2f ] =(div w)=> [ %+0.2f ]\n", M[0][1], M[1][1], M[2][1], M[3][1], v[1], r[1], r[1]/w);
-    printf("[ %+0.2f  %+0.2f  %+0.2f  %+0.2f ][ %+0.2f ]   [ %+0.2f ]            [ %+0.2f ]\n", M[0][2], M[1][2], M[2][2], M[3][2], v[2], r[2], r[2]/w);
-    printf("[ %+0.2f  %+0.2f  %+0.2f  %+0.2f ][ %+0.2f ]   [ %+0.2f ]            [ %+0.2f ]\n", M[0][3], M[1][3], M[2][3], M[3][3], v[3], r[3], r[3]/w);
-}
-
-
-#endif // _MATRICES_H
-// vim: set spell spelllang=pt_br :
