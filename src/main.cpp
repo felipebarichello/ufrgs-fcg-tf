@@ -167,8 +167,6 @@ glm::mat4 g_the_projection;
 glm::mat4 g_the_model;
 glm::mat4 g_the_view;
 
-GLFWwindow* g_window;
-
 void update();
 
 Vao cube_faces_vao = Vao();
@@ -189,8 +187,6 @@ int main() {
     input_controller.attach_mouse_button_handler(MouseButtonCallback);
     input_controller.attach_cursor_position_handler(CursorPosCallback);
     input_controller.attach_scrolling_handler(ScrollCallback);
-
-    g_window = g_engine_controller.get_window();
 
     cube_faces_vao = BuildCubeFaces();
     cube_edges_vao = BuildCubeEdges();
