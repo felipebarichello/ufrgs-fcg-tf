@@ -1,7 +1,7 @@
 #include "input_controller.hpp"
 
 std::map<std::pair<int,int>, std::vector<std::function<void()>>> InputController::key_action_handler_map;
-std::vector<DPadState> InputController::dpad_states;
+std::vector<DPad> InputController::dpad_states;
 
 InputController InputController::init(GLFWwindow *window) {
     InputController input_controller = InputController();
@@ -31,8 +31,8 @@ void InputController::subscribe_key_action(int key, int action, std::function<vo
 
 void InputController::subscribe_dpad(glm::vec2* direction, int forward_key, int backward_key, int left_key, int right_key) {
     // Store the state for this vector
-    dpad_states.push_back(DPadState());
-    DPadState& state = dpad_states.back();
+    dpad_states.push_back(DPad());
+    DPad& state = dpad_states.back();
     int index = (int)dpad_states.size() - 1;
     state.direction = direction;
     state.forward_key_is_down = false;
@@ -95,7 +95,7 @@ void InputController::key_callback(GLFWwindow *window, int key, int scancode, in
 
 }
 
-void InputController::update_dpad_state(DPadState& vector_state) {
+void InputController::update_dpad_state(DPad& vector_state) {
 
     *(vector_state.direction) = glm::vec2(0.0f, 0.0f);
 

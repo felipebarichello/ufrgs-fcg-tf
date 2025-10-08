@@ -10,7 +10,7 @@
 #include <glm/mat4x4.hpp>
 
 
-struct DPadState {
+struct DPad {
     glm::vec2* direction;
     bool forward_key_is_down = false;
     bool backward_key_is_down = false;
@@ -22,8 +22,8 @@ class InputController {
 private:
     GLFWwindow* window;
     static std::map<std::pair<int,int>, std::vector<std::function<void()>>> key_action_handler_map;
-    static std::vector<DPadState> dpad_states;
-    static void update_dpad_state(DPadState& dpad_state);
+    static std::vector<DPad> dpad_states;
+    static void update_dpad_state(DPad& dpad_state);
 
 public:
     InputController() = default;
@@ -34,4 +34,6 @@ public:
     void subscribe_key_action(int key, int action, std::function<void()>);
     static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod);
     void subscribe_dpad(glm::vec2* direction, int forward_key, int backward_key, int left_key, int right_key);
+    void subscribe_hold_button(int key, std::function<void()>);
+    void subscribe_press_button(int key, std::function<void()>);
 };
