@@ -3,7 +3,6 @@
 #include <map>
 #include <sstream>
 
-
 namespace engine {
 
     // Definition of static members declared in controller.hpp
@@ -13,7 +12,7 @@ namespace engine {
     GLuint EngineController::gpu_program_id = 0;
 
     EngineController EngineController::start_engine(WindowConfig window_config) {
-        EngineController engine_controller = EngineController();
+        EngineController engine_controller;
 
         engine_controller.window = EngineController::init_window(window_config);
         engine_controller.input_controller = new InputController(engine_controller.window);

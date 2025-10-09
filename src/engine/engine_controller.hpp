@@ -44,7 +44,7 @@ namespace engine {
             bool update_and_test_should_close();
 
         public:
-            EngineController() : window(nullptr), input_controller(nullptr) {}
+            EngineController() = default;
 
             static EngineController start_engine(WindowConfig window_config);
             static EventManager& get_events(); // TODO: Remove this static method
