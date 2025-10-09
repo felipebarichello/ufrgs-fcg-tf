@@ -2,12 +2,13 @@
 
 #include <vector>
 #include "vobject/EStart.hpp"
+#include <functional>
 
 using engine::EStart;
 
 namespace engine {
-    using StartHandler  = void (*)();
-    using UpdateHandler = void (*)();
+    using StartHandler  = std::function<void()>;
+    using UpdateHandler = std::function<void()>;
 
     // TODO: Restrict access modifiers?
     class EventManager {
