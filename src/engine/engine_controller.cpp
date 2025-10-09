@@ -55,6 +55,10 @@ namespace engine {
         return EngineController::instance.event_manager;
     }
 
+    InputController& EngineController::get_input() {
+        return EngineController::instance.input_controller;
+    }
+
     GLFWwindow* EngineController::init_window(WindowConfig window_config) {
         int success = glfwInit();
         if (!success) {
