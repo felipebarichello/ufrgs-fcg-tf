@@ -9,7 +9,7 @@ namespace engine {
         EngineController::get_events().subscribe_update(std::bind(&EUpdate::Update, this));
     }
 
-    EUpdate::~EUpdate() {
+    // EUpdate::~EUpdate() {
         // TODO
-    }
+    // }
 } // namespace engine

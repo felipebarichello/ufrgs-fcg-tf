@@ -9,7 +9,7 @@ namespace engine {
         EngineController::get_events().subscribe_start(std::bind(&EStart::Start, this));
     }
 
-    EStart::~EStart() {
+    // EStart::~EStart() {
         // TODO
-    }
+    // }
 } // namespace engine

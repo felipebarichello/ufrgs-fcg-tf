@@ -7,6 +7,6 @@ namespace engine {
 
         protected:
             EUpdate();
-            ~EUpdate();
+            ~EUpdate() = default;
     };
 } // namespace engine

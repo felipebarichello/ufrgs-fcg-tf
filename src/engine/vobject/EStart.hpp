@@ -7,6 +7,6 @@ namespace engine {
 
         protected:
             EStart();
-            ~EStart();
+            ~EStart() = default;
     };
 } // namespace engine
