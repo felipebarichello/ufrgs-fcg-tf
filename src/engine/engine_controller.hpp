@@ -20,11 +20,13 @@ namespace engine {
             : width(width), height(height), title(title) {}
     };
     
+    // TODO: Reorder members
     class EngineController {
         private:
             GLFWwindow* window;
             InputController* input_controller;
             EventManager event_manager;
+            static EngineController instance; // TODO: Remove this singleton pattern
             static float screen_ratio; // TODO: Make non-static?
             static GLuint gpu_program_id;
             static void frame_buffer_size_callback(GLFWwindow* window, int width, int height);
@@ -45,6 +47,7 @@ namespace engine {
             EngineController() : window(nullptr), input_controller(nullptr) {}
 
             static EngineController start_engine(WindowConfig window_config);
+            static EventManager& get_events(); // TODO: Remove this static method
 
             void hand_over_control();
 
