@@ -55,7 +55,7 @@ namespace engine {
         return EngineController::instance.event_manager;
     }
 
-    InputController& EngineController::get_input() {
+    InputController* EngineController::get_input() {
         return EngineController::instance.input_controller;
     }
 
