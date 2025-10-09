@@ -6,7 +6,9 @@
 
 namespace engine {
 
-    // Definition of static member declared in controller.hpp
+    // Definition of static members declared in controller.hpp
+    // Define the singleton instance (was declared in the header but not defined)
+    EngineController EngineController::instance;
     float EngineController::screen_ratio = 1.0f;
     GLuint EngineController::gpu_program_id = 0;
 
@@ -16,6 +18,7 @@ namespace engine {
         engine_controller.window = EngineController::init_window(window_config);
         engine_controller.input_controller = new InputController(engine_controller.window);
 
+        EngineController::instance = engine_controller;
         return engine_controller;
     }
 
@@ -46,6 +49,10 @@ namespace engine {
 
     InputController* EngineController::input() {
         return this->input_controller;
+    }
+
+    EventManager& EngineController::get_events() {
+        return EngineController::instance.event_manager;
     }
 
     GLFWwindow* EngineController::init_window(WindowConfig window_config) {

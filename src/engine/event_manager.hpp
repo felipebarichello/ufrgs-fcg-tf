@@ -1,11 +1,15 @@
 #pragma once
 
 #include <vector>
+#include "vobject/EStart.hpp"
+
+using engine::EStart;
 
 namespace engine {
     using StartHandler  = void (*)();
     using UpdateHandler = void (*)();
 
+    // TODO: Restrict access modifiers?
     class EventManager {
         private:
             std::vector<StartHandler>  start_subscribers;

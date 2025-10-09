@@ -170,6 +170,8 @@ Vao cube_faces_vao = Vao();
 Vao cube_edges_vao = Vao();
 Vao cube_axes_vao = Vao();
 
+#include "game/CameraController.hpp"
+using game::CameraController;
 
 void start();
 void update();
@@ -208,6 +210,8 @@ int main() {
 
     EventManager& events = g_engine_controller.events();
     events.subscribe_update(update);
+
+    CameraController camcon = CameraController();
 
     g_engine_controller.hand_over_control();
     return 0;
