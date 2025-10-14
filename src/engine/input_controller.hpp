@@ -24,9 +24,7 @@ namespace engine {
             GLFWwindow* window;
             std::map<std::pair<int,int>, std::vector<std::function<void()>>> key_handler_map;
             std::vector<DPad> dpads;
-            glm::vec2* cursor_position;
-            glm::vec2* cursor_delta;
-            glm::vec2 last_cursor_position;
+            glm::vec2 cursor_position;
         public:
             InputController(GLFWwindow* window);
             void init();
