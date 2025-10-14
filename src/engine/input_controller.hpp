@@ -29,6 +29,7 @@ namespace engine {
             glm::vec2 last_cursor_position;
         public:
             InputController(GLFWwindow* window);
+            void init();
             void subscribe_dpad(glm::vec2* direction, int forward_key, int backward_key, int left_key, int right_key);
             void subscribe_hold_button(int key, bool* is_down);
             void subscribe_press_button(int key, std::function<void()>);

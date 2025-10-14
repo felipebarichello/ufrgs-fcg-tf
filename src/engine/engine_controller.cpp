@@ -18,6 +18,7 @@ namespace engine {
         engine_controller.input_controller = new InputController(engine_controller.window);
 
         EngineController::instance = engine_controller;
+        engine_controller.input_controller->init();
         return engine_controller;
     }
 

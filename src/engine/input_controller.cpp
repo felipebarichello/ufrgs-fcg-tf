@@ -4,7 +4,10 @@ using namespace engine;
 
 InputController::InputController(GLFWwindow *window) {
     this->window = window;
-    if (window != nullptr) {
+}
+
+void InputController::init() {
+    if (this->window != nullptr) {
         glfwSetWindowUserPointer(window, this);
         glfwSetKeyCallback(this->window, [](GLFWwindow* w, int key, int scancode, int action, int mod) {
             InputController* controller = static_cast<InputController*>(glfwGetWindowUserPointer(w));
