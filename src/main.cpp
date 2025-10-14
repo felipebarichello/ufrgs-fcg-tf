@@ -77,6 +77,8 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 void CursorPosCallback(GLFWwindow* window, double xpos, double ypos);
 void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
+void update_camera_input(); 
+
 
 using engine::EngineController;
 using engine::WindowConfig;
@@ -98,6 +100,7 @@ using engine::Matrix_Rotate_X;
 using engine::Matrix_Rotate_Y;
 using engine::Matrix_Rotate_Z;
 using engine::Matrix_Scale;
+using engine::InputController;
 
 
 Vao BuildCubeAxes();
@@ -183,14 +186,12 @@ int main() {
 
     g_engine_controller = EngineController::start_engine(window_config);
 
-    engine::InputController* input_controller = g_engine_controller.input();
+    g_engine_controller.input()->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
+    g_engine_controller.input()->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT);
 
-    input_controller->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
-    input_controller->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT);
-
-    input_controller->attach_mouse_button_handler(MouseButtonCallback);
-    input_controller->attach_cursor_position_handler(CursorPosCallback);
-    input_controller->attach_scrolling_handler(ScrollCallback);
+    g_engine_controller.input()->attach_mouse_button_handler(MouseButtonCallback);
+    g_engine_controller.input()->attach_cursor_position_handler(CursorPosCallback);
+    g_engine_controller.input()->attach_scrolling_handler(ScrollCallback);
 
     cube_faces_vao = BuildCubeFaces();
     cube_edges_vao = BuildCubeEdges();
