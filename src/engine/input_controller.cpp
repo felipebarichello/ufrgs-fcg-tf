@@ -15,6 +15,12 @@ void InputController::init() {
                 controller->key_callback(w, key, scancode, action, mod);
             }
         });
+        glfwSetCursorPosCallback(this->window, [](GLFWwindow* w, double xpos, double ypos) {
+            InputController* controller = static_cast<InputController*>(glfwGetWindowUserPointer(w));
+            if (controller) {
+                controller->cursor_position_callback(w, xpos, ypos);
+            }
+        });
     }
 }
 

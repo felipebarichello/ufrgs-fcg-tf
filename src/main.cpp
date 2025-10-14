@@ -190,7 +190,7 @@ int main() {
     g_engine_controller.input()->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT);
 
     g_engine_controller.input()->attach_mouse_button_handler(MouseButtonCallback);
-    g_engine_controller.input()->attach_cursor_position_handler(CursorPosCallback);
+    //g_engine_controller.input()->attach_cursor_position_handler(CursorPosCallback);
     g_engine_controller.input()->attach_scrolling_handler(ScrollCallback);
 
     cube_faces_vao = BuildCubeFaces();
@@ -215,6 +215,7 @@ int main() {
 }
 
 void update() {
+
     // Pedimos para a GPU utilizar o programa de GPU criado acima (contendo
     // os shaders de vértice e fragmentos).
     glUseProgram(g_engine_controller.get_gpu_program_id());
@@ -338,6 +339,8 @@ void update() {
     // matrizes the_model, the_view, e the_projection; e escrevemos na tela
     // as matrizes e pontos resultantes dessas transformações.
     glm::vec4 p_model(0.5f, 0.5f, 0.5f, 1.0f);
+
+    update_camera_input();
 }
 
 void update_free_camera_position() {
@@ -479,10 +482,8 @@ void update_free_camera_view_vector() {
     );
 }
 
-// Função callback chamada sempre que o usuário movimentar o cursor do mouse em
-// cima da janela OpenGL.
-void CursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
-    // Abaixo executamos o seguinte: caso o botão esquerdo do mouse esteja
+void update_camera_input() {
+        // Abaixo executamos o seguinte: caso o botão esquerdo do mouse esteja
     // pressionado, computamos quanto que o mouse se movimento desde o último
     // instante de tempo, e usamos esta movimentação para atualizar os
     // parâmetros que definem a posição da câmera dentro da cena virtual.
@@ -492,8 +493,9 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
         return;
 
     // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
-    float dx = (float)(xpos - g_LastCursorPosX);
-    float dy = (float)(ypos - g_LastCursorPosY);
+    glm::dvec2 cursor_pos = g_engine_controller.input()->get_cursor_position();
+    float dx = (float)(cursor_pos.x - g_LastCursorPosX);
+    float dy = (float)(cursor_pos.y - g_LastCursorPosY);
 
     // Atualizamos parâmetros da câmera com os deslocamentos
     g_CameraTheta -= 0.01f*dx;
@@ -516,11 +518,54 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
 
     // Atualizamos as variáveis globais para armazenar a posição atual do
     // cursor como sendo a última posição conhecida do cursor.
-    g_LastCursorPosX = xpos;
-    g_LastCursorPosY = ypos;
+    g_LastCursorPosX = cursor_pos.x;
+    g_LastCursorPosY = cursor_pos.y;
 
     update_free_camera_view_vector();
 }
+
+// Função callback chamada sempre que o usuário movimentar o cursor do mouse em
+// cima da janela OpenGL.
+// void CursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
+//     // Abaixo executamos o seguinte: caso o botão esquerdo do mouse esteja
+//     // pressionado, computamos quanto que o mouse se movimento desde o último
+//     // instante de tempo, e usamos esta movimentação para atualizar os
+//     // parâmetros que definem a posição da câmera dentro da cena virtual.
+//     // Assim, temos que o usuário consegue controlar a câmera.
+
+//     if (!g_LeftMouseButtonPressed)
+//         return;
+
+//     // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
+//     float dx = (float)(xpos - g_LastCursorPosX);
+//     float dy = (float)(ypos - g_LastCursorPosY);
+
+//     // Atualizamos parâmetros da câmera com os deslocamentos
+//     g_CameraTheta -= 0.01f*dx;
+
+//     if (g_camera_is_free) {
+//         g_CameraPhi   -= 0.01f*dy;
+//     } else {
+//         g_CameraPhi   += 0.01f*dy;
+//     }
+
+//     // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
+//     float phimax = 3.141592f/2;
+//     float phimin = -phimax;
+
+//     if (g_CameraPhi > phimax)
+//         g_CameraPhi = phimax;
+
+//     if (g_CameraPhi < phimin)
+//         g_CameraPhi = phimin;
+
+//     // Atualizamos as variáveis globais para armazenar a posição atual do
+//     // cursor como sendo a última posição conhecida do cursor.
+//     g_LastCursorPosX = xpos;
+//     g_LastCursorPosY = ypos;
+
+//     update_free_camera_view_vector();
+// }
 
 // Função callback chamada sempre que o usuário movimenta a "rodinha" do mouse.
 void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
