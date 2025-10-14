@@ -92,17 +92,6 @@ void InputController::key_callback(GLFWwindow *window, int key, int scancode, in
     }
 }
 
-void InputController::cursor_callback(GLFWwindow* window, double xpos, double ypos) {
-    if (this->cursor_position != nullptr) {
-        glm::vec2 new_position = glm::vec2((float)xpos, (float)ypos);
-        if (this->cursor_delta != nullptr) {
-            *(this->cursor_delta) = new_position - this->last_cursor_position;
-        }
-        *(this->cursor_position) = new_position;
-        this->last_cursor_position = new_position;
-    }
-}
-
 void InputController::update_dpad_direction(DPad* dpad) {
 
     *(dpad->direction) = glm::vec2(0.0f, 0.0f);
@@ -119,6 +108,15 @@ void InputController::update_dpad_direction(DPad* dpad) {
     // Normalize
     if (*(dpad->direction) != glm::vec2(0.0f, 0.0f))
         *(dpad->direction) = glm::normalize(*(dpad->direction));
+}
+
+glm::vec2 InputController::get_cursor_position() {
+    return this->cursor_position;
+}
+
+void InputController::cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
+    this->cursor_position.x = (float)xpos;
+    this->cursor_position.y = (float)ypos;
 }
 
 void InputController::attach_mouse_button_handler(GLFWmousebuttonfun handler)

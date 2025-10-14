@@ -34,8 +34,9 @@ namespace engine {
             void attach_mouse_button_handler(GLFWmousebuttonfun handler);
             void attach_cursor_position_handler(GLFWcursorposfun handler);
             void attach_scrolling_handler(GLFWscrollfun handler);
+            glm::vec2 get_cursor_position();
         private:
-            void cursor_callback(GLFWwindow* window, double xpos, double ypos);
+            void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
             void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod);
             void update_dpad_direction(DPad* dpad);
             void add_key_handler(int key, int action, std::function<void()>);
