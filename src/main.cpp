@@ -73,12 +73,9 @@ void TextRendering_ShowFramesPerSecond(GLFWwindow* window);
 // Funções callback para comunicação com o sistema operacional e interação do
 // usuário. Veja mais comentários nas definições das mesmas, abaixo.
 //void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
-void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
-void CursorPosCallback(GLFWwindow* window, double xpos, double ypos);
 void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
-void update_camera_direction(); 
-
+void update_free_camera_direction(); 
 
 using engine::EngineController;
 using engine::WindowConfig;
@@ -229,6 +226,7 @@ void update() {
     if (g_camera_is_free) {
         // Update da posição da câmera de acordo com o input de movimento
         update_free_camera_position();
+        update_free_camera_direction();
 
         camera_position_c = g_free_camera_position;
         camera_view_unit_vector = g_free_camera_view_unit_vector;
@@ -337,8 +335,6 @@ void update() {
     // matrizes the_model, the_view, e the_projection; e escrevemos na tela
     // as matrizes e pontos resultantes dessas transformações.
     glm::vec4 p_model(0.5f, 0.5f, 0.5f, 1.0f);
-
-    update_camera_direction();
 }
 
 void update_free_camera_position() {
@@ -480,12 +476,7 @@ void update_free_camera_view_vector() {
     );
 }
 
-void update_camera_direction() {
-        // Abaixo executamos o seguinte: caso o botão esquerdo do mouse esteja
-    // pressionado, computamos quanto que o mouse se movimento desde o último
-    // instante de tempo, e usamos esta movimentação para atualizar os
-    // parâmetros que definem a posição da câmera dentro da cena virtual.
-    // Assim, temos que o usuário consegue controlar a câmera.
+void update_free_camera_direction() {
 
     if (!g_LeftMouseButtonPressed)
         return;
