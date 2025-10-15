@@ -160,8 +160,3 @@ void InputController::scroll_callback(GLFWwindow* window, double xoffset, double
     std::cout << "Scroll callback: " << xoffset << ", " << yoffset << "\n";
     this->scroll_offset = yoffset;
 }
-
-void InputController::attach_scrolling_handler(GLFWscrollfun handler)
-{
-    glfwSetScrollCallback(this->window, handler);
-}
