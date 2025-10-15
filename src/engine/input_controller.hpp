@@ -33,9 +33,6 @@ namespace engine {
             void subscribe_dpad(glm::vec2* direction, int forward_key, int backward_key, int left_key, int right_key);
             void subscribe_hold_button(int key, bool* is_down);
             void subscribe_press_button(int key, std::function<void()>);
-            void attach_mouse_button_handler(GLFWmousebuttonfun handler);
-            void attach_cursor_position_handler(GLFWcursorposfun handler);
-            void attach_scrolling_handler(GLFWscrollfun handler);
             void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
             float get_scroll_offset();
             glm::vec2 get_cursor_position();
