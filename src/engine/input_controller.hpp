@@ -26,6 +26,7 @@ namespace engine {
             std::vector<DPad> dpads;
             glm::vec2 cursor_position;
             glm::vec2 last_cursor_position;
+            float scroll_offset = 0.0f;
         public:
             InputController(GLFWwindow* window);
             void init();
@@ -36,11 +37,13 @@ namespace engine {
             void attach_cursor_position_handler(GLFWcursorposfun handler);
             void attach_scrolling_handler(GLFWscrollfun handler);
             void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
+            float get_scroll_offset();
             glm::vec2 get_cursor_position();
             glm::vec2 get_cursor_position_delta();
         private:
             void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
             void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod);
+            void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
             void update_dpad_direction(DPad* dpad);
             void add_key_handler(int key, int action, std::function<void()>);
     };

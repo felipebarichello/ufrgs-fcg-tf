@@ -27,6 +27,12 @@ void InputController::init() {
                 controller->mouse_button_callback(w, button, action, mods);
             }
         });
+        glfwSetScrollCallback(this->window, [](GLFWwindow* w, double xoffset, double yoffset) {
+            InputController* controller = static_cast<InputController*>(glfwGetWindowUserPointer(w));
+            if (controller) {
+                controller->scroll_callback(w, xoffset, yoffset);
+            }
+        });
     }
 }
 
@@ -86,6 +92,11 @@ void InputController::subscribe_dpad(glm::vec2* direction, int forward_key, int 
     });
 }
 
+float InputController::get_scroll_offset() {
+    // You can implement this function to return the scroll offset if needed
+    return this->scroll_offset;
+}   
+
 void InputController::key_callback(GLFWwindow *window, int key, int scancode, int action, int mod)
 {
     // =======================
@@ -143,6 +154,11 @@ glm::vec2 InputController::get_cursor_position_delta() {
 void InputController::cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
     this->cursor_position.x = (float)xpos;
     this->cursor_position.y = (float)ypos;
+}
+
+void InputController::scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+    std::cout << "Scroll callback: " << xoffset << ", " << yoffset << "\n";
+    this->scroll_offset = yoffset;
 }
 
 void InputController::attach_scrolling_handler(GLFWscrollfun handler)
