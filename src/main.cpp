@@ -77,7 +77,7 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 void CursorPosCallback(GLFWwindow* window, double xpos, double ypos);
 void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
-void update_camera_input(); 
+void update_camera_direction(); 
 
 
 using engine::EngineController;
@@ -189,9 +189,6 @@ int main() {
     g_engine_controller.input()->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
     g_engine_controller.input()->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT);
     g_engine_controller.input()->subscribe_hold_button(GLFW_MOUSE_BUTTON_LEFT, &g_LeftMouseButtonPressed);
-
-    //g_engine_controller.input()->attach_mouse_button_handler(MouseButtonCallback);
-    //g_engine_controller.input()->attach_cursor_position_handler(CursorPosCallback);
     g_engine_controller.input()->attach_scrolling_handler(ScrollCallback);
 
     cube_faces_vao = BuildCubeFaces();
@@ -341,8 +338,7 @@ void update() {
     // as matrizes e pontos resultantes dessas transformações.
     glm::vec4 p_model(0.5f, 0.5f, 0.5f, 1.0f);
 
-    if (g_LeftMouseButtonPressed)
-        update_camera_input();
+    update_camera_direction();
 }
 
 void update_free_camera_position() {
@@ -484,7 +480,7 @@ void update_free_camera_view_vector() {
     );
 }
 
-void update_camera_input() {
+void update_camera_direction() {
         // Abaixo executamos o seguinte: caso o botão esquerdo do mouse esteja
     // pressionado, computamos quanto que o mouse se movimento desde o último
     // instante de tempo, e usamos esta movimentação para atualizar os
@@ -519,49 +515,6 @@ void update_camera_input() {
     update_free_camera_view_vector();
 }
 
-// Função callback chamada sempre que o usuário movimentar o cursor do mouse em
-// cima da janela OpenGL.
-// void CursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
-//     // Abaixo executamos o seguinte: caso o botão esquerdo do mouse esteja
-//     // pressionado, computamos quanto que o mouse se movimento desde o último
-//     // instante de tempo, e usamos esta movimentação para atualizar os
-//     // parâmetros que definem a posição da câmera dentro da cena virtual.
-//     // Assim, temos que o usuário consegue controlar a câmera.
-
-//     if (!g_LeftMouseButtonPressed)
-//         return;
-
-//     // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
-//     float dx = (float)(xpos - g_LastCursorPosX);
-//     float dy = (float)(ypos - g_LastCursorPosY);
-
-//     // Atualizamos parâmetros da câmera com os deslocamentos
-//     g_CameraTheta -= 0.01f*dx;
-
-//     if (g_camera_is_free) {
-//         g_CameraPhi   -= 0.01f*dy;
-//     } else {
-//         g_CameraPhi   += 0.01f*dy;
-//     }
-
-//     // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
-//     float phimax = 3.141592f/2;
-//     float phimin = -phimax;
-
-//     if (g_CameraPhi > phimax)
-//         g_CameraPhi = phimax;
-
-//     if (g_CameraPhi < phimin)
-//         g_CameraPhi = phimin;
-
-//     // Atualizamos as variáveis globais para armazenar a posição atual do
-//     // cursor como sendo a última posição conhecida do cursor.
-//     g_LastCursorPosX = xpos;
-//     g_LastCursorPosY = ypos;
-
-//     update_free_camera_view_vector();
-// }
-
 // Função callback chamada sempre que o usuário movimenta a "rodinha" do mouse.
 void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
     // Atualizamos a distância da câmera para a origem utilizando a
@@ -577,18 +530,4 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
     if (g_CameraDistance < verysmallnumber)
         g_CameraDistance = verysmallnumber;
 }
-
-// void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
-//     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-//         g_LeftMouseButtonPressed = true;
-
-//         // Atualizamos as variáveis globais que armazenam a última posição
-//         // conhecida do cursor do mouse.
-//         //glfwGetCursorPos(window, &g_LastCursorPosX, &g_LastCursorPosY);
-//     }
-
-//     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
-//         g_LeftMouseButtonPressed = false;
-//     }
-// }
 

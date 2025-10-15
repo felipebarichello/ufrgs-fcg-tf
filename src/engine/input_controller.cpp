@@ -40,8 +40,8 @@ void InputController::subscribe_press_button(int key, std::function<void()> func
 
 void InputController::subscribe_hold_button(int key, bool* is_down) {
     std::cout << "Subscribing hold button for key " << key << "\n";
-    add_key_handler(key, GLFW_PRESS, [is_down]() { *is_down = true; std::cout << "Pressed\n"; });
-    add_key_handler(key, GLFW_RELEASE, [is_down]() { *is_down = false; std::cout << "Released\n"; });
+    add_key_handler(key, GLFW_PRESS, [is_down]() { *is_down = true; });
+    add_key_handler(key, GLFW_RELEASE, [is_down]() { *is_down = false; });
 } 
 
 void InputController::subscribe_dpad(glm::vec2* direction, int forward_key, int backward_key, int left_key, int right_key) {
@@ -143,16 +143,6 @@ glm::vec2 InputController::get_cursor_position_delta() {
 void InputController::cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
     this->cursor_position.x = (float)xpos;
     this->cursor_position.y = (float)ypos;
-}
-
-void InputController::attach_mouse_button_handler(GLFWmousebuttonfun handler)
-{
-    glfwSetMouseButtonCallback(this->window, handler);
-}
-
-void InputController::attach_cursor_position_handler(GLFWcursorposfun handler)
-{
-    glfwSetCursorPosCallback(this->window, handler);
 }
 
 void InputController::attach_scrolling_handler(GLFWscrollfun handler)
