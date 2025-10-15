@@ -21,6 +21,12 @@ void InputController::init() {
                 controller->cursor_position_callback(w, xpos, ypos);
             }
         });
+        glfwSetMouseButtonCallback(this->window, [](GLFWwindow* w, int button, int action, int mods) {
+            InputController* controller = static_cast<InputController*>(glfwGetWindowUserPointer(w));
+            if (controller) {
+                controller->mouse_button_callback(w, button, action, mods);
+            }
+        });
     }
 }
 
@@ -33,9 +39,10 @@ void InputController::subscribe_press_button(int key, std::function<void()> func
 }
 
 void InputController::subscribe_hold_button(int key, bool* is_down) {
-    add_key_handler(key, GLFW_PRESS, [is_down]() { *is_down = true; });
-    add_key_handler(key, GLFW_RELEASE, [is_down]() { *is_down = false; });
-}
+    std::cout << "Subscribing hold button for key " << key << "\n";
+    add_key_handler(key, GLFW_PRESS, [is_down]() { *is_down = true; std::cout << "Pressed\n"; });
+    add_key_handler(key, GLFW_RELEASE, [is_down]() { *is_down = false; std::cout << "Released\n"; });
+} 
 
 void InputController::subscribe_dpad(glm::vec2* direction, int forward_key, int backward_key, int left_key, int right_key) {
     // Store the state for this vector
@@ -98,6 +105,13 @@ void InputController::key_callback(GLFWwindow *window, int key, int scancode, in
     }
 }
 
+void InputController::mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
+    this->last_cursor_position = this->cursor_position;
+    for (std::function<void()> function : key_handler_map[{button,action}]) {
+        function();
+    }
+}
+
 void InputController::update_dpad_direction(DPad* dpad) {
 
     *(dpad->direction) = glm::vec2(0.0f, 0.0f);
@@ -118,6 +132,12 @@ void InputController::update_dpad_direction(DPad* dpad) {
 
 glm::vec2 InputController::get_cursor_position() {
     return this->cursor_position;
+}
+
+glm::vec2 InputController::get_cursor_position_delta() {
+    glm::vec2 delta = this->cursor_position - this->last_cursor_position;
+    this->last_cursor_position = this->cursor_position;
+    return delta;
 }
 
 void InputController::cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {

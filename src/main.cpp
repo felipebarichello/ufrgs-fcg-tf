@@ -188,8 +188,9 @@ int main() {
 
     g_engine_controller.input()->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
     g_engine_controller.input()->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT);
+    g_engine_controller.input()->subscribe_hold_button(GLFW_MOUSE_BUTTON_LEFT, &g_LeftMouseButtonPressed);
 
-    g_engine_controller.input()->attach_mouse_button_handler(MouseButtonCallback);
+    //g_engine_controller.input()->attach_mouse_button_handler(MouseButtonCallback);
     //g_engine_controller.input()->attach_cursor_position_handler(CursorPosCallback);
     g_engine_controller.input()->attach_scrolling_handler(ScrollCallback);
 
@@ -340,7 +341,8 @@ void update() {
     // as matrizes e pontos resultantes dessas transformações.
     glm::vec4 p_model(0.5f, 0.5f, 0.5f, 1.0f);
 
-    update_camera_input();
+    if (g_LeftMouseButtonPressed)
+        update_camera_input();
 }
 
 void update_free_camera_position() {
@@ -493,17 +495,15 @@ void update_camera_input() {
         return;
 
     // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
-    glm::dvec2 cursor_pos = g_engine_controller.input()->get_cursor_position();
-    float dx = (float)(cursor_pos.x - g_LastCursorPosX);
-    float dy = (float)(cursor_pos.y - g_LastCursorPosY);
+    glm::vec2 cursor_delta = g_engine_controller.input()->get_cursor_position_delta();
 
     // Atualizamos parâmetros da câmera com os deslocamentos
-    g_CameraTheta -= 0.01f*dx;
+    g_CameraTheta -= 0.01f*cursor_delta.x;
 
     if (g_camera_is_free) {
-        g_CameraPhi   -= 0.01f*dy;
+        g_CameraPhi   -= 0.01f*cursor_delta.y;
     } else {
-        g_CameraPhi   += 0.01f*dy;
+        g_CameraPhi   += 0.01f*cursor_delta.y;
     }
 
     // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
@@ -515,11 +515,6 @@ void update_camera_input() {
 
     if (g_CameraPhi < phimin)
         g_CameraPhi = phimin;
-
-    // Atualizamos as variáveis globais para armazenar a posição atual do
-    // cursor como sendo a última posição conhecida do cursor.
-    g_LastCursorPosX = cursor_pos.x;
-    g_LastCursorPosY = cursor_pos.y;
 
     update_free_camera_view_vector();
 }
@@ -583,17 +578,17 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
         g_CameraDistance = verysmallnumber;
 }
 
-void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-        g_LeftMouseButtonPressed = true;
+// void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+//     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+//         g_LeftMouseButtonPressed = true;
 
-        // Atualizamos as variáveis globais que armazenam a última posição
-        // conhecida do cursor do mouse.
-        glfwGetCursorPos(window, &g_LastCursorPosX, &g_LastCursorPosY);
-    }
+//         // Atualizamos as variáveis globais que armazenam a última posição
+//         // conhecida do cursor do mouse.
+//         //glfwGetCursorPos(window, &g_LastCursorPosX, &g_LastCursorPosY);
+//     }
 
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
-        g_LeftMouseButtonPressed = false;
-    }
-}
+//     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
+//         g_LeftMouseButtonPressed = false;
+//     }
+// }
 
