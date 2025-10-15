@@ -45,7 +45,6 @@ void InputController::subscribe_press_button(int key, std::function<void()> func
 }
 
 void InputController::subscribe_hold_button(int key, bool* is_down) {
-    std::cout << "Subscribing hold button for key " << key << "\n";
     add_key_handler(key, GLFW_PRESS, [is_down]() { *is_down = true; });
     add_key_handler(key, GLFW_RELEASE, [is_down]() { *is_down = false; });
 } 

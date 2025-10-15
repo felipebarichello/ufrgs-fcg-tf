@@ -170,7 +170,6 @@ Vao cube_faces_vao = Vao();
 Vao cube_edges_vao = Vao();
 Vao cube_axes_vao = Vao();
 
-
 void start();
 void update();
 
@@ -462,15 +461,6 @@ Vao BuildCubeAxes()
         .build(GL_LINES, sizeof(axes_indices)/sizeof(GLuint), GL_UNSIGNED_INT);
 }
 
-
-void update_free_camera_view_vector() {
-    g_free_camera_view_unit_vector = Vec3(
-        cosf(g_CameraPhi) * sinf(g_CameraTheta),
-        sinf(g_CameraPhi),
-        cosf(g_CameraPhi) * cosf(g_CameraTheta)
-    );
-}
-
 void update_free_camera_direction() {
 
     if (!g_LeftMouseButtonPressed)
@@ -498,5 +488,9 @@ void update_free_camera_direction() {
     if (g_CameraPhi < phimin)
         g_CameraPhi = phimin;
 
-    update_free_camera_view_vector();
+    g_free_camera_view_unit_vector = Vec3(
+        cosf(g_CameraPhi) * sinf(g_CameraTheta),
+        sinf(g_CameraPhi),
+        cosf(g_CameraPhi) * cosf(g_CameraTheta)
+    );
 }
