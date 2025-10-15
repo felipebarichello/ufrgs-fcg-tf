@@ -93,24 +93,10 @@ void InputController::subscribe_dpad(glm::vec2* direction, int forward_key, int 
 }
 
 float InputController::get_scroll_offset() {
-    // You can implement this function to return the scroll offset if needed
     return this->scroll_offset;
 }   
 
-void InputController::key_callback(GLFWwindow *window, int key, int scancode, int action, int mod)
-{
-    // =======================
-    // Não modifique este loop! Ele é utilizando para correção automatizada dos
-    // laboratórios. Deve ser sempre o primeiro comando desta função KeyCallback().
-    for (int i = 0; i < 10; ++i)
-        if (key == GLFW_KEY_0 + i && action == GLFW_PRESS && mod == GLFW_MOD_SHIFT)
-            std::exit(100 + i);
-    // =======================
-
-    // Se o usuário pressionar a tecla ESC, fechamos a janela.
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GL_TRUE);
-
+void InputController::key_callback(GLFWwindow *window, int key, int scancode, int action, int mod) {
     for (std::function<void()> function : key_handler_map[{key,action}]) {
         function();
     }
@@ -157,6 +143,5 @@ void InputController::cursor_position_callback(GLFWwindow* window, double xpos, 
 }
 
 void InputController::scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
-    std::cout << "Scroll callback: " << xoffset << ", " << yoffset << "\n";
     this->scroll_offset = yoffset;
 }

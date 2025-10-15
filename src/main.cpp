@@ -462,10 +462,6 @@ Vao BuildCubeAxes()
         .build(GL_LINES, sizeof(axes_indices)/sizeof(GLuint), GL_UNSIGNED_INT);
 }
 
-// Variáveis globais que armazenam a última posição do cursor do mouse, para
-// que possamos calcular quanto que o mouse se movimentou entre dois instantes
-// de tempo. Utilizadas no callback CursorPosCallback() abaixo.
-double g_LastCursorPosX, g_LastCursorPosY;
 
 void update_free_camera_view_vector() {
     g_free_camera_view_unit_vector = Vec3(
