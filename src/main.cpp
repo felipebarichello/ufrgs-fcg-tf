@@ -130,10 +130,6 @@ float g_AngleX = 0.0f;
 float g_AngleY = 0.0f;
 float g_AngleZ = 0.0f;
 
-// "g_LeftMouseButtonPressed = true" se o usuário está com o botão esquerdo do mouse
-// pressionado no momento atual. Veja função MouseButtonCallback().
-bool g_LeftMouseButtonPressed = false;
-
 bool g_camera_is_free = true;
 
 // Variáveis que definem a câmera em coordenadas esféricas, controladas pelo
@@ -184,7 +180,6 @@ int main() {
 
     g_engine_controller.input()->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
     g_engine_controller.input()->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT);
-    g_engine_controller.input()->subscribe_hold_button(GLFW_MOUSE_BUTTON_LEFT, &g_LeftMouseButtonPressed);
 
     cube_faces_vao = BuildCubeFaces();
     cube_edges_vao = BuildCubeEdges();
@@ -463,7 +458,7 @@ Vao BuildCubeAxes()
 
 void update_free_camera_direction() {
 
-    if (!g_LeftMouseButtonPressed)
+    if (!g_engine_controller.input()->left_mouse_button_is_down())
         return;
 
     // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
