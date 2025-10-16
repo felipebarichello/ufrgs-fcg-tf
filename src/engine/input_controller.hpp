@@ -27,6 +27,7 @@ namespace engine {
             glm::vec2 cursor_position;
             glm::vec2 last_cursor_position;
             float scroll_offset = 0.0f;
+            bool is_left_mouse_button_down = false;
         public:
             InputController(GLFWwindow* window);
             void init();
@@ -35,6 +36,7 @@ namespace engine {
             void subscribe_press_button(int key, std::function<void()>);
             void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
             float get_scroll_offset();
+            bool left_mouse_button_is_down();
             glm::vec2 get_cursor_position();
             glm::vec2 get_cursor_position_delta();
         private:

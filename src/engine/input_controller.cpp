@@ -33,6 +33,7 @@ void InputController::init() {
                 controller->scroll_callback(w, xoffset, yoffset);
             }
         });
+        this->subscribe_hold_button(GLFW_MOUSE_BUTTON_LEFT, &this->is_left_mouse_button_down);
     }
 }
 
@@ -94,6 +95,10 @@ void InputController::subscribe_dpad(glm::vec2* direction, int forward_key, int 
 float InputController::get_scroll_offset() {
     return this->scroll_offset;
 }   
+
+bool InputController::left_mouse_button_is_down() {
+    return this->is_left_mouse_button_down;
+}
 
 void InputController::key_callback(GLFWwindow *window, int key, int scancode, int action, int mod) {
     for (std::function<void()> function : key_handler_map[{key,action}]) {
