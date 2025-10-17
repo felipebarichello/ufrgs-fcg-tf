@@ -21,7 +21,7 @@ namespace engine {
         void set_basis_from_up_view(Vec3 up, Vec3 view);
     };
 
-    class Camera : public VObject, public ITransform {
+    class Camera : public ITransform {
         private:
             CameraTransform _transform;
         
