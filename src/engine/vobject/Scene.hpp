@@ -9,10 +9,7 @@ namespace engine {
         friend class VObject;
 
         public:
-            // TODO: should this constructor be public?
             Scene() = default;
-
-            // TODO: should this be public?
             VObject* create_vobject();
 
         private:
