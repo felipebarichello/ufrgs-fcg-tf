@@ -147,5 +147,5 @@ void InputController::cursor_position_callback(GLFWwindow* window, double xpos, 
 }
 
 void InputController::scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
-    this->scroll_offset = yoffset;
+    this->scroll_offset = (float)yoffset;
 }
