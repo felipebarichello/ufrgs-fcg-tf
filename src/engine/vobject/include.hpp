@@ -1,7 +1,6 @@
 #pragma once
 
-#include "specialization/include.hpp"
-#include "transform.hpp"
+#include "components/include.hpp"
 #include "EStart.hpp"
 #include "EUpdate.hpp"
 #include "vobject.hpp"
