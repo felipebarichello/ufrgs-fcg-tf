@@ -28,6 +28,7 @@ namespace engine {
             glm::vec2 last_cursor_position;
             float scroll_offset = 0.0f;
             bool is_left_mouse_button_down = false;
+            bool focused = false;
         public:
             InputController(GLFWwindow* window);
             void init();

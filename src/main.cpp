@@ -458,8 +458,8 @@ Vao BuildCubeAxes()
 
 void update_free_camera_direction() {
 
-    if (!g_engine_controller.input()->left_mouse_button_is_down())
-        return;
+    // if (!g_engine_controller.input()->left_mouse_button_is_down())
+    //     return;
 
     // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
     glm::vec2 cursor_delta = g_engine_controller.input()->get_cursor_position_delta();

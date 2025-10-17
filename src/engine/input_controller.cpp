@@ -94,20 +94,31 @@ void InputController::subscribe_dpad(glm::vec2* direction, int forward_key, int 
 
 float InputController::get_scroll_offset() {
     return this->scroll_offset;
-}   
+}
 
 bool InputController::left_mouse_button_is_down() {
     return this->is_left_mouse_button_down;
 }
 
 void InputController::key_callback(GLFWwindow *window, int key, int scancode, int action, int mod) {
-    for (std::function<void()> function : key_handler_map[{key,action}]) {
-        function();
+
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        this->focused = false;
+    }
+
+    if (this->focused) {
+        for (std::function<void()> function : key_handler_map[{key,action}]) {
+            function();
+        }
     }
 }
 
 void InputController::mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
-    this->last_cursor_position = this->cursor_position;
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        this->focused = true;
+    }
     for (std::function<void()> function : key_handler_map[{button,action}]) {
         function();
     }
@@ -138,7 +149,13 @@ glm::vec2 InputController::get_cursor_position() {
 glm::vec2 InputController::get_cursor_position_delta() {
     glm::vec2 delta = this->cursor_position - this->last_cursor_position;
     this->last_cursor_position = this->cursor_position;
-    return delta;
+    if (!focused) {
+        return glm::vec2(0.0f, 0.0f);
+    }
+    else 
+    {
+        return delta;
+    }
 }
 
 void InputController::cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
