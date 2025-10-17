@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../vobject.hpp"
-#include "../transform.hpp"
+#include "transform.hpp"
 
 namespace engine {
     struct CameraTransform : public Transform {
