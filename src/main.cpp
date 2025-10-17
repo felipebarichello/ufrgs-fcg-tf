@@ -427,16 +427,16 @@ Vao BuildCubeEdges()
 Vao BuildCubeAxes()
 {
     GLfloat axes_positions[] = {
-            // X axis
-            0.0f, 0.0f, 0.0f, 1.0f,
-            1.0f, 0.0f, 0.0f, 1.0f,
-            // Y axis
-            0.0f, 0.0f, 0.0f, 1.0f,
-            0.0f, 1.0f, 0.0f, 1.0f,
-            // Z axis
-            0.0f, 0.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f, 1.0f,
-        };
+        // X axis
+        0.0f, 0.0f, 0.0f, 1.0f,
+        1.0f, 0.0f, 0.0f, 1.0f,
+        // Y axis
+        0.0f, 0.0f, 0.0f, 1.0f,
+        0.0f, 1.0f, 0.0f, 1.0f,
+        // Z axis
+        0.0f, 0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f, 1.0f,
+    };
 
     GLfloat axes_colors[] = {
         1.0f,0.0f,0.0f,1.0f,
