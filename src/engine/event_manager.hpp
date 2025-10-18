@@ -1,10 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "vobject/EStart.hpp"
 #include <functional>
-
-using engine::EStart;
 
 namespace engine {
     using StartHandler  = std::function<void()>;
