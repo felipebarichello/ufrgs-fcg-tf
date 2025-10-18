@@ -151,11 +151,7 @@ glm::vec2 InputController::get_cursor_position() {
 }
 
 glm::vec2 InputController::get_cursor_position_delta() {
-    if (!focused) {
-        return glm::vec2(0.0f, 0.0f);
-    } else {
-        return this->cursor_delta;
-    }
+    return this->cursor_delta;
 }
 
 void InputController::cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
@@ -164,7 +160,7 @@ void InputController::cursor_position_callback(GLFWwindow* window, double xpos, 
 }
 
 void InputController::update() {
-    this->cursor_delta = this->cursor_position - this->last_cursor_position;
+    this->cursor_delta = (this->focused) ? this->cursor_position - this->last_cursor_position : glm::vec2(0.0f, 0.0f);
     this->last_cursor_position = this->cursor_position;
 }
 
