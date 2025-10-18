@@ -104,6 +104,9 @@ void InputController::key_callback(GLFWwindow *window, int key, int scancode, in
 
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        int windowWidth, windowHeight;
+        glfwGetWindowSize(window, &windowWidth, &windowHeight);
+        glfwSetCursorPos(window, windowWidth / 2.0, windowHeight / 2.0);
         this->focused = false;
     }
 
@@ -119,6 +122,7 @@ void InputController::mouse_button_callback(GLFWwindow* window, int button, int 
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         this->focused = true;
     }
+
     for (std::function<void()> function : key_handler_map[{button,action}]) {
         function();
     }
@@ -151,9 +155,7 @@ glm::vec2 InputController::get_cursor_position_delta() {
     this->last_cursor_position = this->cursor_position;
     if (!focused) {
         return glm::vec2(0.0f, 0.0f);
-    }
-    else 
-    {
+    } else {
         return delta;
     }
 }
