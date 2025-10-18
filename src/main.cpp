@@ -37,7 +37,6 @@
 
 // Headers locais, definidos na pasta "include/"
 #include <utils.h>
-
 #include <engine.hpp>
 
 // TODO: Remove unused function declarations
@@ -102,7 +101,6 @@ using engine::InputController;
 
 Vao BuildCubeAxes();
 Vao BuildCubeEdges();
-Vao BuildCubeFaces();
 
 // Definimos uma estrutura que armazenará dados necessários para renderizar
 // cada objeto da cena virtual.
@@ -181,16 +179,26 @@ int main() {
     g_engine_controller.input()->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
     g_engine_controller.input()->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT);
 
-    cube_faces_vao = BuildCubeFaces();
     cube_edges_vao = BuildCubeEdges();
     cube_axes_vao  = BuildCubeAxes();
 
-    // Buscamos o endereço das variáveis definidas dentro do Vertex Shader.
-    // Utilizaremos estas variáveis para enviar dados para a placa de vídeo
-    // (GPU)! Veja arquivo "shader_vertex.glsl".
+    Cube cube1 = Cube();
+    Cube cube2 = Cube();
+    Cube cube3 = Cube();
+
+    cube2.set_position(Vec3(0.0f, 0.0f, -2.0f));
+    cube2.set_scale(Vec3(2.0f, 0.5f, 0.5f));
+    cube2.set_rotation(3.141592f / 8.0f, Vec3(1.0f,1.0f,1.0f));
+
+    cube3.set_position(Vec3(-2.0f, 0.0f, 0.0f));
+
     g_model_uniform      = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "model"); // Variável da matriz "model"
     g_view_uniform       = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "view"); // Variável da matriz "view" em shader_vertex.glsl
     g_projection_uniform = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "projection"); // Variável da matriz "projection" em shader_vertex.glsl
+
+    g_engine_controller.add_drawable(&cube1);
+    g_engine_controller.add_drawable(&cube2);
+    g_engine_controller.add_drawable(&cube3);
 
     // Enable z-buffer
     glEnable(GL_DEPTH_TEST);
@@ -268,59 +276,6 @@ void update() {
     glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
     glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
 
-    // Vamos desenhar 3 instâncias (cópias) do cubo
-    for (int i = 1; i <= 3; ++i) {
-        // Cada cópia do cubo possui uma matriz de modelagem independente,
-        // já que cada cópia estará em uma posição (rotação, escala, ...)
-        // diferente em relação ao espaço global (World Coordinates). Veja
-        // slides 2-14 e 184-190 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
-        glm::mat4 model;
-
-        if (i == 1) {
-            // A primeira cópia do cubo não sofrerá nenhuma transformação
-            // de modelagem. Portanto, sua matriz "model" é a identidade, e
-            // suas coordenadas no espaço global (World Coordinates) serão
-            // *exatamente iguais* a suas coordenadas no espaço do modelo
-            // (Model Coordinates).
-            model = Matrix_Identity();
-        } else if ( i == 2 ) {
-            // A segunda cópia do cubo sofrerá um escalamento não-uniforme,
-            // seguido de uma rotação no eixo (1,1,1), e uma translação em Z (nessa ordem!).
-            model = Matrix_Translate(0.0f, 0.0f, -2.0f) // TERCEIRO translação
-                    * Matrix_Rotate(3.141592f / 8.0f, glm::vec4(1.0f,1.0f,1.0f,0.0f)) // SEGUNDO rotação
-                    * Matrix_Scale(2.0f, 0.5f, 0.5f); // PRIMEIRO escala
-        } else if ( i == 3 ) {
-            // A terceira cópia do cubo sofrerá rotações em X,Y e Z (nessa
-            // ordem) seguindo o sistema de ângulos de Euler, e após uma
-            // translação em X. Veja slides 106-107 do documento Aula_07_Transformacoes_Geometricas_3D.pdf.
-            model = Matrix_Translate(-2.0f, 0.0f, 0.0f) // QUARTO translação
-                    * Matrix_Rotate_Z(g_AngleZ)  // TERCEIRO rotação Z de Euler
-                    * Matrix_Rotate_Y(g_AngleY)  // SEGUNDO rotação Y de Euler
-                    * Matrix_Rotate_X(g_AngleX); // PRIMEIRO rotação X de Euler
-        }
-
-        glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        cube_faces_vao.draw();
-
-        glLineWidth(2.0f);
-        cube_axes_vao.draw();
-        cube_edges_vao.draw();
-
-        // Desenhamos um ponto de tamanho 15 pixels em cima do terceiro vértice
-        // do terceiro cubo. Este vértice tem coordenada de modelo igual à
-        // (0.5, 0.5, 0.5, 1.0).
-        if ( i == 3 ) {
-            glPointSize(15.0f);
-            glDrawArrays(GL_POINTS, 3, 1);
-        }
-    }
-
-    
-    glm::mat4 model = Matrix_Identity();
-    glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-    glLineWidth(10.0f);
-    cube_axes_vao.draw();
-
     glBindVertexArray(0);
 
     // Pegamos um vértice com coordenadas de modelo (0.5, 0.5, 0.5, 1) e o
@@ -333,58 +288,6 @@ void update() {
 void update_free_camera_position() {
     g_free_camera_position += g_free_camera_speed * g_free_camera_move_vector.y * g_free_camera_view_unit_vector;
     g_free_camera_position += g_free_camera_speed * g_free_camera_move_vector.x * g_free_camera_right_vector;
-}
-
-Vao BuildCubeFaces()
-{
-    GLfloat face_positions[] = {
-        -0.5f,  0.5f,  0.5f, 1.0f,
-        -0.5f, -0.5f,  0.5f, 1.0f,
-         0.5f, -0.5f,  0.5f, 1.0f,
-         0.5f,  0.5f,  0.5f, 1.0f,
-        -0.5f,  0.5f, -0.5f, 1.0f,
-        -0.5f, -0.5f, -0.5f, 1.0f,
-         0.5f, -0.5f, -0.5f, 1.0f,
-         0.5f,  0.5f, -0.5f, 1.0f,
-    };
-
-    GLfloat face_colors[] = {
-        1.0f, 0.5f, 0.0f, 1.0f,
-        1.0f, 0.5f, 0.0f, 1.0f,
-        0.0f, 0.5f, 1.0f, 1.0f,
-        0.0f, 0.5f, 1.0f, 1.0f,
-        1.0f, 0.5f, 0.0f, 1.0f,
-        1.0f, 0.5f, 0.0f, 1.0f,
-        0.0f, 0.5f, 1.0f, 1.0f,
-        0.0f, 0.5f, 1.0f, 1.0f,
-    };
-
-    GLuint face_indices[] = {
-        // Front face
-        0, 1, 2,
-        2, 3, 0,
-        // Back face
-        4, 7, 6,
-        6, 5, 4,
-        // Top face
-        0, 3, 7,
-        7, 4, 0,
-        // Bottom face
-        1, 5, 6,
-        6, 2, 1,
-        // Left face
-        0, 4, 5,
-        5, 1, 0,
-        // Right face
-        3, 2, 6,
-        6, 7, 3
-    };
-
-    return VaoBuilder()
-        .add_vbo(0, 4, sizeof(face_positions), face_positions, GL_STATIC_DRAW)
-        .add_vbo(1, 4, sizeof(face_colors), face_colors, GL_STATIC_DRAW)
-        .add_ebo(sizeof(face_indices), face_indices, GL_STATIC_DRAW)
-        .build(GL_TRIANGLES, sizeof(face_indices)/sizeof(GLuint), GL_UNSIGNED_INT);
 }
 
 // Build the edges VAO and register it
