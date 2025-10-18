@@ -129,10 +129,6 @@ GLint g_model_uniform;
 GLint g_view_uniform;
 GLint g_projection_uniform;
 
-Vao cube_faces_vao = Vao();
-Vao cube_edges_vao = Vao();
-Vao cube_axes_vao = Vao();
-
 void start();
 void update();
 
