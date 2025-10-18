@@ -183,14 +183,24 @@ int main() {
     cube_faces_vao = BuildCubeFaces();
     cube_edges_vao = BuildCubeEdges();
     cube_axes_vao  = BuildCubeAxes();
-    Cube the_cube = Cube();
 
-    // Buscamos o endereço das variáveis definidas dentro do Vertex Shader.
-    // Utilizaremos estas variáveis para enviar dados para a placa de vídeo
-    // (GPU)! Veja arquivo "shader_vertex.glsl".
+    Cube cube1 = Cube();
+    Cube cube2 = Cube();
+    Cube cube3 = Cube();
+
+    cube2.set_position(Vec3(0.0f, 0.0f, -2.0f));
+    cube2.set_scale(Vec3(2.0f, 0.5f, 0.5f));
+    cube2.set_rotation(3.141592f / 8.0f, Vec3(1.0f,1.0f,1.0f));
+
+    cube3.set_position(Vec3(-2.0f, 0.0f, 0.0f));
+
     g_model_uniform      = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "model"); // Variável da matriz "model"
     g_view_uniform       = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "view"); // Variável da matriz "view" em shader_vertex.glsl
     g_projection_uniform = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "projection"); // Variável da matriz "projection" em shader_vertex.glsl
+
+    g_engine_controller.add_drawable(&cube1);
+    g_engine_controller.add_drawable(&cube2);
+    g_engine_controller.add_drawable(&cube3);
 
     // Enable z-buffer
     glEnable(GL_DEPTH_TEST);
@@ -271,7 +281,7 @@ void update() {
     //the_cube.draw(g_model_uniform);
 
     // Vamos desenhar 3 instâncias (cópias) do cubo
-    for (int i = 2; i <= 3; ++i) {
+    for (int i = 4; i <= 3; ++i) {
         // Cada cópia do cubo possui uma matriz de modelagem independente,
         // já que cada cópia estará em uma posição (rotação, escala, ...)
         // diferente em relação ao espaço global (World Coordinates). Veja
@@ -301,20 +311,20 @@ void update() {
                     * Matrix_Rotate_X(g_AngleX); // PRIMEIRO rotação X de Euler
         }
 
-        glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
-        cube_faces_vao.draw();
+        // glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(model));
+        // cube_faces_vao.draw();
 
-        glLineWidth(2.0f);
-        cube_axes_vao.draw();
-        cube_edges_vao.draw();
+        // glLineWidth(2.0f);
+        // cube_axes_vao.draw();
+        // cube_edges_vao.draw();
 
-        // Desenhamos um ponto de tamanho 15 pixels em cima do terceiro vértice
-        // do terceiro cubo. Este vértice tem coordenada de modelo igual à
-        // (0.5, 0.5, 0.5, 1.0).
-        if ( i == 3 ) {
-            glPointSize(15.0f);
-            glDrawArrays(GL_POINTS, 3, 1);
-        }
+        // // Desenhamos um ponto de tamanho 15 pixels em cima do terceiro vértice
+        // // do terceiro cubo. Este vértice tem coordenada de modelo igual à
+        // // (0.5, 0.5, 0.5, 1.0).
+        // if ( i == 3 ) {
+        //     glPointSize(15.0f);
+        //     glDrawArrays(GL_POINTS, 3, 1);
+        // }
     }
 
     
