@@ -6,9 +6,9 @@ Cube::Cube() {
     this->scale = glm::vec3(1.0f);
     this->rotation_angle = 0.0f;
     this->update_model_matrix();
-    std::cout << "Building cube VAO..." << std::endl;
-    this->vao = build_vao();
-    std::cout << "Vao builded" << std::endl;
+    this->faces_vao = this->build_faces_vao();
+    this->edges_vao = this->build_edges_vao();
+    this->axes_vao  = this->build_axes_vao();
 }
 
 void Cube::set_position(const glm::vec3 position) {
@@ -36,10 +36,12 @@ void Cube::update_model_matrix() {
 
 void Cube::draw(GLint g_model_uniform) {
     glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(this->model));
-    this->vao.draw();
+    this->faces_vao.draw();
+    this->edges_vao.draw();
+    this->axes_vao.draw();
 }
 
-engine::Vao Cube::build_vao() {
+engine::Vao Cube::build_faces_vao() {
     // Build and return the VAO for the cube
     GLfloat face_positions[] = {
         -0.5f,  0.5f,  0.5f, 1.0f,
@@ -90,4 +92,73 @@ engine::Vao Cube::build_vao() {
         .add_ebo(sizeof(face_indices), face_indices, GL_STATIC_DRAW)
         .build(GL_TRIANGLES, sizeof(face_indices)/sizeof(GLuint), GL_UNSIGNED_INT);
 
+}
+
+// Build the edges VAO and register it
+engine::Vao Cube::build_edges_vao()
+{
+    GLfloat edge_positions[] = {
+        -0.5f,  0.5f,  0.5f, 1.0f,
+        -0.5f, -0.5f,  0.5f, 1.0f,
+         0.5f, -0.5f,  0.5f, 1.0f,
+         0.5f,  0.5f,  0.5f, 1.0f,
+        -0.5f,  0.5f, -0.5f, 1.0f,
+        -0.5f, -0.5f, -0.5f, 1.0f,
+         0.5f, -0.5f, -0.5f, 1.0f,
+         0.5f,  0.5f, -0.5f, 1.0f,
+    };
+
+    GLfloat edge_colors[] = {
+        0.0f,0.0f,0.0f,1.0f,
+        0.0f,0.0f,0.0f,1.0f,
+        0.0f,0.0f,0.0f,1.0f,
+        0.0f,0.0f,0.0f,1.0f,
+        0.0f,0.0f,0.0f,1.0f,
+        0.0f,0.0f,0.0f,1.0f,
+        0.0f,0.0f,0.0f,1.0f,
+        0.0f,0.0f,0.0f,1.0f,
+    };
+
+    GLuint edge_indices[] = {
+        0,1, 1,2, 2,3, 3,0, 0,4, 4,7, 7,6, 6,2, 6,5, 5,4, 5,1, 7,3
+    };
+
+    return engine::VaoBuilder()
+        .add_vbo(0, 4, sizeof(edge_positions), edge_positions, GL_STATIC_DRAW)
+        .add_vbo(1, 4, sizeof(edge_colors), edge_colors, GL_STATIC_DRAW)
+        .add_ebo(sizeof(edge_indices), edge_indices, GL_STATIC_DRAW)
+        .build(GL_LINES, sizeof(edge_indices)/sizeof(GLuint), GL_UNSIGNED_INT);
+}
+
+// Build the axes VAO and register it
+engine::Vao Cube::build_axes_vao()
+{
+    GLfloat axes_positions[] = {
+        // X axis
+        0.0f, 0.0f, 0.0f, 1.0f,
+        1.0f, 0.0f, 0.0f, 1.0f,
+        // Y axis
+        0.0f, 0.0f, 0.0f, 1.0f,
+        0.0f, 1.0f, 0.0f, 1.0f,
+        // Z axis
+        0.0f, 0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f, 1.0f,
+    };
+
+    GLfloat axes_colors[] = {
+        1.0f,0.0f,0.0f,1.0f,
+        1.0f,0.0f,0.0f,1.0f,
+        0.0f,1.0f,0.0f,1.0f,
+        0.0f,1.0f,0.0f,1.0f,
+        0.0f,0.0f,1.0f,1.0f,
+        0.0f,0.0f,1.0f,1.0f,
+    };
+
+    GLuint axes_indices[] = { 0,1, 2,3, 4,5 };
+
+    return engine::VaoBuilder()
+        .add_vbo(0, 4, sizeof(axes_positions), axes_positions, GL_STATIC_DRAW)
+        .add_vbo(1, 4, sizeof(axes_colors), axes_colors, GL_STATIC_DRAW)
+        .add_ebo(sizeof(axes_indices), axes_indices, GL_STATIC_DRAW)
+        .build(GL_LINES, sizeof(axes_indices)/sizeof(GLuint), GL_UNSIGNED_INT);
 }

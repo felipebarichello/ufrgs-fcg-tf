@@ -98,10 +98,6 @@ using engine::Matrix_Rotate_Z;
 using engine::Matrix_Scale;
 using engine::InputController;
 
-
-Vao BuildCubeAxes();
-Vao BuildCubeEdges();
-
 // Definimos uma estrutura que armazenará dados necessários para renderizar
 // cada objeto da cena virtual.
 struct SceneObject {
@@ -178,9 +174,6 @@ int main() {
 
     g_engine_controller.input()->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
     g_engine_controller.input()->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT);
-
-    cube_edges_vao = BuildCubeEdges();
-    cube_axes_vao  = BuildCubeAxes();
 
     Cube cube1 = Cube();
     Cube cube2 = Cube();
@@ -288,75 +281,6 @@ void update() {
 void update_free_camera_position() {
     g_free_camera_position += g_free_camera_speed * g_free_camera_move_vector.y * g_free_camera_view_unit_vector;
     g_free_camera_position += g_free_camera_speed * g_free_camera_move_vector.x * g_free_camera_right_vector;
-}
-
-// Build the edges VAO and register it
-Vao BuildCubeEdges()
-{
-    GLfloat edge_positions[] = {
-        -0.5f,  0.5f,  0.5f, 1.0f,
-        -0.5f, -0.5f,  0.5f, 1.0f,
-         0.5f, -0.5f,  0.5f, 1.0f,
-         0.5f,  0.5f,  0.5f, 1.0f,
-        -0.5f,  0.5f, -0.5f, 1.0f,
-        -0.5f, -0.5f, -0.5f, 1.0f,
-         0.5f, -0.5f, -0.5f, 1.0f,
-         0.5f,  0.5f, -0.5f, 1.0f,
-    };
-
-    GLfloat edge_colors[] = {
-        0.0f,0.0f,0.0f,1.0f,
-        0.0f,0.0f,0.0f,1.0f,
-        0.0f,0.0f,0.0f,1.0f,
-        0.0f,0.0f,0.0f,1.0f,
-        0.0f,0.0f,0.0f,1.0f,
-        0.0f,0.0f,0.0f,1.0f,
-        0.0f,0.0f,0.0f,1.0f,
-        0.0f,0.0f,0.0f,1.0f,
-    };
-
-    GLuint edge_indices[] = {
-        0,1, 1,2, 2,3, 3,0, 0,4, 4,7, 7,6, 6,2, 6,5, 5,4, 5,1, 7,3
-    };
-
-    return VaoBuilder()
-        .add_vbo(0, 4, sizeof(edge_positions), edge_positions, GL_STATIC_DRAW)
-        .add_vbo(1, 4, sizeof(edge_colors), edge_colors, GL_STATIC_DRAW)
-        .add_ebo(sizeof(edge_indices), edge_indices, GL_STATIC_DRAW)
-        .build(GL_LINES, sizeof(edge_indices)/sizeof(GLuint), GL_UNSIGNED_INT);
-}
-
-// Build the axes VAO and register it
-Vao BuildCubeAxes()
-{
-    GLfloat axes_positions[] = {
-        // X axis
-        0.0f, 0.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 0.0f, 1.0f,
-        // Y axis
-        0.0f, 0.0f, 0.0f, 1.0f,
-        0.0f, 1.0f, 0.0f, 1.0f,
-        // Z axis
-        0.0f, 0.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f, 1.0f,
-    };
-
-    GLfloat axes_colors[] = {
-        1.0f,0.0f,0.0f,1.0f,
-        1.0f,0.0f,0.0f,1.0f,
-        0.0f,1.0f,0.0f,1.0f,
-        0.0f,1.0f,0.0f,1.0f,
-        0.0f,0.0f,1.0f,1.0f,
-        0.0f,0.0f,1.0f,1.0f,
-    };
-
-    GLuint axes_indices[] = { 0,1, 2,3, 4,5 };
-
-    return VaoBuilder()
-        .add_vbo(0, 4, sizeof(axes_positions), axes_positions, GL_STATIC_DRAW)
-        .add_vbo(1, 4, sizeof(axes_colors), axes_colors, GL_STATIC_DRAW)
-        .add_ebo(sizeof(axes_indices), axes_indices, GL_STATIC_DRAW)
-        .build(GL_LINES, sizeof(axes_indices)/sizeof(GLuint), GL_UNSIGNED_INT);
 }
 
 void update_free_camera_direction() {

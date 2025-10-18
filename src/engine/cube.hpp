@@ -7,17 +7,20 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
-
 class Cube {
 private:
     glm::mat4 model;
     glm::vec3 position;
     glm::vec3 rotation_axis;
     glm::vec3 scale;
-    engine::Vao vao = engine::Vao();
+    engine::Vao faces_vao = engine::Vao();
+    engine::Vao edges_vao = engine::Vao();
+    engine::Vao axes_vao = engine::Vao();
     float rotation_angle;
     void update_model_matrix();
-    engine::Vao build_vao();
+    engine::Vao build_faces_vao();
+    engine::Vao build_edges_vao();
+    engine::Vao build_axes_vao();
 public:
     Cube();
     void set_position(const glm::vec3 position);
