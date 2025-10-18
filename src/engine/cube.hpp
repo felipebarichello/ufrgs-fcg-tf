@@ -7,7 +7,6 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
-
 class Cube {
 private:
     glm::mat4 model;
