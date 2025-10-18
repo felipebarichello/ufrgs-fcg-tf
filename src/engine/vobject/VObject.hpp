@@ -6,14 +6,14 @@
 namespace engine {
     class Scene; // Forward declaration
 
-    using VObjectId = uint64_t;
-
     class VObject {
         public:
-            VObject(Scene* scene, VObjectId id)
+            using Id = uint64_t;
+
+            VObject(Scene* scene, VObject::Id id)
                 : scene(scene), id(id) {}
 
-            VObjectId get_id() const {
+            VObject::Id get_id() const {
                 return this->id;
             }
 
@@ -27,7 +27,7 @@ namespace engine {
 
         private:
             Scene* scene;
-            VObjectId id;
+            VObject::Id id;
             std::vector<VObject*> children;
             std::vector<Component*> components;
     };
