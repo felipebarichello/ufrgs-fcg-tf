@@ -3,7 +3,7 @@
 #include "Behavior.hpp"
 
 namespace engine {
-    void VObject::awake() {
+    void VObject::awaken() {
         // Call Awake on all Behavior components
         for (Component* component : this->components) {
             component->try_into_behavior().and_then([](Behavior* behavior) -> std::optional<Behavior*> {
@@ -24,6 +24,6 @@ namespace engine {
             child->destroy();
         }
 
-        this->scene->remove_vobject(this);
+        this->scene->delete_vobject(this);
     }
 }

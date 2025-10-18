@@ -10,13 +10,13 @@ namespace engine {
 
         public:
             Scene() = default;
-            VObject* create_vobject();
 
         private:
             /// @brief 0 can be used as an invalid ID.
             VObjectId next_vobject_id = 1;
             std::unordered_map<VObjectId, VObject> vobjects;
             
-            void remove_vobject(VObject* vobject);
+            VObject* new_vobject();
+            void delete_vobject(VObject* vobject);
     };
 }
