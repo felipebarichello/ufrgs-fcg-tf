@@ -2,6 +2,7 @@
 
 #include <vector>
 #include "Component.hpp"
+#include <cstdint>
 
 namespace engine {
     class Scene; // Forward declaration
