@@ -26,6 +26,7 @@ namespace engine {
     void EngineController::hand_over_control() {
         while (!this->update_and_test_should_close()) {
             this->event_manager.update();
+            EngineController::draw();
             glfwSwapBuffers(this->window);
             glfwPollEvents();
         }
@@ -337,5 +338,11 @@ namespace engine {
             drawable->draw(glGetUniformLocation(this->get_gpu_program_id(), "g_model"));
         };
         this->draw_functions.push_back(draw_function);
+    }
+
+    void EngineController::draw() {
+        for (const auto& draw_function : EngineController::draw_functions) {
+            draw_function();
+        }
     }
 } // namespace engine
