@@ -17,6 +17,7 @@ namespace engine {
                 return this->id;
             }
 
+            void awake();
             void destroy();
 
             template<std::derived_from<Component> ComponentT>

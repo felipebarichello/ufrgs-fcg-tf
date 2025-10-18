@@ -4,7 +4,11 @@ namespace engine {
     VObject* Scene::create_vobject() {
         auto key = this->next_vobject_id++;
         auto result = this->vobjects.emplace(key, VObject(this, key));
-        return &result.first->second;
+        auto vobject = &result.first->second;
+
+        vobject->awake();
+
+        return vobject;
     }
 
     void Scene::remove_vobject(VObject* vobject) {
