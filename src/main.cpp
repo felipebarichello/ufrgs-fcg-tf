@@ -255,7 +255,7 @@ void update() {
     // Note que, no sistema de coordenadas da câmera, os planos near e far
     // estão no sentido negativo! Veja slides 176-204 do documento Aula_09_Projecoes.pdf.
     float nearplane = -0.1f;  // Posição do "near plane"
-    float farplane  = -10.0f; // Posição do "far plane"
+    float farplane  = -400.0f; // Posição do "far plane"
 
     // Projeção Perspectiva.
     // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
