@@ -9,6 +9,8 @@ namespace engine {
             virtual Mat4 get_matrix() = 0;
     };
 
+    // TODO: Delete
+    // DEPRECATED: In favor of Transform component
     class ITransform {
         public:
             virtual Transform& transform() = 0;
