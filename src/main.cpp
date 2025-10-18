@@ -129,6 +129,8 @@ GLint g_model_uniform;
 GLint g_view_uniform;
 GLint g_projection_uniform;
 
+const float g_sensitivity = 0.002f;
+
 void start();
 void update();
 
@@ -226,7 +228,7 @@ void update() {
 
     // Projeção Perspectiva.
     // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
-    float field_of_view = 3.141592f / 3.0f;
+    float field_of_view = 3.141592f / 1.5f;
     projection = Matrix_Perspective(field_of_view, g_engine_controller.get_screen_ratio(), nearplane, farplane);
 
     // Enviamos as matrizes "view" e "projection" para a placa de vídeo
@@ -252,12 +254,12 @@ void update_free_camera_direction() {
     glm::vec2 cursor_delta = g_engine_controller.input()->get_cursor_position_delta();
 
     // Atualizamos parâmetros da câmera com os deslocamentos
-    g_CameraTheta -= 0.01f*cursor_delta.x;
+    g_CameraTheta -= g_sensitivity*cursor_delta.x;
 
     if (g_camera_is_free) {
-        g_CameraPhi   -= 0.01f*cursor_delta.y;
+        g_CameraPhi   -= g_sensitivity*cursor_delta.y;
     } else {
-        g_CameraPhi   += 0.01f*cursor_delta.y;
+        g_CameraPhi   += g_sensitivity*cursor_delta.y;
     }
 
     // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
