@@ -5,6 +5,10 @@
 namespace engine {
     class Behavior : public Component {
         public:
+            // TODO: On some situations, you can't do some things in theses methods.
+            // For instance, it is dangerous to create new VObjects in Awake().
+            // That needs to be fixed later.
+
             virtual void Awake() {}
             virtual void Start() {}
             virtual void Update() {}
