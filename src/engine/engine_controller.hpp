@@ -7,6 +7,7 @@
 #include <memory>
 #include "input_controller.hpp"
 #include "event_manager.hpp"
+#include "cube.hpp"
 
 
 namespace engine {
@@ -38,6 +39,8 @@ namespace engine {
             static GLuint create_gpu_program(GLuint vertex_shader_id, GLuint fragment_shader_id);
             static void load_shaders_from_files();
             static std::string get_executable_directory();
+            static void draw();
+            static std::vector<std::function<void()>> draw_functions;
             
             /// @brief Ticks the engine
             /// @return True if window should close
@@ -51,7 +54,7 @@ namespace engine {
             static InputController* get_input(); // TODO: Remove this static method
 
             void hand_over_control();
-
+            void add_drawable(Cube* drawable);
             EventManager& events() { return this->event_manager; }
             GLFWwindow* get_window();
             InputController* input();

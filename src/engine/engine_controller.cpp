@@ -10,6 +10,7 @@ namespace engine {
     EngineController EngineController::instance;
     float EngineController::screen_ratio = 1.0f;
     GLuint EngineController::gpu_program_id = 0;
+    std::vector<std::function<void()>> EngineController::draw_functions;
 
     EngineController EngineController::start_engine(WindowConfig window_config) {
         EngineController engine_controller;
@@ -331,4 +332,10 @@ namespace engine {
         gpu_program_id = create_gpu_program(vertex_shader_id, fragment_shader_id);
     }
 
+    void EngineController::add_drawable(Cube* drawable) {
+        std::function<void()> draw_function = [drawable, this]() {
+            drawable->draw(glGetUniformLocation(this->get_gpu_program_id(), "g_model"));
+        };
+        this->draw_functions.push_back(draw_function);
+    }
 } // namespace engine

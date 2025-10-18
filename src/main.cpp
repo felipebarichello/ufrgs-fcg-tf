@@ -37,7 +37,6 @@
 
 // Headers locais, definidos na pasta "include/"
 #include <utils.h>
-
 #include <engine.hpp>
 
 // TODO: Remove unused function declarations
@@ -184,6 +183,7 @@ int main() {
     cube_faces_vao = BuildCubeFaces();
     cube_edges_vao = BuildCubeEdges();
     cube_axes_vao  = BuildCubeAxes();
+    Cube the_cube = Cube();
 
     // Buscamos o endereço das variáveis definidas dentro do Vertex Shader.
     // Utilizaremos estas variáveis para enviar dados para a placa de vídeo
@@ -268,8 +268,10 @@ void update() {
     glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
     glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
 
+    //the_cube.draw(g_model_uniform);
+
     // Vamos desenhar 3 instâncias (cópias) do cubo
-    for (int i = 1; i <= 3; ++i) {
+    for (int i = 2; i <= 3; ++i) {
         // Cada cópia do cubo possui uma matriz de modelagem independente,
         // já que cada cópia estará em uma posição (rotação, escala, ...)
         // diferente em relação ao espaço global (World Coordinates). Veja

@@ -1,28 +1,30 @@
 #include "cube.hpp"
 
 Cube::Cube() {
-    position = glm::vec3(0.0f);
-    rotation_axis = glm::vec3(0.0f, 1.0f, 0.0f);
-    scale = glm::vec3(1.0f);
-    rotation_angle = 0.0f;
-    update_model_matrix();
+    this->position = glm::vec3(0.0f);
+    this->rotation_axis = glm::vec3(0.0f, 1.0f, 0.0f);
+    this->scale = glm::vec3(1.0f);
+    this->rotation_angle = 0.0f;
+    this->update_model_matrix();
+    std::cout << "Building cube VAO..." << std::endl;
     this->vao = build_vao();
+    std::cout << "Vao builded" << std::endl;
 }
 
 void Cube::set_position(const glm::vec3 position) {
     this->position = position;
-    update_model_matrix();
+    this->update_model_matrix();
 }
 
 void Cube::set_rotation(float rotation_angle, const glm::vec3 rotation_axis) {
     this->rotation_angle = rotation_angle;
     this->rotation_axis = rotation_axis;
-    update_model_matrix();
+    this->update_model_matrix();
 }
 
 void Cube::set_scale(const glm::vec3 scale) {
     this->scale = scale;
-    update_model_matrix();
+    this->update_model_matrix();
 }
 
 void Cube::update_model_matrix() {
