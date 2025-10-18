@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../vobject.hpp"
+#include "../VObject.hpp"
 #include "transform.hpp"
 
 namespace engine {
