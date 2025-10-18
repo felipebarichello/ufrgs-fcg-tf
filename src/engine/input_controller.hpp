@@ -26,12 +26,14 @@ namespace engine {
             std::vector<DPad> dpads;
             glm::vec2 cursor_position;
             glm::vec2 last_cursor_position;
+            glm::vec2 cursor_delta;
             float scroll_offset = 0.0f;
             bool is_left_mouse_button_down = false;
             bool focused = false;
         public:
             InputController(GLFWwindow* window);
             void init();
+            void update();
             void subscribe_dpad(glm::vec2* direction, int forward_key, int backward_key, int left_key, int right_key);
             void subscribe_hold_button(int key, bool* is_down);
             void subscribe_press_button(int key, std::function<void()>);

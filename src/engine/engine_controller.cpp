@@ -25,6 +25,7 @@ namespace engine {
 
     void EngineController::hand_over_control() {
         while (!this->update_and_test_should_close()) {
+            this->input_controller->update();
             this->event_manager.update();
             EngineController::draw();
             glfwSwapBuffers(this->window);

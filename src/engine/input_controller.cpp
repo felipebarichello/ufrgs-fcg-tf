@@ -151,18 +151,21 @@ glm::vec2 InputController::get_cursor_position() {
 }
 
 glm::vec2 InputController::get_cursor_position_delta() {
-    glm::vec2 delta = this->cursor_position - this->last_cursor_position;
-    this->last_cursor_position = this->cursor_position;
     if (!focused) {
         return glm::vec2(0.0f, 0.0f);
     } else {
-        return delta;
+        return this->cursor_delta;
     }
 }
 
 void InputController::cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
     this->cursor_position.x = (float)xpos;
     this->cursor_position.y = (float)ypos;
+}
+
+void InputController::update() {
+    this->cursor_delta = this->cursor_position - this->last_cursor_position;
+    this->last_cursor_position = this->cursor_position;
 }
 
 void InputController::scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
