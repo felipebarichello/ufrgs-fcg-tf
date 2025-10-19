@@ -2,7 +2,7 @@
 
 #include "vao.hpp"
 #include "math/matrices.hpp"
-#include "drawable.hpp"
+#include "Drawable.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>

@@ -7,7 +7,7 @@
 #include <memory>
 #include "InputController.hpp"
 #include "EventManager.hpp"
-#include "drawable.hpp"
+#include "Drawable.hpp"
 #include <memory>
 #include "vobject/Scene.hpp"
 #include "vobject/SceneBoot.hpp"

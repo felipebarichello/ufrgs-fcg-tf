@@ -6,5 +6,5 @@
 #include "EngineController.hpp"
 #include "InputController.hpp"
 #include "vao.hpp"
-#include "sphere.hpp"
-#include "drawable.hpp"
+#include "Sphere.hpp"
+#include "Drawable.hpp"
