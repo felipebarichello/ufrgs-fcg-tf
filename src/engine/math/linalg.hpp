@@ -17,6 +17,7 @@ namespace engine {
         Vec3 y;
         Vec3 z;
 
+        HyperVec3() = default;
         HyperVec3(Vec3 x, Vec3 y, Vec3 z) : x(x), y(y), z(z) {}
     };
 }

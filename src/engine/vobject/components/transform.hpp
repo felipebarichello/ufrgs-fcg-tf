@@ -8,9 +8,4 @@ namespace engine {
         public:
             virtual Mat4 get_matrix() = 0;
     };
-
-    class ITransform {
-        public:
-            virtual Transform& transform() = 0;
-    };
 } // namespace engine

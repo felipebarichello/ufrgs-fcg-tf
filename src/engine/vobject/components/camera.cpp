@@ -7,12 +7,6 @@
 
 
 namespace engine {
-    Camera::Camera() : _transform(CameraTransform::Identity()) {}
-    
-    Transform& Camera::transform() {
-        return this->_transform;
-    }
-
     CameraTransform CameraTransform::Identity() {
         return CameraTransform(
             Vec3(0.0f, 0.0f, 0.0f),
@@ -24,10 +18,6 @@ namespace engine {
         );
     }
 
-    CameraTransform& Camera::cam_transform() {
-        return this->_transform;
-    }
-    
     void CameraTransform::set_position(Vec3 position) {
         this->position = position;
     }

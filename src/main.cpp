@@ -109,8 +109,6 @@ float g_CameraDistance = 2.5f; // Distância da câmera para a origem
 
 const Vec3 g_camera_start_position = Vec3(0.0f, 0.0f, 2.5f);
 
-Camera g_camera = Camera();
-
 Vec3 g_free_camera_position         = Vec3(0.0f, 0.0f, 2.5f);
 Vec3 g_free_camera_view_unit_vector = Vec3(0.0f, 0.0f, -1.0f);
 Vec3 g_free_camera_right_vector     = Vec3(1.0f, 0.0f, 0.0f);
@@ -129,7 +127,8 @@ GLint g_model_uniform;
 GLint g_view_uniform;
 GLint g_projection_uniform;
 
-const float g_sensitivity = 0.002f;
+const float g_sensitivity = 0.005f;
+const float field_of_view = 3.141592f / 3.0f;
 
 void start();
 void update();
@@ -220,7 +219,7 @@ void update() {
         camera_view_unit_vector = glm::normalize(camera_lookat_point - camera_position_c); 
     }
 
-    CameraTransform cam_transform = g_camera.cam_transform();
+    CameraTransform cam_transform;
     cam_transform.set_position(camera_position_c);
     cam_transform.set_basis_from_up_view(g_free_camera_up_vector, camera_view_unit_vector);
     glm::mat4 view = invert_orthonormal_matrix(cam_transform.get_matrix());
@@ -231,9 +230,6 @@ void update() {
     float nearplane = -0.1f;  // Posição do "near plane"
     float farplane  = -400.0f; // Posição do "far plane"
 
-    // Projeção Perspectiva.
-    // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
-    float field_of_view = 3.141592f / 1.5f;
     projection = Matrix_Perspective(field_of_view, g_engine_controller.get_screen_ratio(), nearplane, farplane);
 
     // Enviamos as matrizes "view" e "projection" para a placa de vídeo
