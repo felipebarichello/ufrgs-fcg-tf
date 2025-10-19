@@ -1,6 +1,6 @@
 // Implementation for EventManager declared in event_manager.hpp
 
-#include "event_manager.hpp"
+#include "EventManager.hpp"
 
 namespace engine {
 

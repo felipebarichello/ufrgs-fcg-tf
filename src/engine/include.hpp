@@ -2,7 +2,7 @@
 
 #include "math/include.hpp"
 #include "vobject/include.hpp"
-#include "engine_controller.hpp"
-#include "input_controller.hpp"
+#include "Cube.hpp"
+#include "EngineController.hpp"
+#include "InputController.hpp"
 #include "vao.hpp"
-#include "cube.hpp"

@@ -2,7 +2,7 @@
 
 #include "../Component.hpp"
 #include "../VObject.hpp"
-#include "transform.hpp"
+#include "Transform.hpp"
 
 namespace engine {
     class Camera : public Component {

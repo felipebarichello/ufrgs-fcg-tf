@@ -5,9 +5,9 @@
 #include <cstdlib>
 #include <fstream>
 #include <memory>
-#include "input_controller.hpp"
-#include "event_manager.hpp"
-#include "cube.hpp"
+#include "InputController.hpp"
+#include "EventManager.hpp"
+#include "Cube.hpp"
 
 
 namespace engine {

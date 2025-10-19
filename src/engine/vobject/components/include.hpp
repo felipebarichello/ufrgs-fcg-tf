@@ -1,4 +1,4 @@
 #pragma once
 
-#include "camera.hpp"
-#include "transform.hpp"
+#include "Camera.hpp"
+#include "Transform.hpp"

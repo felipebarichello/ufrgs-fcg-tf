@@ -1,4 +1,4 @@
-#include "input_controller.hpp"
+#include "InputController.hpp"
 
 using namespace engine;
 

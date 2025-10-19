@@ -1,4 +1,4 @@
-#include "cube.hpp"
+#include "Cube.hpp"
 
 Cube::Cube() {
     this->position = glm::vec3(0.0f);
