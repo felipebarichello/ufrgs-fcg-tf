@@ -8,7 +8,7 @@ namespace engine {
     class Camera : public Component {
     };
 
-    struct CameraTransform : public Transform {
+    struct CameraTransform : public ITransform {
         Vec3 position;
         HyperVec3 basis;
 

@@ -6,11 +6,17 @@
 
 namespace engine {
     class Behavior;
+    class VObject;
 
     /// @brief Base class for all components that can be attached to VObjects.
     class Component {
         public:
             using Id = uint32_t;
+
+            Component(VObject* vobject)
+                : vobject_ptr(vobject) {
+                std::cout << "Component created" << std::endl; // TODO: Remove
+            }
 
             virtual void PreDestroy() {}
             virtual std::optional<Behavior*> try_into_behavior() { return std::nullopt; }
@@ -20,9 +26,12 @@ namespace engine {
                 std::cout << "Generated component ID: " << component_id << std::endl; // TODO: Remove
                 return component_id;
             };
-
+            
+            VObject* vobject() { return this->vobject_ptr; }
+        
         private:
             static Component::Id next_component_id;
+            VObject* vobject_ptr;
     };
 
     class ComponentBuilder {
