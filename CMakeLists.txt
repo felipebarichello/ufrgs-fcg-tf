@@ -72,8 +72,9 @@ target_compile_options(${EXECUTABLE_NAME} PRIVATE
 
 # Make the compiler pedantic
 target_compile_options(${EXECUTABLE_NAME} PRIVATE
-  $<$<CXX_COMPILER_ID:MSVC>:/WX>
-  $<$<CXX_COMPILER_ID:MSVC>:/W3>
+  # $<$<CXX_COMPILER_ID:MSVC>:/WX>
+  $<$<CXX_COMPILER_ID:MSVC>:/W4>
+  $<$<CXX_COMPILER_ID:MSVC>:/WL>
 )
 
 if(WIN32)

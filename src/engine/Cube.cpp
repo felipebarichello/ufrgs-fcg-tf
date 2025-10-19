@@ -1,4 +1,5 @@
 #include "Cube.hpp"
+#include <macros.hpp>
 
 Cube::Cube() {
     this->position = glm::vec3(0.0f);
@@ -11,17 +12,20 @@ Cube::Cube() {
     this->axes_vao  = this->build_axes_vao();
 }
 
+__supress_shadow_warning
 void Cube::set_position(const glm::vec3 position) {
     this->position = position;
     this->update_model_matrix();
 }
 
+__supress_shadow_warning
 void Cube::set_rotation(float rotation_angle, const glm::vec3 rotation_axis) {
     this->rotation_angle = rotation_angle;
     this->rotation_axis = rotation_axis;
     this->update_model_matrix();
 }
 
+__supress_shadow_warning
 void Cube::set_scale(const glm::vec3 scale) {
     this->scale = scale;
     this->update_model_matrix();

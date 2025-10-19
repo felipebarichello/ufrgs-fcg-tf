@@ -4,6 +4,7 @@
 #include <glm/vec4.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "../../math/linalg.hpp"
+#include <macros.hpp>
 
 
 namespace engine {
@@ -18,6 +19,7 @@ namespace engine {
         );
     }
 
+    __supress_shadow_warning
     void CameraTransform::set_position(Vec3 position) {
         this->position = position;
     }
@@ -31,14 +33,14 @@ namespace engine {
     }
 
     Mat4 CameraTransform::get_matrix() {
-        Vec3& position = this->position;
-        HyperVec3& basis = this->basis;
+        Vec3& p = this->position;
+        HyperVec3& b = this->basis;
 
         return Mat4(
-            basis.x.x,  basis.x.y,  basis.x.z,  0.0f,
-            basis.y.x,  basis.y.y,  basis.y.z,  0.0f,
-            basis.z.x,  basis.z.y,  basis.z.z,  0.0f,
-            position.x, position.y, position.z, 1.0f
+            b.x.x,  b.x.y,  b.x.z,  0.0f,
+            b.y.x,  b.y.y,  b.y.z,  0.0f,
+            b.z.x,  b.z.y,  b.z.z,  0.0f,
+            p.x,    p.y,    p.z,    1.0f
         );
     }
 }

@@ -1,5 +1,6 @@
 #include "InputController.hpp"
 #include "math/linalg.hpp"
+#include <macros.hpp>
 
 using namespace engine;
 
@@ -101,6 +102,7 @@ bool InputController::left_mouse_button_is_down() {
     return this->is_left_mouse_button_down;
 }
 
+__supress_shadow_warning
 void InputController::key_callback(GLFWwindow *window, int key, int scancode, int action, int mod) {
 
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
