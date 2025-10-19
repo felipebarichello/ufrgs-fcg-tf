@@ -30,6 +30,7 @@ namespace engine {
             float scroll_offset = 0.0f;
             bool is_left_mouse_button_down = false;
             bool focused = false;
+            bool cursor_dirty = true;
         public:
             InputController(GLFWwindow* window);
             void init();

@@ -1,4 +1,5 @@
 #include "InputController.hpp"
+#include "math/linalg.hpp"
 
 using namespace engine;
 
@@ -50,7 +51,7 @@ void InputController::subscribe_hold_button(int key, bool* is_down) {
     add_key_handler(key, GLFW_RELEASE, [is_down]() { *is_down = false; });
 } 
 
-void InputController::subscribe_dpad(glm::vec2* direction, int forward_key, int backward_key, int left_key, int right_key) {
+void InputController::subscribe_dpad(Vec2* direction, int forward_key, int backward_key, int left_key, int right_key) {
     // Store the state for this vector
     dpads.push_back(DPad());
     DPad& dpad = dpads.back();
@@ -116,20 +117,21 @@ void InputController::key_callback(GLFWwindow *window, int key, int scancode, in
 }
 
 void InputController::mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+    if (!this->focused && button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         this->centralize_cursor();
+        this->cursor_dirty = true;
         this->focused = true;
     }
 
-    for (std::function<void()> function : key_handler_map[{button,action}]) {
-        function();
+    for (std::function<void()> handler : key_handler_map[{button,action}]) {
+        handler();
     }
 }
 
 void InputController::update_dpad_direction(DPad* dpad) {
 
-    *(dpad->direction) = glm::vec2(0.0f, 0.0f);
+    *(dpad->direction) = Vec2(0.0f, 0.0f);
 
     if (dpad->forward_key_is_down)
         dpad->direction->y += 1.0f;
@@ -141,15 +143,15 @@ void InputController::update_dpad_direction(DPad* dpad) {
         dpad->direction->x += 1.0f;
 
     // Normalize
-    if (*(dpad->direction) != glm::vec2(0.0f, 0.0f))
+    if (*(dpad->direction) != Vec2(0.0f, 0.0f))
         *(dpad->direction) = glm::normalize(*(dpad->direction));
 }
 
-glm::vec2 InputController::get_cursor_position() {
+Vec2 InputController::get_cursor_position() {
     return this->cursor_position;
 }
 
-glm::vec2 InputController::get_cursor_position_delta() {
+Vec2 InputController::get_cursor_position_delta() {
     return this->cursor_delta;
 }
 
@@ -159,8 +161,9 @@ void InputController::cursor_position_callback(GLFWwindow* window, double xpos, 
 }
 
 void InputController::update() {
-    this->cursor_delta = (this->focused) ? this->cursor_position - this->last_cursor_position : glm::vec2(0.0f, 0.0f);
+    this->cursor_delta = (this->focused && !this->cursor_dirty) ? this->cursor_position - this->last_cursor_position : Vec2(0.0f, 0.0f);
     this->last_cursor_position = this->cursor_position;
+    this->cursor_dirty = false;
 }
 
 void InputController::scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
@@ -168,11 +171,9 @@ void InputController::scroll_callback(GLFWwindow* window, double xoffset, double
 }
 
 void InputController::centralize_cursor() {
-    if (this->window != nullptr) {
-        int windowWidth, windowHeight;
-        glfwGetWindowSize(this->window, &windowWidth, &windowHeight);
-        glfwSetCursorPos(this->window, windowWidth / 2.0, windowHeight / 2.0);
-        this->cursor_position = glm::vec2(windowWidth / 2.0f, windowHeight / 2.0f);
-        this->last_cursor_position = this->cursor_position;
-    }
+    int windowWidth, windowHeight;
+    glfwGetWindowSize(this->window, &windowWidth, &windowHeight);
+    glfwSetCursorPos(this->window, windowWidth / 2.0, windowHeight / 2.0);
+    this->cursor_position = Vec2(windowWidth / 2.0f, windowHeight / 2.0f);
+    this->last_cursor_position = this->cursor_position;
 }
