@@ -113,6 +113,13 @@ void InputController::key_callback(GLFWwindow *window, int key, int scancode, in
         this->focused = false;
     }
 
+    // F11 should work regardless of focus state
+    if (key == GLFW_KEY_F11) {
+        for (std::function<void()> function : key_handler_map[{key,action}]) {
+            function();
+        }
+    }
+
     if (this->focused) {
         for (std::function<void()> function : key_handler_map[{key,action}]) {
             function();

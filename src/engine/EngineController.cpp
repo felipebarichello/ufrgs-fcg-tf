@@ -14,6 +14,8 @@ namespace engine {
     EngineController* EngineController::start_engine(WindowConfig window_config) {
         EngineController::instance = std::make_unique<EngineController>();
         EngineController::instance->window = EngineController::init_window(window_config);
+        EngineController::instance->windowed_width = window_config.width;
+        EngineController::instance->windowed_height = window_config.height;
         EngineController::instance->input_controller = new InputController(EngineController::instance->window);
         EngineController::instance->input_controller->init();
         return EngineController::instance.get();
@@ -353,6 +355,31 @@ namespace engine {
     void EngineController::draw() {
         for (const auto& draw_function : EngineController::draw_functions) {
             draw_function();
+        }
+    }
+
+    void EngineController::toggle_fullscreen() {
+        if (this->is_fullscreen) {
+            // Switch to windowed mode
+            glfwSetWindowMonitor(this->window, nullptr, 
+                                this->windowed_xpos, this->windowed_ypos,
+                                this->windowed_width, this->windowed_height, 
+                                GLFW_DONT_CARE);
+            this->is_fullscreen = false;
+        } else {
+            // Store current window position and size
+            glfwGetWindowPos(this->window, &this->windowed_xpos, &this->windowed_ypos);
+            glfwGetWindowSize(this->window, &this->windowed_width, &this->windowed_height);
+            
+            // Get the primary monitor and its video mode
+            GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+            const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+            
+            // Switch to fullscreen mode
+            glfwSetWindowMonitor(this->window, monitor, 
+                                0, 0, mode->width, mode->height, 
+                                mode->refreshRate);
+            this->is_fullscreen = true;
         }
     }
 } // namespace engine

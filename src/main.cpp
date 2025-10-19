@@ -146,6 +146,11 @@ int main() {
 
     g_engine_controller->input()->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
     g_engine_controller->input()->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT);
+    
+    // Subscribe F11 key to toggle fullscreen
+    g_engine_controller->input()->subscribe_press_button(GLFW_KEY_F11, [&]() {
+        g_engine_controller->toggle_fullscreen();
+    });
 
     Cube cube1 = Cube();
     Cube cube2 = Cube();
