@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../math/linalg.hpp"
-#include "../Component.hpp"
+#include "engine/math/linalg.hpp"
+#include "engine/vobject/Component.hpp"
 #include <memory>
 
 namespace engine {

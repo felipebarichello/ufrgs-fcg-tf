@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Component.hpp"
-#include "../VObject.hpp"
-#include "Transform.hpp"
+#include <engine/vobject/Component.hpp>
+#include <engine/vobject/VObject.hpp>
+#include <engine/vobject/components/Transform.hpp>
 
 namespace engine {
     class Camera : public Component {

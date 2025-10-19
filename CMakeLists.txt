@@ -50,8 +50,12 @@ foreach(child ${CHILDREN})
     set(_iface_target "${PROJECT_SAFE}_${child}_iface")
 
     # Create INTERFACE library with include directories pointing to the subfolder
+    # and the src/ root so consumers can include headers as <${child}/...>
     add_library(${_iface_target} INTERFACE)
-    target_include_directories(${_iface_target} INTERFACE ${SOURCE_DIR}/${child})
+    target_include_directories(${_iface_target} INTERFACE
+      ${SOURCE_DIR}/${child}
+      ${SOURCE_DIR}
+    )
 
     # Create a convenient namespaced alias: e.g. <PROJECT_SAFE>::engine
     # Only create the alias if it doesn't already exist.
@@ -82,6 +86,18 @@ if(NOT SOURCES)
 endif()
 
 add_executable(${EXECUTABLE_NAME} ${SOURCES})
+
+# Link the executable to all module alias targets created above so consumers
+# that use angle-bracket includes like <engine/...> will have the include
+# directories available when linking to the module alias.
+foreach(child ${CHILDREN})
+  if(IS_DIRECTORY "${SOURCE_DIR}/${child}")
+    set(_alias_name "${PROJECT_SAFE}::${child}")
+    if(TARGET ${_alias_name})
+      target_link_libraries(${EXECUTABLE_NAME} PRIVATE ${_alias_name})
+    endif()
+  endif()
+endforeach()
 
 target_include_directories(${EXECUTABLE_NAME} BEFORE PRIVATE
   ${SOURCE_DIR}/include
@@ -148,7 +164,7 @@ if(WIN32)
 
   message(STATUS "LIBGLFW = ${LIBGLFW}")
 
-  target_link_libraries(${EXECUTABLE_NAME} ${LIBGLFW} gdi32 opengl32)
+  target_link_libraries(${EXECUTABLE_NAME} PRIVATE ${LIBGLFW} gdi32 opengl32)
 
 elseif(UNIX)
 
@@ -166,7 +182,7 @@ elseif(UNIX)
   find_library(MATH_LIBRARY m)
   set(THREADS_PREFER_PTHREAD_FLAG ON)
   find_package(Threads REQUIRED)
-  target_link_libraries(${EXECUTABLE_NAME}
+  target_link_libraries(${EXECUTABLE_NAME} PRIVATE
     ${CMAKE_DL_LIBS}
     ${MATH_LIBRARY}
     ${PROJECT_SOURCE_DIR}/lib-linux/libglfw3.a

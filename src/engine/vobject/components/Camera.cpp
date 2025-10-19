@@ -3,7 +3,7 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "../../math/linalg.hpp"
+#include <engine/math/linalg.hpp>
 #include <macros.hpp>
 
 
