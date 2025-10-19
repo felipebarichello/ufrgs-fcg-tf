@@ -19,7 +19,7 @@ namespace engine {
         return EngineController::instance.get();
     }
 
-    void EngineController::hand_over_control(const SceneBoot* initial_scene) {
+    void EngineController::hand_over_control(SceneBoot* initial_scene) {
         // TODO: Create scene
         std::vector<VObjectConfig> scene_hierarchy;
         initial_scene->hierarchy(scene_hierarchy);

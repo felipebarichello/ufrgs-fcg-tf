@@ -1,12 +1,14 @@
-// #include "MainScene.hpp"
+#include "MainScene.hpp"
 
-// namespace game::scenes {
-//     void MainScene::hierarchy(std::vector<VObjectConfig>& root) {
-//         root.push_back(VObjectConfig {
-//             .components = {
-//                 new game::components::PlayerControllerBuilder()
-//             },
-//             .children = {}
-//         });
-//     }
-// }
+namespace game::scenes {
+    void MainScene::hierarchy(std::vector<VObjectConfig>& root) {
+        // root.push_back(VObjectConfig {
+        //     .components = {
+        //         new game::components::PlayerControllerBuilder()
+        //     },
+        //     .children = {}
+        // });
+
+        (void) root;
+    }
+}

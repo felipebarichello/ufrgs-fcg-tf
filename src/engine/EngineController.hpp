@@ -58,7 +58,7 @@ namespace engine {
             static EventManager& get_events(); // TODO: Remove this static method
             static InputController* get_input(); // TODO: Remove this static method
 
-            void hand_over_control(const SceneBoot* initial_scene);
+            void hand_over_control(SceneBoot* initial_scene);
             void add_drawable(Cube* drawable);
             EventManager& events() { return this->event_manager; }
             GLFWwindow* get_window();
