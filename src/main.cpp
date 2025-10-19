@@ -164,7 +164,7 @@ int main() {
     g_projection_uniform = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "projection"); // Variável da matriz "projection" em shader_vertex.glsl
 
     //g_engine_controller.add_drawable(&cube1);
-    // g_engine_controller.add_drawable(&cube2);
+    g_engine_controller.add_drawable(&cube2);
     // g_engine_controller.add_drawable(&cube3);
     // g_engine_controller.add_drawable(&cube4);
     g_engine_controller.add_drawable(&sphere1);

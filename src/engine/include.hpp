@@ -7,3 +7,4 @@
 #include "vao.hpp"
 #include "cube.hpp"
 #include "sphere.hpp"
+#include "drawable.hpp"

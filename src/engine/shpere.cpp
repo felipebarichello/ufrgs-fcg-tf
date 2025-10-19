@@ -36,7 +36,7 @@ void Sphere::update_model_matrix() {
 void Sphere::draw(GLint g_model_uniform) {
     glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(this->model));
     // Increase point size
-    glPointSize(5.0f);
+    glPointSize(2.0f);
     this->vao.draw();
 }
 
@@ -51,7 +51,7 @@ engine::Vao Sphere::build_vao() {
     float delta_phi = pi / (float) this->parallels;
     float delta_theta = 2.0f * pi / (float) this->meridians;
     
-    float phi = -pi/2;
+    float phi = 0;
     float theta = 0;
     size_t index = 0;
 
@@ -66,7 +66,9 @@ engine::Vao Sphere::build_vao() {
             sin_phi = sin(phi);
             cos_phi = cos(phi);
 
-            x = this->radius*cos_theta*sin_phi; y = this->radius*cos_phi; z = this->radius*sin_theta*sin_phi;
+            x = this->radius*cos_theta*sin_phi;
+            y = this->radius*cos_phi;
+            z = this->radius*sin_theta*sin_phi;
 
             point_positions.push_back(x);
             point_positions.push_back(y);
@@ -80,10 +82,10 @@ engine::Vao Sphere::build_vao() {
 
             indices.push_back(index);
 
-            phi += delta_phi;
+            phi = (float) j * delta_phi;
             index++;
         }
-        theta += delta_theta;
+        theta = (float) i * delta_theta;
     }
 
     return engine::VaoBuilder()

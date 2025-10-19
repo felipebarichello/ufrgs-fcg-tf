@@ -2,13 +2,14 @@
 
 #include "vao.hpp"
 #include "math/matrices.hpp"
+#include "drawable.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <vector>
 
-class Sphere {
+class Sphere : public engine::Drawable {
 private:
     glm::mat4 model;
     glm::vec3 position;
@@ -18,8 +19,8 @@ private:
     float rotation_angle;
     void update_model_matrix();
     engine::Vao build_vao();
-    size_t parallels = 5;
-    size_t meridians = 5;
+    size_t parallels = 100;
+    size_t meridians = 100;
     float radius = 0.5f;
 public:
     Sphere();

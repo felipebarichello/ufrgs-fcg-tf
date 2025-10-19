@@ -6,8 +6,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
+#include "drawable.hpp"
 
-class Cube {
+class Cube : public engine::Drawable {
 private:
     glm::mat4 model;
     glm::vec3 position;
