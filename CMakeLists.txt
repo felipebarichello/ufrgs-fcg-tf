@@ -68,9 +68,8 @@ target_include_directories(${EXECUTABLE_NAME} SYSTEM PRIVATE
 # supported by the toolset (suppresses warnings coming from external headers).
 target_compile_options(${EXECUTABLE_NAME} PRIVATE
   $<$<CXX_COMPILER_ID:MSVC>:/external:W0>
-  # $<$<CXX_COMPILER_ID:MSVC>:/WX>
-  # $<$<CXX_COMPILER_ID:MSVC>:/W4>
-  # $<$<CXX_COMPILER_ID:MSVC>:/Wall>
+  $<$<CXX_COMPILER_ID:MSVC>:/WX>
+  $<$<CXX_COMPILER_ID:MSVC>:/W2>
 )
 
 if(WIN32)
