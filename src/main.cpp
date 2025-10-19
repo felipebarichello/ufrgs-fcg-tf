@@ -127,7 +127,8 @@ GLint g_model_uniform;
 GLint g_view_uniform;
 GLint g_projection_uniform;
 
-const float g_sensitivity = 0.002f;
+const float g_sensitivity = 0.005f;
+const float field_of_view = 3.141592f / 3.0f;
 
 void start();
 void update();
@@ -224,9 +225,6 @@ void update() {
     float nearplane = -0.1f;  // Posição do "near plane"
     float farplane  = -400.0f; // Posição do "far plane"
 
-    // Projeção Perspectiva.
-    // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
-    float field_of_view = 3.141592f / 1.5f;
     projection = Matrix_Perspective(field_of_view, g_engine_controller.get_screen_ratio(), nearplane, farplane);
 
     // Enviamos as matrizes "view" e "projection" para a placa de vídeo
