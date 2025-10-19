@@ -39,6 +39,8 @@
 #include <utils.h>
 #include <engine.hpp>
 
+#include "game/scenes/MainScene.hpp"
+
 //GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id); // Cria um programa de GPU
 void update_free_camera_position();
 
@@ -70,6 +72,7 @@ using engine::Matrix_Rotate_Y;
 using engine::Matrix_Rotate_Z;
 using engine::Matrix_Scale;
 using engine::InputController;
+using game::scenes::MainScene;
 
 // Definimos uma estrutura que armazenará dados necessários para renderizar
 // cada objeto da cena virtual.
@@ -81,7 +84,7 @@ struct SceneObject {
 };
 
 // Abaixo definimos variáveis globais utilizadas em várias funções do código.
-EngineController g_engine_controller;
+EngineController* g_engine_controller;
 
 // A cena virtual é uma lista de objetos nomeados, guardados em um dicionário
 // (map).  Veja dentro da função BuildTriangles() como que são incluídos
@@ -141,8 +144,8 @@ int main() {
         "FCG - Trabalho Final"
     ));
 
-    g_engine_controller.input()->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
-    g_engine_controller.input()->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT);
+    g_engine_controller->input()->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
+    g_engine_controller->input()->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT);
 
     Cube cube1 = Cube();
     Cube cube2 = Cube();
@@ -158,22 +161,23 @@ int main() {
     cube4.set_position(Vec3(0.0f, 0.0f, 7.0f));
     cube4.set_scale(Vec3(3.0f, 3.0f, 3.0f));
 
-    g_model_uniform      = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "model"); // Variável da matriz "model"
-    g_view_uniform       = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "view"); // Variável da matriz "view" em shader_vertex.glsl
-    g_projection_uniform = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "projection"); // Variável da matriz "projection" em shader_vertex.glsl
+    g_model_uniform      = glGetUniformLocation(g_engine_controller->get_gpu_program_id(), "model"); // Variável da matriz "model"
+    g_view_uniform       = glGetUniformLocation(g_engine_controller->get_gpu_program_id(), "view"); // Variável da matriz "view" em shader_vertex.glsl
+    g_projection_uniform = glGetUniformLocation(g_engine_controller->get_gpu_program_id(), "projection"); // Variável da matriz "projection" em shader_vertex.glsl
 
-    g_engine_controller.add_drawable(&cube1);
-    g_engine_controller.add_drawable(&cube2);
-    g_engine_controller.add_drawable(&cube3);
-    g_engine_controller.add_drawable(&cube4);
+    g_engine_controller->add_drawable(&cube1);
+    g_engine_controller->add_drawable(&cube2);
+    g_engine_controller->add_drawable(&cube3);
+    g_engine_controller->add_drawable(&cube4);
 
     // Enable z-buffer
     glEnable(GL_DEPTH_TEST);
 
-    EventManager& events = g_engine_controller.events();
+    EventManager& events = g_engine_controller->events();
     events.subscribe_update(update);
 
-    g_engine_controller.hand_over_control();
+    std::unique_ptr<MainScene> initial_scene = std::make_unique<MainScene>();
+    g_engine_controller->hand_over_control(initial_scene.get());
     return 0;
 }
 
@@ -181,7 +185,7 @@ void update() {
 
     // Pedimos para a GPU utilizar o programa de GPU criado acima (contendo
     // os shaders de vértice e fragmentos).
-    glUseProgram(g_engine_controller.get_gpu_program_id());
+    glUseProgram(g_engine_controller->get_gpu_program_id());
 
     // "Ligamos" o VAO. Informamos que queremos utilizar os atributos de
     // vértices apontados pelo VAO criado pela função BuildTriangles(). Veja
@@ -230,7 +234,7 @@ void update() {
     float nearplane = -0.1f;  // Posição do "near plane"
     float farplane  = -400.0f; // Posição do "far plane"
 
-    projection = Matrix_Perspective(field_of_view, g_engine_controller.get_screen_ratio(), nearplane, farplane);
+    projection = Matrix_Perspective(field_of_view, g_engine_controller->get_screen_ratio(), nearplane, farplane);
 
     // Enviamos as matrizes "view" e "projection" para a placa de vídeo
     // (GPU). Veja o arquivo "shader_vertex.glsl", onde estas são
@@ -247,12 +251,8 @@ void update_free_camera_position() {
 }
 
 void update_free_camera_direction() {
-
-    // if (!g_engine_controller.input()->left_mouse_button_is_down())
-    //     return;
-
     // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
-    glm::vec2 cursor_delta = g_engine_controller.input()->get_cursor_position_delta();
+    glm::vec2 cursor_delta = g_engine_controller->input()->get_cursor_position_delta();
 
     // Atualizamos parâmetros da câmera com os deslocamentos
     g_CameraTheta -= g_sensitivity*cursor_delta.x;

@@ -6,6 +6,7 @@
 namespace engine {
     class SceneBoot {
         public:
-            virtual void hierarchy(std::vector<VObjectConfig>& root) = 0;
+            // TODO: Bake configuration
+            virtual void hierarchy(std::vector<VObjectConfig>& root) const = 0;
     };
 }

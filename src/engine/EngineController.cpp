@@ -7,23 +7,24 @@ namespace engine {
 
     // Definition of static members declared in controller.hpp
     // Define the singleton instance (was declared in the header but not defined)
-    EngineController EngineController::instance;
+    std::unique_ptr<EngineController> EngineController::instance;
     float EngineController::screen_ratio = 1.0f;
     GLuint EngineController::gpu_program_id = 0;
     std::vector<std::function<void()>> EngineController::draw_functions;
 
-    EngineController EngineController::start_engine(WindowConfig window_config) {
-        EngineController engine_controller;
-
-        engine_controller.window = EngineController::init_window(window_config);
-        engine_controller.input_controller = new InputController(engine_controller.window);
-
-        EngineController::instance = engine_controller;
-        engine_controller.input_controller->init();
-        return engine_controller;
+    EngineController* EngineController::start_engine(WindowConfig window_config) {
+        EngineController::instance = std::make_unique<EngineController>();
+        EngineController::instance->window = EngineController::init_window(window_config);
+        EngineController::instance->input_controller = new InputController(EngineController::instance->window);
+        EngineController::instance->input_controller->init();
+        return EngineController::instance.get();
     }
 
-    void EngineController::hand_over_control() {
+    void EngineController::hand_over_control(const SceneBoot* initial_scene) {
+        // TODO: Create scene
+        std::vector<VObjectConfig> scene_hierarchy;
+        initial_scene->hierarchy(scene_hierarchy);
+
         while (!this->update_and_test_should_close()) {
             this->input_controller->update();
             this->event_manager.update();
@@ -56,11 +57,11 @@ namespace engine {
     }
 
     EventManager& EngineController::get_events() {
-        return EngineController::instance.event_manager;
+        return EngineController::instance->event_manager;
     }
 
     InputController* EngineController::get_input() {
-        return EngineController::instance.input_controller;
+        return EngineController::instance->input_controller;
     }
 
     GLFWwindow* EngineController::init_window(WindowConfig window_config) {

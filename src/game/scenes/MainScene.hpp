@@ -1,0 +1,13 @@
+#pragma once
+
+#include <vector>
+#include <engine.hpp>
+
+namespace game::scenes {
+    class MainScene : public engine::SceneBoot {
+        public:
+            void hierarchy(std::vector<engine::VObjectConfig>& root) const override {
+                // TODO
+            }
+    };
+} // namespace game::scenes

@@ -8,6 +8,9 @@
 #include "InputController.hpp"
 #include "EventManager.hpp"
 #include "Cube.hpp"
+#include <memory>
+#include "vobject/Scene.hpp"
+#include "vobject/SceneBoot.hpp"
 
 
 namespace engine {
@@ -27,7 +30,9 @@ namespace engine {
             GLFWwindow* window;
             InputController* input_controller;
             EventManager event_manager;
-            static EngineController instance; // TODO: Remove this singleton pattern
+            std::unique_ptr<Scene> current_scene;
+
+            static std::unique_ptr<EngineController> instance; // TODO: Remove this singleton pattern
             static float screen_ratio; // TODO: Make non-static?
             static GLuint gpu_program_id;
             static void frame_buffer_size_callback(GLFWwindow* window, int width, int height);
@@ -49,11 +54,11 @@ namespace engine {
         public:
             EngineController() = default;
 
-            static EngineController start_engine(WindowConfig window_config);
+            static EngineController* start_engine(WindowConfig window_config);
             static EventManager& get_events(); // TODO: Remove this static method
             static InputController* get_input(); // TODO: Remove this static method
 
-            void hand_over_control();
+            void hand_over_control(const SceneBoot* initial_scene);
             void add_drawable(Cube* drawable);
             EventManager& events() { return this->event_manager; }
             GLFWwindow* get_window();
