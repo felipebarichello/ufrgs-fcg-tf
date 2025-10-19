@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Component.hpp"
 #include "../VObject.hpp"
 #include "transform.hpp"
 
