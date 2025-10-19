@@ -4,7 +4,6 @@
 #include <sstream>
 
 namespace engine {
-
     // Definition of static members declared in controller.hpp
     // Define the singleton instance (was declared in the header but not defined)
     EngineController EngineController::instance;
