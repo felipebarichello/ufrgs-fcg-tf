@@ -21,7 +21,7 @@ private:
     engine::Vao build_vao();
     size_t parallels = 50;
     size_t meridians = 100;
-    float radius = 0.5f;
+    float radius = 1.0f;
 public:
     Sphere();
     void set_position(const glm::vec3 position);
