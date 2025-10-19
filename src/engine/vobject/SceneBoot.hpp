@@ -1,0 +1,11 @@
+#pragma once
+
+#include <vector>
+#include "VObject.hpp"
+
+namespace engine {
+    class SceneBoot {
+        public:
+            virtual void hierarchy(std::vector<VObjectConfig>& root) = 0;
+    };
+}
