@@ -148,12 +148,16 @@ int main() {
     Cube cube1 = Cube();
     Cube cube2 = Cube();
     Cube cube3 = Cube();
+    Cube cube4 = Cube();
 
     cube2.set_position(Vec3(0.0f, 0.0f, -2.0f));
     cube2.set_scale(Vec3(2.0f, 0.5f, 0.5f));
     cube2.set_rotation(3.141592f / 8.0f, Vec3(1.0f,1.0f,1.0f));
 
     cube3.set_position(Vec3(-2.0f, 0.0f, 0.0f));
+
+    cube4.set_position(Vec3(0.0f, 0.0f, 7.0f));
+    cube4.set_scale(Vec3(3.0f, 3.0f, 3.0f));
 
     g_model_uniform      = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "model"); // Variável da matriz "model"
     g_view_uniform       = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "view"); // Variável da matriz "view" em shader_vertex.glsl
@@ -162,6 +166,7 @@ int main() {
     g_engine_controller.add_drawable(&cube1);
     g_engine_controller.add_drawable(&cube2);
     g_engine_controller.add_drawable(&cube3);
+    g_engine_controller.add_drawable(&cube4);
 
     // Enable z-buffer
     glEnable(GL_DEPTH_TEST);
