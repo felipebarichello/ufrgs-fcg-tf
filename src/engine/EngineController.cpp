@@ -83,6 +83,9 @@ namespace engine {
         // Hint to use a modern OpenGL profile, with only modern functionalities
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+        // Enable anti-aliasing with 4x multisampling
+        glfwWindowHint(GLFW_SAMPLES, 4);
+
         GLFWwindow* window = glfwCreateWindow(window_config.width, window_config.height, window_config.title, NULL, NULL);
         if (!window) {
             glfwTerminate();
@@ -100,6 +103,9 @@ namespace engine {
         // Carregamento de todas funções definidas por OpenGL 3.3, utilizando a
         // biblioteca GLAD.
         gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
+        
+        // Enable multisampling for anti-aliasing
+        glEnable(GL_MULTISAMPLE);
         
         EngineController::load_shaders_from_files();
 
