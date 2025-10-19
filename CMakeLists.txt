@@ -54,7 +54,23 @@ add_executable(${EXECUTABLE_NAME} ${SOURCES})
 
 target_include_directories(${EXECUTABLE_NAME} BEFORE PRIVATE
   ${SOURCE_DIR}/include
+)
+
+# Treat project-level include headers (third-party libs under include/) as
+# system headers so compiler warnings originating from those headers are
+# suppressed. This prevents flooding warnings when issues are in external
+# libraries rather than your `src/` code.
+target_include_directories(${EXECUTABLE_NAME} SYSTEM PRIVATE
   ${PROJECT_SOURCE_DIR}/include
+)
+
+# For MSVC, mark external headers as warning-free using /external:W0 when
+# supported by the toolset (suppresses warnings coming from external headers).
+target_compile_options(${EXECUTABLE_NAME} PRIVATE
+  $<$<CXX_COMPILER_ID:MSVC>:/external:W0>
+  # $<$<CXX_COMPILER_ID:MSVC>:/WX>
+  # $<$<CXX_COMPILER_ID:MSVC>:/W4>
+  # $<$<CXX_COMPILER_ID:MSVC>:/Wall>
 )
 
 if(WIN32)
