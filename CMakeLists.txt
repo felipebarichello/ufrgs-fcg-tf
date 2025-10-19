@@ -31,6 +31,37 @@ elseif(UNIX)
   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin/Linux")
 endif()
 
+# -----------------------------------------------------------------------------
+# Create an INTERFACE target for each direct subfolder under src/
+# This makes it easy to consume headers from a specific module using
+#   target_link_libraries(my_target PRIVATE ${PROJECT_NAME}::module)
+# where `module` is the folder name under `src/` (for example `engine`).
+# The INTERFACE target exports the folder as an include directory only.
+# -----------------------------------------------------------------------------
+
+# Sanitize project name to a CMake-safe identifier for aliasing
+string(REGEX REPLACE "[^A-Za-z0-9_]" "_" PROJECT_SAFE "${PROJECT_NAME}")
+
+# Get direct subdirectories of ${SOURCE_DIR}
+file(GLOB CHILDREN RELATIVE ${SOURCE_DIR} "${SOURCE_DIR}/*")
+foreach(child ${CHILDREN})
+  if(IS_DIRECTORY "${SOURCE_DIR}/${child}")
+    # Create an interface target name and an alias
+    set(_iface_target "${PROJECT_SAFE}_${child}_iface")
+
+    # Create INTERFACE library with include directories pointing to the subfolder
+    add_library(${_iface_target} INTERFACE)
+    target_include_directories(${_iface_target} INTERFACE ${SOURCE_DIR}/${child})
+
+    # Create a convenient namespaced alias: e.g. <PROJECT_SAFE>::engine
+    # Only create the alias if it doesn't already exist.
+    set(_alias_name "${PROJECT_SAFE}::${child}")
+    if(NOT TARGET ${_alias_name})
+      add_library(${_alias_name} ALIAS ${_iface_target})
+    endif()
+  endif()
+endforeach()
+
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
 endif()

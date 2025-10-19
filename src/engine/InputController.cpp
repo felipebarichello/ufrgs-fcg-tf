@@ -104,6 +104,8 @@ bool InputController::left_mouse_button_is_down() {
 
 __supress_shadow_warning
 void InputController::key_callback(GLFWwindow *window, int key, int scancode, int action, int mod) {
+    (void)scancode; // Supress unused variable warning
+    (void)mod; // Supress unused variable warning
 
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -118,7 +120,10 @@ void InputController::key_callback(GLFWwindow *window, int key, int scancode, in
     }
 }
 
+__supress_shadow_warning
 void InputController::mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
+    (void)mods; // Supress unused variable warning
+
     if (!this->focused && button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         this->centralize_cursor();
@@ -157,7 +162,9 @@ Vec2 InputController::get_cursor_position_delta() {
     return this->cursor_delta;
 }
 
+__supress_shadow_warning
 void InputController::cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
+    (void)window; // Supress unused variable warning
     this->cursor_position.x = (float)xpos;
     this->cursor_position.y = (float)ypos;
 }
@@ -168,7 +175,10 @@ void InputController::update() {
     this->cursor_dirty = false;
 }
 
+__supress_shadow_warning
 void InputController::scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+    (void)window; // Supress unused variable warning
+    (void)xoffset; // Supress unused variable warning
     this->scroll_offset = (float)yoffset;
 }
 
