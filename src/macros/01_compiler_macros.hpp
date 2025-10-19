@@ -9,4 +9,6 @@
     #define __supress_shadow_warning
 #elif defined(COMPILER_IS_MSVC)
     #define __supress_shadow_warning __pragma(warning(suppress:4458))
+#else
+    #define __supress_shadow_warning
 #endif
