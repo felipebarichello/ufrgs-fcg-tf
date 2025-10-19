@@ -5,8 +5,8 @@ namespace engine {
         VObject* vobject = this->new_vobject();
         
         // Add components to the VObject
-        for (ComponentBuilder* component_builder : vobject_config.components) {
-            vobject->add_component(component_builder);
+        for (const auto& component_builder : vobject_config.components) {
+            vobject->add_component(component_builder.get());
         }
 
         // Recursively instantiate and add children VObjects

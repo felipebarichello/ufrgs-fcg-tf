@@ -45,7 +45,7 @@ namespace engine {
     };
 
     struct VObjectConfig {
-        std::vector<ComponentBuilder*> components;
+        std::vector<std::unique_ptr<ComponentBuilder>> components;
         std::vector<VObjectConfig> children;
     };
 }
