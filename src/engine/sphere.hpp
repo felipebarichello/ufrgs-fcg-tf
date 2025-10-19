@@ -19,7 +19,7 @@ private:
     float rotation_angle;
     void update_model_matrix();
     engine::Vao build_vao();
-    size_t parallels = 100;
+    size_t parallels = 50;
     size_t meridians = 100;
     float radius = 0.5f;
 public:

@@ -149,6 +149,8 @@ int main() {
     Cube cube3 = Cube();
     Cube cube4 = Cube();
     Sphere sphere1 = Sphere();
+    sphere1.set_position(Vec3(3.0f, 0.0f, 0.0f));
+    sphere1.set_scale(Vec3(1.5f, 1.5f, 1.5f));
 
     cube2.set_position(Vec3(0.0f, 0.0f, -2.0f));
     cube2.set_scale(Vec3(2.0f, 0.5f, 0.5f));
@@ -163,10 +165,10 @@ int main() {
     g_view_uniform       = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "view"); // Variável da matriz "view" em shader_vertex.glsl
     g_projection_uniform = glGetUniformLocation(g_engine_controller.get_gpu_program_id(), "projection"); // Variável da matriz "projection" em shader_vertex.glsl
 
-    //g_engine_controller.add_drawable(&cube1);
+    g_engine_controller.add_drawable(&cube1);
     g_engine_controller.add_drawable(&cube2);
-    // g_engine_controller.add_drawable(&cube3);
-    // g_engine_controller.add_drawable(&cube4);
+    g_engine_controller.add_drawable(&cube3);
+    g_engine_controller.add_drawable(&cube4);
     g_engine_controller.add_drawable(&sphere1);
 
     // Enable z-buffer

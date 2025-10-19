@@ -48,23 +48,43 @@ engine::Vao Sphere::build_vao() {
 
     const float pi = 3.14159265358979323846f;
 
-    float delta_phi = pi / (float) this->parallels;
-    float delta_theta = 2.0f * pi / (float) this->meridians;
-    
+    float delta_phi = pi / ((float) this->parallels - 1.0f);
+    float delta_theta = 2.0f * pi / ((float) this->meridians - 1.0f);
+
     float phi = 0;
     float theta = 0;
-    size_t index = 0;
 
     float sin_theta, cos_theta, sin_phi, cos_phi;
     float x, y, z;
 
-    for (size_t i = 0; i <= this->meridians; i++) {
+    point_positions.push_back(0.0f);
+    point_positions.push_back(this->radius);
+    point_positions.push_back(0.0f);
+    point_positions.push_back(1.0f);
+
+    point_colors.push_back(1.0f);
+    point_colors.push_back(1.0f);
+    point_colors.push_back(1.0f);
+    point_colors.push_back(1.0f);
+
+    //indices.push_back(index++);
+
+    for (size_t i = 0; i < this->meridians; i++) {
+
         sin_theta = sin(theta);
         cos_theta = cos(theta);
 
-        for (size_t j = 0; j <= this->parallels; j++) {
+        indices.push_back(0);
+        indices.push_back(i*this->parallels + 1);
+        indices.push_back((i + 1) % this->meridians * this->parallels + 1);
+
+        for (size_t j = 0; j < this->parallels; j++) {
             sin_phi = sin(phi);
             cos_phi = cos(phi);
+
+            indices.push_back(i * this->parallels + 1 + j);
+            indices.push_back(i * this->parallels + 1 + (j + 1));
+            indices.push_back(((i + 1) % this->meridians) * this->parallels + 1 + j);
 
             x = this->radius*cos_theta*sin_phi;
             y = this->radius*cos_phi;
@@ -80,18 +100,34 @@ engine::Vao Sphere::build_vao() {
             point_colors.push_back(1.0f);
             point_colors.push_back(1.0f);
 
-            indices.push_back(index);
-
             phi = (float) j * delta_phi;
-            index++;
+
+            indices.push_back(i * this->parallels + 1 + (j + 1));
+            indices.push_back(((i + 1) % this->meridians) * this->parallels + 1 + (j + 1));
+            indices.push_back(((i + 1) % this->meridians) * this->parallels + 1 + j);
+            //indices.push_back(index++);
         }
+
+        indices.push_back(i*this->parallels);
+        indices.push_back((i + 1) % this->meridians * this->parallels);
+        indices.push_back(this->meridians * this->parallels + 1);
+
         theta = (float) i * delta_theta;
     }
+
+    point_positions.push_back(0.0f);
+    point_positions.push_back(-this->radius);
+    point_positions.push_back(0.0f);
+    point_positions.push_back(1.0f);
+
+    point_colors.push_back(1.0f);
+    point_colors.push_back(1.0f);
+    point_colors.push_back(1.0f);
+    point_colors.push_back(1.0f);
 
     return engine::VaoBuilder()
         .add_vbo(0, 4, point_positions.size() * sizeof(GLfloat), point_positions.data(), GL_STATIC_DRAW)
         .add_vbo(1, 4, point_colors.size() * sizeof(GLfloat), point_colors.data(), GL_STATIC_DRAW)
         .add_ebo(indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW)
-        .build(GL_POINTS, indices.size(), GL_UNSIGNED_INT);
-
+        .build(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT);
 }
