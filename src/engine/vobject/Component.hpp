@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <optional>
 #include <iostream>
+#include <memory>
 
 namespace engine {
     // Forward declarations
@@ -44,6 +45,6 @@ namespace engine {
         public:
             /// @brief Builds a new component instance.
             /// @return A heap pointer to the newly created component.
-            virtual Component* build() const = 0;
+            virtual std::unique_ptr<Component> build() const = 0;
     };
 }

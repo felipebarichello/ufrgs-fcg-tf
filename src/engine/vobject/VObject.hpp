@@ -41,7 +41,7 @@ namespace engine {
 
             /// @brief List of components attached to this VObject.
             /// CRITICAL: The lifetime of these components is managed by the VObject.
-            std::unordered_map<Component::Id, Component*> components;
+            std::unordered_map<Component::Id, std::unique_ptr<Component>> components;
     };
 
     struct VObjectConfig {

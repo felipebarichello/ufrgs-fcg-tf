@@ -2,13 +2,14 @@
 #include "Scene.hpp"
 #include "Behavior.hpp"
 #include "Component.hpp"
+#include <memory>
 
 namespace engine {
     void VObject::add_component(const ComponentBuilder* component_builder) {
-        Component* component = component_builder->build();
+        std::unique_ptr<Component> component = component_builder->build();
         Component::Id component_id = component->get_id();
         component->vobject_ptr = this;
-        this->components.emplace(component_id, component);
+        this->components.emplace(component_id, std::move(component));
 
         // If the component is a Behavior, schedule its Behavior methods
         if (auto behavior_opt = component->try_into_behavior()) {
