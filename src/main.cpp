@@ -39,35 +39,8 @@
 #include <utils.h>
 #include <engine.hpp>
 
-// TODO: Remove unused function declarations
-
-// Declaração de várias funções utilizadas em main().  Essas estão definidas
-// logo após a definição de main() neste arquivo.
-void LoadShadersFromFiles(); // Carrega os shaders de vértice e fragmento, criando um programa de GPU
-GLuint LoadShader_Vertex(const char* filename);   // Carrega um vertex shader
-GLuint LoadShader_Fragment(const char* filename); // Carrega um fragment shader
-void LoadShader(const char* filename, GLuint shader_id); // Função utilizada pelas duas acima
 //GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id); // Cria um programa de GPU
 void update_free_camera_position();
-
-// Declaração de funções auxiliares para renderizar texto dentro da janela
-// OpenGL. Estas funções estão definidas no arquivo "textrendering.cpp".
-void TextRendering_Init();
-float TextRendering_LineHeight(GLFWwindow* window);
-float TextRendering_CharWidth(GLFWwindow* window);
-void TextRendering_PrintString(GLFWwindow* window, const std::string &str, float x, float y, float scale = 1.0f);
-void TextRendering_PrintMatrix(GLFWwindow* window, glm::mat4 M, float x, float y, float scale = 1.0f);
-void TextRendering_PrintVector(GLFWwindow* window, glm::vec4 v, float x, float y, float scale = 1.0f);
-void TextRendering_PrintMatrixVectorProduct(GLFWwindow* window, glm::mat4 M, glm::vec4 v, float x, float y, float scale = 1.0f);
-void TextRendering_PrintMatrixVectorProductMoreDigits(GLFWwindow* window, glm::mat4 M, glm::vec4 v, float x, float y, float scale = 1.0f);
-void TextRendering_PrintMatrixVectorProductDivW(GLFWwindow* window, glm::mat4 M, glm::vec4 v, float x, float y, float scale = 1.0f);
-
-// Funções abaixo renderizam como texto na janela OpenGL algumas matrizes e
-// outras informações do programa. Definidas após main().
-void TextRendering_ShowModelViewProjection(GLFWwindow* window, glm::mat4 projection, glm::mat4 view, glm::mat4 model, glm::vec4 p_model);
-void TextRendering_ShowEulerAngles(GLFWwindow* window);
-void TextRendering_ShowProjection(GLFWwindow* window);
-void TextRendering_ShowFramesPerSecond(GLFWwindow* window);
 
 // Funções callback para comunicação com o sistema operacional e interação do
 // usuário. Veja mais comentários nas definições das mesmas, abaixo.
@@ -156,21 +129,18 @@ GLint g_model_uniform;
 GLint g_view_uniform;
 GLint g_projection_uniform;
 
-Vao cube_faces_vao = Vao();
-Vao cube_edges_vao = Vao();
-Vao cube_axes_vao = Vao();
+const float g_sensitivity = 0.002f;
 
 void start();
 void update();
 
 int main() {
-    WindowConfig window_config(
+    // TODO: Move configuration to game?
+    g_engine_controller = EngineController::start_engine(WindowConfig(
         800,
         800,
-        "INF01047 - 579876 - Felipe Wendt Barichello"
-    );
-
-    g_engine_controller = EngineController::start_engine(window_config);
+        "FCG - Trabalho Final"
+    ));
 
     g_engine_controller.input()->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
     g_engine_controller.input()->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT);
@@ -253,14 +223,12 @@ void update() {
 
     glm::mat4 projection;
 
-    // Note que, no sistema de coordenadas da câmera, os planos near e far
-    // estão no sentido negativo! Veja slides 176-204 do documento Aula_09_Projecoes.pdf.
     float nearplane = -0.1f;  // Posição do "near plane"
     float farplane  = -400.0f; // Posição do "far plane"
 
     // Projeção Perspectiva.
     // Para definição do field of view (FOV), veja slides 205-215 do documento Aula_09_Projecoes.pdf.
-    float field_of_view = 3.141592f / 3.0f;
+    float field_of_view = 3.141592f / 1.5f;
     projection = Matrix_Perspective(field_of_view, g_engine_controller.get_screen_ratio(), nearplane, farplane);
 
     // Enviamos as matrizes "view" e "projection" para a placa de vídeo
@@ -270,12 +238,6 @@ void update() {
     glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
 
     glBindVertexArray(0);
-
-    // Pegamos um vértice com coordenadas de modelo (0.5, 0.5, 0.5, 1) e o
-    // passamos por todos os sistemas de coordenadas armazenados nas
-    // matrizes the_model, the_view, e the_projection; e escrevemos na tela
-    // as matrizes e pontos resultantes dessas transformações.
-    glm::vec4 p_model(0.5f, 0.5f, 0.5f, 1.0f);
 }
 
 void update_free_camera_position() {
@@ -292,12 +254,12 @@ void update_free_camera_direction() {
     glm::vec2 cursor_delta = g_engine_controller.input()->get_cursor_position_delta();
 
     // Atualizamos parâmetros da câmera com os deslocamentos
-    g_CameraTheta -= 0.01f*cursor_delta.x;
+    g_CameraTheta -= g_sensitivity*cursor_delta.x;
 
     if (g_camera_is_free) {
-        g_CameraPhi   -= 0.01f*cursor_delta.y;
+        g_CameraPhi   -= g_sensitivity*cursor_delta.y;
     } else {
-        g_CameraPhi   += 0.01f*cursor_delta.y;
+        g_CameraPhi   += g_sensitivity*cursor_delta.y;
     }
 
     // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.

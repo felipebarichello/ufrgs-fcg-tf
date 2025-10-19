@@ -29,13 +29,14 @@ namespace engine {
             this->event_manager.update();
             EngineController::draw();
             glfwSwapBuffers(this->window);
-            glfwPollEvents();
         }
 
         glfwTerminate();
     }
 
     bool EngineController::update_and_test_should_close() {
+        glfwPollEvents();
+
         if (glfwWindowShouldClose(this->window)) {
             return true;
         }

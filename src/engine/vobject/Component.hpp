@@ -15,14 +15,14 @@ namespace engine {
             virtual void PreDestroy() {}
             virtual std::optional<Behavior*> try_into_behavior() { return std::nullopt; }
 
-            Id get_id() {
-                static Component::Id component_id = Component::s_next_component_id++;
+            Component::Id get_id() {
+                static Component::Id component_id = Component::next_component_id++;
                 std::cout << "Generated component ID: " << component_id << std::endl; // TODO: Remove
                 return component_id;
             };
 
         private:
-            static Component::Id s_next_component_id;
+            static Component::Id next_component_id;
     };
 
     class ComponentBuilder {
