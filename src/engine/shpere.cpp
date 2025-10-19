@@ -35,6 +35,8 @@ void Sphere::update_model_matrix() {
 
 void Sphere::draw(GLint g_model_uniform) {
     glUniformMatrix4fv(g_model_uniform, 1, GL_FALSE, glm::value_ptr(this->model));
+    // Increase point size
+    glPointSize(5.0f);
     this->vao.draw();
 }
 
@@ -42,7 +44,7 @@ engine::Vao Sphere::build_vao() {
     // Build and return the VAO for the sphere
     std::vector<GLfloat> point_positions;
     std::vector<GLfloat> point_colors;
-    std::vector<GLuint> point_indices;
+    std::vector<GLuint> indices;
 
     const float pi = 3.14159265358979323846f;
 
@@ -51,11 +53,43 @@ engine::Vao Sphere::build_vao() {
     
     float phi = -pi/2;
     float theta = 0;
+    size_t index = 0;
 
-    for (int i = 0; i < this->meridians; i++) {
-        for (int j = 0; j < this->parallels; j++) {
-            float x = this->ray*cos_theta*sin_phi;
-            float y = this->ray*sin_theta*sin_phi;
+    float sin_theta, cos_theta, sin_phi, cos_phi;
+    float x, y, z;
+
+    for (size_t i = 0; i <= this->meridians; i++) {
+        sin_theta = sin(theta);
+        cos_theta = cos(theta);
+
+        for (size_t j = 0; j <= this->parallels; j++) {
+            sin_phi = sin(phi);
+            cos_phi = cos(phi);
+
+            x = this->radius*cos_theta*sin_phi; y = this->radius*cos_phi; z = this->radius*sin_theta*sin_phi;
+
+            point_positions.push_back(x);
+            point_positions.push_back(y);
+            point_positions.push_back(z);
+            point_positions.push_back(1.0f);
+
+            point_colors.push_back(1.0f);
+            point_colors.push_back(1.0f);
+            point_colors.push_back(1.0f);
+            point_colors.push_back(1.0f);
+
+            indices.push_back(index);
+
+            phi += delta_phi;
+            index++;
         }
+        theta += delta_theta;
     }
+
+    return engine::VaoBuilder()
+        .add_vbo(0, 4, point_positions.size() * sizeof(GLfloat), point_positions.data(), GL_STATIC_DRAW)
+        .add_vbo(1, 4, point_colors.size() * sizeof(GLfloat), point_colors.data(), GL_STATIC_DRAW)
+        .add_ebo(indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW)
+        .build(GL_POINTS, indices.size(), GL_UNSIGNED_INT);
+
 }

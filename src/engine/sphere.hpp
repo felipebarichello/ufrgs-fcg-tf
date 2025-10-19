@@ -18,8 +18,8 @@ private:
     float rotation_angle;
     void update_model_matrix();
     engine::Vao build_vao();
-    size_t parallels = 20;
-    size_t meridians = 20;
+    size_t parallels = 5;
+    size_t meridians = 5;
     float radius = 0.5f;
 public:
     Sphere();
