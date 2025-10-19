@@ -6,3 +6,4 @@
 #include "input_controller.hpp"
 #include "vao.hpp"
 #include "cube.hpp"
+#include "sphere.hpp"
