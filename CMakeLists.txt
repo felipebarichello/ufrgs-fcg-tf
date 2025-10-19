@@ -68,6 +68,10 @@ target_include_directories(${EXECUTABLE_NAME} SYSTEM PRIVATE
 # supported by the toolset (suppresses warnings coming from external headers).
 target_compile_options(${EXECUTABLE_NAME} PRIVATE
   $<$<CXX_COMPILER_ID:MSVC>:/external:W0>
+)
+
+# Make the compiler pedantic
+target_compile_options(${EXECUTABLE_NAME} PRIVATE
   $<$<CXX_COMPILER_ID:MSVC>:/WX>
   $<$<CXX_COMPILER_ID:MSVC>:/W3>
 )
