@@ -107,14 +107,16 @@ namespace engine {
 
     // Definimos o callback para impressão de erros da GLFW no terminal
     void EngineController::error_callback(int error, const char* description) {
+        (void)error; // Supress unused parameter warning
         fprintf(stderr, "ERROR: GLFW: %s\n", description);
     };
 
     // Definição da função que será chamada sempre que a janela do sistema
     // operacional for redimensionada, por consequência alterando o tamanho do
     // "framebuffer" (região de memória onde são armazenados os pixels da imagem).
-    void EngineController::frame_buffer_size_callback(GLFWwindow* window, int width, int height)
-    {
+    void EngineController::frame_buffer_size_callback(GLFWwindow* window, int width, int height) {
+        (void)window; // Supress unused parameter warning
+
         // Indicamos que queremos renderizar em toda região do framebuffer. A
         // função "glViewport" define o mapeamento das "normalized device
         // coordinates" (NDC) para "pixel coordinates".  Essa é a operação de
