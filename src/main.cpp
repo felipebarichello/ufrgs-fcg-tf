@@ -109,8 +109,6 @@ float g_CameraDistance = 2.5f; // Distância da câmera para a origem
 
 const Vec3 g_camera_start_position = Vec3(0.0f, 0.0f, 2.5f);
 
-Camera g_camera = Camera();
-
 Vec3 g_free_camera_position         = Vec3(0.0f, 0.0f, 2.5f);
 Vec3 g_free_camera_view_unit_vector = Vec3(0.0f, 0.0f, -1.0f);
 Vec3 g_free_camera_right_vector     = Vec3(1.0f, 0.0f, 0.0f);
@@ -215,7 +213,7 @@ void update() {
         camera_view_unit_vector = glm::normalize(camera_lookat_point - camera_position_c); 
     }
 
-    CameraTransform cam_transform = g_camera.cam_transform();
+    CameraTransform cam_transform;
     cam_transform.set_position(camera_position_c);
     cam_transform.set_basis_from_up_view(g_free_camera_up_vector, camera_view_unit_vector);
     glm::mat4 view = invert_orthonormal_matrix(cam_transform.get_matrix());
