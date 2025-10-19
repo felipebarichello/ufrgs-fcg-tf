@@ -48,5 +48,6 @@ namespace engine {
             void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
             void update_dpad_direction(DPad* dpad);
             void add_key_handler(int key, int action, std::function<void()>);
+            void centralize_cursor();
     };
 }

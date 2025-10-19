@@ -104,9 +104,7 @@ void InputController::key_callback(GLFWwindow *window, int key, int scancode, in
 
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-        int windowWidth, windowHeight;
-        glfwGetWindowSize(window, &windowWidth, &windowHeight);
-        glfwSetCursorPos(window, windowWidth / 2.0, windowHeight / 2.0);
+        this->centralize_cursor();
         this->focused = false;
     }
 
@@ -120,6 +118,7 @@ void InputController::key_callback(GLFWwindow *window, int key, int scancode, in
 void InputController::mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        this->centralize_cursor();
         this->focused = true;
     }
 
@@ -166,4 +165,14 @@ void InputController::update() {
 
 void InputController::scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
     this->scroll_offset = (float)yoffset;
+}
+
+void InputController::centralize_cursor() {
+    if (this->window != nullptr) {
+        int windowWidth, windowHeight;
+        glfwGetWindowSize(this->window, &windowWidth, &windowHeight);
+        glfwSetCursorPos(this->window, windowWidth / 2.0, windowHeight / 2.0);
+        this->cursor_position = glm::vec2(windowWidth / 2.0f, windowHeight / 2.0f);
+        this->last_cursor_position = this->cursor_position;
+    }
 }
