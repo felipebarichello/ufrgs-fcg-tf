@@ -37,7 +37,7 @@
 
 // Headers locais, definidos na pasta "include/"
 #include <utils.h>
-#include <engine.hpp>
+#include <engine>
 
 //GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id); // Cria um programa de GPU
 void update_free_camera_position();

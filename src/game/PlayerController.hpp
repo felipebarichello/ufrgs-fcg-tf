@@ -1,6 +1,6 @@
 #pragma once
 
-#include <engine.hpp>
+#include <engine>
 
 namespace game {
     class PlayerController {

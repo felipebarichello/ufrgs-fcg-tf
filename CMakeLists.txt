@@ -44,6 +44,12 @@ string(REGEX REPLACE "[^A-Za-z0-9_]" "_" PROJECT_SAFE "${PROJECT_NAME}")
 
 # Get direct subdirectories of ${SOURCE_DIR}
 file(GLOB CHILDREN RELATIVE ${SOURCE_DIR} "${SOURCE_DIR}/*")
+
+# Directory in the build tree where forwarding headers will be generated.
+# Using the build directory avoids writing into the source tree.
+set(GEN_INCLUDE_DIR "${CMAKE_BINARY_DIR}/generated_includes")
+file(MAKE_DIRECTORY "${GEN_INCLUDE_DIR}")
+
 foreach(child ${CHILDREN})
   if(IS_DIRECTORY "${SOURCE_DIR}/${child}")
     # Create an interface target name and an alias
@@ -55,6 +61,7 @@ foreach(child ${CHILDREN})
     target_include_directories(${_iface_target} INTERFACE
       ${SOURCE_DIR}/${child}
       ${SOURCE_DIR}
+      $<BUILD_INTERFACE:${GEN_INCLUDE_DIR}>
     )
 
     # Create a convenient namespaced alias: e.g. <PROJECT_SAFE>::engine
@@ -63,6 +70,25 @@ foreach(child ${CHILDREN})
     if(NOT TARGET ${_alias_name})
       add_library(${_alias_name} ALIAS ${_iface_target})
     endif()
+  endif()
+endforeach()
+
+# Previously we wrote forwarding headers into the source tree. Avoid creating
+# real files in the source directory; instead generate them in the build tree
+# and add that directory to the INTERFACE include dirs so `#include <child>`
+# resolves.
+set(GEN_INCLUDE_DIR "${CMAKE_BINARY_DIR}/generated_includes")
+file(MAKE_DIRECTORY "${GEN_INCLUDE_DIR}")
+foreach(child ${CHILDREN})
+  if(IS_DIRECTORY "${SOURCE_DIR}/${child}")
+    # Generate a tiny forwarding header in the build directory (NOT the
+    # source tree). This allows consumers to write `#include <engine>` and
+    # have it include `engine/include.hpp` from the src tree.
+    file(GENERATE
+      OUTPUT "${GEN_INCLUDE_DIR}/${child}"
+      CONTENT "#pragma once\n#include \"${child}/include.hpp\"\n"
+    )
+    message(STATUS "Will generate forwarding include in build dir: ${GEN_INCLUDE_DIR}/${child}")
   endif()
 endforeach()
 
@@ -98,10 +124,6 @@ foreach(child ${CHILDREN})
     endif()
   endif()
 endforeach()
-
-target_include_directories(${EXECUTABLE_NAME} BEFORE PRIVATE
-  ${SOURCE_DIR}/include
-)
 
 # Treat project-level include headers (third-party libs under include/) as
 # system headers so compiler warnings originating from those headers are

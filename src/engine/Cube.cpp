@@ -1,5 +1,5 @@
 #include "Cube.hpp"
-#include <macros.hpp>
+#include <macros>
 
 Cube::Cube() {
     this->position = glm::vec3(0.0f);

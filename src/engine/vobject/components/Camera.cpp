@@ -4,7 +4,7 @@
 #include <glm/vec4.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <engine/math/linalg.hpp>
-#include <macros.hpp>
+#include <macros>
 
 
 namespace engine {
