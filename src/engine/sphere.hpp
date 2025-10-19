@@ -1,29 +1,29 @@
 #pragma once
 
 #include "vao.hpp"
-#include <engine/math/matrices.hpp>
+#include "math/matrices.hpp"
+#include "drawable.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
-#include "drawable.hpp"
+#include <vector>
 
-class Cube : public engine::Drawable {
+class Sphere : public engine::Drawable {
 private:
     glm::mat4 model;
     glm::vec3 position;
     glm::vec3 rotation_axis;
     glm::vec3 scale;
-    engine::Vao faces_vao = engine::Vao();
-    engine::Vao edges_vao = engine::Vao();
-    engine::Vao axes_vao = engine::Vao();
+    engine::Vao vao = engine::Vao();
     float rotation_angle;
     void update_model_matrix();
-    engine::Vao build_faces_vao();
-    engine::Vao build_edges_vao();
-    engine::Vao build_axes_vao();
+    engine::Vao build_vao();
+    size_t parallels = 50;
+    size_t meridians = 100;
+    float radius = 1.0f;
 public:
-    Cube();
+    Sphere();
     void set_position(const glm::vec3 position);
     void set_rotation(float rotation_angle, const glm::vec3 rotation_axis);
     void set_scale(const glm::vec3 scale);

@@ -7,11 +7,10 @@
 #include <memory>
 #include "InputController.hpp"
 #include "EventManager.hpp"
-#include "Cube.hpp"
+#include "drawable.hpp"
 #include <memory>
 #include "vobject/Scene.hpp"
 #include "vobject/SceneBoot.hpp"
-
 
 namespace engine {
 
@@ -59,7 +58,7 @@ namespace engine {
             static InputController* get_input(); // TODO: Remove this static method
 
             void hand_over_control(SceneBoot* initial_scene);
-            void add_drawable(Cube* drawable);
+            void add_drawable(Drawable* drawable);
             EventManager& events() { return this->event_manager; }
             GLFWwindow* get_window();
             InputController* input();

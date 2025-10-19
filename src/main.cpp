@@ -151,6 +151,9 @@ int main() {
     Cube cube2 = Cube();
     Cube cube3 = Cube();
     Cube cube4 = Cube();
+    Sphere sphere1 = Sphere();
+    sphere1.set_position(Vec3(3.0f, 0.0f, 0.0f));
+    sphere1.set_scale(Vec3(1.5f, 1.5f, 1.5f));
 
     cube2.set_position(Vec3(0.0f, 0.0f, -2.0f));
     cube2.set_scale(Vec3(2.0f, 0.5f, 0.5f));
@@ -169,6 +172,7 @@ int main() {
     g_engine_controller->add_drawable(&cube2);
     g_engine_controller->add_drawable(&cube3);
     g_engine_controller->add_drawable(&cube4);
+    g_engine_controller->add_drawable(&sphere1);
 
     // Enable z-buffer
     glEnable(GL_DEPTH_TEST);
