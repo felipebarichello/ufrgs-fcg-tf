@@ -14,7 +14,6 @@ namespace engine {
 
         // If the component is a Behavior, schedule its Behavior methods
         if (auto behavior_opt = component->try_into_behavior()) {
-            std::cout << "Component with CID: " << component_id << " is a Behavior, scheduling its methods." << std::endl;
             // TODO: Maybe awaken should schedule start and start should subscribe update?
             Behavior* behavior = behavior_opt.value();
             this->scene->scheduler.schedule_awaken(behavior);

@@ -28,7 +28,6 @@ namespace game::components {
             }
 
             void Update() override {
-                std::cout << "PlayerController says: " << this->printme << std::endl;
             }
 
 
@@ -41,5 +40,10 @@ namespace game::components {
             // }
 
             PlayerController() = default;
+    };
+
+    class Controller2 : public Behavior {
+        public:
+            
     };
 } // namespace game::components
