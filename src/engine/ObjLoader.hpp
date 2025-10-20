@@ -1,6 +1,8 @@
+#pragma once
 #include <tiny_obj_loader.h>
 #include <string>
 #include <stdexcept>
+#include "vao.hpp"
 
 struct ObjModel
 {
@@ -57,3 +59,5 @@ struct ObjModel
         printf("OK.\n");
     }
 };
+
+engine::Vao build_obj_vao(ObjModel* model);

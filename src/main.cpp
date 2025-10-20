@@ -147,6 +147,8 @@ int main() {
     g_engine_controller->input()->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
     g_engine_controller->input()->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT);
 
+    ObjModel bunnymodel("../../data/bunny.obj");
+
     Cube cube1 = Cube();
     Cube cube2 = Cube();
     Cube cube3 = Cube();
