@@ -4,6 +4,6 @@
 namespace engine {
     class Drawable {
     public:
-        virtual void draw(GLint model_uniform) = 0;
+        virtual void draw(GLuint program_id) = 0;
     };
 }

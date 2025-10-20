@@ -9,8 +9,15 @@ ObjDrawable::ObjDrawable(std::string obj_filename) {
     this->vao = build_obj_vao(&model);
 }
 
-void ObjDrawable::draw(GLint model_uniform) {
-    (void) model_uniform; // Suppress unused variable warning
+void ObjDrawable::draw(GLuint program_id) {
+    GLint Kd = glGetUniformLocation(program_id, "diffuse_reflectance");
+    GLint Ks = glGetUniformLocation(program_id, "specular_reflectance");
+    GLint Ka = glGetUniformLocation(program_id, "enviornment_reflectance");
+    GLint q  = glGetUniformLocation(program_id, "specular_exponent");
+    glUniform3fv(Kd, 1, &this->diffuse_reflectance[0]);
+    glUniform3fv(Ks, 1, &this->specular_reflectance[0]);
+    glUniform3fv(Ka, 1, &this->enviornment_reflectance[0]);
+    glUniform1f(q, this->specular_exponent);
     this->vao.draw();
 }
 

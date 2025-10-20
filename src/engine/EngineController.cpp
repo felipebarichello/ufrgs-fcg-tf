@@ -345,7 +345,7 @@ namespace engine {
 
     void EngineController::add_drawable(Drawable* drawable) {
         std::function<void()> draw_function = [drawable, this]() {
-            drawable->draw(glGetUniformLocation(this->get_gpu_program_id(), "model"));
+            drawable->draw(this->get_gpu_program_id());
         };
         this->draw_functions.push_back(draw_function);
     }
