@@ -38,8 +38,12 @@
 // Headers locais, definidos na pasta "include/"
 #include <utils.h>
 #include <engine>
+#include "game/drawables/Cube.hpp"
+#include "game/drawables/Sphere.hpp"
 
 #include "game/scenes/MainScene.hpp"
+
+#include <ctime>
 
 //GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id); // Cria um programa de GPU
 void update_free_camera_position();
@@ -72,6 +76,7 @@ using engine::Matrix_Rotate_Y;
 using engine::Matrix_Rotate_Z;
 using engine::Matrix_Scale;
 using engine::InputController;
+using engine::ObjDrawable;
 using game::scenes::MainScene;
 
 // Definimos uma estrutura que armazenará dados necessários para renderizar
@@ -152,28 +157,47 @@ int main() {
         g_engine_controller->toggle_fullscreen();
     });
 
-    Cube cube1 = Cube();
-    Cube cube2 = Cube();
-    Cube cube3 = Cube();
-    Cube cube4 = Cube();
-
-    cube2.set_position(Vec3(0.0f, 0.0f, -2.0f));
-    cube2.set_scale(Vec3(2.0f, 0.5f, 0.5f));
-    cube2.set_rotation(3.141592f / 8.0f, Vec3(1.0f,1.0f,1.0f));
-
-    cube3.set_position(Vec3(-2.0f, 0.0f, 0.0f));
-
-    cube4.set_position(Vec3(0.0f, 0.0f, 7.0f));
-    cube4.set_scale(Vec3(3.0f, 3.0f, 3.0f));
 
     g_model_uniform      = glGetUniformLocation(g_engine_controller->get_gpu_program_id(), "model"); // Variável da matriz "model"
     g_view_uniform       = glGetUniformLocation(g_engine_controller->get_gpu_program_id(), "view"); // Variável da matriz "view" em shader_vertex.glsl
     g_projection_uniform = glGetUniformLocation(g_engine_controller->get_gpu_program_id(), "projection"); // Variável da matriz "projection" em shader_vertex.glsl
 
-    g_engine_controller->add_drawable(&cube1);
-    g_engine_controller->add_drawable(&cube2);
-    g_engine_controller->add_drawable(&cube3);
-    g_engine_controller->add_drawable(&cube4);
+
+    const size_t num_objects = 100;
+
+    std::srand(static_cast<unsigned>(std::time(nullptr)));
+    static std::vector<std::unique_ptr<ObjDrawable>> objects;
+    objects.reserve(num_objects);
+
+    auto prototype_car   = std::make_unique<ObjDrawable>("../../assets/sportsCar.obj");
+    auto prototype_bunny = std::make_unique<ObjDrawable>("../../assets/bunny.obj");
+
+    for (size_t i = 0; i < num_objects; ++i) {
+        bool choose_bunny = (std::rand() % 2) == 1;
+
+        auto obj = choose_bunny
+            ? std::make_unique<ObjDrawable>(*prototype_bunny)
+            : std::make_unique<ObjDrawable>(*prototype_car);
+
+        float r = static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
+        float g = static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
+        float b = static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
+
+        float x = 20.0f * static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX) - 10.0f;
+        float y = 20.0f * static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX) - 10.0f;
+        float z = 20.0f * static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX) - 10.0f;
+
+        float specular_exponent = 100.0f * static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
+
+        obj->set_position(glm::vec3(x, y, z));
+        obj->set_diffuse_reflectance(glm::vec3(r, g, b));
+        obj->set_enviornment_reflectance(0.5f * glm::vec3(r, g, b));
+        obj->set_specular_exponent(specular_exponent);
+        obj->set_specular_reflectance(glm::vec3(1.0f, 1.0f, 1.0f));
+
+        g_engine_controller->add_drawable(obj.get());
+        objects.push_back(std::move(obj));
+    }
 
     // Enable z-buffer
     glEnable(GL_DEPTH_TEST);

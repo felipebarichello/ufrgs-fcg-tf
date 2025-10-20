@@ -14,9 +14,12 @@ namespace engine {
     EngineController* EngineController::start_engine(WindowConfig window_config) {
         EngineController::instance = std::make_unique<EngineController>();
         EngineController::instance->window = EngineController::init_window(window_config);
+
+        // TODO: Is this needed?
         EngineController::instance->windowed_width = window_config.width;
         EngineController::instance->windowed_height = window_config.height;
-        EngineController::instance->input_controller = new InputController(EngineController::instance->window);
+
+        EngineController::instance->input_controller = std::make_unique<InputController>(EngineController::instance->window);
         EngineController::instance->input_controller->init();
         return EngineController::instance.get();
     }
@@ -27,7 +30,7 @@ namespace engine {
         initial_scene->hierarchy(scene_hierarchy);
 
         while (!this->update_and_test_should_close()) {
-            this->input_controller->update();
+        if (this->input_controller) this->input_controller->update();
             this->event_manager.update();
             EngineController::draw();
             glfwSwapBuffers(this->window);
@@ -54,7 +57,7 @@ namespace engine {
     }
 
     InputController* EngineController::input() {
-        return this->input_controller;
+        return this->input_controller.get();
     }
 
     EventManager& EngineController::get_events() {
@@ -62,7 +65,7 @@ namespace engine {
     }
 
     InputController* EngineController::get_input() {
-        return EngineController::instance->input_controller;
+        return EngineController::instance->input_controller.get();
     }
 
     GLFWwindow* EngineController::init_window(WindowConfig window_config) {
@@ -345,9 +348,9 @@ namespace engine {
         gpu_program_id = create_gpu_program(vertex_shader_id, fragment_shader_id);
     }
 
-    void EngineController::add_drawable(Cube* drawable) {
+    void EngineController::add_drawable(Drawable* drawable) {
         std::function<void()> draw_function = [drawable, this]() {
-            drawable->draw(glGetUniformLocation(this->get_gpu_program_id(), "model"));
+            drawable->draw(this->get_gpu_program_id());
         };
         this->draw_functions.push_back(draw_function);
     }

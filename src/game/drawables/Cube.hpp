@@ -6,8 +6,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
+#include "Drawable.hpp"
 
-class Cube {
+class Cube : public engine::Drawable {
 private:
     glm::mat4 model;
     glm::vec3 position;
@@ -26,5 +27,5 @@ public:
     void set_position(const glm::vec3 position);
     void set_rotation(float rotation_angle, const glm::vec3 rotation_axis);
     void set_scale(const glm::vec3 scale);
-    void draw(GLint g_model_uniform);
+    void draw(GLuint program_id);
 };
