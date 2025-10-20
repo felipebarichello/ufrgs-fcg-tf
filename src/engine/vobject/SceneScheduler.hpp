@@ -10,6 +10,8 @@ namespace engine {
             // TODO: Subscribe to other events
             static SceneScheduler create();
 
+            SceneScheduler() = default;
+
             void schedule_awaken(Behavior* component) {
                 this->awaken_queue.push_back(component);
             }
@@ -48,8 +50,6 @@ namespace engine {
             std::vector<Behavior*> awaken_queue;
             std::vector<Behavior*> start_queue;
             std::vector<Behavior*> update_subscribers;
-
-            SceneScheduler() = default;
     };
 
 } // namespace engine
