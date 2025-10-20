@@ -102,7 +102,7 @@ bool InputController::left_mouse_button_is_down() {
     return this->is_left_mouse_button_down;
 }
 
-__supress_shadow_warning
+//__supress_shadow_warning
 void InputController::key_callback(GLFWwindow *window, int key, int scancode, int action, int mod) {
     (void)scancode; // Supress unused variable warning
     (void)mod; // Supress unused variable warning
