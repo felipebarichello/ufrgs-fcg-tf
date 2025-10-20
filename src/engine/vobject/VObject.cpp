@@ -5,11 +5,10 @@
 #include <memory>
 
 namespace engine {
-    void VObject::add_component(const ComponentBuilder* component_builder) {
-        std::unique_ptr<Component> component = component_builder->build();
+    void VObject::add_component(Component* component) {
         Component::Id component_id = component->get_id();
         component->vobject_ptr = this;
-        this->components.emplace(component_id, std::move(component));
+        this->components.emplace(component_id, component);
 
         // If the component is a Behavior, schedule its Behavior methods
         if (auto behavior_opt = component->try_into_behavior()) {

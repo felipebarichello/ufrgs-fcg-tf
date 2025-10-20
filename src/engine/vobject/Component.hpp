@@ -39,12 +39,4 @@ namespace engine {
             static Component::Id next_component_id;
             VObject* vobject_ptr;
     };
-
-    // TODO: Is this really needed?
-    class ComponentBuilder {
-        public:
-            /// @brief Builds a new component instance.
-            /// @return A heap pointer to the newly created component.
-            virtual std::unique_ptr<Component> build() const = 0;
-    };
 }
