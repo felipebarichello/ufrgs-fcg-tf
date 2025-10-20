@@ -170,10 +170,9 @@ ObjModel::ObjModel(const char* filename, const char* basepath, bool triangulate)
                 filename);
             throw std::runtime_error("Objeto sem nome.");
         }
-        printf("- Objeto '%s'\n", shapes[shape].name.c_str());
     }
 
-    printf("OK.\n");
+    printf("OBJ carregado com sucesso\n");
 }
 
 __supress_shadow_warning
