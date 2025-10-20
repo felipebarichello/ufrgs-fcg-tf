@@ -22,6 +22,7 @@ namespace engine {
             ObjDrawable(std::string obj_filename);
             void draw(GLint model_uniform);
         private:
+            void ComputeNormals(ObjModel* model);
             engine::Vao build_obj_vao(ObjModel* model);
             engine::Vao vao; 
     };
