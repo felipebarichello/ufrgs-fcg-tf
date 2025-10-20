@@ -100,7 +100,7 @@ void ComputeNormals(ObjModel* model)
         for (size_t triangle = 0; triangle < num_triangles; ++triangle)
         {
             assert(model->shapes[shape].mesh.num_face_vertices[triangle] == 3);
-            unsigned int sgroup = model->shapes[shape].mesh.smoothing_group_ids[triangle];
+            int sgroup = model->shapes[shape].mesh.smoothing_group_ids[triangle];
             assert(sgroup >= 0);
             sgroup_ids.insert(sgroup);
         }
