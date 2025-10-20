@@ -175,6 +175,8 @@ int main() {
     for (size_t i = 0; i < num_objects; ++i) {
         bool choose_bunny = (std::rand() % 2) == 1;
 
+        float rotation = 3.14159265f * static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
+
         auto obj = choose_bunny
             ? std::make_unique<ObjDrawable>(*prototype_bunny)
             : std::make_unique<ObjDrawable>(*prototype_car);
@@ -190,6 +192,7 @@ int main() {
         float specular_exponent = 100.0f * static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
 
         obj->set_position(glm::vec3(x, y, z));
+        obj->set_rotation(rotation, glm::vec3(0.0f, 1.0f, 0.0f));
         obj->set_diffuse_reflectance(glm::vec3(r, g, b));
         obj->set_enviornment_reflectance(0.5f * glm::vec3(r, g, b));
         obj->set_specular_exponent(specular_exponent);
