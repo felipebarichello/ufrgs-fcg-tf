@@ -38,6 +38,8 @@
 // Headers locais, definidos na pasta "include/"
 #include <utils.h>
 #include <engine>
+#include "game/drawables/Cube.hpp"
+#include "game/drawables/Sphere.hpp"
 
 #include "game/scenes/MainScene.hpp"
 
