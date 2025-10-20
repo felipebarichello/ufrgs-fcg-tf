@@ -1,4 +1,5 @@
 #include "Sphere.hpp"
+#include <macros>
 
 Sphere::Sphere() {
     this->position = glm::vec3(0.0f);
@@ -10,17 +11,20 @@ Sphere::Sphere() {
     this->vao = this->build_vao();
 }
 
+__supress_shadow_warning
 void Sphere::set_position(const glm::vec3 position) {
     this->position = position;
     this->update_model_matrix();
 }
 
+__supress_shadow_warning
 void Sphere::set_rotation(float rotation_angle, const glm::vec3 rotation_axis) {
     this->rotation_angle = rotation_angle;
     this->rotation_axis = rotation_axis;
     this->update_model_matrix();
 }
 
+__supress_shadow_warning
 void Sphere::set_scale(const glm::vec3 scale) {
     this->scale = scale;
     this->update_model_matrix();
@@ -57,7 +61,7 @@ engine::Vao Sphere::build_vao() {
     float sin_theta, cos_theta, sin_phi, cos_phi;
     float x, y, z;
 
-    size_t index = 0;
+    GLuint index = 0;
 
     point_positions.push_back(0.0f);
     point_positions.push_back(this->radius);
@@ -71,12 +75,12 @@ engine::Vao Sphere::build_vao() {
 
     indices.push_back(index++);
 
-    for (size_t i = 0; i < this->meridians; i++) {
+    for (GLuint i = 0; i < this->meridians; i++) {
 
         sin_theta = sin(theta);
         cos_theta = cos(theta);
 
-        for (size_t j = 0; j < this->parallels; j++) {
+        for (GLuint j = 0; j < this->parallels; j++) {
             sin_phi = sin(phi);
             cos_phi = cos(phi);
 
@@ -118,5 +122,5 @@ engine::Vao Sphere::build_vao() {
         .add_vbo(0, 4, point_positions.size() * sizeof(GLfloat), point_positions.data(), GL_STATIC_DRAW)
         .add_vbo(1, 4, point_colors.size() * sizeof(GLfloat), point_colors.data(), GL_STATIC_DRAW)
         .add_ebo(indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW)
-        .build(GL_POINTS, indices.size(), GL_UNSIGNED_INT);
+        .build(GL_POINTS, (GLsizei)indices.size(), GL_UNSIGNED_INT);
 }

@@ -23,7 +23,7 @@ namespace engine {
                 return this->id;
             }
 
-            void add_component(const ComponentBuilder* component_builder);
+            void add_component(Component* component);
             
             // TODO: Remove children when destroyed
             // FIXME: Can cause multiple parents
@@ -44,8 +44,22 @@ namespace engine {
             std::unordered_map<Component::Id, Component*> components;
     };
 
-    struct VObjectConfig {
-        std::vector<ComponentBuilder*> components;
-        std::vector<VObjectConfig> children;
+    // TODO: Better interface for building VObjects
+    class VObjectConfig {
+        public:
+            std::vector<Component*> components;
+            std::vector<VObjectConfig> children;
+
+            VObjectConfig() = default;
+
+            inline VObjectConfig& component(Component* component) {
+                this->components.push_back(std::move(component));
+                return *this;
+            }
+
+            inline VObjectConfig& child(VObjectConfig& child_config) {
+                this->children.push_back(std::move(child_config));
+                return *this;
+            }
     };
 }
