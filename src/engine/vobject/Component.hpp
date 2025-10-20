@@ -3,18 +3,24 @@
 #include <cstdint>
 #include <optional>
 #include <iostream>
+#include <memory>
 
 namespace engine {
+    // Forward declarations
     class Behavior;
     class VObject;
 
     /// @brief Base class for all components that can be attached to VObjects.
+    ///
+    /// CRITICAL: Do not do Component-specific logic in constructors
+    /// In fact, avoid defining constructors in Component implementors.
     class Component {
         public:
             using Id = uint32_t;
+            
+            friend VObject;
 
-            Component(VObject* vobject)
-                : vobject_ptr(vobject) {
+            Component() {
                 std::cout << "Component created" << std::endl; // TODO: Remove
             }
 
@@ -32,12 +38,5 @@ namespace engine {
         private:
             static Component::Id next_component_id;
             VObject* vobject_ptr;
-    };
-
-    class ComponentBuilder {
-        public:
-            /// @brief Builds a new component instance.
-            /// @return A heap pointer to the newly created component.
-            virtual Component* build() const = 0;
     };
 }
