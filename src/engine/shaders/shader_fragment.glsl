@@ -7,6 +7,11 @@
 in vec4 position_world;
 in vec4 normal;
 
+uniform vec3 diffuse_reflectance;
+uniform vec3 specular_reflectance;
+uniform vec3 enviornment_reflectance;
+uniform float specular_exponent;
+
 // Matrizes computadas no código C++ e enviadas para a GPU
 uniform mat4 model;
 uniform mat4 view;
@@ -56,10 +61,10 @@ void main()
     vec3 Ka; // Refletância ambiente
     float q; // Expoente especular para o modelo de iluminação de Phong
 
-    Kd = vec3(0.08, 0.4, 0.8);
-    Ks = vec3(0.8, 0.8, 0.8);
-    Ka = 0.5*Kd;
-    q = 32.0;
+    Kd = diffuse_reflectance;
+    Ks = specular_reflectance;
+    Ka = enviornment_reflectance;
+    q = specular_exponent;
 
     // Espectro da fonte de iluminação
     vec3 I = vec3(1.0,1.0,1.0); // PREENCH AQUI o espectro da fonte de luz
