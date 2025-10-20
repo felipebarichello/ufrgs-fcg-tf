@@ -20,7 +20,7 @@ private:
     void update_model_matrix();
     engine::Vao build_vao();
     size_t parallels = 50;
-    size_t meridians = 100;
+    size_t meridians = 50;
     float radius = 1.0f;
 public:
     Sphere();

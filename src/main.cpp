@@ -147,7 +147,7 @@ int main() {
     g_view_uniform       = glGetUniformLocation(g_engine_controller->get_gpu_program_id(), "view"); // Variável da matriz "view" em shader_vertex.glsl
     g_projection_uniform = glGetUniformLocation(g_engine_controller->get_gpu_program_id(), "projection"); // Variável da matriz "projection" em shader_vertex.glsl
 
-    const size_t num_objects = 100;
+    const size_t num_objects = 200;
 
     std::srand(static_cast<unsigned>(std::time(nullptr)));
     static std::vector<std::unique_ptr<ObjDrawable>> objects;
@@ -156,10 +156,14 @@ int main() {
     auto prototype_car   = std::make_unique<ObjDrawable>("../../assets/sportsCar.obj");
     auto prototype_bunny = std::make_unique<ObjDrawable>("../../assets/bunny.obj");
 
+    Sphere sphere = Sphere();
+    sphere.set_scale(glm::vec3(20.0f, 20.0f,20.0f));
+    g_engine_controller->add_drawable(&sphere);
+
     for (size_t i = 0; i < num_objects; ++i) {
         bool choose_bunny = (std::rand() % 2) == 1;
 
-        float rotation = 3.14159265f * static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
+        float rotation = 2.0f * 3.14159265f * static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
 
         auto obj = choose_bunny
             ? std::make_unique<ObjDrawable>(*prototype_bunny)
@@ -169,9 +173,9 @@ int main() {
         float g = static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
         float b = static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
 
-        float x = 20.0f * static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX) - 10.0f;
-        float y = 20.0f * static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX) - 10.0f;
-        float z = 20.0f * static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX) - 10.0f;
+        float x = 30.0f * static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX) - 15.0f;
+        float y = 30.0f * static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX) - 15.0f;
+        float z = 30.0f * static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX) - 15.0f;
 
         float specular_exponent = 100.0f * static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
 

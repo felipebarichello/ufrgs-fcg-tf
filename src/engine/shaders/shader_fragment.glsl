@@ -55,17 +55,6 @@ void main()
     // Vetor que define o sentido da reflexão especular ideal.
     vec4 r = -l + 2*n*dot(n,l); // PREENCHA AQUI o vetor de reflexão especular ideal
 
-    // Parâmetros que definem as propriedades espectrais da superfície
-    vec3 Kd; // Refletância difusa
-    vec3 Ks; // Refletância especular
-    vec3 Ka; // Refletância ambiente
-    float q; // Expoente especular para o modelo de iluminação de Phong
-
-    Kd = diffuse_reflectance;
-    Ks = specular_reflectance;
-    Ka = enviornment_reflectance;
-    q = specular_exponent;
-
     // Espectro da fonte de iluminação
     vec3 I = vec3(1.0,1.0,1.0); // PREENCH AQUI o espectro da fonte de luz
 
@@ -73,13 +62,13 @@ void main()
     vec3 Ia = vec3(0.2, 0.2, 0.2); // PREENCHA AQUI o espectro da luz ambiente
 
     // Termo difuso utilizando a lei dos cossenos de Lambert
-    vec3 lambert_diffuse_term = Kd*I*max(0.0, dot(n,l)); // PREENCHA AQUI o termo difuso de Lambert
+    vec3 lambert_diffuse_term = diffuse_reflectance*I*max(0.0, dot(n,l)); // PREENCHA AQUI o termo difuso de Lambert
 
     // Termo ambiente
-    vec3 ambient_term = Ka*Ia; // PREENCHA AQUI o termo ambiente
+    vec3 ambient_term = enviornment_reflectance*Ia; // PREENCHA AQUI o termo ambiente
 
     // Termo especular utilizando o modelo de iluminação de Phong
-    vec3 phong_specular_term  = Ks*I*pow(max(0.0, dot(r,v)), q); // PREENCH AQUI o termo especular de Phong
+    vec3 phong_specular_term  = specular_reflectance*I*pow(max(0.0, dot(r,v)), specular_exponent); // PREENCH AQUI o termo especular de Phong
 
     // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
     // necessário:
