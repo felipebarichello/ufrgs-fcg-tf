@@ -1,8 +1,5 @@
 # TODO
 
-This file is a stub.
-The requirements are not here yet.
-
 ## UX
 
 [ ] List controls somewhere in-game
