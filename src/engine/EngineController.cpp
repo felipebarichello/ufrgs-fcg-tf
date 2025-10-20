@@ -25,12 +25,18 @@ namespace engine {
     }
 
     void EngineController::hand_over_control(SceneBoot* initial_scene) {
-        // TODO: Create scene
-        std::vector<VObjectConfig> scene_hierarchy;
-        initial_scene->hierarchy(scene_hierarchy);
+        // TODO: Scenes get created twice because this is not a constructor
+        this->current_scene = std::make_unique<Scene>();
+
+        std::vector<VObjectConfig> hierarchy;
+        initial_scene->hierarchy(hierarchy);
+        
+        for (auto& vobject_config : hierarchy) {
+            this->current_scene->instantiate(vobject_config);
+        }
 
         while (!this->update_and_test_should_close()) {
-        if (this->input_controller) this->input_controller->update();
+            this->input_controller->update();
             this->event_manager.update();
             EngineController::draw();
             glfwSwapBuffers(this->window);
