@@ -5,69 +5,71 @@
 #include "vao.hpp"
 #include "Drawable.hpp"
 
-struct ObjModel
-{
-    tinyobj::attrib_t                 attrib;
-    std::vector<tinyobj::shape_t>     shapes;
-    std::vector<tinyobj::material_t>  materials;
+namespace engine {
 
-    // Este construtor lê o modelo de um arquivo utilizando a biblioteca tinyobjloader.
-    // Veja: https://github.com/syoyo/tinyobjloader
-    ObjModel(const char* filename, const char* basepath = NULL, bool triangulate = true)
-    {
-        printf("Carregando objetos do arquivo \"%s\"...\n", filename);
+    struct ObjModel {
+        tinyobj::attrib_t                 attrib;
+        std::vector<tinyobj::shape_t>     shapes;
+        std::vector<tinyobj::material_t>  materials;
 
-        // Se basepath == NULL, então setamos basepath como o dirname do
-        // filename, para que os arquivos MTL sejam corretamente carregados caso
-        // estejam no mesmo diretório dos arquivos OBJ.
-        std::string fullpath(filename);
-        std::string dirname;
-        if (basepath == NULL)
+        // Este construtor lê o modelo de um arquivo utilizando a biblioteca tinyobjloader.
+        // Veja: https://github.com/syoyo/tinyobjloader
+        ObjModel(const char* filename, const char* basepath = NULL, bool triangulate = true)
         {
-            auto i = fullpath.find_last_of("/");
-            if (i != std::string::npos)
+            printf("Carregando objetos do arquivo \"%s\"...\n", filename);
+
+            // Se basepath == NULL, então setamos basepath como o dirname do
+            // filename, para que os arquivos MTL sejam corretamente carregados caso
+            // estejam no mesmo diretório dos arquivos OBJ.
+            std::string fullpath(filename);
+            std::string dirname;
+            if (basepath == NULL)
             {
-                dirname = fullpath.substr(0, i+1);
-                basepath = dirname.c_str();
+                auto i = fullpath.find_last_of("/");
+                if (i != std::string::npos)
+                {
+                    dirname = fullpath.substr(0, i+1);
+                    basepath = dirname.c_str();
+                }
             }
-        }
 
-        std::string warn;
-        std::string err;
-        bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filename, basepath, triangulate);
+            std::string warn;
+            std::string err;
+            bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filename, basepath, triangulate);
 
-        if (!err.empty())
-            fprintf(stderr, "\n%s\n", err.c_str());
+            if (!err.empty())
+                fprintf(stderr, "\n%s\n", err.c_str());
 
-        if (!ret)
-            throw std::runtime_error("Erro ao carregar modelo.");
+            if (!ret)
+                throw std::runtime_error("Erro ao carregar modelo.");
 
-        for (size_t shape = 0; shape < shapes.size(); ++shape)
-        {
-            if (shapes[shape].name.empty())
+            for (size_t shape = 0; shape < shapes.size(); ++shape)
             {
-                fprintf(stderr,
-                        "*********************************************\n"
-                        "Erro: Objeto sem nome dentro do arquivo '%s'.\n"
-                        "Veja https://www.inf.ufrgs.br/~eslgastal/fcg-faq-etc.html#Modelos-3D-no-formato-OBJ .\n"
-                        "*********************************************\n",
-                    filename);
-                throw std::runtime_error("Objeto sem nome.");
+                if (shapes[shape].name.empty())
+                {
+                    fprintf(stderr,
+                            "*********************************************\n"
+                            "Erro: Objeto sem nome dentro do arquivo '%s'.\n"
+                            "Veja https://www.inf.ufrgs.br/~eslgastal/fcg-faq-etc.html#Modelos-3D-no-formato-OBJ .\n"
+                            "*********************************************\n",
+                        filename);
+                    throw std::runtime_error("Objeto sem nome.");
+                }
+                printf("- Objeto '%s'\n", shapes[shape].name.c_str());
             }
-            printf("- Objeto '%s'\n", shapes[shape].name.c_str());
+
+            printf("OK.\n");
         }
+    };
 
-        printf("OK.\n");
-    }
-};
+    class ObjDrawable : public Drawable {
+        public:
+            ObjDrawable(std::string obj_filename);
+            void draw(GLint model_uniform);
+        private:
+            engine::Vao build_obj_vao(ObjModel* model);
+            engine::Vao vao; 
+    };
+}
 
-
-class ObjDrawable : public engine::Drawable {
-    public:
-        ObjDrawable(std::string obj_filename);
-        void draw(GLint model_uniform);
-    private:
-        engine::Vao build_obj_vao(ObjModel* model);
-        engine::Vao vao; 
-};
 

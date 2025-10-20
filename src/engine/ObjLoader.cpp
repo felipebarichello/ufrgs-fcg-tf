@@ -1,6 +1,8 @@
 #include "ObjLoader.hpp"
 #include <cassert>
 
+using namespace engine;
+
 ObjDrawable::ObjDrawable(std::string obj_filename) {
     ObjModel model = ObjModel(obj_filename.c_str(), nullptr, true);
     this->vao = build_obj_vao(&model);

@@ -72,6 +72,7 @@ using engine::Matrix_Rotate_Y;
 using engine::Matrix_Rotate_Z;
 using engine::Matrix_Scale;
 using engine::InputController;
+using engine::ObjDrawable;
 using game::scenes::MainScene;
 
 // Definimos uma estrutura que armazenará dados necessários para renderizar
@@ -146,8 +147,6 @@ int main() {
 
     g_engine_controller->input()->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
     g_engine_controller->input()->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT);
-
-    ObjModel bunnymodel("../../data/bunny.obj");
 
     Cube cube1 = Cube();
     Cube cube2 = Cube();
