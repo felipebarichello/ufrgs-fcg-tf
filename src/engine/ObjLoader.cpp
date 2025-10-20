@@ -4,10 +4,14 @@
 
 using namespace engine;
 
-ObjDrawable::ObjDrawable(std::string obj_filename) {
-    ObjModel obj_model = ObjModel(obj_filename.c_str(), nullptr, true);
-    ComputeNormals(&obj_model);
+ObjLoader::ObjLoader(const char* filename, const char* basepath, bool triangulate) {
+    ObjModel obj_model = ObjModel(filename, basepath, triangulate);
+    this->ComputeNormals(&obj_model);
     this->vao = build_obj_vao(&obj_model);
+}
+
+ObjDrawable::ObjDrawable(Vao* vao_ptr) {
+    this->vao_ptr = vao_ptr;
 }
 
 void ObjDrawable::draw(GLuint program_id) {
@@ -22,7 +26,7 @@ void ObjDrawable::draw(GLuint program_id) {
     this->update_model_matrix();
     GLsizei model_uniform = glGetUniformLocation(program_id, "model");
     glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(this->model));
-    this->vao.draw();
+    this->vao_ptr->draw();
 }
 
 void ObjDrawable::set_diffuse_reflectance(glm::vec3 reflectance) {
@@ -58,14 +62,13 @@ void ObjDrawable::set_scale(glm::vec3 scale) {
 }
 
 void ObjDrawable::update_model_matrix() {
-    using namespace engine;
     this->model = Matrix_Translate(this->position.x, this->position.y, this->position.z) // TERCEIRO translação
             * Matrix_Rotate(this->rotation_angle, glm::vec4(this->rotation_axis, 0.0f)) // SEGUNDO rotação
             * Matrix_Scale(this->scale.x, this->scale.y, this->scale.z); // PRIMEIRO escala
 }
 
 __supress_shadow_warning
-Vao ObjDrawable::build_obj_vao(ObjModel* model) {
+Vao ObjLoader::build_obj_vao(ObjModel* model) {
     GLuint vertex_array_object_id;
     glGenVertexArrays(1, &vertex_array_object_id);
     glBindVertexArray(vertex_array_object_id);
@@ -177,7 +180,7 @@ ObjModel::ObjModel(const char* filename, const char* basepath, bool triangulate)
 }
 
 __supress_shadow_warning
-void ObjDrawable::ComputeNormals(ObjModel* model) {
+void ObjLoader::ComputeNormals(ObjModel* model) {
     if ( !model->attrib.normals.empty() )
         return;
 
@@ -292,5 +295,10 @@ void ObjDrawable::ComputeNormals(ObjModel* model) {
         }
 
     }
+}
+
+ObjDrawable* ObjLoader::get_new_drawable() {
+    // TODO: review this
+    return new ObjDrawable(&this->vao);
 }
 

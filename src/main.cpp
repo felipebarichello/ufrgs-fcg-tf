@@ -77,6 +77,7 @@ using engine::Matrix_Rotate_Z;
 using engine::Matrix_Scale;
 using engine::InputController;
 using engine::ObjDrawable;
+using engine::ObjLoader;
 using game::scenes::MainScene;
 
 // Definimos uma estrutura que armazenará dados necessários para renderizar
@@ -150,20 +151,19 @@ int main() {
     const size_t num_objects = 100;
 
     std::srand(static_cast<unsigned>(std::time(nullptr)));
-    static std::vector<std::unique_ptr<ObjDrawable>> objects;
-    objects.reserve(num_objects);
+    ObjLoader car_loader = ObjLoader("../../assets/sportsCar.obj");
+    ObjLoader bunny_loader = ObjLoader("../../assets/bunny.obj");
 
-    auto prototype_car   = std::make_unique<ObjDrawable>("../../assets/sportsCar.obj");
-    auto prototype_bunny = std::make_unique<ObjDrawable>("../../assets/bunny.obj");
+    std::vector<ObjDrawable> object_drawables;
+    object_drawables.reserve(num_objects);
 
     for (size_t i = 0; i < num_objects; ++i) {
         bool choose_bunny = (std::rand() % 2) == 1;
 
         float rotation = 3.14159265f * static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
 
-        auto obj = choose_bunny
-            ? std::make_unique<ObjDrawable>(*prototype_bunny)
-            : std::make_unique<ObjDrawable>(*prototype_car);
+        auto obj = choose_bunny ? car_loader.get_new_drawable() : bunny_loader.get_new_drawable();
+        g_engine_controller->add_drawable(obj);
 
         float r = static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
         float g = static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
@@ -181,9 +181,6 @@ int main() {
         obj->set_enviornment_reflectance(0.5f * glm::vec3(r, g, b));
         obj->set_specular_exponent(specular_exponent);
         obj->set_specular_reflectance(glm::vec3(1.0f, 1.0f, 1.0f));
-
-        g_engine_controller->add_drawable(obj.get());
-        objects.push_back(std::move(obj));
     }
 
     // Enable z-buffer

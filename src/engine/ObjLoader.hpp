@@ -18,30 +18,25 @@ namespace engine {
         std::vector<tinyobj::material_t>  materials;
 
         // Carrega um modelo OBJ do disco
+        ObjModel() = default;
         ObjModel(const char* filename, const char* basepath = NULL, bool triangulate = true);
     };
 
-    // Computa normais por vértice se o modelo não tiver normais
-    void ComputeNormals(ObjModel* model);
-
     class ObjDrawable : public Drawable {
     public:
-        ObjDrawable(std::string obj_filename);
+        ObjDrawable(engine::Vao* vao);
+        ~ObjDrawable() = default;
         void draw(GLuint program_id) override;
-
         void set_diffuse_reflectance(glm::vec3 reflectance);
         void set_specular_reflectance(glm::vec3 reflectance);
         void set_enviornment_reflectance(glm::vec3 reflectance);
         void set_specular_exponent(float exponent);
-
         void set_position(glm::vec3 position);
         void set_rotation(float rotation_angle, glm::vec3 rotation_axis);
         void set_scale(glm::vec3 scale);
 
     private:
-        engine::Vao build_obj_vao(ObjModel* model);
-        engine::Vao vao;
-        void ComputeNormals(ObjModel* model);
+        engine::Vao* vao_ptr;
         glm::vec3 diffuse_reflectance{0.8f, 0.4f, 0.8f};
         glm::vec3 specular_reflectance{0.8f, 0.8f, 0.8f};
         glm::vec3 enviornment_reflectance{0.04f, 0.2f, 0.4f};
@@ -54,4 +49,13 @@ namespace engine {
         glm::mat4 model{1.0f};
     };
 
+    class ObjLoader {
+    public:
+        ObjLoader(const char* filename, const char* basepath = NULL, bool triangulate = true);
+        ObjDrawable* get_new_drawable();
+    private:
+        engine::Vao vao;
+        engine::Vao build_obj_vao(ObjModel* model);
+        void ComputeNormals(ObjModel* model);
+    };
 } // namespace engine
