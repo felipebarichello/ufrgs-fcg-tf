@@ -30,6 +30,11 @@ namespace engine {
             std::unique_ptr<InputController> input_controller;
             EventManager event_manager;
             std::unique_ptr<Scene> current_scene;
+            bool is_fullscreen;
+            int windowed_width;
+            int windowed_height;
+            int windowed_xpos;
+            int windowed_ypos;
 
             static std::unique_ptr<EngineController> instance; // TODO: Remove this singleton pattern
             static float screen_ratio; // TODO: Make non-static?
@@ -51,13 +56,14 @@ namespace engine {
             bool update_and_test_should_close();
 
         public:
-            EngineController() = default;
+            EngineController() : is_fullscreen(false), windowed_width(800), windowed_height(800), windowed_xpos(0), windowed_ypos(0) {}
 
             static EngineController* start_engine(WindowConfig window_config);
             static EventManager& get_events(); // TODO: Remove this static method
             static InputController* get_input(); // TODO: Remove this static method
 
             void hand_over_control(SceneBoot* initial_scene);
+            void toggle_fullscreen();
             void add_drawable(Drawable* drawable);
             EventManager& events() { return this->event_manager; }
             GLFWwindow* get_window();
