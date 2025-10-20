@@ -27,7 +27,7 @@ namespace engine {
     class EngineController {
         private:
             GLFWwindow* window;
-            InputController* input_controller;
+            std::unique_ptr<InputController> input_controller;
             EventManager event_manager;
             std::unique_ptr<Scene> current_scene;
 

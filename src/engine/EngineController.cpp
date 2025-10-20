@@ -14,7 +14,7 @@ namespace engine {
     EngineController* EngineController::start_engine(WindowConfig window_config) {
         EngineController::instance = std::make_unique<EngineController>();
         EngineController::instance->window = EngineController::init_window(window_config);
-        EngineController::instance->input_controller = new InputController(EngineController::instance->window);
+        EngineController::instance->input_controller = std::make_unique<InputController>(EngineController::instance->window);
         EngineController::instance->input_controller->init();
         return EngineController::instance.get();
     }
@@ -25,7 +25,7 @@ namespace engine {
         initial_scene->hierarchy(scene_hierarchy);
 
         while (!this->update_and_test_should_close()) {
-            this->input_controller->update();
+        if (this->input_controller) this->input_controller->update();
             this->event_manager.update();
             EngineController::draw();
             glfwSwapBuffers(this->window);
@@ -52,7 +52,7 @@ namespace engine {
     }
 
     InputController* EngineController::input() {
-        return this->input_controller;
+        return this->input_controller.get();
     }
 
     EventManager& EngineController::get_events() {
@@ -60,7 +60,7 @@ namespace engine {
     }
 
     InputController* EngineController::get_input() {
-        return EngineController::instance->input_controller;
+        return EngineController::instance->input_controller.get();
     }
 
     GLFWwindow* EngineController::init_window(WindowConfig window_config) {
