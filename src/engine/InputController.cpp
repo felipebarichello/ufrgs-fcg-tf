@@ -118,6 +118,7 @@ void InputController::key_callback(GLFWwindow *window, int key, int scancode, in
         for (std::function<void()> function : key_handler_map[{key,action}]) {
             function();
         }
+        return;  // Don't process in the focused block to avoid double-trigger
     }
 
     if (this->focused) {
