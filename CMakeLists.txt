@@ -196,7 +196,7 @@ elseif(UNIX)
   target_compile_options(${EXECUTABLE_NAME} PRIVATE
     # GNU or Clang: enable many warnings and make them errors
     $<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:
-      -Wall;-Wextra;>
+      -Wall;-Wextra;-Werror;>
     # AppleClang: use a slightly smaller set (some flags differ on Apple) but still treat as error
     $<$<CXX_COMPILER_ID:AppleClang>:-Wall;-Wextra;-Wpedantic;-Werror>
     # Keep an allowance for unused-function warnings that sometimes appear from system headers
