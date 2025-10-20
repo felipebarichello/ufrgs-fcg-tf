@@ -155,7 +155,7 @@ int main() {
     Cube cube3 = Cube();
     Cube cube4 = Cube();
     Sphere sphere1 = Sphere();
-    ObjDrawable bunny = ObjDrawable("../../data/bunny.obj");
+    ObjDrawable bunny = ObjDrawable("../../assets/bunny.obj");
 
     sphere1.set_position(Vec3(3.0f, 0.0f, 0.0f));
     sphere1.set_scale(Vec3(2.0f, 2.0f, 2.0f));
