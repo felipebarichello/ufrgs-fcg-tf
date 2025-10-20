@@ -2,7 +2,10 @@
 #include <tiny_obj_loader.h>
 #include <string>
 #include <stdexcept>
+#include <set>
+#include <glm/glm.hpp>
 #include "vao.hpp"
+#include "math/matrices.hpp"
 #include "Drawable.hpp"
 
 namespace engine {
