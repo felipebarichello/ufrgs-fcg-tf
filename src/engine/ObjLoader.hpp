@@ -3,6 +3,7 @@
 #include <string>
 #include <stdexcept>
 #include "vao.hpp"
+#include "Drawable.hpp"
 
 struct ObjModel
 {
@@ -60,4 +61,13 @@ struct ObjModel
     }
 };
 
-engine::Vao build_obj_vao(ObjModel* model);
+
+class ObjDrawable : public engine::Drawable {
+    public:
+        ObjDrawable(std::string obj_filename);
+        void draw(GLint model_uniform);
+    private:
+        engine::Vao build_obj_vao(ObjModel* model);
+        engine::Vao vao; 
+};
+

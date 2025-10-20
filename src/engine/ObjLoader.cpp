@@ -1,7 +1,16 @@
 #include "ObjLoader.hpp"
 #include <cassert>
 
-engine::Vao build_obj_vao(ObjModel* model)
+ObjDrawable::ObjDrawable(std::string obj_filename) {
+    ObjModel model = ObjModel(obj_filename.c_str(), nullptr, true);
+    this->vao = build_obj_vao(&model);
+}
+
+void ObjDrawable::draw(GLint model_uniform) {
+    this->vao.draw();
+}
+
+engine::Vao ObjDrawable::build_obj_vao(ObjModel* model)
 {
     GLuint vertex_array_object_id;
     glGenVertexArrays(1, &vertex_array_object_id);
