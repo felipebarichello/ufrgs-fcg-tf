@@ -1,5 +1,6 @@
 #include <tiny_obj_loader.h>
 #include <string>
+#include <stdexcept>
 
 struct ObjModel
 {
