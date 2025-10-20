@@ -29,7 +29,6 @@ namespace engine {
 
             Component::Id get_id() {
                 static Component::Id component_id = Component::next_component_id++;
-                std::cout << "Generated component ID: " << component_id << std::endl; // TODO: Remove
                 return component_id;
             };
             
