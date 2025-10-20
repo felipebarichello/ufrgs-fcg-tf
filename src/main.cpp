@@ -91,21 +91,8 @@ struct SceneObject {
 // Abaixo definimos variáveis globais utilizadas em várias funções do código.
 EngineController* g_engine_controller;
 
-// A cena virtual é uma lista de objetos nomeados, guardados em um dicionário
-// (map).  Veja dentro da função BuildTriangles() como que são incluídos
-// objetos dentro da variável g_VirtualScene, e veja na função main() como
-// estes são acessados.
-std::map<const char*, SceneObject> g_VirtualScene;
-
 // Razão de proporção da janela (largura/altura). Veja função FramebufferSizeCallback().
 //float g_ScreenRatio = 1.0f;
-
-// Ângulos de Euler que controlam a rotação de um dos cubos da cena virtual
-float g_AngleX = 0.0f;
-float g_AngleY = 0.0f;
-float g_AngleZ = 0.0f;
-
-bool g_camera_is_free = true;
 
 // Variáveis que definem a câmera em coordenadas esféricas, controladas pelo
 // usuário através do mouse (veja função CursorPosCallback()). A posição
@@ -157,11 +144,8 @@ int main() {
         g_engine_controller->toggle_fullscreen();
     });
 
-
-    g_model_uniform      = glGetUniformLocation(g_engine_controller->get_gpu_program_id(), "model"); // Variável da matriz "model"
     g_view_uniform       = glGetUniformLocation(g_engine_controller->get_gpu_program_id(), "view"); // Variável da matriz "view" em shader_vertex.glsl
     g_projection_uniform = glGetUniformLocation(g_engine_controller->get_gpu_program_id(), "projection"); // Variável da matriz "projection" em shader_vertex.glsl
-
 
     const size_t num_objects = 100;
 
@@ -227,33 +211,18 @@ void update() {
     Vec3 camera_position_c; // Camera center (position)
     Vec3 camera_view_unit_vector; // Direction the camera is pointing
 
-    if (g_camera_is_free) {
-        // Update da posição da câmera de acordo com o input de movimento
-        update_free_camera_position();
-        update_free_camera_direction();
+    // Update da posição da câmera de acordo com o input de movimento
+    update_free_camera_position();
+    update_free_camera_direction();
 
-        camera_position_c = g_free_camera_position;
-        camera_view_unit_vector = g_free_camera_view_unit_vector;
+    camera_position_c = g_free_camera_position;
+    camera_view_unit_vector = g_free_camera_view_unit_vector;
 
-        float y = sin(g_CameraPhi);
-        float z = cos(g_CameraPhi)*cos(g_CameraTheta);
-        float x = cos(g_CameraPhi)*sin(g_CameraTheta);
-        
-        camera_view_unit_vector = Vec3(x, y, z);
-    } else {
-        // Computamos a posição da câmera utilizando coordenadas esféricas.  As
-        // variáveis g_CameraDistance, g_CameraPhi, e g_CameraTheta são
-        // controladas pelo mouse do usuário. Veja as funções CursorPosCallback()
-        // e ScrollCallback().
-        float r = g_CameraDistance;
-        float y = r*sin(g_CameraPhi);
-        float z = r*cos(g_CameraPhi)*cos(g_CameraTheta);
-        float x = r*cos(g_CameraPhi)*sin(g_CameraTheta);
-
-        camera_position_c = Vec3(x, y, z);
-        Vec3 camera_lookat_point = Vec3(0.0f, 0.0f, 0.0f);
-        camera_view_unit_vector = glm::normalize(camera_lookat_point - camera_position_c); 
-    }
+    float y = sin(g_CameraPhi);
+    float z = cos(g_CameraPhi)*cos(g_CameraTheta);
+    float x = cos(g_CameraPhi)*sin(g_CameraTheta);
+    
+    camera_view_unit_vector = Vec3(x, y, z);
 
     CameraTransform cam_transform;
     cam_transform.set_position(camera_position_c);
@@ -288,12 +257,7 @@ void update_free_camera_direction() {
 
     // Atualizamos parâmetros da câmera com os deslocamentos
     g_CameraTheta -= g_sensitivity*cursor_delta.x;
-
-    if (g_camera_is_free) {
-        g_CameraPhi   -= g_sensitivity*cursor_delta.y;
-    } else {
-        g_CameraPhi   += g_sensitivity*cursor_delta.y;
-    }
+    g_CameraPhi   -= g_sensitivity*cursor_delta.y;
 
     // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
     float phimax = 3.141592f/2;
