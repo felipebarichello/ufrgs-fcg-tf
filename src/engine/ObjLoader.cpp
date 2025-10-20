@@ -9,6 +9,7 @@ ObjDrawable::ObjDrawable(std::string obj_filename) {
 }
 
 void ObjDrawable::draw(GLint model_uniform) {
+    (void) model_uniform; // Suppress unused variable warning
     this->vao.draw();
 }
 

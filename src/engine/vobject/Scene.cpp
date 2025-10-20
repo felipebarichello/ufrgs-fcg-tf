@@ -1,12 +1,13 @@
 #include "Scene.hpp"
+#include <memory>
 
 namespace engine {
     VObject* Scene::instantiate(VObjectConfig& vobject_config) {
         VObject* vobject = this->new_vobject();
         
         // Add components to the VObject
-        for (ComponentBuilder* component_builder : vobject_config.components) {
-            vobject->add_component(component_builder);
+        for (auto& component : vobject_config.components) {
+            vobject->add_component(std::move(component));
         }
 
         // Recursively instantiate and add children VObjects
