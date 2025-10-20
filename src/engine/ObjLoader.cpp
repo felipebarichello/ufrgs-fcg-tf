@@ -2,6 +2,9 @@
 #include <cassert>
 #include <macros>
 
+#define TINYOBJLOADER_IMPLEMENTATION
+#include "tiny_obj_loader.h"
+
 using namespace engine;
 
 ObjLoader::ObjLoader(const char* filename, const char* basepath, bool triangulate) {
