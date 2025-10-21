@@ -1,4 +1,5 @@
 #include "ObjDrawable.hpp"
+#include <macros>
 
 using namespace engine;
 
@@ -37,15 +38,18 @@ void ObjDrawable::set_specular_exponent(float exponent) {
     this->specular_exponent = exponent;
 }
 
+__supress_shadow_warning
 void ObjDrawable::set_position(glm::vec3 position) {
     this->position = position;
 }
 
+__supress_shadow_warning
 void ObjDrawable::set_rotation(float rotation_angle, glm::vec3 rotation_axis) {
     this->rotation_angle = rotation_angle;
     this->rotation_axis = rotation_axis;
 }
 
+__supress_shadow_warning
 void ObjDrawable::set_scale(glm::vec3 scale) {
     this->scale = scale;
 }
