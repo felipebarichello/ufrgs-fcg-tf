@@ -11,6 +11,7 @@ namespace game::scenes {
                     // PlayerController::create("Hello from MainScene")
                     PlayerController::create()
                 )
+                .component(new Controller2())
         );
     }
 }

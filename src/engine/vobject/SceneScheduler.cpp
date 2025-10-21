@@ -4,10 +4,8 @@
 using engine::EngineController;
 
 namespace engine {
-    SceneScheduler SceneScheduler::create() {
-        SceneScheduler inst;
-        auto events = engine::EngineController::get_events();
-        events.subscribe_update(std::bind(&SceneScheduler::trigger_update, &inst));
-        return inst;
+    SceneScheduler::SceneScheduler() : awaken_queue(), start_queue(), update_subscribers() {
+        auto& events = engine::EngineController::get_events();
+        events.subscribe_update(std::bind(&SceneScheduler::trigger_update, this));
     }
 } // namespace engine

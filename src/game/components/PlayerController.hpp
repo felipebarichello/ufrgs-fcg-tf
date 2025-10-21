@@ -1,8 +1,9 @@
 #pragma once
 
-#include <engine/vobject/Behavior.hpp>
+#include <engine>
 #include <memory>
 
+using engine::Component;
 using engine::Behavior;
 
 namespace game::components {
@@ -12,11 +13,21 @@ namespace game::components {
             //     return std::make_unique<PlayerController>(std::move(printme_value));
             // }
             static Component* create() {
-                return new PlayerController();
+                PlayerController* inst = new PlayerController();
+                std::cout << "PlayerController created!" << std::endl
+                    << "This PlayerController has CID: " << inst->get_id() << std::endl
+                    << "and if I run again: " << inst->get_id() << std::endl;
+
+                PlayerController* other = new PlayerController();
+                std::cout << "Another PlayerController has CID: " << other->get_id() << std::endl;
+
+                Component* cast = (Component*)inst;
+                std::cout << "Casted PlayerController to Component with CID: " << cast->get_id() << std::endl;
+
+                return inst;
             }
 
             void Update() override {
-                std::cout << "PlayerController says: " << this->printme << std::endl;
             }
 
 
@@ -29,5 +40,10 @@ namespace game::components {
             // }
 
             PlayerController() = default;
+    };
+
+    class Controller2 : public Behavior {
+        public:
+            
     };
 } // namespace game::components
