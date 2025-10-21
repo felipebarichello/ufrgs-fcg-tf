@@ -19,17 +19,12 @@ namespace game::components {
             void Start() override {
                 std::cout << "PlayerController has started" << std::endl;
             }
-
-            void Update() override {
-            }
-
-            std::string printme;
     };
 
     class Controller2 : public Behavior {
         public:
             Controller2() = default;
-            
+
             void Awake() override {
                 std::cout << "Controller2 has awaken" << std::endl;
                 std::cout << "Controller2 has CID: " << this->get_id() << std::endl;
@@ -37,9 +32,6 @@ namespace game::components {
 
             void Start() override {
                 std::cout << "Controller2 has started" << std::endl;
-            }
-
-            void Update() override {
             }
     };
 } // namespace game::components
