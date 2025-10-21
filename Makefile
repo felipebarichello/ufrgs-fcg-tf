@@ -1,10 +1,13 @@
-./bin/Linux/main: src/main.cpp src/glad.c src/textrendering.cpp include/matrices.h include/utils.h include/dejavufont.h
-	mkdir -p bin/Linux
-	g++ -std=c++11 -Wall -Wno-unused-function -g -I ./include/ -o ./bin/Linux/main src/main.cpp src/glad.c src/textrendering.cpp ./lib-linux/libglfw3.a -lrt -lm -ldl -lX11 -lpthread -lXrandr -lXinerama -lXxf86vm -lXcursor
+.PHONY: clean build run
 
-.PHONY: clean run
 clean:
-	rm -f bin/Linux/main
+	rm -rf bin && rm -rf build
 
-run: ./bin/Linux/main
-	cd bin/Linux && ./main
+init:
+	cmake -B ./build
+
+build: init
+	cmake --build ./build --config Release
+
+run: build
+	cd ./bin/Linux && ./main
