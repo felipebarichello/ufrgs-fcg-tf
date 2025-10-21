@@ -47,6 +47,12 @@ namespace engine {
             std::vector<Behavior*> awaken_queue;
             std::vector<Behavior*> start_queue;
             std::vector<Behavior*> update_subscribers;
+
+            void update() {
+                this->trigger_awaken();
+                this->trigger_start();
+                this->trigger_update();
+            }
     };
 
 } // namespace engine

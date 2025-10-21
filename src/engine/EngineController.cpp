@@ -37,7 +37,7 @@ namespace engine {
 
         while (!this->update_and_test_should_close()) {
             this->input_controller->update();
-            this->event_manager.update();
+            this->event_manager.update(); // TODO: Update each scene separately?
             EngineController::draw();
             glfwSwapBuffers(this->window);
         }

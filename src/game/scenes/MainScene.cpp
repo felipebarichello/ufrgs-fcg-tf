@@ -7,10 +7,8 @@ namespace game::scenes {
 
         root.push_back(
             VObjectConfig()
-                .component(
-                    // PlayerController::create("Hello from MainScene")
-                    PlayerController::create()
-                )
+                .component(new PlayerController())
+                .component(new Controller2())
                 .component(new Controller2())
         );
     }
