@@ -4,6 +4,7 @@
 #include "VObject.hpp"
 #include <unordered_map>
 #include "SceneScheduler.hpp"
+#include "VObjectConfig.hpp"
 
 namespace engine {
     // CRITICAL: This class manages lifetimes of many connected things.
