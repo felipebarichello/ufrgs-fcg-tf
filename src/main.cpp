@@ -151,8 +151,13 @@ int main() {
     const size_t num_objects = 200;
 
     std::srand(static_cast<unsigned>(std::time(nullptr)));
-    ObjLoader car_loader = ObjLoader("../../assets/sportsCar.obj");
-    ObjLoader bunny_loader = ObjLoader("../../assets/bunny.obj");
+
+    std::string exe_dir = EngineController::get_executable_directory();
+    std::string bunny_path = exe_dir + "/../../assets/bunny.obj";
+    std::string car_path = exe_dir + "/../../assets/sportsCar.obj";
+    ObjLoader car_loader = ObjLoader(car_path.c_str());
+    ObjLoader bunny_loader = ObjLoader(bunny_path.c_str());
+    std::cout << exe_dir << std::endl;
 
     std::vector<ObjDrawable> object_drawables;
     object_drawables.reserve(num_objects);

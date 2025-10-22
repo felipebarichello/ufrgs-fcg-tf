@@ -47,7 +47,6 @@ namespace engine {
             static GLuint load_shader_fragment(const char* filename);
             static GLuint create_gpu_program(GLuint vertex_shader_id, GLuint fragment_shader_id);
             static void load_shaders_from_files();
-            static std::string get_executable_directory();
             static void draw();
             static std::vector<std::function<void()>> draw_functions;
             
@@ -71,5 +70,6 @@ namespace engine {
             float get_screen_ratio() { return screen_ratio; }
             void set_screen_ratio(float ratio) { screen_ratio = ratio; }
             GLuint get_gpu_program_id() { return gpu_program_id; }
+            static std::string get_executable_directory();
     };
 }
