@@ -164,7 +164,6 @@ int main() {
 
     Sphere sphere = Sphere();
     sphere.set_scale(glm::vec3(20.0f, 20.0f,20.0f));
-    g_engine_controller->add_drawable(&sphere);
 
     for (size_t i = 0; i < num_objects; ++i) {
         bool choose_bunny = (std::rand() % 2) == 1;
@@ -172,7 +171,6 @@ int main() {
         float rotation = 2.0f * 3.14159265f * static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
 
         auto obj = choose_bunny ? car_loader.get_new_drawable() : bunny_loader.get_new_drawable();
-        g_engine_controller->add_drawable(obj);
 
         float r = static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
         float g = static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);

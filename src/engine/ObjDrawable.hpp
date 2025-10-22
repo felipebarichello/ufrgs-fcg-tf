@@ -24,7 +24,6 @@ namespace engine {
         void set_position(glm::vec3 position);
         void set_rotation(float rotation_angle, glm::vec3 rotation_axis);
         void set_scale(glm::vec3 scale);
-
     private:
         engine::Vao* vao_ptr;
         glm::vec3 diffuse_reflectance{0.8f, 0.4f, 0.8f};
@@ -38,5 +37,4 @@ namespace engine {
         float rotation_angle{0.0f};
         glm::mat4 model{1.0f};
     };
-
 }
