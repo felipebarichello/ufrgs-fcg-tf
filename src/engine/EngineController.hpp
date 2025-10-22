@@ -1,5 +1,4 @@
 #pragma once
-
 #include <glad/glad.h> 
 #include <GLFW/glfw3.h>
 #include <cstdlib>
@@ -11,9 +10,11 @@
 #include "vobject/Scene.hpp"
 #include "vobject/SceneBoot.hpp"
 
+
 namespace engine {
-    // Forward declaration to avoid circular dependency
+    // Forward declarations to avoid circular dependency
     class Drawable;
+    class ObjLoader;
 
     struct WindowConfig {
         int width;
@@ -29,6 +30,7 @@ namespace engine {
         private:
             GLFWwindow* window;
             std::unique_ptr<InputController> input_controller;
+            std::unique_ptr<ObjLoader> obj_loader;
             EventManager event_manager;
             std::unique_ptr<Scene> current_scene;
             bool is_fullscreen;
@@ -56,7 +58,8 @@ namespace engine {
             bool update_and_test_should_close();
 
         public:
-            EngineController() : is_fullscreen(false), windowed_width(800), windowed_height(800), windowed_xpos(0), windowed_ypos(0) {}
+            EngineController();
+            ~EngineController();
 
             static EngineController* start_engine(WindowConfig window_config);
             static EventManager& get_events(); // TODO: Remove this static method

@@ -1,7 +1,7 @@
 #include "MainScene.hpp"
 #include <game/components/PlayerController.hpp>
-#include <engine>
-#include <game/components/drawables/Cube.hpp>
+#include <engine/vobject/Transform.hpp>
+#include <game/components/drawables/BunnyDrawable.hpp>
 
 using engine::SceneRoot;
 using engine::Camera;
@@ -16,7 +16,9 @@ namespace game::scenes {
                 .child(VObjectConfig()
                     .component(new Camera())
                 )
-                .component(new Cube())
+            )
+            .vobject(VObjectConfig()
+                .component(new BunnyDrawable())
             );
     }
 }
