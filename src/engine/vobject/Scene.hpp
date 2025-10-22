@@ -24,7 +24,7 @@ namespace engine {
             std::unordered_map<VObject::Id, std::unique_ptr<VObject>> vobjects;
             SceneScheduler scheduler;
             
-            VObject* new_vobject();
+            VObject* new_vobject(Transform transform);
             void delete_vobject(VObject* vobject);
     };
 }
