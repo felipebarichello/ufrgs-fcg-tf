@@ -37,6 +37,8 @@ namespace engine {
             /// @brief CRITICAL: This is a dangerous operation that may cause dangling pointers!
             void destroy(); // TODO: Defer destruction to end of frame?
 
+            Transform get_transform();
+
         private:
             Scene* scene;
             VObject::Id id;
