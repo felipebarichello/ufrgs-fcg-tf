@@ -10,14 +10,6 @@ namespace game::components {
     class PlayerController : public Behavior {
         public:
             PlayerController() = default;
-
-            void Awake() override {
-            }
-
-            void Start() override {
-            }
-
-            void Update() override {
-            }
+            void Update() override;
     };
 } // namespace game::components
