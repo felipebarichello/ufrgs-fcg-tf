@@ -3,6 +3,8 @@
 #include <engine/vobject/Transform.hpp>
 #include <game/components/drawables/BunnyDrawable.hpp>
 #include "../temp_globals.hpp"
+#include <cmath>
+
 
 using engine::SceneRoot;
 using engine::Camera;
@@ -23,6 +25,8 @@ namespace game::scenes {
                     .position(Vec3(0.0f, 0.0f, 3.0f)))
                 .component(player_controller)
                 .child(VObjectConfig()
+                    .transform(TransformBuilder()
+                        .rotation(Quaternion::fromEulerZYX(Vec3(0.0f, -M_PI, 0.0f))))
                     .component(new Camera())
                 )
             ).vobject(VObjectConfig()
