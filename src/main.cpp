@@ -123,7 +123,6 @@ GLint g_projection_uniform;
 const float g_sensitivity = 0.005f;
 const float field_of_view = 3.141592f / 3.0f;
 
-void start();
 void update();
 
 int main() {
