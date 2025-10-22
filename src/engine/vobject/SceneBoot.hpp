@@ -6,7 +6,6 @@
 namespace engine {
     class SceneBoot {
         public:
-            // TODO: Bake configuration
             virtual void hierarchy(SceneRoot& root) = 0;
     };
 }
