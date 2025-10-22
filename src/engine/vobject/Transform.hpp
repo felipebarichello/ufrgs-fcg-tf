@@ -21,13 +21,15 @@ namespace engine {
             void set_rotation(const Quaternion& q);
             void set_scale(Vec3 scale);
             void set_scale(float uniform_scale);
-            Mat4 get_model_matrix() const;
+            Mat4 get_model_matrix();
 
         private:
             Vec3 position {0.0f, 0.0f, 0.0f};
-            Quaternion quaternion = Quaternion::identity(); // default identity
+            Quaternion quaternion = Quaternion::identity();
             Vec3 scale {1.0f, 1.0f, 1.0f};
-            Mat4 model {1.0f};
+            Mat4 model_matrix {1.0f};
+            bool dirty_model_matrix = false;
+
             void update_model_matrix();
     };
 }; // namespace engine
