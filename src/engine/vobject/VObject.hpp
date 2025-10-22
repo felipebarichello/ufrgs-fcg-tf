@@ -27,11 +27,22 @@ namespace engine {
             }
 
             void add_component(std::unique_ptr<Component> component);
-            
-            // TODO: Remove children when destroyed
-            // FIXME: Can cause multiple parents
+
+            /// @brief Adds a child VObject to this VObject.
+            /// Should only be called on the parent VObject.
+            /// @param child
             void add_child(VObject* child) {
+                // TODO: Remove children when they are destroyed
+                // FIXME: Can cause multiple parents
+
                 this->children.push_back(child);
+                child->set_parent(this);
+            }
+
+            /// @brief Should only be called by add_child.
+            /// @param parent 
+            void set_parent(std::optional<VObject*> parent) {
+                this->parent = parent;
             }
 
             /// @brief CRITICAL: This is a dangerous operation that may cause dangling pointers!
@@ -42,6 +53,7 @@ namespace engine {
         private:
             Scene* scene;
             VObject::Id id;
+            std::optional<VObject*> parent = std::nullopt;
             std::vector<VObject*> children;
             Transform _transform;
 
