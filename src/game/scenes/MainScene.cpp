@@ -16,6 +16,7 @@ namespace game::scenes {
                 .child(VObjectConfig()
                     .component(new Camera())
                 )
+            ).vobject(VObjectConfig()
                 .component(new CubeDrawable())
             );
     }

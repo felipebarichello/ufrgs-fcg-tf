@@ -1,33 +1,33 @@
-
 #include "Transform.hpp"
+
 using namespace engine;
 
 Transform::Transform() {
     update_model_matrix();
 }
 
-void Transform::set_position(glm::vec3 position) {
+void Transform::set_position(Vec3 position) {
     this->position = position;
     update_model_matrix();
 }
 
-void Transform::set_rotation(float rotation_angle, glm::vec3 rotation_axis) {
+void Transform::set_rotation(float rotation_angle, Vec3 rotation_axis) {
     this->rotation_angle = rotation_angle;
     this->rotation_axis = rotation_axis;
     update_model_matrix();
 }
 
-void Transform::set_scale(glm::vec3 scale) {
+void Transform::set_scale(Vec3 scale) {
     this->scale = scale;
     update_model_matrix();
 }
 
 void Transform::set_scale(float uniform_scale) {
-    this->scale = glm::vec3(uniform_scale, uniform_scale, uniform_scale);
+    this->scale = Vec3(uniform_scale, uniform_scale, uniform_scale);
     update_model_matrix();
 }
 
-glm::mat4 Transform::get_model_matrix() const {
+Mat4 Transform::get_model_matrix() const {
     return this->model;
 }
 

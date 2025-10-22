@@ -14,16 +14,16 @@ namespace engine {
     class Transform : public Component {
         public:
             Transform();
-            void set_position(glm::vec3 position);
-            void set_rotation(float rotation_angle, glm::vec3 rotation_axis);
-            void set_scale(glm::vec3 scale);
+            void set_position(Vec3 position);
+            void set_rotation(float rotation_angle, Vec3 rotation_axis);
+            void set_scale(Vec3 scale);
             void set_scale(float uniform_scale);
-            glm::mat4 get_model_matrix() const;
+            Mat4 get_model_matrix() const;
         private:
-            glm::vec3 position{0.0f, 0.0f, 0.0f};
-            glm::vec3 rotation_axis{0.0f, 1.0f, 0.0f};
-            glm::vec3 scale{1.0f, 1.0f, 1.0f};
-            glm::mat4 model{1.0f};
+            Vec3 position{0.0f, 0.0f, 0.0f};
+            Vec3 rotation_axis{0.0f, 1.0f, 0.0f};
+            Vec3 scale{1.0f, 1.0f, 1.0f};
+            Mat4 model{1.0f};
             float rotation_angle{0.0f};
             void update_model_matrix();
     };
