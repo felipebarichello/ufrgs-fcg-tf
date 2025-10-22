@@ -7,12 +7,13 @@
 #include <memory>
 #include "InputController.hpp"
 #include "EventManager.hpp"
-#include "Drawable.hpp"
 #include <memory>
 #include "vobject/Scene.hpp"
 #include "vobject/SceneBoot.hpp"
 
 namespace engine {
+    // Forward declaration to avoid circular dependency
+    class Drawable;
 
     struct WindowConfig {
         int width;
