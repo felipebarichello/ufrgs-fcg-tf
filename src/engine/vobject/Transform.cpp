@@ -8,17 +8,17 @@ Transform::Transform() {
 
 void Transform::set_position(Vec3 position) {
     this->position = position;
-    this->dirty_model_matrix = true;
+    this->dirty_transform_matrix = true;
 }
 
 void Transform::set_rotation(const Quaternion& q) {
     this->quaternion = q;
-    this->dirty_model_matrix = true;
+    this->dirty_transform_matrix = true;
 }
 
 void Transform::set_scale(Vec3 scale) {
     this->scale = scale;
-    this->dirty_model_matrix = true;
+    this->dirty_transform_matrix = true;
 }
 
 void Transform::set_scale(float uniform_scale) {
@@ -26,11 +26,11 @@ void Transform::set_scale(float uniform_scale) {
 }
 
 Mat4 Transform::get_model_matrix() {
-    if (this->dirty_model_matrix) {
+    if (this->dirty_transform_matrix) {
         this->update_model_matrix();
     }
 
-    return this->model_matrix;
+    return this->transform_matrix;
 }
 
 void Transform::update_model_matrix() {
@@ -63,9 +63,9 @@ void Transform::update_model_matrix() {
     rot[2] = glm::vec4(m02, m12, m22, 0.0f);
     rot[3] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-    this->model_matrix = Matrix_Translate(this->position.x, this->position.y, this->position.z)
+    this->transform_matrix = Matrix_Translate(this->position.x, this->position.y, this->position.z)
                 * rot
                 * Matrix_Scale(this->scale.x, this->scale.y, this->scale.z);
 
-    this->dirty_model_matrix = false;
+    this->dirty_transform_matrix = false;
 }

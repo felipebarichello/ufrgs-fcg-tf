@@ -4,7 +4,9 @@
 namespace engine {
     VObject* Scene::instantiate(VObjectConfig& vobject_config) {
         VObject* vobject = this->new_vobject();
-        
+
+        vobject->transform().vobject_ptr = vobject;
+
         // Add components to the VObject
         for (auto& component : vobject_config.components) {
             auto component_unique = std::unique_ptr<Component>(component);

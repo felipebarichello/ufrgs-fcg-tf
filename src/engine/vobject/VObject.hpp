@@ -39,12 +39,6 @@ namespace engine {
                 child->set_parent(this);
             }
 
-            /// @brief Should only be called by add_child.
-            /// @param parent 
-            void set_parent(std::optional<VObject*> parent) {
-                this->parent = parent;
-            }
-
             /// @brief CRITICAL: This is a dangerous operation that may cause dangling pointers!
             void destroy(); // TODO: Defer destruction to end of frame?
 
@@ -60,6 +54,10 @@ namespace engine {
             /// @brief List of components attached to this VObject.
             /// CRITICAL: The lifetime of these components is managed by the VObject.
             std::vector<std::unique_ptr<Component>> components;
+            
+            void set_parent(std::optional<VObject*> parent) {
+                this->parent = parent;
+            }
     };
 
     // TODO: Better interface for building VObjects (if possible, use unique_ptrs)

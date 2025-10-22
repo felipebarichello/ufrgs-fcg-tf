@@ -9,6 +9,8 @@
 namespace engine {
     using engine::math::Quaternion;
 
+    class VObject; // Forward declaration
+
     class ITransform {
         public:
             virtual Mat4 get_matrix() = 0;
@@ -16,6 +18,8 @@ namespace engine {
 
     class Transform {
         public:
+            friend class Scene;
+
             Transform();
             void set_position(Vec3 position);
             void set_rotation(const Quaternion& q);
@@ -23,12 +27,21 @@ namespace engine {
             void set_scale(float uniform_scale);
             Mat4 get_model_matrix();
 
+            VObject* vobject() {
+                return this->vobject_ptr;
+            }
+
+            Transform& parent() {
+                return this->vobject_ptr->transform();
+            }
+
         private:
             Vec3 position {0.0f, 0.0f, 0.0f};
             Quaternion quaternion = Quaternion::identity();
             Vec3 scale {1.0f, 1.0f, 1.0f};
-            Mat4 model_matrix {1.0f};
-            bool dirty_model_matrix = false;
+            Mat4 transform_matrix {1.0f};
+            bool dirty_transform_matrix = false;
+            VObject* vobject_ptr = nullptr;
 
             void update_model_matrix();
     };
