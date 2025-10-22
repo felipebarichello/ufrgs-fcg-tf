@@ -8,7 +8,7 @@
 #include <iostream>
 #include "Drawable.hpp"
 
-class Cube : public engine::Drawable {
+class CubeDrawable : public engine::Drawable {
 private:
     glm::mat4 model;
     glm::vec3 position;
@@ -23,7 +23,7 @@ private:
     engine::Vao build_edges_vao();
     engine::Vao build_axes_vao();
 public:
-    Cube();
+    CubeDrawable();
     void set_position(const glm::vec3 position);
     void set_rotation(float rotation_angle, const glm::vec3 rotation_axis);
     void set_scale(const glm::vec3 scale);

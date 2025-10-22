@@ -1,7 +1,7 @@
 #include "Cube.hpp"
 #include <macros>
 
-Cube::Cube() {
+CubeDrawable::CubeDrawable() {
     this->position = glm::vec3(0.0f);
     this->rotation_axis = glm::vec3(0.0f, 1.0f, 0.0f);
     this->scale = glm::vec3(1.0f);
@@ -13,32 +13,32 @@ Cube::Cube() {
 }
 
 __supress_shadow_warning
-void Cube::set_position(const glm::vec3 position) {
+void CubeDrawable::set_position(const glm::vec3 position) {
     this->position = position;
     this->update_model_matrix();
 }
 
 __supress_shadow_warning
-void Cube::set_rotation(float rotation_angle, const glm::vec3 rotation_axis) {
+void CubeDrawable::set_rotation(float rotation_angle, const glm::vec3 rotation_axis) {
     this->rotation_angle = rotation_angle;
     this->rotation_axis = rotation_axis;
     this->update_model_matrix();
 }
 
 __supress_shadow_warning
-void Cube::set_scale(const glm::vec3 scale) {
+void CubeDrawable::set_scale(const glm::vec3 scale) {
     this->scale = scale;
     this->update_model_matrix();
 }
 
-void Cube::update_model_matrix() {
+void CubeDrawable::update_model_matrix() {
     using namespace engine;
     this->model = Matrix_Translate(this->position.x, this->position.y, this->position.z) // TERCEIRO translação
             * Matrix_Rotate(this->rotation_angle, glm::vec4(this->rotation_axis, 0.0f)) // SEGUNDO rotação
             * Matrix_Scale(this->scale.x, this->scale.y, this->scale.z); // PRIMEIRO escala
 }
 
-void Cube::draw() {
+void CubeDrawable::draw() {
     GLuint program_id = engine::EngineController::get_gpu_program_id();
     GLint model_uniform = glGetUniformLocation(static_cast<GLuint>(program_id), "model");
     glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(this->model));
@@ -47,7 +47,7 @@ void Cube::draw() {
     this->axes_vao.draw();
 }
 
-engine::Vao Cube::build_faces_vao() {
+engine::Vao CubeDrawable::build_faces_vao() {
     // Build and return the VAO for the cube
     GLfloat face_positions[] = {
         -0.5f,  0.5f,  0.5f, 1.0f,
@@ -101,7 +101,7 @@ engine::Vao Cube::build_faces_vao() {
 }
 
 // Build the edges VAO and register it
-engine::Vao Cube::build_edges_vao()
+engine::Vao CubeDrawable::build_edges_vao()
 {
     GLfloat edge_positions[] = {
         -0.5f,  0.5f,  0.5f, 1.0f,
@@ -137,7 +137,7 @@ engine::Vao Cube::build_edges_vao()
 }
 
 // Build the axes VAO and register it
-engine::Vao Cube::build_axes_vao()
+engine::Vao CubeDrawable::build_axes_vao()
 {
     GLfloat axes_positions[] = {
         // X axis
