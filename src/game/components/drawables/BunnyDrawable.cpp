@@ -21,7 +21,7 @@ void BunnyDrawable::draw() {
     glUniform3fv(Ks, 1, &this->specular_reflectance[0]);
     glUniform3fv(Ka, 1, &this->enviornment_reflectance[0]);
     glUniform1f(q, this->specular_exponent);
-    glm::mat4 model_matrix = this->vobject()->get_transform().get_model_matrix();
+    glm::mat4 model_matrix = this->vobject()->transform().get_model_matrix();
     GLsizei model_uniform = glGetUniformLocation(program_id, "model");
     glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model_matrix));
     if (this->vao_ptr) {
