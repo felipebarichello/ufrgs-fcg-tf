@@ -39,7 +39,7 @@ namespace engine::math {
         double toAxisAngle(Vec3& outAxis) const; // returns angle, fills outAxis
 
         static Quaternion fromEulerZYX(const Vec3& eulerZYX);
-        void toEulerZYX(Vec3& outEulerZYX) const;
+        Vec3 toEulerZYX() const;
 
         static Quaternion fromXRotation(double angle);
         static Quaternion fromYRotation(double angle);

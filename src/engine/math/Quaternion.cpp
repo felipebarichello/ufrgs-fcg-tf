@@ -48,10 +48,10 @@ namespace engine::math {
         return out;
     }
 
-    void Quaternion::toEulerZYX(Vec3& outEulerZYX) const {
+    Vec3 Quaternion::toEulerZYX() const {
         double e[3];
         Quaternion_toEulerZYX(const_cast<CQuaternion*>(&this->inner), e);
-        outEulerZYX = Vec3((float)e[0], (float)e[1], (float)e[2]);
+        return Vec3((float)e[0], (float)e[1], (float)e[2]);
     }
 
     Quaternion Quaternion::fromXRotation(double angle) {
