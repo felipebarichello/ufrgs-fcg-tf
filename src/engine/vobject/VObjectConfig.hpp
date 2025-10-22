@@ -44,8 +44,8 @@ namespace engine {
 
             VObjectConfig() = default;
 
-            VObjectConfig& transform(Transform transform) {
-                this->_transform = transform;
+            VObjectConfig& transform(TransformBuilder transform) {
+                this->_transform = transform.build();
                 return *this;
             }
 

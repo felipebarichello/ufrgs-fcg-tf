@@ -7,6 +7,8 @@ using engine::SceneRoot;
 using engine::Camera;
 using engine::VObjectConfig;
 using engine::TransformBuilder;
+using engine::math::Quaternion;
+using engine::Vec3;
 using namespace game::components;
 
 namespace game::scenes {
@@ -16,9 +18,8 @@ namespace game::scenes {
                 .component(new PlayerController())
                 .child(VObjectConfig()
                     .transform(TransformBuilder()
-                        .position(engine::Vec3(0.0f, 2.0f, 5.0f))
-                        .rotation(engine::math::Quaternion::fromXRotation(-0.3))
-                        .build())
+                        .position(Vec3(0.0f, 2.0f, 5.0f))
+                        .rotation(Quaternion::fromXRotation(-0.3)))
                     .component(new Camera())
                 )
             ).vobject(VObjectConfig()
