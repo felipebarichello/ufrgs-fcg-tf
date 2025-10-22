@@ -73,6 +73,74 @@ foreach(child ${CHILDREN})
   endif()
 endforeach()
 
+# -----------------------------------------------------------------------------
+# Build small libraries found under lib-src/
+# For each direct subdirectory of lib-src, if it contains C/C++ sources, create
+# a STATIC library target named ${PROJECT_SAFE}::lib_<name> and add its include
+# directory so consumers can use #include <Name/header.h>
+# -----------------------------------------------------------------------------
+set(LIBSRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib-src)
+file(GLOB LIBSRC_CHILDREN RELATIVE ${LIBSRC_DIR} "${LIBSRC_DIR}/*")
+foreach(lib ${LIBSRC_CHILDREN})
+  if(IS_DIRECTORY "${LIBSRC_DIR}/${lib}")
+    # Collect C/C++ sources in that lib folder (non-recursive)
+    file(GLOB LIB_SOURCES
+      LIST_DIRECTORIES false
+      "${LIBSRC_DIR}/${lib}/*.c"
+      "${LIBSRC_DIR}/${lib}/*.cpp"
+      "${LIBSRC_DIR}/${lib}/*.cc"
+      "${LIBSRC_DIR}/${lib}/*.cxx"
+    )
+    if(LIB_SOURCES)
+      # Create a static library target
+      set(_lib_target "${PROJECT_SAFE}_lib_${lib}")
+      add_library(${_lib_target} STATIC ${LIB_SOURCES})
+
+      # Expose include directory so users can write #include <${lib}/...>
+      # Export the parent lib-src directory so consumers can include
+      # headers with the path <${lib}/header.h> (e.g. <Quaternion/Quaternion.h>)
+      target_include_directories(${_lib_target} PUBLIC
+        $<BUILD_INTERFACE:${LIBSRC_DIR}>
+        $<BUILD_INTERFACE:${GEN_INCLUDE_DIR}>
+      )
+
+      # Create alias for convenience
+      set(_lib_alias "${PROJECT_SAFE}::${lib}")
+      if(NOT TARGET ${_lib_alias})
+        add_library(${_lib_alias} ALIAS ${_lib_target})
+      endif()
+
+      # Also generate a forwarding header in generated_includes so that
+      # #include <${lib}/header.h> can be resolved by the build tree
+      # (if the lib provides a top-level header name equal to the folder)
+      # If the lib folder contains a header named the same as the folder,
+      # generate a forwarding header that includes it; otherwise skip.
+      if(EXISTS "${LIBSRC_DIR}/${lib}/${lib}.h")
+        # If a generated file with the same name exists (from previous
+        # forwarding-header generation), remove it so we can create a
+        # directory with that name. This avoids "File exists" errors when
+        # switching between file and directory usage in generated_includes.
+        if(EXISTS "${GEN_INCLUDE_DIR}/${lib}" AND NOT IS_DIRECTORY "${GEN_INCLUDE_DIR}/${lib}")
+          file(REMOVE "${GEN_INCLUDE_DIR}/${lib}")
+        endif()
+        # Ensure a subdirectory exists inside generated_includes for this lib
+        file(MAKE_DIRECTORY "${GEN_INCLUDE_DIR}/${lib}")
+        # Generate a forwarding header named <lib>/<lib>.hpp that includes the
+        # C header provided by the library. This makes both
+        #   #include <Quaternion/Quaternion.h>
+        # and
+        #   #include <Quaternion/Quaternion.hpp>
+        # work for consumers.
+        file(GENERATE
+          OUTPUT "${GEN_INCLUDE_DIR}/${lib}/${lib}.hpp"
+          CONTENT "#pragma once\n#include \"${lib}/${lib}.h\"\n"
+        )
+        message(STATUS "Will generate forwarding include for lib-src: ${GEN_INCLUDE_DIR}/${lib}/${lib}.hpp")
+      endif()
+    endif()
+  endif()
+endforeach()
+
 # Previously we wrote forwarding headers into the source tree. Avoid creating
 # real files in the source directory; instead generate them in the build tree
 # and add that directory to the INTERFACE include dirs so `#include <child>`
@@ -121,6 +189,17 @@ foreach(child ${CHILDREN})
     set(_alias_name "${PROJECT_SAFE}::${child}")
     if(TARGET ${_alias_name})
       target_link_libraries(${EXECUTABLE_NAME} PRIVATE ${_alias_name})
+    endif()
+  endif()
+endforeach()
+
+# Link libraries built under lib-src to the executable so their include
+# directories are available when compiling the main target.
+foreach(lib ${LIBSRC_CHILDREN})
+  if(IS_DIRECTORY "${LIBSRC_DIR}/${lib}")
+    set(_lib_alias "${PROJECT_SAFE}::${lib}")
+    if(TARGET ${_lib_alias})
+      target_link_libraries(${EXECUTABLE_NAME} PRIVATE ${_lib_alias})
     endif()
   endif()
 endforeach()
