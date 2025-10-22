@@ -8,11 +8,12 @@
 #include <utility>
 #include <glm/vec2.hpp>
 #include <glm/mat4x4.hpp>
+#include "math/linalg.hpp"
 
 namespace engine {
 
     struct DPad {
-        glm::vec2* direction;
+        Vec2* direction;
         bool forward_key_is_down = false;
         bool backward_key_is_down = false;
         bool left_key_is_down = false;
@@ -24,9 +25,9 @@ namespace engine {
             GLFWwindow* window;
             std::map<std::pair<int,int>, std::vector<std::function<void()>>> key_handler_map;
             std::vector<DPad> dpads;
-            glm::vec2 cursor_position;
-            glm::vec2 last_cursor_position;
-            glm::vec2 cursor_delta;
+            Vec2 cursor_position;
+            Vec2 last_cursor_position;
+            Vec2 cursor_delta;
             float scroll_offset = 0.0f;
             bool is_left_mouse_button_down = false;
             bool focused = false;
@@ -41,8 +42,8 @@ namespace engine {
             void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
             float get_scroll_offset();
             bool left_mouse_button_is_down();
-            glm::vec2 get_cursor_position();
-            glm::vec2 get_cursor_position_delta();
+            Vec2 get_cursor_position();
+            Vec2 get_cursor_position_delta();
         private:
             void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
             void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod);
