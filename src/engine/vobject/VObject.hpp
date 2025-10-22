@@ -56,8 +56,13 @@ namespace engine {
 
             VObjectConfig() = default;
 
+            /// @brief For convenience, you don't need to use std::unique_ptr directly.
+            /// The conversion is done for you. But be careful with ownership!
+            /// The component passed as argument should not be managed elsewhere.
+            /// @param component 
+            /// @return 
             inline VObjectConfig& component(Component* component) {
-                this->components.push_back(std::move(component));
+                this->components.push_back(component);
                 return *this;
             }
 
