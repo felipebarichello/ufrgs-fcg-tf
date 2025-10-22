@@ -9,7 +9,6 @@
 #include "math/matrices.hpp"
 #include "Drawable.hpp"
 #include <glm/gtc/type_ptr.hpp>
-#include "ObjDrawable.hpp"
 
 namespace engine {
 
@@ -27,7 +26,6 @@ namespace engine {
     public:
         ObjLoader() = default;
         Vao* load(const char* filename, const char* basepath = NULL, bool triangulate = true);
-        ObjDrawable* get_new_drawable();
     private:
         Vao vao;
         std::unordered_map<std::string, Vao*> loaded_vaos;
