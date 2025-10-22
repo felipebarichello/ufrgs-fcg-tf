@@ -5,4 +5,6 @@
 #include "Component.hpp"
 #include "Scene.hpp"
 #include "SceneBoot.hpp"
+#include "Transform.hpp"
 #include "VObject.hpp"
+#include "VObjectConfig.hpp"

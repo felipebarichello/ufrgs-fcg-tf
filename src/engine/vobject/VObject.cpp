@@ -34,7 +34,7 @@ namespace engine {
         this->scene->delete_vobject(this);
     }
 
-    Transform& VObject::transform() {
-        return this->_transform;
+    Transform& VObject::get_transform() {
+        return this->transform;
     }
 }

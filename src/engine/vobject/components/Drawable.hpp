@@ -6,11 +6,11 @@
 
 namespace engine {
     class Drawable : public Component {
-    public:
-        Drawable();
-        ~Drawable();
-        virtual void draw() = 0;
-    protected:
-        Vao* vao_ptr;
+        public:
+            Drawable();
+            ~Drawable();
+            virtual void draw() = 0;
+        protected:
+            Vao* vao_ptr;
     };
 }

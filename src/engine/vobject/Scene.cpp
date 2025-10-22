@@ -3,8 +3,8 @@
 
 namespace engine {
     VObject* Scene::instantiate(VObjectConfig& vobject_config) {
-        VObject* vobject = this->new_vobject();
-        
+        VObject* vobject = this->new_vobject(vobject_config._transform);
+
         // Add components to the VObject
         for (auto& component : vobject_config.components) {
             auto component_unique = std::unique_ptr<Component>(component);
@@ -20,10 +20,14 @@ namespace engine {
         return vobject;
     }
 
-    VObject* Scene::new_vobject() {
+    VObject* Scene::new_vobject(Transform transform) {
         auto key = this->next_vobject_id++;
-        auto result = this->vobjects.emplace(key, VObject(this, key));
-        auto vobject = &result.first->second;
+        auto result = this->vobjects.emplace(key, std::make_unique<VObject>(this, key));
+        auto vobject = result.first->second.get();
+
+        transform.vobject_ptr = vobject;
+        vobject->transform = transform;
+
         return vobject;
     }
 
