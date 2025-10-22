@@ -26,9 +26,11 @@ namespace engine {
     class ObjLoader {
     public:
         ObjLoader(const char* filename, const char* basepath = NULL, bool triangulate = true);
+        Vao* load(const char* filename, const char* basepath = NULL, bool triangulate = true);
         ObjDrawable* get_new_drawable();
     private:
-        engine::Vao vao;
+        Vao vao;
+        std::unordered_map<std::string, Vao*> loaded_vaos;
         engine::Vao build_obj_vao(ObjModel* model);
         void ComputeNormals(ObjModel* model);
     };

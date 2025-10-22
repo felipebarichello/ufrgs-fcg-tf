@@ -383,7 +383,7 @@ namespace engine {
     }
 
     ObjLoader* EngineController::get_obj_loader() {
-        return this->obj_loader.get();
+        return EngineController::instance->obj_loader.get();
     }
 
     void EngineController::toggle_fullscreen() {
