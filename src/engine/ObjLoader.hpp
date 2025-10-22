@@ -8,7 +8,7 @@
 #include <glm/glm.hpp>
 #include "vao.hpp"
 #include "math/matrices.hpp"
-#include "Drawable.hpp"
+#include <engine/vobject/components/Drawable.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 namespace engine {

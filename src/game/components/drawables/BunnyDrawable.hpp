@@ -1,5 +1,5 @@
 #pragma once
-#include "engine/Drawable.hpp"
+#include <engine/vobject/components/Drawable.hpp>
 #include "engine/vao.hpp"
 #include "engine/EngineController.hpp"
 #include <glm/vec3.hpp>

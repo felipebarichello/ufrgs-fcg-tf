@@ -1,5 +1,5 @@
 #include "EngineController.hpp"
-#include "Drawable.hpp"
+#include <engine/vobject/components/Drawable.hpp>
 #include "ObjLoader.hpp"
 #include <cstdio>
 #include <map>
