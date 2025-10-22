@@ -28,16 +28,16 @@ namespace engine {
         // TODO: Scenes get created twice because this is not a constructor
         this->current_scene = std::make_unique<Scene>();
 
-        std::vector<VObjectConfig> hierarchy;
+        SceneRoot hierarchy;
         initial_scene->hierarchy(hierarchy);
         
-        for (auto& vobject_config : hierarchy) {
+        for (auto& vobject_config : hierarchy.root_vobjects) {
             this->current_scene->instantiate(vobject_config);
         }
 
         while (!this->update_and_test_should_close()) {
             this->input_controller->update();
-            this->event_manager.update();
+            this->event_manager.update(); // TODO: Update each scene separately?
             EngineController::draw();
             glfwSwapBuffers(this->window);
         }

@@ -3,8 +3,7 @@
 #include <vector>
 #include "Component.hpp"
 #include <cstdint>
-#include <span>
-#include <unordered_map>
+#include <memory>
 
 namespace engine {
     class Scene; // Forward declaration
@@ -23,7 +22,7 @@ namespace engine {
                 return this->id;
             }
 
-            void add_component(Component* component);
+            void add_component(std::unique_ptr<Component> component);
             
             // TODO: Remove children when destroyed
             // FIXME: Can cause multiple parents
@@ -41,10 +40,10 @@ namespace engine {
 
             /// @brief List of components attached to this VObject.
             /// CRITICAL: The lifetime of these components is managed by the VObject.
-            std::unordered_map<Component::Id, Component*> components;
+            std::vector<std::unique_ptr<Component>> components;
     };
 
-    // TODO: Better interface for building VObjects
+    // TODO: Better interface for building VObjects (if possible, use unique_ptrs)
     class VObjectConfig {
         public:
             std::vector<Component*> components;
@@ -57,9 +56,20 @@ namespace engine {
                 return *this;
             }
 
-            inline VObjectConfig& child(VObjectConfig& child_config) {
-                this->children.push_back(std::move(child_config));
+            inline VObjectConfig& child(VObjectConfig child_config) {
+                this->children.push_back(child_config);
                 return *this;
             }
+    };
+
+    struct SceneRoot {
+        std::vector<VObjectConfig> root_vobjects;
+
+        SceneRoot() = default;
+
+        inline SceneRoot& vobject(VObjectConfig vobject_config) {
+            this->root_vobjects.push_back(vobject_config);
+            return *this;
+        }
     };
 }
