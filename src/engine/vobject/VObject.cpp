@@ -7,7 +7,7 @@
 namespace engine {
     void VObject::add_component(Component* component) {
         component->vobject_ptr = this;
-        this->components.push_back(component);
+        this->components.push_back(std::unique_ptr<Component>(component));
 
         // If the component is a Behavior, schedule its Behavior methods
         if (auto behavior_opt = component->try_into_behavior()) {

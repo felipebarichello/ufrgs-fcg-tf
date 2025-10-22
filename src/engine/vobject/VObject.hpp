@@ -40,7 +40,7 @@ namespace engine {
 
             /// @brief List of components attached to this VObject.
             /// CRITICAL: The lifetime of these components is managed by the VObject.
-            std::vector<Component*> components;
+            std::vector<std::unique_ptr<Component>> components;
     };
 
     // TODO: Better interface for building VObjects
