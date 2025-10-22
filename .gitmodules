@@ -1,0 +1,3 @@
+[submodule "Quaternion"]
+	path = Quaternion
+	url = https://github.com/MartinWeigel/Quaternion.git
