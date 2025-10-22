@@ -2,6 +2,7 @@
 
 #include "engine/math/linalg.hpp"
 #include "engine/vobject/Component.hpp"
+#include "engine/math/matrices.hpp"
 #include <memory>
 
 namespace engine {
@@ -15,7 +16,6 @@ namespace engine {
             Transform() = default;
             void set_position(glm::vec3 position);
             void set_rotation(float rotation_angle, glm::vec3 rotation_axis);
-            void set_rotation(glm::vec3 euler_angles);
             void set_scale(glm::vec3 scale);
             void set_scale(float uniform_scale);
         private:
@@ -26,4 +26,4 @@ namespace engine {
             glm::mat4 model{1.0f};
             void update_model_matrix();
     };
-} // namespace engine
+}; // namespace engine
