@@ -63,13 +63,13 @@ namespace engine {
 
             void hand_over_control(SceneBoot* initial_scene);
             void toggle_fullscreen();
-            void add_drawable(Drawable* drawable);
+            static void add_drawable(Drawable* drawable);
             EventManager& events() { return this->event_manager; }
             GLFWwindow* get_window();
             InputController* input();
             float get_screen_ratio() { return screen_ratio; }
             void set_screen_ratio(float ratio) { screen_ratio = ratio; }
-            GLuint get_gpu_program_id() { return gpu_program_id; }
+            static GLuint get_gpu_program_id() { return gpu_program_id; }
             static std::string get_executable_directory();
     };
 }
