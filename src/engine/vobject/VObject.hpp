@@ -22,7 +22,7 @@ namespace engine {
                 return this->id;
             }
 
-            void add_component(Component* component);
+            void add_component(std::unique_ptr<Component> component);
             
             // TODO: Remove children when destroyed
             // FIXME: Can cause multiple parents

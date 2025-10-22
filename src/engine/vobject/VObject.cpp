@@ -5,9 +5,8 @@
 #include <memory>
 
 namespace engine {
-    void VObject::add_component(Component* component) {
+    void VObject::add_component(std::unique_ptr<Component> component) {
         component->vobject_ptr = this;
-        this->components.push_back(std::unique_ptr<Component>(component));
 
         // If the component is a Behavior, schedule its Behavior methods
         if (auto behavior_opt = component->try_into_behavior()) {
@@ -17,6 +16,8 @@ namespace engine {
             this->scene->scheduler.schedule_start(behavior);
             this->scene->scheduler.subscribe_update(behavior);
         }
+
+        this->components.push_back(std::move(component));
     }
 
     void VObject::destroy() {
