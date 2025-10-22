@@ -33,6 +33,6 @@ Mat4 Transform::get_model_matrix() const {
 
 void Transform::update_model_matrix() {
     this->model = Matrix_Translate(this->position.x, this->position.y, this->position.z) // TERCEIRO translação
-            * Matrix_Rotate(this->rotation_angle, glm::vec4(this->rotation_axis, 0.0f)) // SEGUNDO rotação
+            * Matrix_Rotate(this->rotation_angle, Vec4(this->rotation_axis, 0.0f)) // SEGUNDO rotação
             * Matrix_Scale(this->scale.x, this->scale.y, this->scale.z); // PRIMEIRO escala
 }

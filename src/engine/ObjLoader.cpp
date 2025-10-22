@@ -7,13 +7,65 @@
 
 using namespace engine;
 
-ObjLoader::ObjLoader(const char* filename, const char* basepath, bool triangulate) {
+// Definition of static member
+std::unordered_map<std::string, Vao*> ObjLoader::loaded_vaos;
+
+Vao* ObjLoader::load(const char* filename, const char* basepath, bool triangulate) {
+    if (loaded_vaos.find(filename) != loaded_vaos.end()) {
+        return loaded_vaos[filename];
+    }
     ObjModel obj_model = ObjModel(filename, basepath, triangulate);
-    this->ComputeNormals(&obj_model);
-    this->vao = build_obj_vao(&obj_model);
+    ComputeNormals(&obj_model);
+    Vao* vao = new Vao(build_obj_vao(&obj_model));
+    loaded_vaos[filename] = vao;
+    return vao;
 }
 
-__supress_shadow_warning
+ObjModel::ObjModel(const char* filename, const char* basepath, bool triangulate) {
+    printf("Carregando objetos do arquivo \"%s\"...\n", filename);
+
+    // Se basepath == NULL, então setamos basepath como o dirname do
+    // filename, para que os arquivos MTL sejam corretamente carregados caso
+    // estejam no mesmo diretório dos arquivos OBJ.
+    std::string fullpath(filename);
+    std::string dirname;
+    if (basepath == NULL)
+    {
+        auto i = fullpath.find_last_of("/");
+        if (i != std::string::npos)
+        {
+            dirname = fullpath.substr(0, i+1);
+            basepath = dirname.c_str();
+        }
+    }
+
+    std::string warn;
+    std::string err;
+    bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filename, basepath, triangulate);
+
+    if (!err.empty())
+        fprintf(stderr, "\n%s\n", err.c_str());
+
+    if (!ret)
+        throw std::runtime_error("Erro ao carregar modelo.");
+
+    for (size_t shape = 0; shape < shapes.size(); ++shape)
+    {
+        if (shapes[shape].name.empty())
+        {
+            fprintf(stderr,
+                    "*********************************************\n"
+                    "Erro: Objeto sem nome dentro do arquivo '%s'.\n"
+                    "Veja https://www.inf.ufrgs.br/~eslgastal/fcg-faq-etc.html#Modelos-3D-no-formato-OBJ .\n"
+                    "*********************************************\n",
+                filename);
+            throw std::runtime_error("Objeto sem nome.");
+        }
+    }
+
+    printf("OBJ carregado com sucesso\n");
+}
+
 Vao ObjLoader::build_obj_vao(ObjModel* model) {
     GLuint vertex_array_object_id;
     glGenVertexArrays(1, &vertex_array_object_id);
@@ -79,52 +131,6 @@ Vao ObjLoader::build_obj_vao(ObjModel* model) {
 
 }
 
-ObjModel::ObjModel(const char* filename, const char* basepath, bool triangulate) {
-    printf("Carregando objetos do arquivo \"%s\"...\n", filename);
-
-    // Se basepath == NULL, então setamos basepath como o dirname do
-    // filename, para que os arquivos MTL sejam corretamente carregados caso
-    // estejam no mesmo diretório dos arquivos OBJ.
-    std::string fullpath(filename);
-    std::string dirname;
-    if (basepath == NULL)
-    {
-        auto i = fullpath.find_last_of("/");
-        if (i != std::string::npos)
-        {
-            dirname = fullpath.substr(0, i+1);
-            basepath = dirname.c_str();
-        }
-    }
-
-    std::string warn;
-    std::string err;
-    bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filename, basepath, triangulate);
-
-    if (!err.empty())
-        fprintf(stderr, "\n%s\n", err.c_str());
-
-    if (!ret)
-        throw std::runtime_error("Erro ao carregar modelo.");
-
-    for (size_t shape = 0; shape < shapes.size(); ++shape)
-    {
-        if (shapes[shape].name.empty())
-        {
-            fprintf(stderr,
-                    "*********************************************\n"
-                    "Erro: Objeto sem nome dentro do arquivo '%s'.\n"
-                    "Veja https://www.inf.ufrgs.br/~eslgastal/fcg-faq-etc.html#Modelos-3D-no-formato-OBJ .\n"
-                    "*********************************************\n",
-                filename);
-            throw std::runtime_error("Objeto sem nome.");
-        }
-    }
-
-    printf("OBJ carregado com sucesso\n");
-}
-
-__supress_shadow_warning
 void ObjLoader::ComputeNormals(ObjModel* model) {
     if ( !model->attrib.normals.empty() )
         return;
@@ -241,9 +247,3 @@ void ObjLoader::ComputeNormals(ObjModel* model) {
 
     }
 }
-
-ObjDrawable* ObjLoader::get_new_drawable() {
-    // TODO: review this
-    return new ObjDrawable(&this->vao);
-}
-
