@@ -10,7 +10,7 @@ namespace engine {
     std::unique_ptr<EngineController> EngineController::instance;
     float EngineController::screen_ratio = 1.0f;
     GLuint EngineController::gpu_program_id = 0;
-    std::vector<std::function<void()>> EngineController::draw_functions;
+    std::vector<Drawable*> EngineController::drawables;
 
     EngineController* EngineController::start_engine(WindowConfig window_config) {
         EngineController::instance = std::make_unique<EngineController>();
@@ -356,15 +356,22 @@ namespace engine {
     }
 
     void EngineController::add_drawable(Drawable* drawable) {
-        std::function<void()> draw_function = [drawable]() {
-            drawable->draw(EngineController::get_gpu_program_id());
-        };
-        EngineController::draw_functions.push_back(draw_function);
+        EngineController::drawables.push_back(drawable);
+    }
+
+    void EngineController::remove_drawable(Drawable* drawable) {
+        EngineController::drawables.erase(
+            std::remove(
+                EngineController::drawables.begin(),
+                EngineController::drawables.end(),
+                drawable
+            ), 
+            EngineController::drawables.end());
     }
 
     void EngineController::draw() {
-        for (const auto& draw_function : EngineController::draw_functions) {
-            draw_function();
+        for (const auto& drawable : EngineController::drawables) {
+            drawable->draw(EngineController::get_gpu_program_id());
         }
     }
 

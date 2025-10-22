@@ -49,8 +49,8 @@ namespace engine {
             static GLuint create_gpu_program(GLuint vertex_shader_id, GLuint fragment_shader_id);
             static void load_shaders_from_files();
             static void draw();
-            static std::vector<std::function<void()>> draw_functions;
-            
+            static std::vector<Drawable*> drawables;
+
             /// @brief Ticks the engine
             /// @return True if window should close
             bool update_and_test_should_close();
@@ -65,6 +65,7 @@ namespace engine {
             void hand_over_control(SceneBoot* initial_scene);
             void toggle_fullscreen();
             static void add_drawable(Drawable* drawable);
+            static void remove_drawable(Drawable* drawable);
             EventManager& events() { return this->event_manager; }
             GLFWwindow* get_window();
             InputController* input();
