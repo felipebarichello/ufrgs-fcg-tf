@@ -19,6 +19,8 @@ namespace game::scenes {
 
         root
             .vobject(VObjectConfig()
+                .transform(TransformBuilder()
+                    .position(Vec3(0.0f, 0.0f, 3.0f)))
                 .component(player_controller)
                 .child(VObjectConfig()
                     .component(new Camera())
