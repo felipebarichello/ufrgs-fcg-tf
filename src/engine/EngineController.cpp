@@ -1,5 +1,6 @@
 #include "EngineController.hpp"
 #include "Drawable.hpp"
+#include "ObjLoader.hpp"
 #include <cstdio>
 #include <map>
 #include <sstream>
@@ -8,6 +9,12 @@ namespace engine {
     // Definition of static members declared in controller.hpp
     // Define the singleton instance (was declared in the header but not defined)
     std::unique_ptr<EngineController> EngineController::instance;
+    
+    // Constructor and destructor definitions - needed here where ObjLoader is complete
+    EngineController::EngineController() 
+        : is_fullscreen(false), windowed_width(800), windowed_height(800), windowed_xpos(0), windowed_ypos(0) {}
+    
+    EngineController::~EngineController() = default;
     float EngineController::screen_ratio = 1.0f;
     GLuint EngineController::gpu_program_id = 0;
     std::vector<Drawable*> EngineController::drawables;
