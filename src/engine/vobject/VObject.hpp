@@ -56,7 +56,7 @@ namespace engine {
                 return *this;
             }
 
-            inline VObjectConfig& child(const VObjectConfig& child_config) {
+            inline VObjectConfig& child(VObjectConfig& child_config) {
                 this->children.push_back(child_config);
                 return *this;
             }
@@ -67,7 +67,7 @@ namespace engine {
 
         SceneRoot() = default;
 
-        inline SceneRoot& vobject(const VObjectConfig& vobject_config) {
+        inline SceneRoot& vobject(VObjectConfig& vobject_config) {
             this->root_vobjects.push_back(vobject_config);
             return *this;
         }
