@@ -38,8 +38,6 @@
 // Headers locais, definidos na pasta "include/"
 #include <utils.h>
 #include <engine>
-#include "game/components/drawables/Cube.hpp"
-#include "game/components/drawables/Sphere.hpp"
 
 #include "game/scenes/MainScene.hpp"
 
@@ -76,7 +74,6 @@ using engine::Matrix_Rotate_Y;
 using engine::Matrix_Rotate_Z;
 using engine::Matrix_Scale;
 using engine::InputController;
-using engine::ObjDrawable;
 using engine::ObjLoader;
 using game::scenes::MainScene;
 
