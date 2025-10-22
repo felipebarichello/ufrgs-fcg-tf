@@ -20,7 +20,7 @@ namespace engine {
         public:
             friend class Scene;
 
-            Transform();
+            Transform() = default;
 
             Vec3 get_position() const {
                 return this->position;
@@ -30,7 +30,7 @@ namespace engine {
 
             void add_position(Vec3 position) {
                 this->position += position;
-                this->dirty_transform_matrix = true;
+                this->dirty = true;
             }
 
             Quaternion get_rotation() const {
@@ -52,16 +52,16 @@ namespace engine {
                 return this->vobject_ptr;
             }
 
-            Transform& get_parent();
+            std::optional<Transform*> parent();
 
         private:
             Vec3 position {0.0f, 0.0f, 0.0f};
-            Quaternion quaternion = Quaternion::identity();
+            Quaternion quaternion;
             Vec3 scale {1.0f, 1.0f, 1.0f};
             Mat4 transform_matrix {1.0f};
-            bool dirty_transform_matrix = false;
+            bool dirty = false;
             VObject* vobject_ptr = nullptr;
 
-            void update_model_matrix();
+            void update_matrix();
     };
 }; // namespace engine

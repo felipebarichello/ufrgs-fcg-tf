@@ -3,23 +3,19 @@
 
 using namespace engine;
 
-Transform::Transform() {
-    update_model_matrix();
-}
-
 void Transform::set_position(Vec3 position) {
     this->position = position;
-    this->dirty_transform_matrix = true;
+    this->dirty = true;
 }
 
 void Transform::set_rotation(const Quaternion& q) {
     this->quaternion = q;
-    this->dirty_transform_matrix = true;
+    this->dirty = true;
 }
 
 void Transform::set_scale(Vec3 scale) {
     this->scale = scale;
-    this->dirty_transform_matrix = true;
+    this->dirty = true;
 }
 
 void Transform::set_scale(float uniform_scale) {
@@ -27,14 +23,19 @@ void Transform::set_scale(float uniform_scale) {
 }
 
 Mat4 Transform::get_model_matrix() {
-    if (this->dirty_transform_matrix) {
-        this->update_model_matrix();
+    if (this->dirty) {
+        this->update_matrix();
     }
 
-    return this->transform_matrix;
+    auto p = this->parent();
+    if (p) {
+        return p.value()->get_model_matrix() * this->transform_matrix;
+    } else {
+        return this->transform_matrix;
+    }
 }
 
-void Transform::update_model_matrix() {
+void Transform::update_matrix() {
     // Build rotation matrix from quaternion
     float w = static_cast<float>(this->quaternion.w());
     Vec3 v = this->quaternion.v();
@@ -68,9 +69,14 @@ void Transform::update_model_matrix() {
                 * rot
                 * Matrix_Scale(this->scale.x, this->scale.y, this->scale.z);
 
-    this->dirty_transform_matrix = false;
+    this->dirty = false;
 }
 
-Transform& Transform::get_parent() {
-    return this->vobject_ptr->transform();
+std::optional<Transform*> Transform::parent() {
+    auto p = this->vobject_ptr->get_parent();
+    if (p) {
+        return &p.value()->transform();
+    } else {
+        return std::nullopt;
+    }
 }

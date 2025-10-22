@@ -44,6 +44,10 @@ namespace engine {
 
             Transform& transform();
 
+            std::optional<VObject*> get_parent() {
+                return this->parent;
+            }
+
         private:
             Scene* scene;
             VObject::Id id;
