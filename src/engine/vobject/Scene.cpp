@@ -7,8 +7,8 @@ namespace engine {
         
         // Add components to the VObject
         for (auto& component : vobject_config.components) {
-            auto c = std::unique_ptr<Component>(component);
-            vobject->add_component(std::move(c));
+            auto component_unique = std::unique_ptr<Component>(component);
+            vobject->add_component(std::move(component_unique));
         }
 
         // Recursively instantiate and add children VObjects

@@ -43,7 +43,7 @@ namespace engine {
             std::vector<std::unique_ptr<Component>> components;
     };
 
-    // TODO: Better interface for building VObjects
+    // TODO: Better interface for building VObjects (if possible, use unique_ptrs)
     class VObjectConfig {
         public:
             std::vector<Component*> components;
@@ -52,11 +52,11 @@ namespace engine {
             VObjectConfig() = default;
 
             inline VObjectConfig& component(Component* component) {
-                this->components.push_back(component);
+                this->components.push_back(std::move(component));
                 return *this;
             }
 
-            inline VObjectConfig& child(VObjectConfig& child_config) {
+            inline VObjectConfig& child(VObjectConfig child_config) {
                 this->children.push_back(child_config);
                 return *this;
             }
@@ -67,7 +67,7 @@ namespace engine {
 
         SceneRoot() = default;
 
-        inline SceneRoot& vobject(VObjectConfig& vobject_config) {
+        inline SceneRoot& vobject(VObjectConfig vobject_config) {
             this->root_vobjects.push_back(vobject_config);
             return *this;
         }
