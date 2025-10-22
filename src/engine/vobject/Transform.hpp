@@ -12,9 +12,6 @@ namespace engine {
 
     class Transform : public Component {
         public:
-            Mat4 get_matrix() { return transform_impl->get_matrix(); }
-        
-        private:
-            std::unique_ptr<ITransform> transform_impl;
+            Transform() = default;
     };
 } // namespace engine

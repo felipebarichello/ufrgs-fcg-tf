@@ -16,6 +16,9 @@ namespace engine {
 
             friend class Scene;
 
+            VObject(Scene* scene, VObject::Id id, Transform transform)
+                : scene(scene), id(id), transform(transform) {}
+
             VObject(Scene* scene, VObject::Id id)
                 : scene(scene), id(id) {}
 
