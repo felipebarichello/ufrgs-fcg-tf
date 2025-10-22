@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <map>
 #include <sstream>
+#include <stdexcept>
 
 namespace engine {
     // Definition of static members declared in controller.hpp
@@ -383,6 +384,13 @@ namespace engine {
     }
 
     ObjLoader* EngineController::get_obj_loader() {
+        if (!EngineController::instance) {
+            throw std::runtime_error("EngineController not initialized. Call start_engine first.");
+        }
+        if (!EngineController::instance->obj_loader) {
+            // Create with default constructor - the load method will handle file loading
+            EngineController::instance->obj_loader = std::make_unique<ObjLoader>();
+        }
         return EngineController::instance->obj_loader.get();
     }
 

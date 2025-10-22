@@ -189,12 +189,6 @@ void ComputeNormals(ObjModel* model) {
     }
 }
 
-ObjLoader::ObjLoader(const char* filename, const char* basepath, bool triangulate) {
-    ObjModel obj_model = ObjModel(filename, basepath, triangulate);
-    this->ComputeNormals(&obj_model);
-    this->vao = build_obj_vao(&obj_model);
-}
-
 Vao* ObjLoader::load(const char* filename, const char* basepath, bool triangulate) {
     if (this->loaded_vaos.find(filename) != this->loaded_vaos.end()) {
         return this->loaded_vaos[filename];

@@ -25,7 +25,7 @@ namespace engine {
 
     class ObjLoader {
     public:
-        ObjLoader(const char* filename, const char* basepath = NULL, bool triangulate = true);
+        ObjLoader() = default;
         Vao* load(const char* filename, const char* basepath = NULL, bool triangulate = true);
         ObjDrawable* get_new_drawable();
     private:

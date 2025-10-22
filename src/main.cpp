@@ -148,48 +148,6 @@ int main() {
     g_view_uniform       = glGetUniformLocation(g_engine_controller->get_gpu_program_id(), "view"); // Variável da matriz "view" em shader_vertex.glsl
     g_projection_uniform = glGetUniformLocation(g_engine_controller->get_gpu_program_id(), "projection"); // Variável da matriz "projection" em shader_vertex.glsl
 
-    const size_t num_objects = 200;
-
-    std::srand(static_cast<unsigned>(std::time(nullptr)));
-
-    std::string exe_dir = EngineController::get_executable_directory();
-    std::string bunny_path = exe_dir + "/../../assets/bunny.obj";
-    std::string car_path = exe_dir + "/../../assets/sportsCar.obj";
-    ObjLoader car_loader = ObjLoader(car_path.c_str());
-    ObjLoader bunny_loader = ObjLoader(bunny_path.c_str());
-    std::cout << exe_dir << std::endl;
-
-    std::vector<ObjDrawable> object_drawables;
-    object_drawables.reserve(num_objects);
-
-    Sphere sphere = Sphere();
-    sphere.set_scale(glm::vec3(20.0f, 20.0f,20.0f));
-
-    for (size_t i = 0; i < num_objects; ++i) {
-        bool choose_bunny = (std::rand() % 2) == 1;
-
-        float rotation = 2.0f * 3.14159265f * static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
-
-        auto obj = choose_bunny ? car_loader.get_new_drawable() : bunny_loader.get_new_drawable();
-
-        float r = static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
-        float g = static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
-        float b = static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
-
-        float x = 30.0f * static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX) - 15.0f;
-        float y = 30.0f * static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX) - 15.0f;
-        float z = 30.0f * static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX) - 15.0f;
-
-        float specular_exponent = 100.0f * static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
-
-        obj->set_position(glm::vec3(x, y, z));
-        obj->set_rotation(rotation, glm::vec3(0.0f, 1.0f, 0.0f));
-        obj->set_diffuse_reflectance(glm::vec3(r, g, b));
-        obj->set_enviornment_reflectance(0.5f * glm::vec3(r, g, b));
-        obj->set_specular_exponent(specular_exponent);
-        obj->set_specular_reflectance(glm::vec3(1.0f, 1.0f, 1.0f));
-    }
-
     // Enable z-buffer
     glEnable(GL_DEPTH_TEST);
 

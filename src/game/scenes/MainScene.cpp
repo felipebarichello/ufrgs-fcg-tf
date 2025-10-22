@@ -2,6 +2,7 @@
 #include <game/components/PlayerController.hpp>
 #include <engine>
 #include <game/components/drawables/Cube.hpp>
+#include <game/components/drawables/BunnyDrawable.hpp>
 
 using engine::SceneRoot;
 using engine::Camera;
@@ -16,7 +17,9 @@ namespace game::scenes {
                 .child(VObjectConfig()
                     .component(new Camera())
                 )
-                .component(new Cube())
+                .child(VObjectConfig()
+                    .component(new BunnyDrawable())
+                )
             );
     }
 }
