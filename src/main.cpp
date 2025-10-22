@@ -43,6 +43,8 @@
 
 #include <ctime>
 
+#include <temp_globals.hpp>
+
 //GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id); // Cria um programa de GPU
 void update_free_camera_position();
 
@@ -102,7 +104,6 @@ float g_CameraDistance = 2.5f; // Distância da câmera para a origem
 
 const Vec3 g_camera_start_position = Vec3(0.0f, 0.0f, 2.5f);
 
-Vec3 g_free_camera_position         = Vec3(0.0f, 0.0f, 2.5f);
 Vec3 g_free_camera_view_unit_vector = Vec3(0.0f, 0.0f, -1.0f);
 Vec3 g_free_camera_right_vector     = Vec3(1.0f, 0.0f, 0.0f);
 Vec3 g_free_camera_up_vector        = Vec3(0.0f, 1.0f, 0.0f);
@@ -173,7 +174,7 @@ void update() {
     update_free_camera_position();
     update_free_camera_direction();
 
-    camera_position_c = g_free_camera_position;
+    camera_position_c = temp::player_controller->get_vobject()->transform().get_position();
     camera_view_unit_vector = g_free_camera_view_unit_vector;
 
     float y = sin(g_CameraPhi);
@@ -205,8 +206,9 @@ void update() {
 }
 
 void update_free_camera_position() {
-    g_free_camera_position += g_free_camera_speed * g_free_camera_move_vector.y * g_free_camera_view_unit_vector;
-    g_free_camera_position += g_free_camera_speed * g_free_camera_move_vector.x * g_free_camera_right_vector;
+    auto& camt = temp::player_controller->get_vobject()->transform();
+    camt.add_position(g_free_camera_speed * g_free_camera_move_vector.y * g_free_camera_view_unit_vector);
+    camt.add_position(g_free_camera_speed * g_free_camera_move_vector.x * g_free_camera_right_vector);
 }
 
 void update_free_camera_direction() {

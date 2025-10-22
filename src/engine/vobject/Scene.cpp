@@ -26,7 +26,7 @@ namespace engine {
         auto vobject = result.first->second.get();
 
         transform.vobject_ptr = vobject;
-        vobject->transform = transform;
+        vobject->_transform = transform;
 
         return vobject;
     }

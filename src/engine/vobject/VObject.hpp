@@ -17,7 +17,7 @@ namespace engine {
             friend class Scene;
 
             VObject(Scene* scene, VObject::Id id, Transform transform)
-                : scene(scene), id(id), transform(transform) {}
+                : scene(scene), id(id), _transform(transform) {}
 
             VObject(Scene* scene, VObject::Id id)
                 : scene(scene), id(id) {}
@@ -42,14 +42,14 @@ namespace engine {
             /// @brief CRITICAL: This is a dangerous operation that may cause dangling pointers!
             void destroy(); // TODO: Defer destruction to end of frame?
 
-            Transform& get_transform();
+            Transform& transform();
 
         private:
             Scene* scene;
             VObject::Id id;
             std::optional<VObject*> parent = std::nullopt;
             std::vector<VObject*> children;
-            Transform transform;
+            Transform _transform;
 
             /// @brief List of components attached to this VObject.
             /// CRITICAL: The lifetime of these components is managed by the VObject.

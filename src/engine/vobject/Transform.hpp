@@ -21,10 +21,31 @@ namespace engine {
             friend class Scene;
 
             Transform();
+
+            Vec3 get_position() const {
+                return this->position;
+            }
+
             void set_position(Vec3 position);
+
+            void add_position(Vec3 position) {
+                this->position += position;
+                this->dirty_transform_matrix = true;
+            }
+
+            Quaternion get_rotation() const {
+                return this->quaternion;
+            }
+
             void set_rotation(const Quaternion& q);
+
+            Vec3 get_scale() const {
+                return this->scale;
+            }
+            
             void set_scale(Vec3 scale);
             void set_scale(float uniform_scale);
+
             Mat4 get_model_matrix();
 
             VObject* get_vobject() {

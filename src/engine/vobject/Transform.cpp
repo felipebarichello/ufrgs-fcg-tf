@@ -72,5 +72,5 @@ void Transform::update_model_matrix() {
 }
 
 Transform& Transform::get_parent() {
-    return this->vobject_ptr->get_transform();
+    return this->vobject_ptr->transform();
 }
