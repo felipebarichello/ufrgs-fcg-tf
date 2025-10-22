@@ -28,10 +28,10 @@ namespace engine {
         // TODO: Scenes get created twice because this is not a constructor
         this->current_scene = std::make_unique<Scene>();
 
-        std::vector<VObjectConfig> hierarchy;
+        SceneRoot hierarchy;
         initial_scene->hierarchy(hierarchy);
         
-        for (auto& vobject_config : hierarchy) {
+        for (auto& vobject_config : hierarchy.root_vobjects) {
             this->current_scene->instantiate(vobject_config);
         }
 

@@ -57,9 +57,20 @@ namespace engine {
                 return *this;
             }
 
-            inline VObjectConfig& child(VObjectConfig& child_config) {
-                this->children.push_back(std::move(child_config));
+            inline VObjectConfig& child(const VObjectConfig& child_config) {
+                this->children.push_back(child_config);
                 return *this;
             }
+    };
+
+    struct SceneRoot {
+        std::vector<VObjectConfig> root_vobjects;
+
+        SceneRoot() = default;
+
+        inline SceneRoot& vobject(const VObjectConfig& vobject_config) {
+            this->root_vobjects.push_back(vobject_config);
+            return *this;
+        }
     };
 }
