@@ -17,9 +17,9 @@ namespace game::scenes {
                 .child(VObjectConfig()
                     .component(new Camera())
                 )
-                .child(VObjectConfig()
-                    .component(new BunnyDrawable())
-                )
+            )
+            .vobject(VObjectConfig()
+                .component(new BunnyDrawable())
             );
     }
 }
