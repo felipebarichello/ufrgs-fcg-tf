@@ -6,8 +6,9 @@
 #include "engine/math/Quaternion.hpp"
 #include <memory>
 
-
 namespace engine {
+    using engine::math::Quaternion;
+
     class ITransform {
         public:
             virtual Mat4 get_matrix() = 0;
@@ -25,7 +26,7 @@ namespace engine {
         private:
             Vec3 position {0.0f, 0.0f, 0.0f};
             Vec3 rotation_axis {0.0f, 1.0f, 0.0f}; // default to Y axis
-            math::Quaternion quaternion{}; // default identity
+            Quaternion quaternion = Quaternion::identity(); // default identity
             Vec3 scale {1.0f, 1.0f, 1.0f};
             Mat4 model {1.0f};
             float rotation_angle{0.0f};

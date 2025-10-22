@@ -5,15 +5,19 @@
 #include <array>
 
 // Include the C quaternion header at global scope with C linkage so the
-// implementation in lib-src compiles to the expected C symbols. This must
-// be outside the `engine::math` namespace so the C typedef doesn't end up
-// declaring a symbol inside the namespace and clash with our C++ class.
+// implementation in lib-src compiles to the expected C symbols. We remap
+// the typedef name `Quaternion` to `CQuaternion` while including so the
+// plain identifier `Quaternion` is not introduced into the global scope
+// as a typedef (that name would collide with our C++ wrapper). The C
+// struct tag remains `struct Quaternion` which does not affect linking.
+#define Quaternion CQuaternion
 extern "C" {
 #include "Quaternion/Quaternion.h"
 }
+#undef Quaternion
 
 namespace engine::math {
-    using CQuaternion = ::Quaternion;
+    using CQuaternion = ::CQuaternion;
 
     class Quaternion {
     public:
