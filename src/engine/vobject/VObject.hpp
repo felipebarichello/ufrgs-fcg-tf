@@ -3,8 +3,7 @@
 #include <vector>
 #include "Component.hpp"
 #include <cstdint>
-#include <span>
-#include <unordered_map>
+#include <memory>
 
 namespace engine {
     class Scene; // Forward declaration
@@ -41,7 +40,7 @@ namespace engine {
 
             /// @brief List of components attached to this VObject.
             /// CRITICAL: The lifetime of these components is managed by the VObject.
-            std::unordered_map<Component::Id, Component*> components;
+            std::vector<Component*> components;
     };
 
     // TODO: Better interface for building VObjects
@@ -53,7 +52,7 @@ namespace engine {
             VObjectConfig() = default;
 
             inline VObjectConfig& component(Component* component) {
-                this->components.push_back(std::move(component));
+                this->components.push_back(component);
                 return *this;
             }
 

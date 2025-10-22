@@ -13,7 +13,6 @@ namespace game::components {
 
             void Awake() override {
                 std::cout << "PlayerController has awaken" << std::endl;
-                std::cout << "PlayerController has CID: " << this->get_id() << std::endl;
             }
 
             void Start() override {
@@ -27,7 +26,6 @@ namespace game::components {
 
             void Awake() override {
                 std::cout << "Controller2 has awaken" << std::endl;
-                std::cout << "Controller2 has CID: " << this->get_id() << std::endl;
             }
 
             void Start() override {

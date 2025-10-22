@@ -22,16 +22,10 @@ namespace engine {
 
             virtual void PreDestroy() {}
             virtual std::optional<Behavior*> try_into_behavior() { return std::nullopt; }
-
-            Component::Id get_id() {
-                static Component::Id component_id = Component::next_component_id++;
-                return component_id;
-            };
             
             VObject* vobject() { return this->vobject_ptr; }
         
         private:
-            static Component::Id next_component_id;
             VObject* vobject_ptr;
     };
 }

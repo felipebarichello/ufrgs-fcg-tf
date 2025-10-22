@@ -6,11 +6,8 @@
 
 namespace engine {
     void VObject::add_component(Component* component) {
-        Component::Id component_id = component->get_id();
         component->vobject_ptr = this;
-        this->components.emplace(component_id, component);
-
-        std::cout << "Added component with CID: " << component_id << " to VObject with VID: " << this->get_id() << std::endl;
+        this->components.push_back(component);
 
         // If the component is a Behavior, schedule its Behavior methods
         if (auto behavior_opt = component->try_into_behavior()) {
@@ -25,7 +22,7 @@ namespace engine {
     void VObject::destroy() {
         // Tell the components they are being destroyed so they can clean up
         for (auto& item : this->components) {
-            item.second->PreDestroy();
+            item->PreDestroy();
         }
 
         // Destroy all children
