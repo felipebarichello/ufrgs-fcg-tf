@@ -13,7 +13,7 @@ namespace engine {
 
     class Transform : public Component {
         public:
-            Transform() = default;
+            Transform();
             void set_position(glm::vec3 position);
             void set_rotation(float rotation_angle, glm::vec3 rotation_axis);
             void set_scale(glm::vec3 scale);

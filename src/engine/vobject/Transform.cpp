@@ -2,6 +2,10 @@
 #include "Transform.hpp"
 using namespace engine;
 
+Transform::Transform() {
+    update_model_matrix();
+}
+
 void Transform::set_position(glm::vec3 position) {
     this->position = position;
     update_model_matrix();
