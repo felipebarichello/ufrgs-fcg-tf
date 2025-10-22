@@ -371,7 +371,7 @@ namespace engine {
 
     void EngineController::draw() {
         for (const auto& drawable : EngineController::drawables) {
-            drawable->draw(EngineController::get_gpu_program_id());
+            drawable->draw();
         }
     }
 

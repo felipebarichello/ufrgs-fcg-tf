@@ -37,7 +37,8 @@ void Sphere::update_model_matrix() {
             * Matrix_Scale(this->scale.x, this->scale.y, this->scale.z); // PRIMEIRO escala
 }
 
-void Sphere::draw(GLuint program_id) {
+void Sphere::draw() {
+    GLuint program_id = engine::EngineController::get_gpu_program_id();
     GLint model_uniform = glGetUniformLocation(static_cast<GLuint>(program_id), "model");
     glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(this->model));
     glPointSize(2.0f);

@@ -7,7 +7,8 @@ ObjDrawable::ObjDrawable(Vao* vao_ptr) {
     this->vao_ptr = vao_ptr;
 }
 
-void ObjDrawable::draw(GLuint program_id) {
+void ObjDrawable::draw() {
+    GLuint program_id = EngineController::get_gpu_program_id();
     GLint Kd = glGetUniformLocation(program_id, "diffuse_reflectance");
     GLint Ks = glGetUniformLocation(program_id, "specular_reflectance");
     GLint Ka = glGetUniformLocation(program_id, "enviornment_reflectance");

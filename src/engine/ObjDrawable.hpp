@@ -16,7 +16,7 @@ namespace engine {
     public:
         ObjDrawable(engine::Vao* vao);
         ~ObjDrawable() = default;
-        void draw(GLuint program_id) override;
+        void draw() override;
         void set_diffuse_reflectance(glm::vec3 reflectance);
         void set_specular_reflectance(glm::vec3 reflectance);
         void set_enviornment_reflectance(glm::vec3 reflectance);
