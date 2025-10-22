@@ -22,8 +22,8 @@ namespace engine {
 
     VObject* Scene::new_vobject() {
         auto key = this->next_vobject_id++;
-        auto result = this->vobjects.emplace(key, VObject(this, key));
-        auto vobject = &result.first->second;
+        auto result = this->vobjects.emplace(key, std::make_unique<VObject>(this, key));
+        auto vobject = result.first->second.get();
         return vobject;
     }
 

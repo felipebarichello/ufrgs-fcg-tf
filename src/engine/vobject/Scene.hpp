@@ -20,7 +20,7 @@ namespace engine {
         private:
             /// @brief 0 can be used as an invalid ID.
             VObject::Id next_vobject_id = 1;
-            std::unordered_map<VObject::Id, VObject> vobjects;
+            std::unordered_map<VObject::Id, std::unique_ptr<VObject>> vobjects;
             SceneScheduler scheduler;
             
             VObject* new_vobject();
