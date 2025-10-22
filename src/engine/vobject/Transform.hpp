@@ -14,7 +14,7 @@ namespace engine {
             virtual Mat4 get_matrix() = 0;
     };
 
-    class Transform : public Component {
+    class Transform {
         public:
             Transform();
             void set_position(Vec3 position);
