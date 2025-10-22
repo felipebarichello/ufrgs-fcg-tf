@@ -7,15 +7,17 @@
 
 using namespace engine;
 
+// Definition of static member
+std::unordered_map<std::string, Vao*> ObjLoader::loaded_vaos;
 
 Vao* ObjLoader::load(const char* filename, const char* basepath, bool triangulate) {
-    if (this->loaded_vaos.find(filename) != this->loaded_vaos.end()) {
-        return this->loaded_vaos[filename];
+    if (loaded_vaos.find(filename) != loaded_vaos.end()) {
+        return loaded_vaos[filename];
     }
     ObjModel obj_model = ObjModel(filename, basepath, triangulate);
     ComputeNormals(&obj_model);
     Vao* vao = new Vao(build_obj_vao(&obj_model));
-    this->loaded_vaos[filename] = vao;
+    loaded_vaos[filename] = vao;
     return vao;
 }
 

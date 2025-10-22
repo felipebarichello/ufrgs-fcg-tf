@@ -8,7 +8,7 @@ using namespace engine;
 
 BunnyDrawable::BunnyDrawable() {
     std::string model_path = EngineController::get_executable_directory() + "/../../assets/bunny.obj";
-    this->vao_ptr = EngineController::get_obj_loader()->load(model_path.c_str());
+    this->vao_ptr = ObjLoader::load(model_path.c_str());
 }
 
 void BunnyDrawable::draw() {

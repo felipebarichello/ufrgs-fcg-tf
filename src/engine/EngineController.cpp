@@ -383,17 +383,6 @@ namespace engine {
         }
     }
 
-    ObjLoader* EngineController::get_obj_loader() {
-        if (!EngineController::instance) {
-            throw std::runtime_error("EngineController not initialized. Call start_engine first.");
-        }
-        if (!EngineController::instance->obj_loader) {
-            // Create with default constructor - the load method will handle file loading
-            EngineController::instance->obj_loader = std::make_unique<ObjLoader>();
-        }
-        return EngineController::instance->obj_loader.get();
-    }
-
     void EngineController::toggle_fullscreen() {
         if (this->is_fullscreen) {
             // Switch to windowed mode

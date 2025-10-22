@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <set>
 #include <vector>
+#include <unordered_map>
 #include <glm/glm.hpp>
 #include "vao.hpp"
 #include "math/matrices.hpp"
@@ -24,11 +25,10 @@ namespace engine {
 
     class ObjLoader {
     public:
-        ObjLoader() = default;
-        Vao* load(const char* filename, const char* basepath = NULL, bool triangulate = true);
+        static Vao* load(const char* filename, const char* basepath = NULL, bool triangulate = true);
     private:
-        std::unordered_map<std::string, Vao*> loaded_vaos;
-        engine::Vao build_obj_vao(ObjModel* model);
-        void ComputeNormals(ObjModel* model);
+        static std::unordered_map<std::string, Vao*> loaded_vaos;
+        static engine::Vao build_obj_vao(ObjModel* model);
+        static void ComputeNormals(ObjModel* model);
     };
 } // namespace engine

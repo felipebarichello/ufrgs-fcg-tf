@@ -72,7 +72,6 @@ namespace engine {
             EventManager& events() { return this->event_manager; }
             GLFWwindow* get_window();
             InputController* input();
-            static ObjLoader* get_obj_loader();
             float get_screen_ratio() { return screen_ratio; }
             void set_screen_ratio(float ratio) { screen_ratio = ratio; }
             static GLuint get_gpu_program_id() { return gpu_program_id; }
