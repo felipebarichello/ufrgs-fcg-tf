@@ -2,7 +2,7 @@
 
 #include <engine/vobject/Component.hpp>
 #include <engine/vobject/VObject.hpp>
-#include <engine/vobject/components/Transform.hpp>
+#include <engine/vobject/Transform.hpp>
 
 namespace engine {
     class Camera : public Component {

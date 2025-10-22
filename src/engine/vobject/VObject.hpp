@@ -2,6 +2,7 @@
 
 #include <vector>
 #include "Component.hpp"
+#include "Transform.hpp"
 #include <cstdint>
 #include <memory>
 
@@ -37,6 +38,7 @@ namespace engine {
             Scene* scene;
             VObject::Id id;
             std::vector<VObject*> children;
+            Transform transform;
 
             /// @brief List of components attached to this VObject.
             /// CRITICAL: The lifetime of these components is managed by the VObject.
