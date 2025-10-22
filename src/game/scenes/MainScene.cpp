@@ -1,8 +1,9 @@
 #include "MainScene.hpp"
 #include <game/components/PlayerController.hpp>
-#include <engine/vobject/VObject.hpp>
+#include <engine>
 
 using engine::SceneRoot;
+using engine::Camera;
 
 namespace game::scenes {
     void MainScene::hierarchy(SceneRoot& root) {
@@ -11,9 +12,9 @@ namespace game::scenes {
         root
             .vobject(VObjectConfig()
                 .component(new PlayerController())
-                .component(new Controller2())
-                .component(new Controller2()) // TODO: That should be illegal
                 .child(VObjectConfig()
-                    .component(new Controller2())));
+                    .component(new Camera())
+                )
+            );
     }
 }

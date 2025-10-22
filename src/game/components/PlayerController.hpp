@@ -12,24 +12,12 @@ namespace game::components {
             PlayerController() = default;
 
             void Awake() override {
-                std::cout << "PlayerController has awaken" << std::endl;
             }
 
             void Start() override {
-                std::cout << "PlayerController has started" << std::endl;
-            }
-    };
-
-    class Controller2 : public Behavior {
-        public:
-            Controller2() = default;
-
-            void Awake() override {
-                std::cout << "Controller2 has awaken" << std::endl;
             }
 
-            void Start() override {
-                std::cout << "Controller2 has started" << std::endl;
+            void Update() override {
             }
     };
 } // namespace game::components
