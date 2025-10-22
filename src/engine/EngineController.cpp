@@ -382,6 +382,10 @@ namespace engine {
         }
     }
 
+    ObjLoader* EngineController::get_obj_loader() {
+        return this->obj_loader.get();
+    }
+
     void EngineController::toggle_fullscreen() {
         if (this->is_fullscreen) {
             // Switch to windowed mode
