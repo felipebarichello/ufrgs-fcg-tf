@@ -27,13 +27,11 @@ namespace engine {
             void set_scale(float uniform_scale);
             Mat4 get_model_matrix();
 
-            VObject* vobject() {
+            VObject* get_vobject() {
                 return this->vobject_ptr;
             }
 
-            Transform& parent() {
-                return this->vobject_ptr->transform();
-            }
+            Transform& get_parent();
 
         private:
             Vec3 position {0.0f, 0.0f, 0.0f};

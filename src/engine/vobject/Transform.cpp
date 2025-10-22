@@ -1,4 +1,5 @@
 #include "Transform.hpp"
+#include "VObject.hpp"
 
 using namespace engine;
 
@@ -68,4 +69,8 @@ void Transform::update_model_matrix() {
                 * Matrix_Scale(this->scale.x, this->scale.y, this->scale.z);
 
     this->dirty_transform_matrix = false;
+}
+
+Transform& Transform::get_parent() {
+    return this->vobject_ptr->get_transform();
 }
