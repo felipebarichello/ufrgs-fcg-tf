@@ -4,5 +4,5 @@
 #include "vobject/include.hpp"
 #include "EngineController.hpp"
 #include "InputController.hpp"
-#include "vao.hpp"
 #include "ObjLoader.hpp"
+#include "vao.hpp"
