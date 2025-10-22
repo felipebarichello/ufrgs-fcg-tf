@@ -20,10 +20,6 @@ namespace engine {
             
             friend VObject;
 
-            Component() {
-                std::cout << "Component created" << std::endl; // TODO: Remove
-            }
-
             virtual void PreDestroy() {}
             virtual std::optional<Behavior*> try_into_behavior() { return std::nullopt; }
 
