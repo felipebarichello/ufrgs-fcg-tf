@@ -29,8 +29,12 @@ namespace game::scenes {
                         .rotation(Quaternion::fromEulerZYX(Vec3(0.0f, -M_PI, 0.0f))))
                     .component(new Camera())
                 )
-            ).vobject(VObjectConfig()
-                .component(new BunnyDrawable())
+            )
+            .vobject(VObjectConfig()
+                .transform(TransformBuilder()
+                    .position(Vec3(0.0f, 0.0f, 0.0f))
+                    .scale(1.0f))
+                .component(new ObjDrawable("sphere.obj"))
             );
     }
 }
