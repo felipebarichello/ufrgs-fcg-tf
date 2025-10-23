@@ -40,7 +40,7 @@ namespace engine {
             int windowed_ypos;
 
             static std::unique_ptr<EngineController> instance; // TODO: Remove this singleton pattern
-            static float screen_ratio; // TODO: Make non-static?
+            static float screen_ratio; // TODO: Separate screen ratio and aspect ratio
             static GLuint gpu_program_id;
             static void frame_buffer_size_callback(GLFWwindow* window, int width, int height);
             static void error_callback(int error, const char* description);
