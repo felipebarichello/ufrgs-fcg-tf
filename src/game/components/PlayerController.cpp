@@ -60,5 +60,12 @@ namespace game::components {
         // Rotate player in axis y by delta_theta
         auto& transform = this->get_vobject()->transform();
         transform.quaternion() *= Quaternion::fromAxisAngle(Vec3(0.0f, 1.0f, 0.0f), delta_theta);
+
+        auto& cam_quaternion = this->camera
+            ->get_vobject()
+            ->transform()
+            .quaternion();
+        
+        cam_quaternion = Quaternion::fromAxisAngle(Vec3(1.0f, 0.0f, 0.0f), this->camera_phi);
     }
 }
