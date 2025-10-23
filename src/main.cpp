@@ -145,14 +145,12 @@ int main() {
 }
 
 void update() {
-    Vec3 camera_position_c; // Camera center (position)
     Vec3 camera_view_unit_vector; // Direction the camera is pointing
 
     // Update da posição da câmera de acordo com o input de movimento
     update_free_camera_position();
     update_free_camera_direction();
 
-    camera_position_c = temp::player_controller->get_vobject()->transform().get_position();
     camera_view_unit_vector = g_free_camera_view_unit_vector;
 
     float y = sin(g_CameraPhi);
@@ -161,11 +159,10 @@ void update() {
     
     camera_view_unit_vector = Vec3(x, y, z);
 
-    CameraTransform cam_transform;
-    cam_transform.set_position(camera_position_c);
-    cam_transform.set_basis_from_up_view(g_free_camera_up_vector, camera_view_unit_vector);
-    Mat4 view = invert_orthonormal_matrix(cam_transform.get_matrix());
-    Camera::get_main()->view = view;
+    auto main_camera = Camera::get_main();
+    // main_camera->set_basis_from_up_view(g_free_camera_up_vector, camera_view_unit_vector);
+    Mat4 view = invert_orthonormal_matrix(main_camera->get_vobject()->transform().get_model_matrix());
+    main_camera->view = view;
     g_free_camera_right_vector = Vec3(view[0][0], view[1][0], view[2][0]);
 }
 
