@@ -40,8 +40,14 @@ namespace game::scenes {
             )
             .vobject(VObjectConfig()
                 .transform(TransformBuilder()
-                    .position(Vec3(0.0f, 0.0f, 0.0f))
+                    .position(Vec3(100.0f, 0.0f, 0.0f))
                     .scale(1.0f * planet_scale))
+                .component(new ObjDrawable("sphere.obj"))
+            )
+            .vobject(VObjectConfig()
+                .transform(TransformBuilder()
+                    .position(Vec3(0.0f, 0.0f, 0.0f))
+                    .scale(0.10f))
                 .component(new ObjDrawable("sphere.obj"))
             );
     }

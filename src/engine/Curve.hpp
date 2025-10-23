@@ -1,5 +1,5 @@
 #pragma once
-#include "engine/math/linalg.hpp"
+#include "math/linalg.hpp"
 #include <vector>
 
 namespace engine {
