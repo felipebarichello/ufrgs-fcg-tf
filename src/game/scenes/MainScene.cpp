@@ -7,7 +7,6 @@
 #include <engine/math/CircularCurve.hpp>
 #include <cmath>
 
-
 using engine::SceneRoot;
 using engine::Camera;
 using engine::VObjectConfig;
@@ -29,7 +28,7 @@ namespace game::scenes {
         root
             .vobject(VObjectConfig()
                 .transform(TransformBuilder()
-                    .position(Vec3(100.0f, 0.0f, 0.0f)))
+                    .position(Vec3(0.0f, 0.0f, 100.0f)))
                 .component(new PlayerController(main_camera, planet_radius))
                 .child(
                     VObjectConfig()
