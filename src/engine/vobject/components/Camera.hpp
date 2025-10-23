@@ -16,6 +16,10 @@ namespace engine {
                 Camera::main = camera;
             }
 
+            Mat4 get_view_matrix() {
+                return invert_orthonormal_matrix(this->get_vobject()->transform().get_model_matrix());
+            }
+
             Mat4 get_perspective_matrix() const;
 
             float near_distance = -0.1f;

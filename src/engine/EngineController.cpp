@@ -392,7 +392,7 @@ namespace engine {
     void EngineController::update_main_camera() {
         auto main_camera = Camera::get_main();
         Mat4 projection = main_camera->get_perspective_matrix();
-        Mat4 view = invert_orthonormal_matrix(main_camera->get_vobject()->transform().get_model_matrix());
+        Mat4 view = main_camera->get_view_matrix();
 
         glUseProgram(EngineController::get_instance()->get_gpu_program_id());
         glUniformMatrix4fv(EngineController::instance->g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
