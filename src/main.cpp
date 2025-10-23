@@ -192,7 +192,7 @@ void update() {
 
     auto main_camera = Camera::get_main();
 
-    projection = Matrix_Perspective(main_camera->fov, g_engine_controller->get_screen_ratio(), main_camera->near_distance, main_camera->far_distance);
+    projection = Matrix_Perspective(main_camera);
 
     // Enviamos as matrizes "view" e "projection" para a placa de vídeo
     // (GPU). Veja o arquivo "shader_vertex.glsl", onde estas são

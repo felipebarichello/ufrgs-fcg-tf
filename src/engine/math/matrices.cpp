@@ -1,4 +1,5 @@
 #include "matrices.hpp"
+#include <engine>
 
 namespace engine {
     // Implementations
@@ -160,11 +161,14 @@ namespace engine {
         return M;
     }
 
-    glm::mat4 Matrix_Perspective(float field_of_view, float aspect, float n, float f)
+    glm::mat4 Matrix_Perspective(Camera* camera)
     {
-        float t = fabs(n) * tanf(field_of_view / 2.0f);
+        float n = camera->near_distance;
+        float f = camera->far_distance;
+
+        float t = fabs(n) * tanf(camera->fov / 2.0f);
         float b = -t;
-        float r = t * aspect;
+        float r = t * engine::EngineController::get_instance()->get_screen_ratio();
         float l = -r;
 
         glm::mat4 P = Matrix(

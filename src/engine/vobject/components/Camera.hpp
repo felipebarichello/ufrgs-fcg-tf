@@ -15,6 +15,8 @@ namespace engine {
                 Camera::main = camera;
             }
 
+            Mat4 get_perspective_matrix() const;
+
             float near_distance = -0.1f;
             float far_distance  = -400.0f;
             float fov = 3.141592f / 3.0f;
