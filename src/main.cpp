@@ -7,30 +7,29 @@ using engine::WindowConfig;
 using engine::InputController;
 using game::scenes::MainScene;
 
-// Abaixo definimos variáveis globais utilizadas em várias funções do código.
-EngineController* g_engine_controller;
-
 int main() {
     // TODO: Move configuration to game?
-    g_engine_controller = EngineController::start_engine(WindowConfig(
+    EngineController* engine_controller = EngineController::start_engine(WindowConfig(
         800,
         800,
         "FCG - Trabalho Final"
     ));
     
     // Subscribe F11 key to toggle fullscreen
-    g_engine_controller->input()->subscribe_press_button(GLFW_KEY_F11, [&]() {
-        g_engine_controller->toggle_fullscreen();
+    engine_controller->input()->subscribe_press_button(GLFW_KEY_F11, [&]() {
+        engine_controller->toggle_fullscreen();
     });
 
-    g_engine_controller->g_view_uniform       = glGetUniformLocation(g_engine_controller->get_gpu_program_id(), "view"); // Variável da matriz "view" em shader_vertex.glsl
-    g_engine_controller->g_projection_uniform = glGetUniformLocation(g_engine_controller->get_gpu_program_id(), "projection"); // Variável da matriz "projection" em shader_vertex.glsl
+    // TODO: Take this out of here
+    engine_controller->g_view_uniform       = glGetUniformLocation(engine_controller->get_gpu_program_id(), "view"); // Variável da matriz "view" em shader_vertex.glsl
+    engine_controller->g_projection_uniform = glGetUniformLocation(engine_controller->get_gpu_program_id(), "projection"); // Variável da matriz "projection" em shader_vertex.glsl
 
     // Enable z-buffer
+    // TODO: Take this out of here
     glEnable(GL_DEPTH_TEST);
 
     std::unique_ptr<MainScene> initial_scene = std::make_unique<MainScene>();
-    g_engine_controller->hand_over_control(initial_scene.get());
+    engine_controller->hand_over_control(initial_scene.get());
     
     return 0;
 }
