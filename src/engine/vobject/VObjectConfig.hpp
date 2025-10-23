@@ -15,22 +15,22 @@ namespace engine {
             }
 
             TransformBuilder& position(Vec3 p) {
-                inner.set_position(p);
+                inner.position() = p;
                 return *this;
             }
 
             TransformBuilder& scale(Vec3 s) {
-                inner.set_scale(s);
+                inner.scale() = s;
                 return *this;
             }
 
             TransformBuilder& scale(float s) {
-                inner.set_scale(s);
+                inner.scale() = Vec3(s, s, s);
                 return *this;
             }
 
             TransformBuilder& rotation(const Quaternion& q) {
-                inner.set_rotation(q);
+                inner.quaternion() = q;
                 return *this;
             }
     };

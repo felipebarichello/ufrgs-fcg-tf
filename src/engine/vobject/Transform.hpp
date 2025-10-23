@@ -23,28 +23,31 @@ namespace engine {
             Transform() = default;
 
             Vec3 get_position() const {
-                return this->position;
+                return this->_position;
             }
 
-            void set_position(Vec3 position);
-
-            void add_position(Vec3 position) {
-                this->position += position;
+            Vec3& position() {
                 this->dirty = true;
+                return this->_position;
             }
 
-            Quaternion get_rotation() const {
-                return this->quaternion;
+            Quaternion get_quaternion() const {
+                return this->_quaternion;
             }
 
-            void set_rotation(const Quaternion& q);
+            Quaternion& quaternion() {
+                this->dirty = true;
+                return this->_quaternion;
+            }
 
             Vec3 get_scale() const {
-                return this->scale;
+                return this->_scale;
             }
             
-            void set_scale(Vec3 scale);
-            void set_scale(float uniform_scale);
+            Vec3& scale() {
+                this->dirty = true;
+                return this->_scale;
+            }
 
             Mat4 get_model_matrix();
 
@@ -52,12 +55,12 @@ namespace engine {
                 return this->vobject_ptr;
             }
 
-            std::optional<Transform*> parent();
+            std::optional<Transform*> get_parent();
 
         private:
-            Vec3 position {0.0f, 0.0f, 0.0f};
-            Quaternion quaternion;
-            Vec3 scale {1.0f, 1.0f, 1.0f};
+            Vec3 _position {0.0f, 0.0f, 0.0f};
+            Quaternion _quaternion;
+            Vec3 _scale {1.0f, 1.0f, 1.0f};
             Mat4 transform_matrix {1.0f};
             bool dirty = false;
             VObject* vobject_ptr = nullptr;

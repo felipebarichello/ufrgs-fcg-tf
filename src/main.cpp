@@ -207,8 +207,8 @@ void update() {
 
 void update_free_camera_position() {
     auto& camt = temp::player_controller->get_vobject()->transform();
-    camt.add_position(g_free_camera_speed * g_free_camera_move_vector.y * g_free_camera_view_unit_vector);
-    camt.add_position(g_free_camera_speed * g_free_camera_move_vector.x * g_free_camera_right_vector);
+    camt.position() += g_free_camera_speed * g_free_camera_move_vector.y * g_free_camera_view_unit_vector;
+    camt.position() += g_free_camera_speed * g_free_camera_move_vector.x * g_free_camera_right_vector;
 }
 
 void update_free_camera_direction() {

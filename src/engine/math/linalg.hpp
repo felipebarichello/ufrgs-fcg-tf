@@ -2,6 +2,7 @@
 
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
+#include <ostream>
 
 namespace engine {
     using Vec2 = glm::vec2;
@@ -21,4 +22,6 @@ namespace engine {
         HyperVec3() = default;
         HyperVec3(Vec3 x, Vec3 y, Vec3 z) : x(x), y(y), z(z) {}
     };
+
+    std::ostream& operator<<(std::ostream& os, const Mat4& m);
 }
