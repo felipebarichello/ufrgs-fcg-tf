@@ -12,20 +12,25 @@ namespace game::components {
     void PlayerController::Start() {
         InputController* input = EngineController::get_input();
         input->subscribe_dpad(&this->move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
-        input->subscribe_press_button(GLFW_KEY_F, std::bind(&PlayerController::toggle_camera_release, this));
+        input->subscribe_press_button(GLFW_KEY_F6, std::bind(&PlayerController::toggle_camera_release, this));
     }
 
     void PlayerController::Update() {
-        this->update_position();
-        this->update_direction();
+        this->update_transform_due_to_environment();
+
+        if (this->released_camera) {
+            this->update_released_camera();
+        } else {
+            this->update_transform_due_to_input();
+        }
     }
 
-    void PlayerController::update_position() {
-        auto& transform = this->get_vobject()->transform();
-        auto& quaternion = transform.quaternion();
+    void PlayerController::update_transform_due_to_environment() {
+        // auto& transform = this->get_vobject()->transform();
+        // auto& quaternion = transform.quaternion();
 
 
-        /* Caused by gravity */
+        /* Position change caused by gravity */
 
         // TODO: This gravity assumes the planet is flat
         // const float estimated_frame_period = 1.0f / 60.0f; // TODO: Delta time (note: estimate integration)
@@ -44,30 +49,21 @@ namespace game::components {
         // }
 
 
-        /* Caused by input */
-
-        Vec3 front_of_player = quaternion.rotate(Vec3(0.0f, 0.0f, -1.0f));
-        Vec3 right_of_player = quaternion.rotate(Vec3(1.0f, 0.0f, 0.0f));
-
-        transform.position() += this->speed * this->move_vector.y * front_of_player;
-        transform.position() += this->speed * this->move_vector.x * right_of_player;
-    }
-
-    void PlayerController::update_direction() {
-        auto& transform = this->get_vobject()->transform();
-        auto& quaternion = transform.quaternion();
-
-        
-        /* Caused by gravity */
+        /* Direction change due to gravity */
 
         // Vec3 vec_distance_to_planet = transform.position(); // Planet is at origin
         // Vec3 up_direction = glm::normalize(vec_distance_to_planet);
         // Vec3 current_up = quaternion.rotate(Vec3(0.0f, 1.0f, 0.0f));
         // Quaternion align_quat = Quaternion::fromUnitVectors(current_up, up_direction);
         // quaternion *= align_quat;
+    }
+
+    void PlayerController::update_transform_due_to_input() {
+        auto& transform = this->get_vobject()->transform();
+        auto& quaternion = transform.quaternion();
 
 
-        /* Caused by input */
+        /* Camera (attached) movement */
 
         // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
         Vec2 cursor_delta = EngineController::get_input()->get_cursor_position_delta();
@@ -94,6 +90,21 @@ namespace game::components {
             .quaternion();
         
         cam_quaternion = Quaternion::fromXRotation(this->camera_phi);
+
+
+        /* Walking movement */
+
+        // TODO: Should not be able to walk while not touching ground
+
+        Vec3 front_of_player = quaternion.rotate(Vec3(0.0f, 0.0f, -1.0f));
+        Vec3 right_of_player = quaternion.rotate(Vec3(1.0f, 0.0f, 0.0f));
+
+        transform.position() += this->speed * this->move_vector.y * front_of_player;
+        transform.position() += this->speed * this->move_vector.x * right_of_player;
+    }
+
+    void PlayerController::update_released_camera() {
+        
     }
 
     void PlayerController::toggle_camera_release() {

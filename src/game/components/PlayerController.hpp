@@ -24,9 +24,11 @@ namespace game::components {
             float v_sensitivity = 0.001f;
             float h_sensitivity = 0.001f;
             bool released_camera = false;
+            engine::Vec2 secondary_move_vector {0.0f, 0.0f};
 
-            void update_position();
-            void update_direction();
+            void update_transform_due_to_environment();
+            void update_transform_due_to_input();
+            void update_released_camera();
             void toggle_camera_release();
     };
 } // namespace game::components
