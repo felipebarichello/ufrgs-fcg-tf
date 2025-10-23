@@ -20,8 +20,8 @@ namespace game::components {
 
         Vec3 front_of_player = quaternion.rotate(Vec3(0.0f, 0.0f, -1.0f));
         Vec3 right_of_player = quaternion.rotate(Vec3(1.0f, 0.0f, 0.0f));
-
         transform.position() += this->speed * this->move_vector.y * front_of_player;
+
         transform.position() += this->speed * this->move_vector.x * right_of_player;
     }
 
@@ -42,5 +42,18 @@ namespace game::components {
 
         if (this->camera_phi < phimin)
             this->camera_phi = phimin;
+
+        // // Calculamos o novo vetor direção da câmera em coordenadas cartesianas
+        // float x = cosf(this->camera_phi) * sinf(this->camera_theta);
+        // float y = sinf(this->camera_phi);
+        // float z = -cosf(this->camera_phi) * cosf(this->camera_theta);
+
+        // Vec3 camera_view_unit_vector = Vec3(x, y, z);
+        // camera_view_unit_vector = engine::math::normalize(camera_view_unit_vector);
+
+        // // Atualizamos o quaternion do objeto da câmera para olhar na direção correta
+        // auto& transform = this->get_vobject()->transform();
+        // Vec3 up_vector = Vec3(0.0f, 1.0f, 0.0f);
+        // transform.quaternion() = engine::math::Quaternion::fromLookAt(camera_view_unit_vector, up_vector);
     }
 }

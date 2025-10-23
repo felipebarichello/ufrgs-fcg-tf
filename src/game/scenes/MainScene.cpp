@@ -25,11 +25,9 @@ namespace game::scenes {
         root
             .vobject(VObjectConfig()
                 .transform(TransformBuilder()
-                    .position(Vec3(0.0f, 20.5f, 0.0f)))
+                    .position(Vec3(0.0f, 20.5f, 10.0f)))
                 .component(player_controller)
                 .child(VObjectConfig()
-                    .transform(TransformBuilder()
-                        .rotation(Quaternion::fromEulerZYX(Vec3(0.0f, -M_PI, 0.0f))))
                     .component(main_camera)
                 )
             )
