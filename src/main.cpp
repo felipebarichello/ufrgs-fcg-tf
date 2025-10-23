@@ -110,16 +110,6 @@ Vec2 g_free_camera_move_vector      = Vec2(0.0f, 0.0f);
 
 float g_free_camera_speed = 0.1f;
 
-bool g_input_move_forward  = false;
-bool g_input_move_backward = false;
-bool g_input_move_left     = false;
-bool g_input_move_right    = false;
-
-GLuint g_vertex_array_object_id;
-GLint g_model_uniform;
-GLint g_view_uniform;
-GLint g_projection_uniform;
-
 const float g_sensitivity = 0.005f;
 
 void update();
@@ -140,8 +130,8 @@ int main() {
         g_engine_controller->toggle_fullscreen();
     });
 
-    g_view_uniform       = glGetUniformLocation(g_engine_controller->get_gpu_program_id(), "view"); // Variável da matriz "view" em shader_vertex.glsl
-    g_projection_uniform = glGetUniformLocation(g_engine_controller->get_gpu_program_id(), "projection"); // Variável da matriz "projection" em shader_vertex.glsl
+    g_engine_controller->g_view_uniform       = glGetUniformLocation(g_engine_controller->get_gpu_program_id(), "view"); // Variável da matriz "view" em shader_vertex.glsl
+    g_engine_controller->g_projection_uniform = glGetUniformLocation(g_engine_controller->get_gpu_program_id(), "projection"); // Variável da matriz "projection" em shader_vertex.glsl
 
     // Enable z-buffer
     glEnable(GL_DEPTH_TEST);
@@ -155,11 +145,6 @@ int main() {
 }
 
 void update() {
-
-    // Pedimos para a GPU utilizar o programa de GPU criado acima (contendo
-    // os shaders de vértice e fragmentos).
-    glUseProgram(g_engine_controller->get_gpu_program_id());
-
     Vec3 camera_position_c; // Camera center (position)
     Vec3 camera_view_unit_vector; // Direction the camera is pointing
 
@@ -179,22 +164,9 @@ void update() {
     CameraTransform cam_transform;
     cam_transform.set_position(camera_position_c);
     cam_transform.set_basis_from_up_view(g_free_camera_up_vector, camera_view_unit_vector);
-    glm::mat4 view = invert_orthonormal_matrix(cam_transform.get_matrix());
+    Mat4 view = invert_orthonormal_matrix(cam_transform.get_matrix());
+    Camera::get_main()->view = view;
     g_free_camera_right_vector = Vec3(view[0][0], view[1][0], view[2][0]);
-
-    glm::mat4 projection;
-
-    auto main_camera = Camera::get_main();
-
-    projection = main_camera->get_perspective_matrix();
-
-    // Enviamos as matrizes "view" e "projection" para a placa de vídeo
-    // (GPU). Veja o arquivo "shader_vertex.glsl", onde estas são
-    // efetivamente aplicadas em todos os pontos.
-    glUniformMatrix4fv(g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
-    glUniformMatrix4fv(g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
-
-    glBindVertexArray(0);
 }
 
 void update_free_camera_position() {

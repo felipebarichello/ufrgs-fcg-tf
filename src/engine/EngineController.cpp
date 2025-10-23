@@ -51,7 +51,7 @@ namespace engine {
         while (!this->update_and_test_should_close()) {
             this->input_controller->update();
             this->event_manager.update(); // TODO: Update each scene separately?
-            EngineController::draw();
+            EngineController::draw(); // TODO: That should not be static
             glfwSwapBuffers(this->window);
         }
 
@@ -377,14 +377,25 @@ namespace engine {
                 EngineController::drawables.begin(),
                 EngineController::drawables.end(),
                 drawable
-            ), 
+            ),
             EngineController::drawables.end());
     }
 
     void EngineController::draw() {
+        EngineController::update_camera();
+
         for (const auto& drawable : EngineController::drawables) {
             drawable->draw();
         }
+    }
+
+    void EngineController::update_camera() {
+        auto main_camera = Camera::get_main();
+        Mat4 projection = main_camera->get_perspective_matrix();
+        glUseProgram(EngineController::get_instance()->get_gpu_program_id());
+        glUniformMatrix4fv(EngineController::instance->g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(main_camera->view));
+        glUniformMatrix4fv(EngineController::instance->g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
+        glBindVertexArray(0);
     }
 
     void EngineController::toggle_fullscreen() {
