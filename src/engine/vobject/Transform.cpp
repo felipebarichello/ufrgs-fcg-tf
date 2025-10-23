@@ -3,31 +3,12 @@
 
 using namespace engine;
 
-void Transform::set_position(Vec3 position) {
-    this->_position = position;
-    this->dirty = true;
-}
-
-void Transform::set_rotation(const Quaternion& q) {
-    this->_quaternion = q;
-    this->dirty = true;
-}
-
-void Transform::set_scale(Vec3 scale) {
-    this->_scale = scale;
-    this->dirty = true;
-}
-
-void Transform::set_scale(float uniform_scale) {
-    this->set_scale(Vec3(uniform_scale, uniform_scale, uniform_scale));
-}
-
 Mat4 Transform::get_model_matrix() {
     if (this->dirty) {
         this->update_matrix();
     }
 
-    auto p = this->parent();
+    auto p = this->get_parent();
     if (p) {
         return p.value()->get_model_matrix() * this->transform_matrix;
     } else {
@@ -72,7 +53,7 @@ void Transform::update_matrix() {
     this->dirty = false;
 }
 
-std::optional<Transform*> Transform::parent() {
+std::optional<Transform*> Transform::get_parent() {
     auto p = this->vobject_ptr->get_parent();
     if (p) {
         return &p.value()->transform();
