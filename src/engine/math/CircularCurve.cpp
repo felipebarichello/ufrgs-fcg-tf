@@ -10,12 +10,12 @@ CircularCurve::CircularCurve(const Vec3& center, const Vec3& normal, float radiu
     this->v = normalize(cross(this->normal, this->u));
 }
 
-Vec3 CircularCurve::get_point(float t) {
+Vec3 CircularCurve::get_point(float t) const {
     // Calculate the point on the circular path
     float angle = t * 2 * M_PI; // Full circle
     return center + radius * (u * (float) cos(angle) + v * (float) sin(angle));
 }
 
-Vec3 CircularCurve::get_tangent(float t) {
+Vec3 CircularCurve::get_tangent(float t) const {
     return normalize(cross(this->normal, get_point(t) - center));
 }

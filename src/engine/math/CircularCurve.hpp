@@ -8,8 +8,8 @@ namespace engine {
         public:
             CircularCurve() = default;
             CircularCurve(const Vec3& center, const Vec3& normal, float radius);
-            Vec3 get_point(float t) override;
-            Vec3 get_tangent(float t) override;
+            Vec3 get_point(float t) const override;
+            Vec3 get_tangent(float t) const override;
         private:
             Vec3 center;
             Vec3 normal;
