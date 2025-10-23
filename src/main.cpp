@@ -43,8 +43,6 @@
 
 #include <ctime>
 
-#include <temp_globals.hpp>
-
 // Funções callback para comunicação com o sistema operacional e interação do
 // usuário. Veja mais comentários nas definições das mesmas, abaixo.
 //void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
