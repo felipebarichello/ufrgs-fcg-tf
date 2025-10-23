@@ -4,17 +4,17 @@
 using namespace engine;
 
 void Transform::set_position(Vec3 position) {
-    this->position = position;
+    this->_position = position;
     this->dirty = true;
 }
 
 void Transform::set_rotation(const Quaternion& q) {
-    this->quaternion = q;
+    this->_quaternion = q;
     this->dirty = true;
 }
 
 void Transform::set_scale(Vec3 scale) {
-    this->scale = scale;
+    this->_scale = scale;
     this->dirty = true;
 }
 
@@ -37,8 +37,8 @@ Mat4 Transform::get_model_matrix() {
 
 void Transform::update_matrix() {
     // Build rotation matrix from quaternion
-    float w = static_cast<float>(this->quaternion.w());
-    Vec3 v = this->quaternion.v();
+    float w = static_cast<float>(this->_quaternion.w());
+    Vec3 v = this->_quaternion.v();
     float x = v.x, y = v.y, z = v.z;
 
     float ww = w*w;
@@ -65,9 +65,9 @@ void Transform::update_matrix() {
     rot[2] = glm::vec4(m02, m12, m22, 0.0f);
     rot[3] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-    this->transform_matrix = Matrix_Translate(this->position.x, this->position.y, this->position.z)
+    this->transform_matrix = Matrix_Translate(this->_position.x, this->_position.y, this->_position.z)
                 * rot
-                * Matrix_Scale(this->scale.x, this->scale.y, this->scale.z);
+                * Matrix_Scale(this->_scale.x, this->_scale.y, this->_scale.z);
 
     this->dirty = false;
 }
