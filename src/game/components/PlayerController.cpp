@@ -45,7 +45,7 @@ namespace game::components {
 
         // Atualizamos parâmetros da câmera com os deslocamentos
         float delta_theta = this->h_sensitivity * -cursor_delta.x;
-        this->camera_phi   -= this->v_sensitivity * cursor_delta.y;
+        this->camera_phi -= this->v_sensitivity * cursor_delta.y;
 
         // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
         float phimax = 3.141592f/2;
