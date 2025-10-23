@@ -25,6 +25,7 @@ namespace engine {
     glm::mat4 Matrix_Rotate(float angle, glm::vec4 axis);
 
     float norm(glm::vec4 v);
+    float norm(glm::vec3 v);
 
     glm::vec4 crossproduct(glm::vec4 u, glm::vec4 v);
     float dotproduct(glm::vec4 u, glm::vec4 v);
