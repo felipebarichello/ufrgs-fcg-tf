@@ -24,20 +24,20 @@ namespace game::components {
         /* Caused by gravity */
 
         // TODO: This gravity assumes the planet is flat
-        const float estimated_frame_period = 1.0f / 60.0f; // TODO: Delta time (note: estimate integration)
-        const float gravity_accel = 4.0f; // TODO: Consider distance to center of mass
-        Vec3 gravity_direction = -glm::normalize(transform.position()); // Planet is at origin
-        this->current_velocity += gravity_accel * estimated_frame_period * gravity_direction;
+        // const float estimated_frame_period = 1.0f / 60.0f; // TODO: Delta time (note: estimate integration)
+        // const float gravity_accel = 4.0f; // TODO: Consider distance to center of mass
+        // Vec3 gravity_direction = -glm::normalize(transform.position()); // Planet is at origin
+        // this->current_velocity += gravity_accel * estimated_frame_period * gravity_direction;
 
-        Vec3 new_position = transform.position() + this->current_velocity;
-        Vec3 vec_distance_to_planet = new_position; // Planet is at origin
-        float distance_to_planet = glm::length(vec_distance_to_planet);
+        // Vec3 new_position = transform.position() + this->current_velocity;
+        // Vec3 vec_distance_to_planet = new_position; // Planet is at origin
+        // float distance_to_planet = glm::length(vec_distance_to_planet);
 
-        if (distance_to_planet < this->planet_radius) {
-            this->current_velocity = Vec3(0.0f);
-        } else {
-            transform.position() = new_position;
-        }
+        // if (distance_to_planet < this->planet_radius) {
+        //     this->current_velocity = Vec3(0.0f);
+        // } else {
+        //     transform.position() = new_position;
+        // }
 
 
         /* Caused by input */
