@@ -1,6 +1,7 @@
 #include "Quaternion.hpp"
 
 #include <sstream>
+#include <cmath>
 
 namespace engine::math {
 
@@ -70,6 +71,38 @@ namespace engine::math {
         Quaternion out;
         Quaternion_fromZRotation(angle, &out.inner);
         return out;
+    }
+
+    // FIXME: Don't know if this is working. Not tested properly.
+    Quaternion Quaternion::fromUnitVectors(const Vec3& source, const Vec3& target) {
+        float dot = glm::dot(source, target);
+
+        // TODO: Are those two branches necessary?
+        if (dot >= 1.0f) {
+            // Vectors are the same
+            return Quaternion::identity();
+        }
+        
+        if (dot <= -1.0f) {
+            // Vectors are opposite
+            Vec3 orthogonal = glm::cross(source, Vec3(1.0f, 0.0f, 0.0f));
+            if (orthogonal.length() < 1e-6f) {
+                orthogonal = glm::cross(source, Vec3(0.0f, 1.0f, 0.0f));
+            }
+            orthogonal = glm::normalize(orthogonal);
+            return Quaternion::fromAxisAngle(orthogonal, M_PI);
+        }
+
+        Vec3 cross = glm::cross(source, target);
+        double s = sqrt((1 + dot) * 2);
+        double inv_s = 1 / s;
+
+        return Quaternion(
+            s * 0.5,
+            cross.x * inv_s,
+            cross.y * inv_s,
+            cross.z * inv_s
+        );
     }
 
     double Quaternion::norm() const {

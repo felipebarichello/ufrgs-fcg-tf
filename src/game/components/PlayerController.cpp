@@ -2,6 +2,7 @@
 #include <engine>
 
 using engine::EngineController;
+using engine::Vec2;
 using engine::Vec3;
 using engine::math::Quaternion;
 
@@ -49,8 +50,23 @@ namespace game::components {
     }
 
     void PlayerController::update_direction() {
+        auto& transform = this->get_vobject()->transform();
+        auto& quaternion = transform.quaternion();
+
+        
+        /* Caused by gravity */
+
+        // Vec3 vec_distance_to_planet = transform.position(); // Planet is at origin
+        // Vec3 up_direction = glm::normalize(vec_distance_to_planet);
+        // Vec3 current_up = quaternion.rotate(Vec3(0.0f, 1.0f, 0.0f));
+        // Quaternion align_quat = Quaternion::fromUnitVectors(current_up, up_direction);
+        // quaternion *= align_quat;
+
+
+        /* Caused by input */
+
         // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
-        glm::vec2 cursor_delta = EngineController::get_input()->get_cursor_position_delta();
+        Vec2 cursor_delta = EngineController::get_input()->get_cursor_position_delta();
 
         // Atualizamos parâmetros da câmera com os deslocamentos
         float delta_theta = this->h_sensitivity * -cursor_delta.x;
@@ -66,15 +82,13 @@ namespace game::components {
         if (this->camera_phi < phimin)
             this->camera_phi = phimin;
 
-        // Rotate player in axis y by delta_theta
-        auto& transform = this->get_vobject()->transform();
-        transform.quaternion() *= Quaternion::fromAxisAngle(Vec3(0.0f, 1.0f, 0.0f), delta_theta);
+        quaternion *= Quaternion::fromYRotation(delta_theta);
 
         auto& cam_quaternion = this->camera
             ->get_vobject()
             ->transform()
             .quaternion();
         
-        cam_quaternion = Quaternion::fromAxisAngle(Vec3(1.0f, 0.0f, 0.0f), this->camera_phi);
+        cam_quaternion = Quaternion::fromXRotation(this->camera_phi);
     }
 }

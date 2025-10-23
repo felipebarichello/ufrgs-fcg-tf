@@ -19,7 +19,7 @@ extern "C" {
 namespace engine::math {
     using CQuaternion = ::CQuaternion;
 
-    class Quaternion {
+class Quaternion {
         public:
             // Default constructs identity quaternion
             Quaternion();
@@ -44,6 +44,8 @@ namespace engine::math {
             static Quaternion fromXRotation(double angle);
             static Quaternion fromYRotation(double angle);
             static Quaternion fromZRotation(double angle);
+
+            static Quaternion fromUnitVectors(const Vec3& source, const Vec3& target);
 
             double norm() const;
             Quaternion normalized() const;
