@@ -3,6 +3,7 @@
 #include <engine/vobject/Transform.hpp>
 #include <game/components/drawables/BunnyDrawable.hpp>
 #include "../temp_globals.hpp"
+#include <engine/vobject/components/Trajectory.hpp>
 #include <cmath>
 
 
