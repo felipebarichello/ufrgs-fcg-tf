@@ -28,7 +28,7 @@ namespace game::scenes {
         root
             .vobject(VObjectConfig()
                 .transform(TransformBuilder()
-                    .position(Vec3(0.0f, 0.0f, 100.0f)))
+                    .position(Vec3(0.0f, 0.0f, 20.0f)))
                 .component(new PlayerController(main_camera, planet_radius))
                 .child(
                     VObjectConfig()

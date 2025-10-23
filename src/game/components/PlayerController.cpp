@@ -88,11 +88,18 @@ namespace game::components {
     }
 
     void PlayerController::update_released_camera() {
-        auto& transform = this->get_vobject()->transform();
-        auto& quaternion = transform.quaternion();
+        auto& cam_transform = this->camera->get_vobject()->transform();
+        auto& cam_quaternion = cam_transform.quaternion();
 
         PlayerController::SphericalInput spherical = this->get_spherical_input();
-        quaternion *= Quaternion::fromYRotation(spherical.delta_theta);
+        cam_quaternion *= Quaternion::fromYRotation(spherical.delta_theta);
+        cam_quaternion *= Quaternion::fromXRotation(spherical.delta_phi);
+
+        Vec3 front_of_player = cam_quaternion.rotate(Vec3(0.0f, 0.0f, -1.0f));
+        Vec3 right_of_player = cam_quaternion.rotate(Vec3(1.0f, 0.0f, 0.0f));
+
+        cam_transform.position() += this->speed * this->move_vector.y * front_of_player;
+        cam_transform.position() += this->speed * this->move_vector.x * right_of_player;
     }
 
     PlayerController::SphericalInput PlayerController::get_spherical_input() {
