@@ -41,28 +41,10 @@
 
 #include "game/scenes/MainScene.hpp"
 
-#include <ctime>
-
-// Funções callback para comunicação com o sistema operacional e interação do
-// usuário. Veja mais comentários nas definições das mesmas, abaixo.
-//void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
-void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
-
 using engine::EngineController;
 using engine::WindowConfig;
-using engine::Camera;
-using engine::VaoBuilder;
 using engine::InputController;
 using game::scenes::MainScene;
-
-// Definimos uma estrutura que armazenará dados necessários para renderizar
-// cada objeto da cena virtual.
-struct SceneObject {
-    const char*  name;        // Nome do objeto
-    void*        first_index; // Índice do primeiro vértice dentro do vetor indices[] definido em BuildTriangles()
-    int          num_indices; // Número de índices do objeto dentro do vetor indices[] definido em BuildTriangles()
-    GLenum       rendering_mode; // Modo de rasterização (GL_TRIANGLES, GL_TRIANGLE_STRIP, etc.)
-};
 
 // Abaixo definimos variáveis globais utilizadas em várias funções do código.
 EngineController* g_engine_controller;
