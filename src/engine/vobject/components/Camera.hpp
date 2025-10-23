@@ -23,7 +23,7 @@ namespace engine {
             Mat4 get_perspective_matrix() const;
 
             float near_distance = -0.1f;
-            float far_distance  = -400.0f;
+            float far_distance  = -10000.0f;
             float fov = M_PI / 3.0f;
 
         private:
