@@ -1,4 +1,4 @@
-#include "engine/Curve.hpp"
+#include "engine/math/Curve.hpp"
 #include "engine/vobject/VObject.hpp"
 #include "engine/vobject/Transform.hpp"
 #include "engine/vobject/Behavior.hpp"
