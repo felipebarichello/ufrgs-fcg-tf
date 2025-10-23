@@ -160,26 +160,4 @@ namespace engine {
 
         return M;
     }
-
-    glm::mat4 Matrix_Perspective(Camera* camera)
-    {
-        float n = camera->near_distance;
-        float f = camera->far_distance;
-
-        float t = fabs(n) * tanf(camera->fov / 2.0f);
-        float b = -t;
-        float r = t * engine::EngineController::get_instance()->get_screen_ratio();
-        float l = -r;
-
-        glm::mat4 P = Matrix(
-            n,    0.0f, 0.0f, 0.0f,
-            0.0f, n,    0.0f, 0.0f,
-            0.0f, 0.0f, n+f,  -f*n,
-            0.0f, 0.0f, 1.0f, 0.0f
-        );
-
-        glm::mat4 M = Matrix_Orthographic(l, r, b, t, n, f);
-
-        return -M*P;
-    }
 }

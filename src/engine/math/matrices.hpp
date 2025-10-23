@@ -9,7 +9,6 @@
 #include <cstdio>
 
 namespace engine {
-    class Camera; // Forward declaration
     glm::mat4 Matrix(
         float m00, float m01, float m02, float m03,
         float m10, float m11, float m12, float m13,
@@ -31,5 +30,4 @@ namespace engine {
     float dotproduct(glm::vec4 u, glm::vec4 v);
 
     glm::mat4 Matrix_Orthographic(float l, float r, float b, float t, float n, float f);
-    glm::mat4 Matrix_Perspective(Camera* camera);
 }

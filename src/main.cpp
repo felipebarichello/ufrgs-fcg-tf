@@ -68,7 +68,6 @@ using engine::CameraTransform;
 using engine::invert_orthonormal_matrix;
 using engine::EventManager;
 using engine::Matrix_Identity;
-using engine::Matrix_Perspective;
 using engine::Matrix_Translate;
 using engine::Matrix_Rotate;
 using engine::Matrix_Rotate_X;
@@ -192,7 +191,7 @@ void update() {
 
     auto main_camera = Camera::get_main();
 
-    projection = Matrix_Perspective(main_camera);
+    projection = main_camera->get_perspective_matrix();
 
     // Enviamos as matrizes "view" e "projection" para a placa de vídeo
     // (GPU). Veja o arquivo "shader_vertex.glsl", onde estas são
