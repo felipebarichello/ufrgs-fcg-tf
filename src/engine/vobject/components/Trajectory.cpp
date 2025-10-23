@@ -22,7 +22,7 @@ void Trajectory::Update() {
     Vec3 tangent = curve.get_tangent(this->t);
     this->t += this->speed * delta_time / norm(tangent);
     if (this->t > 1.0f) {
-        this->t = 1.0f; // Clamp t to 1.0f
+        this->t -= 1.0f;
     }
-    transform.position() += tangent;
+    transform.position() = curve.get_point(this->t);
 }
