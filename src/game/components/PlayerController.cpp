@@ -44,7 +44,7 @@ namespace game::components {
         glm::vec2 cursor_delta = EngineController::get_input()->get_cursor_position_delta();
 
         // Atualizamos parâmetros da câmera com os deslocamentos
-        float delta_pseudotheta = this->h_sensitivity * -cursor_delta.x;
+        float delta_theta = this->h_sensitivity * -cursor_delta.x;
         this->camera_phi   -= this->v_sensitivity * cursor_delta.y;
 
         // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
@@ -59,6 +59,6 @@ namespace game::components {
 
         // Rotate player in axis y by delta_theta
         auto& transform = this->get_vobject()->transform();
-        transform.quaternion() *= Quaternion::fromAxisAngle(Vec3(0.0f, 1.0f, 0.0f), delta_pseudotheta);
+        transform.quaternion() *= Quaternion::fromAxisAngle(Vec3(0.0f, 1.0f, 0.0f), delta_theta);
     }
 }
