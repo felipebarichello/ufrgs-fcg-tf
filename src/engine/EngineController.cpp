@@ -49,6 +49,11 @@ namespace engine {
         }
 
         while (!this->update_and_test_should_close()) {
+            // Update delta time
+            float current_time = static_cast<float>(glfwGetTime()); 
+            EngineController::delta_time = current_time - EngineController::last_frame_time;
+            EngineController::last_frame_time = current_time;
+            
             this->input_controller->update();
             this->current_scene->update();
             EngineController::draw(); // TODO: That should not be static

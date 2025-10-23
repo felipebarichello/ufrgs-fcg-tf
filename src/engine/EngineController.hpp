@@ -53,7 +53,8 @@ namespace engine {
             /// @brief Ticks the engine
             /// @return True if window should close
             bool update_and_test_should_close();
-
+            float last_frame_time = 0.0f;
+            float delta_time = 0.0f;
         public:
             EngineController();
             ~EngineController();
@@ -77,5 +78,6 @@ namespace engine {
             void set_screen_ratio(float ratio) { screen_ratio = ratio; }
             static GLuint get_gpu_program_id() { return gpu_program_id; }
             static std::string get_executable_directory();
+            static float get_delta_time();
     };
 }
