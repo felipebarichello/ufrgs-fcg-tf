@@ -13,6 +13,8 @@ namespace game::components {
             void Update() override;
 
         private:
+            struct SphericalInput;
+
             engine::Camera* camera;
             float planet_radius;
             
@@ -29,6 +31,7 @@ namespace game::components {
             void update_transform_due_to_environment();
             void update_transform_due_to_input();
             void update_released_camera();
+            SphericalInput get_spherical_input();
             void toggle_camera_release();
     };
 } // namespace game::components

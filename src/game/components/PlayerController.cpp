@@ -9,6 +9,11 @@ using engine::Vec3;
 using engine::math::Quaternion;
 
 namespace game::components {
+    struct PlayerController::SphericalInput {
+        float delta_theta;
+        float delta_phi;
+    };
+
     void PlayerController::Start() {
         InputController* input = EngineController::get_input();
         input->subscribe_dpad(&this->move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
@@ -65,31 +70,27 @@ namespace game::components {
 
         /* Camera (attached) movement */
 
-        // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
-        Vec2 cursor_delta = EngineController::get_input()->get_cursor_position_delta();
+        PlayerController::SphericalInput spherical = this->get_spherical_input();
+        this->camera_phi += spherical.delta_phi;
 
-        // Atualizamos parâmetros da câmera com os deslocamentos
-        float delta_theta = this->h_sensitivity * -cursor_delta.x;
-        this->camera_phi -= this->v_sensitivity * cursor_delta.y;
+        { // Don't let the player break its neck
+            float phimax = 3.141592f/2;
+            float phimin = -phimax;
 
-        // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
-        float phimax = 3.141592f/2;
-        float phimin = -phimax;
+            if (this->camera_phi > phimax)
+                this->camera_phi = phimax;
 
-        if (this->camera_phi > phimax)
-            this->camera_phi = phimax;
+            if (this->camera_phi < phimin)
+                this->camera_phi = phimin;
+        }
 
-        if (this->camera_phi < phimin)
-            this->camera_phi = phimin;
+        quaternion *= Quaternion::fromYRotation(spherical.delta_theta);
 
-        quaternion *= Quaternion::fromYRotation(delta_theta);
-
-        auto& cam_quaternion = this->camera
+        auto& cam_transform = this->camera
             ->get_vobject()
-            ->transform()
-            .quaternion();
-        
-        cam_quaternion = Quaternion::fromXRotation(this->camera_phi);
+            ->transform();
+
+        cam_transform.quaternion() = Quaternion::fromXRotation(this->camera_phi);
 
 
         /* Walking movement */
@@ -105,6 +106,19 @@ namespace game::components {
 
     void PlayerController::update_released_camera() {
         
+    }
+
+    PlayerController::SphericalInput PlayerController::get_spherical_input() {
+        PlayerController::SphericalInput spherical;
+
+        // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
+        Vec2 cursor_delta = EngineController::get_input()->get_cursor_position_delta();
+
+        // Atualizamos parâmetros da câmera com os deslocamentos
+        spherical.delta_theta = this->h_sensitivity * -cursor_delta.x;
+        spherical.delta_phi = this->v_sensitivity * -cursor_delta.y;
+
+        return spherical;
     }
 
     void PlayerController::toggle_camera_release() {
