@@ -16,7 +16,8 @@ namespace game::components {
             float speed = 0.1f;
             float camera_theta = 0.0f;
             float camera_phi = 0.0f;
-            float sensitivity = 0.1f;
+            float v_sensitivity = 0.1f;
+            float h_sensitivity = 0.001f;
 
             void update_position();
             void update_direction();

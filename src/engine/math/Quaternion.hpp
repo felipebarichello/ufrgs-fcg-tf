@@ -53,6 +53,10 @@ namespace engine::math {
 
             // Multiplication (rotation composition)
             Quaternion operator*(const Quaternion& rhs) const;
+            Quaternion& operator*=(const Quaternion& rhs) {
+                this->multiply(rhs, *this);
+                return *this;
+            }
             void multiply(const Quaternion& rhs, Quaternion& out) const; // out = (*this) * rhs
 
             // Rotate a vector by this quaternion

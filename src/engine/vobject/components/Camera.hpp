@@ -3,6 +3,7 @@
 #include <engine/vobject/Component.hpp>
 #include <engine/vobject/VObject.hpp>
 #include <engine/vobject/Transform.hpp>
+#include <cmath>
 
 namespace engine {
     class Camera : public Component {
@@ -19,7 +20,7 @@ namespace engine {
 
             float near_distance = -0.1f;
             float far_distance  = -400.0f;
-            float fov = 3.141592f / 3.0f;
+            float fov = M_PI / 3.0f;
 
             Mat4 view; // TODO: Take that out of my sight
 

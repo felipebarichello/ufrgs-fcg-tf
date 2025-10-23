@@ -3,6 +3,7 @@
 
 using engine::EngineController;
 using engine::Vec3;
+using engine::math::Quaternion;
 
 namespace game::components {
     void PlayerController::Start() {
@@ -30,8 +31,8 @@ namespace game::components {
         glm::vec2 cursor_delta = EngineController::get_input()->get_cursor_position_delta();
 
         // Atualizamos parâmetros da câmera com os deslocamentos
-        this->camera_theta -= this->sensitivity * cursor_delta.x;
-        this->camera_phi   -= this->sensitivity * cursor_delta.y;
+        float delta_pseudotheta = this->h_sensitivity * -cursor_delta.x;
+        this->camera_phi   -= this->v_sensitivity * cursor_delta.y;
 
         // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
         float phimax = 3.141592f/2;
@@ -43,17 +44,8 @@ namespace game::components {
         if (this->camera_phi < phimin)
             this->camera_phi = phimin;
 
-        // // Calculamos o novo vetor direção da câmera em coordenadas cartesianas
-        // float x = cosf(this->camera_phi) * sinf(this->camera_theta);
-        // float y = sinf(this->camera_phi);
-        // float z = -cosf(this->camera_phi) * cosf(this->camera_theta);
-
-        // Vec3 camera_view_unit_vector = Vec3(x, y, z);
-        // camera_view_unit_vector = engine::math::normalize(camera_view_unit_vector);
-
-        // // Atualizamos o quaternion do objeto da câmera para olhar na direção correta
-        // auto& transform = this->get_vobject()->transform();
-        // Vec3 up_vector = Vec3(0.0f, 1.0f, 0.0f);
-        // transform.quaternion() = engine::math::Quaternion::fromLookAt(camera_view_unit_vector, up_vector);
+        // Rotate player in axis y by delta_theta
+        auto& transform = this->get_vobject()->transform();
+        transform.quaternion() *= Quaternion::fromAxisAngle(Vec3(0.0f, 1.0f, 0.0f), delta_pseudotheta);
     }
 }
