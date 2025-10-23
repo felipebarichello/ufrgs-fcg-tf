@@ -20,65 +20,65 @@ namespace engine::math {
     using CQuaternion = ::CQuaternion;
 
     class Quaternion {
-    public:
-        // Default constructs identity quaternion
-        Quaternion();
+        public:
+            // Default constructs identity quaternion
+            Quaternion();
 
-        // Construct from components
-        Quaternion(double w, double v1, double v2, double v3);
+            // Construct from components
+            Quaternion(double w, double v1, double v2, double v3);
 
-        // Copy / move
-        Quaternion(const Quaternion& other);
-        Quaternion(Quaternion&&) noexcept = default;
-        Quaternion& operator=(const Quaternion& other);
-        Quaternion& operator=(Quaternion&&) noexcept = default;
+            // Copy / move
+            Quaternion(const Quaternion& other);
+            Quaternion(Quaternion&&) noexcept = default;
+            Quaternion& operator=(const Quaternion& other);
+            Quaternion& operator=(Quaternion&&) noexcept = default;
 
-        // Factory
-        static Quaternion identity();
-        static Quaternion fromAxisAngle(const Vec3& axis, double angle);
-        double toAxisAngle(Vec3& outAxis) const; // returns angle, fills outAxis
+            // Factory
+            static Quaternion identity();
+            static Quaternion fromAxisAngle(const Vec3& axis, double angle);
+            double toAxisAngle(Vec3& outAxis) const; // returns angle, fills outAxis
 
-        static Quaternion fromEulerZYX(const Vec3& eulerZYX);
-        Vec3 toEulerZYX() const;
+            static Quaternion fromEulerZYX(const Vec3& eulerZYX);
+            Vec3 toEulerZYX() const;
 
-        static Quaternion fromXRotation(double angle);
-        static Quaternion fromYRotation(double angle);
-        static Quaternion fromZRotation(double angle);
+            static Quaternion fromXRotation(double angle);
+            static Quaternion fromYRotation(double angle);
+            static Quaternion fromZRotation(double angle);
 
-        double norm() const;
-        Quaternion normalized() const;
-        void normalize_inplace();
+            double norm() const;
+            Quaternion normalized() const;
+            void normalize_inplace();
 
-        Quaternion conjugated() const;
+            Quaternion conjugated() const;
 
-        // Multiplication (rotation composition)
-        Quaternion operator*(const Quaternion& rhs) const;
-        void multiply(const Quaternion& rhs, Quaternion& out) const; // out = (*this) * rhs
+            // Multiplication (rotation composition)
+            Quaternion operator*(const Quaternion& rhs) const;
+            void multiply(const Quaternion& rhs, Quaternion& out) const; // out = (*this) * rhs
 
-        // Rotate a vector by this quaternion
-        Vec3 rotate(const Vec3& v) const;
+            // Rotate a vector by this quaternion
+            Vec3 rotate(const Vec3& v) const;
 
-        // Spherical linear interpolation
-        static Quaternion slerp(const Quaternion& q1, const Quaternion& q2, double t);
+            // Spherical linear interpolation
+            static Quaternion slerp(const Quaternion& q1, const Quaternion& q2, double t);
 
-        // Equality (uses QUATERNION_EPS)
-        bool operator==(const Quaternion& other) const;
-        bool operator!=(const Quaternion& other) const { return !(*this == other); }
+            // Equality (uses QUATERNION_EPS)
+            bool operator==(const Quaternion& other) const;
+            bool operator!=(const Quaternion& other) const { return !(*this == other); }
 
-        // Print helpers
-        void fprint(FILE* file) const;
-        std::string to_string() const;
+            // Print helpers
+            void fprint(FILE* file) const;
+            std::string to_string() const;
 
-        // Access raw components
-        double w() const;
-        Vec3 v() const;
+            // Access raw components
+            double w() const;
+            Vec3 v() const;
 
-        // Access underlying C struct (for advanced usage)
-        const CQuaternion* c_ptr() const { return &inner; }
-        CQuaternion* c_ptr() { return &inner; }
+            // Access underlying C struct (for advanced usage)
+            const CQuaternion* c_ptr() const { return &inner; }
+            CQuaternion* c_ptr() { return &inner; }
 
-    private:
-        CQuaternion inner;
+        private:
+            CQuaternion inner;
     };
 
     // ostream support
