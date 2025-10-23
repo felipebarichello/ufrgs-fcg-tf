@@ -27,7 +27,6 @@
 #include <sstream>
 
 // Headers locais, definidos na pasta "include/"
-#include <utils.h>
 #include <engine>
 
 #include "game/scenes/MainScene.hpp"
