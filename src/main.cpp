@@ -160,11 +160,6 @@ void update() {
     // os shaders de vértice e fragmentos).
     glUseProgram(g_engine_controller->get_gpu_program_id());
 
-    // "Ligamos" o VAO. Informamos que queremos utilizar os atributos de
-    // vértices apontados pelo VAO criado pela função BuildTriangles(). Veja
-    // comentários detalhados dentro da definição de BuildTriangles().
-    glBindVertexArray(g_vertex_array_object_id);
-
     Vec3 camera_position_c; // Camera center (position)
     Vec3 camera_view_unit_vector; // Direction the camera is pointing
 
