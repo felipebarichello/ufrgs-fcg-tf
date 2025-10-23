@@ -5,8 +5,6 @@
 #include <fstream>
 #include <memory>
 #include "InputController.hpp"
-#include "EventManager.hpp"
-#include <memory>
 #include "vobject/Scene.hpp"
 #include "vobject/SceneBoot.hpp"
 
@@ -31,7 +29,6 @@ namespace engine {
             GLFWwindow* window;
             std::unique_ptr<InputController> input_controller;
             std::unique_ptr<ObjLoader> obj_loader;
-            EventManager event_manager;
             std::unique_ptr<Scene> current_scene;
             bool is_fullscreen;
             int windowed_width;
@@ -63,7 +60,6 @@ namespace engine {
 
             static EngineController* get_instance();
             static EngineController* start_engine(WindowConfig window_config);
-            static EventManager& get_events(); // TODO: Remove this static method
             static InputController* get_input(); // TODO: Remove this static method
             static void update_main_camera();
 
@@ -75,7 +71,6 @@ namespace engine {
             void toggle_fullscreen();
             static void add_drawable(Drawable* drawable);
             static void remove_drawable(Drawable* drawable);
-            EventManager& events() { return this->event_manager; }
             GLFWwindow* get_window();
             InputController* input();
             float get_screen_ratio() { return screen_ratio; }

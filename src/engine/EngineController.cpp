@@ -50,7 +50,7 @@ namespace engine {
 
         while (!this->update_and_test_should_close()) {
             this->input_controller->update();
-            this->event_manager.update(); // TODO: Update each scene separately?
+            this->current_scene->update();
             EngineController::draw(); // TODO: That should not be static
             glfwSwapBuffers(this->window);
         }
@@ -77,10 +77,6 @@ namespace engine {
 
     InputController* EngineController::input() {
         return this->input_controller.get();
-    }
-
-    EventManager& EngineController::get_events() {
-        return EngineController::instance->event_manager;
     }
 
     InputController* EngineController::get_input() {

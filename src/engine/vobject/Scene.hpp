@@ -18,6 +18,10 @@ namespace engine {
             Scene() = default;
             VObject* instantiate(VObjectConfig& vobject_config);
 
+            void update() {
+                this->scheduler.update();
+            }
+
         private:
             /// @brief 0 can be used as an invalid ID.
             VObject::Id next_vobject_id = 1;

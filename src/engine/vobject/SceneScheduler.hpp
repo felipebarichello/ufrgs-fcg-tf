@@ -7,7 +7,7 @@ namespace engine {
     // TODO: Unsubscribe methods on destroy
     class SceneScheduler {
         public:
-            SceneScheduler();
+            SceneScheduler() = default;
 
             void schedule_awaken(Behavior* component) {
                 this->awaken_queue.push_back(component);
@@ -43,16 +43,16 @@ namespace engine {
                 }
             }
 
-        private:
-            std::vector<Behavior*> awaken_queue;
-            std::vector<Behavior*> start_queue;
-            std::vector<Behavior*> update_subscribers;
-
             void update() {
                 this->trigger_awaken();
                 this->trigger_start();
                 this->trigger_update();
             }
+
+        private:
+            std::vector<Behavior*> awaken_queue;
+            std::vector<Behavior*> start_queue;
+            std::vector<Behavior*> update_subscribers;
     };
 
 } // namespace engine

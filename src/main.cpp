@@ -61,7 +61,6 @@ using engine::Vao;
 using engine::VaoBuilder;
 using engine::CameraTransform;
 using engine::invert_orthonormal_matrix;
-using engine::EventManager;
 using engine::InputController;
 using engine::ObjLoader;
 using game::scenes::MainScene;
