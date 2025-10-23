@@ -43,7 +43,9 @@ namespace engine {
             ///
             /// # Critical
             ///
-            /// This causes the ex-child not to be destroyed when `this` is destroyed
+            /// This causes the ex-child not to be destroyed when `this` is destroyed.
+            ///
+            /// Transform inheritance will also be lost.
             ///
             /// @param child 
             void disown_child(VObject* child);

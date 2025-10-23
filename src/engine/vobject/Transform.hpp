@@ -46,6 +46,9 @@ namespace engine {
 
             Mat4 get_model_matrix();
 
+            /// @brief Copy everything but the `VObject*`
+            void copy_values_from(const Transform&);
+
             VObject* get_vobject() {
                 return this->vobject_ptr;
             }

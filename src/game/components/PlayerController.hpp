@@ -3,6 +3,8 @@
 #include <engine>
 #include <memory>
 
+using engine::Transform;
+
 namespace game::components {
     class PlayerController : public engine::Behavior {
         public:
@@ -13,7 +15,8 @@ namespace game::components {
         private:
             engine::Camera* camera;
             float planet_radius;
-
+            
+            Transform stored_child_cam_transform;
             engine::Vec2 move_vector {0.0f, 0.0f};
             engine::Vec3 current_velocity {0.0f, 0.0f, 0.0f};
             float speed = 0.1f;

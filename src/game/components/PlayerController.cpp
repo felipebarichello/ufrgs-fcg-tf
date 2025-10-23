@@ -98,11 +98,15 @@ namespace game::components {
 
     void PlayerController::toggle_camera_release() {
         this->released_camera = !this->released_camera;
+        auto camera_vobj = this->camera->get_vobject();
 
         if (this->released_camera) {
-            this->get_vobject()->disown_child(this->camera->get_vobject());
+            this->get_vobject()->disown_child(camera_vobj);
+            this->stored_child_cam_transform = camera_vobj->transform();
+            camera_vobj->transform().copy_values_from(this->get_vobject()->transform()); // Keep transform after disowning
         } else {
             this->get_vobject()->add_child(this->camera->get_vobject());
+            camera_vobj->transform() = this->stored_child_cam_transform;
         }
     }
 }

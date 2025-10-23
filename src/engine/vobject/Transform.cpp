@@ -53,6 +53,14 @@ void Transform::update_matrix() {
     this->dirty = false;
 }
 
+void Transform::copy_values_from(const Transform& other) {
+    this->_position = other._position;
+    this->_quaternion = other._quaternion;
+    this->_scale = other._scale;
+    this->transform_matrix = other.transform_matrix;
+    this->dirty = other.dirty;
+}
+
 std::optional<Transform*> Transform::get_parent() {
     auto p = this->vobject_ptr->get_parent();
     if (p) {
