@@ -16,11 +16,11 @@ using namespace game::components;
 
 namespace game::scenes {
     void MainScene::hierarchy(SceneRoot& root) {
-        PlayerController* player_controller = new PlayerController();
-        temp::player_controller = player_controller;
-
         Camera* main_camera = new Camera();
         Camera::set_main(main_camera);
+
+        PlayerController* player_controller = new PlayerController(main_camera);
+        temp::player_controller = player_controller;
 
         root
             .vobject(VObjectConfig()
