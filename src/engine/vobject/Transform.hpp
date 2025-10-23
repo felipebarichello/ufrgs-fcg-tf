@@ -11,11 +11,6 @@ namespace engine {
 
     class VObject; // Forward declaration
 
-    class ITransform {
-        public:
-            virtual Mat4 get_matrix() = 0;
-    };
-
     class Transform {
         public:
             friend class Scene;
