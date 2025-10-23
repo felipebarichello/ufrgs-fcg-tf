@@ -1,14 +1,18 @@
 #include "PlayerController.hpp"
 #include <engine>
+#include <InputController.hpp>
 
 using engine::EngineController;
+using engine::InputController;
 using engine::Vec2;
 using engine::Vec3;
 using engine::math::Quaternion;
 
 namespace game::components {
     void PlayerController::Start() {
-        EngineController::get_input()->subscribe_dpad(&this->move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
+        InputController* input = EngineController::get_input();
+        input->subscribe_dpad(&this->move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
+        input->subscribe_press_button(GLFW_KEY_F, std::bind(&PlayerController::toggle_camera_release, this));
     }
 
     void PlayerController::Update() {
@@ -90,5 +94,15 @@ namespace game::components {
             .quaternion();
         
         cam_quaternion = Quaternion::fromXRotation(this->camera_phi);
+    }
+
+    void PlayerController::toggle_camera_release() {
+        this->released_camera = !this->released_camera;
+
+        if (this->released_camera) {
+            this->get_vobject()->disown_child(this->camera->get_vobject());
+        } else {
+            this->get_vobject()->add_child(this->camera->get_vobject());
+        }
     }
 }

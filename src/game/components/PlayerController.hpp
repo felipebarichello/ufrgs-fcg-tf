@@ -20,8 +20,10 @@ namespace game::components {
             float camera_phi = 0.0f;
             float v_sensitivity = 0.001f;
             float h_sensitivity = 0.001f;
+            bool released_camera = false;
 
             void update_position();
             void update_direction();
+            void toggle_camera_release();
     };
 } // namespace game::components

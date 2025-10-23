@@ -20,6 +20,28 @@ namespace engine {
         this->components.push_back(std::move(component));
     }
 
+    void VObject::disown_child(VObject* child) {
+        auto obj_id = child->get_id();
+        std::size_t elements_destroyed = static_cast<bool>(this->children.erase(obj_id));
+
+        // TODO: Better error logging
+        if (elements_destroyed <= 0) {
+            std::cerr << "VObject " << this->id
+                << " tried to disown child " << child->get_id();
+                
+            auto real_parent = child->get_parent();
+            if (real_parent) {
+                std::cerr << " that belongs to " << real_parent.value();
+            } else {
+                std::cerr << " that does not have a parent";
+            }
+            
+            return;
+        }
+
+        child->set_parent_raw(std::nullopt);
+    }
+
     void VObject::destroy() {
         // Tell the components they are being destroyed so they can clean up
         for (auto& item : this->components) {
@@ -27,8 +49,8 @@ namespace engine {
         }
 
         // Destroy all children
-        for (VObject* child : this->children) {
-            child->destroy();
+        for (auto child : this->children) {
+            child.second->destroy();
         }
 
         this->scene->delete_vobject(this);
