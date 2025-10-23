@@ -51,13 +51,8 @@ void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 using engine::EngineController;
 using engine::WindowConfig;
 using engine::Camera;
-using engine::Vec3;
-using engine::Vec2;
-using engine::Mat4;
-using engine::Vao; 
 using engine::VaoBuilder;
 using engine::InputController;
-using engine::ObjLoader;
 using game::scenes::MainScene;
 
 // Definimos uma estrutura que armazenará dados necessários para renderizar
