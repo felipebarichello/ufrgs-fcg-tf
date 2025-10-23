@@ -5,6 +5,7 @@
 namespace engine {
     class Curve {
         public:
+            Curve() = default;
             Curve(const std::vector<Vec3> pts);
         private:
             std::vector<Vec3> points;
