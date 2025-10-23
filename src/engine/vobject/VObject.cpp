@@ -20,6 +20,7 @@ namespace engine {
         this->components.push_back(std::move(component));
     }
 
+    // TODO: For many cases, it's better to disown the transform only
     void VObject::disown_child(VObject* child) {
         auto obj_id = child->get_id();
         std::size_t elements_destroyed = static_cast<bool>(this->children.erase(obj_id));

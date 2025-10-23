@@ -39,9 +39,18 @@ namespace engine {
                 child->set_parent_raw(this);
             }
 
+            /// @brief Make child VObject a root VObject
+            ///
+            /// # Critical
+            ///
+            /// This causes the ex-child not to be destroyed when `this` is destroyed
+            ///
+            /// @param child 
             void disown_child(VObject* child);
 
-            /// @brief CRITICAL: This is a dangerous operation that may cause dangling pointers!
+            /// @brief # Critical
+            ///
+            /// This is a dangerous operation that may cause dangling pointers!
             void destroy(); // TODO: Defer destruction to end of frame?
 
             Transform& transform();
