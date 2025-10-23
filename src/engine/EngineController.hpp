@@ -65,7 +65,7 @@ namespace engine {
             static EngineController* start_engine(WindowConfig window_config);
             static EventManager& get_events(); // TODO: Remove this static method
             static InputController* get_input(); // TODO: Remove this static method
-            static void update_camera();
+            static void update_main_camera();
 
             // TODO: Move to shader
             GLint g_view_uniform;

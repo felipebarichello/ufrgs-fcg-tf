@@ -62,13 +62,6 @@ using engine::VaoBuilder;
 using engine::CameraTransform;
 using engine::invert_orthonormal_matrix;
 using engine::EventManager;
-using engine::Matrix_Identity;
-using engine::Matrix_Translate;
-using engine::Matrix_Rotate;
-using engine::Matrix_Rotate_X;
-using engine::Matrix_Rotate_Y;
-using engine::Matrix_Rotate_Z;
-using engine::Matrix_Scale;
 using engine::InputController;
 using engine::ObjLoader;
 using game::scenes::MainScene;
@@ -84,12 +77,6 @@ struct SceneObject {
 
 // Abaixo definimos variáveis globais utilizadas em várias funções do código.
 EngineController* g_engine_controller;
-
-Vec3 g_free_camera_right_vector     = Vec3(1.0f, 0.0f, 0.0f);
-Vec3 g_free_camera_up_vector        = Vec3(0.0f, 1.0f, 0.0f);
-Vec2 g_free_camera_move_vector      = Vec2(0.0f, 0.0f);
-
-void update();
 
 int main() {
     // TODO: Move configuration to game?
@@ -110,18 +97,8 @@ int main() {
     // Enable z-buffer
     glEnable(GL_DEPTH_TEST);
 
-    EventManager& events = g_engine_controller->events();
-    events.subscribe_update(update);
-
     std::unique_ptr<MainScene> initial_scene = std::make_unique<MainScene>();
     g_engine_controller->hand_over_control(initial_scene.get());
+    
     return 0;
-}
-
-void update() {
-    auto main_camera = Camera::get_main();
-    // main_camera->set_basis_from_up_view(g_free_camera_up_vector, camera_view_unit_vector);
-    Mat4 view = invert_orthonormal_matrix(main_camera->get_vobject()->transform().get_model_matrix());
-    main_camera->view = view;
-    g_free_camera_right_vector = Vec3(view[0][0], view[1][0], view[2][0]);
 }

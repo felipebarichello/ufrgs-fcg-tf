@@ -22,8 +22,6 @@ namespace engine {
             float far_distance  = -400.0f;
             float fov = M_PI / 3.0f;
 
-            Mat4 view; // TODO: Take that out of my sight
-
         private:
             inline static Camera* main = nullptr;
     };
