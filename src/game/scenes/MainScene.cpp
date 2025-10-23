@@ -2,7 +2,6 @@
 #include <game/components/PlayerController.hpp>
 #include <engine/vobject/Transform.hpp>
 #include <game/components/drawables/BunnyDrawable.hpp>
-#include "../temp_globals.hpp"
 #include <engine/vobject/components/Trajectory.hpp>
 #include <engine/math/BezierCurve.hpp>
 #include <engine/math/CircularCurve.hpp>
@@ -27,14 +26,11 @@ namespace game::scenes {
         Camera* main_camera = new Camera();
         Camera::set_main(main_camera);
 
-        PlayerController* player_controller = new PlayerController(main_camera, planet_radius);
-        temp::player_controller = player_controller;
-
         root
             .vobject(VObjectConfig()
                 .transform(TransformBuilder()
-                    .position(Vec3(100.0f, 0.0f, 0.0f)))
-                .component(player_controller)
+                    .position(Vec3(0.0f, 0.0f, 100.0f)))
+                .component(new PlayerController(main_camera, planet_radius))
                 .child(
                     VObjectConfig()
                         .transform(TransformBuilder()
