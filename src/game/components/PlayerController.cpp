@@ -1,6 +1,7 @@
 #include "PlayerController.hpp"
 #include <engine>
 #include <InputController.hpp>
+#include <algorithm>
 
 using engine::EngineController;
 using engine::InputController;
@@ -71,26 +72,8 @@ namespace game::components {
         /* Camera (attached) movement */
 
         PlayerController::SphericalInput spherical = this->get_spherical_input();
-        this->camera_phi += spherical.delta_phi;
-
-        { // Don't let the player break its neck
-            float phimax = 3.141592f/2;
-            float phimin = -phimax;
-
-            if (this->camera_phi > phimax)
-                this->camera_phi = phimax;
-
-            if (this->camera_phi < phimin)
-                this->camera_phi = phimin;
-        }
-
+        this->set_camera_phi(this->camera_phi + spherical.delta_phi);
         quaternion *= Quaternion::fromYRotation(spherical.delta_theta);
-
-        auto& cam_transform = this->camera
-            ->get_vobject()
-            ->transform();
-
-        cam_transform.quaternion() = Quaternion::fromXRotation(this->camera_phi);
 
 
         /* Walking movement */
@@ -105,7 +88,11 @@ namespace game::components {
     }
 
     void PlayerController::update_released_camera() {
-        
+        auto& transform = this->get_vobject()->transform();
+        auto& quaternion = transform.quaternion();
+
+        PlayerController::SphericalInput spherical = this->get_spherical_input();
+        quaternion *= Quaternion::fromYRotation(spherical.delta_theta);
     }
 
     PlayerController::SphericalInput PlayerController::get_spherical_input() {
@@ -119,6 +106,16 @@ namespace game::components {
         spherical.delta_phi = this->v_sensitivity * -cursor_delta.y;
 
         return spherical;
+    }
+
+    void PlayerController::set_camera_phi(float new_phi) {
+        this->camera_phi = std::clamp(new_phi, this->phi_min, this->phi_max); // Don't let the player break their neck
+        
+        auto& cam_transform = this->camera
+            ->get_vobject()
+            ->transform();
+
+        cam_transform.quaternion() = Quaternion::fromXRotation(this->camera_phi);
     }
 
     void PlayerController::toggle_camera_release() {

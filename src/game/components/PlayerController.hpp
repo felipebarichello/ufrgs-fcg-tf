@@ -27,11 +27,14 @@ namespace game::components {
             float h_sensitivity = 0.001f;
             bool released_camera = false;
             engine::Vec2 secondary_move_vector {0.0f, 0.0f};
+            float phi_max = 3.141592f/2;
+            float phi_min = -3.141592f/2;
 
             void update_transform_due_to_environment();
             void update_transform_due_to_input();
             void update_released_camera();
             SphericalInput get_spherical_input();
+            void set_camera_phi(float new_phi);
             void toggle_camera_release();
     };
 } // namespace game::components
