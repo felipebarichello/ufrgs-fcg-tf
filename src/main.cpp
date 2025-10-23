@@ -1,32 +1,3 @@
-//     Universidade Federal do Rio Grande do Sul
-//             Instituto de Informática
-//       Departamento de Informática Aplicada
-//
-//    INF01047 Fundamentos de Computação Gráfica
-//               Prof. Eduardo Gastal
-//
-//                   LABORATÓRIO 2
-//
-
-// Arquivos "headers" padrões de C podem ser incluídos em um
-// programa C++, sendo necessário somente adicionar o caractere
-// "c" antes de seu nome, e remover o sufixo ".h". Exemplo:
-//    #include <stdio.h> // Em C
-//  vira
-//    #include <cstdio> // Em C++
-//
-#include <cmath>
-#include <cstdio>
-#include <cstdlib>
-
-// Headers abaixo são específicos de C++
-#include <map>
-#include <string>
-#include <limits>
-#include <fstream>
-#include <sstream>
-
-// Headers locais, definidos na pasta "include/"
 #include <engine>
 
 #include "game/scenes/MainScene.hpp"
