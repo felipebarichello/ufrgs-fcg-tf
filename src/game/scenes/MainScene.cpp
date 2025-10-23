@@ -19,15 +19,18 @@ namespace game::scenes {
         PlayerController* player_controller = new PlayerController();
         temp::player_controller = player_controller;
 
+        Camera* main_camera = new Camera();
+        Camera::set_main(main_camera);
+
         root
             .vobject(VObjectConfig()
                 .transform(TransformBuilder()
-                    .position(Vec3(0.0f, 0.0f, 3.0f)))
+                    .position(Vec3(0.0f, 22.0f, 0.0f)))
                 .component(player_controller)
                 .child(VObjectConfig()
                     .transform(TransformBuilder()
                         .rotation(Quaternion::fromEulerZYX(Vec3(0.0f, -M_PI, 0.0f))))
-                    .component(new Camera())
+                    .component(main_camera)
                 )
             )
             .vobject(VObjectConfig()

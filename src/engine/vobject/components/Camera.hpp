@@ -6,6 +6,17 @@
 
 namespace engine {
     class Camera : public Component {
+        public:
+            static Camera* get_main() {
+                return Camera::main;
+            }
+
+            static void set_main(Camera* camera) {
+                Camera::main = camera;
+            }
+
+        private:
+            inline static Camera* main = nullptr;
     };
 
     struct CameraTransform : public ITransform {
