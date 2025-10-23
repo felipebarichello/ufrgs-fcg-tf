@@ -122,7 +122,6 @@ GLint g_view_uniform;
 GLint g_projection_uniform;
 
 const float g_sensitivity = 0.005f;
-const float field_of_view = 3.141592f / 3.0f;
 
 void update();
 
@@ -191,10 +190,9 @@ void update() {
 
     glm::mat4 projection;
 
-    float nearplane = -0.1f;  // Posição do "near plane"
-    float farplane  = -400.0f; // Posição do "far plane"
+    auto main_camera = Camera::get_main();
 
-    projection = Matrix_Perspective(field_of_view, g_engine_controller->get_screen_ratio(), nearplane, farplane);
+    projection = Matrix_Perspective(main_camera->fov, g_engine_controller->get_screen_ratio(), main_camera->near_distance, main_camera->far_distance);
 
     // Enviamos as matrizes "view" e "projection" para a placa de vídeo
     // (GPU). Veja o arquivo "shader_vertex.glsl", onde estas são

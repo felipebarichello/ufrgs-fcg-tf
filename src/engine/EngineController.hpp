@@ -61,6 +61,7 @@ namespace engine {
             EngineController();
             ~EngineController();
 
+            static EngineController* get_instance();
             static EngineController* start_engine(WindowConfig window_config);
             static EventManager& get_events(); // TODO: Remove this static method
             static InputController* get_input(); // TODO: Remove this static method

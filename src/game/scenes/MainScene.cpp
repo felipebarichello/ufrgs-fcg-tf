@@ -25,7 +25,7 @@ namespace game::scenes {
         root
             .vobject(VObjectConfig()
                 .transform(TransformBuilder()
-                    .position(Vec3(0.0f, 22.0f, 0.0f)))
+                    .position(Vec3(0.0f, 20.5f, 0.0f)))
                 .component(player_controller)
                 .child(VObjectConfig()
                     .transform(TransformBuilder()

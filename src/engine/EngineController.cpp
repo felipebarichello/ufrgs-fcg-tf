@@ -33,6 +33,10 @@ namespace engine {
         return EngineController::instance.get();
     }
 
+    EngineController* EngineController::get_instance() {
+        return EngineController::instance.get();
+    }
+
     void EngineController::hand_over_control(SceneBoot* initial_scene) {
         // TODO: Scenes get created twice because this is not a constructor
         this->current_scene = std::make_unique<Scene>();
