@@ -6,20 +6,41 @@ using engine::Vec3;
 
 namespace game::components {
     void PlayerController::Start() {
-        EngineController::get_input()->subscribe_dpad(&this->move_vector, GLFW_KEY_I, GLFW_KEY_K, GLFW_KEY_J, GLFW_KEY_L);
+        EngineController::get_input()->subscribe_dpad(&this->move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
     }
 
     void PlayerController::Update() {
-        // auto velocity = this->speed * this->move_vector;
-        // // move in local X (right) / Y (forward) relative to player yaw
-        // auto& tf = this->get_vobject()->transform();
-        // // Extract yaw (rotation around Y) from the quaternion by converting
-        // // to Euler ZYX (returns angles in order Z, Y, X). We only need Y.
-        // engine::Vec3 eulerZYX = tf.get_quaternion().toEulerZYX();
-        // float yaw = eulerZYX.y; // assume Y is up (radians)
-        // float c = std::cos(yaw), s = std::sin(yaw);
-        // float wx = velocity.x * c - velocity.y * s;
-        // float wz = velocity.x * s + velocity.y * c;
-        // tf.position() = Vec3(wx, 0.0f, wz);
+        this->update_position();
+        this->update_direction();
+    }
+
+    void PlayerController::update_position() {
+        auto& transform = this->get_vobject()->transform();
+        auto& quaternion = transform.quaternion();
+
+        Vec3 front_of_player = quaternion.rotate(Vec3(0.0f, 0.0f, -1.0f));
+        Vec3 right_of_player = quaternion.rotate(Vec3(1.0f, 0.0f, 0.0f));
+
+        transform.position() += this->speed * this->move_vector.y * front_of_player;
+        transform.position() += this->speed * this->move_vector.x * right_of_player;
+    }
+
+    void PlayerController::update_direction() {
+        // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
+        glm::vec2 cursor_delta = EngineController::get_input()->get_cursor_position_delta();
+
+        // Atualizamos parâmetros da câmera com os deslocamentos
+        this->camera_theta -= this->sensitivity * cursor_delta.x;
+        this->camera_phi   -= this->sensitivity * cursor_delta.y;
+
+        // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
+        float phimax = 3.141592f/2;
+        float phimin = -phimax;
+
+        if (this->camera_phi > phimax)
+            this->camera_phi = phimax;
+
+        if (this->camera_phi < phimin)
+            this->camera_phi = phimin;
     }
 }

@@ -45,15 +45,10 @@
 
 #include <temp_globals.hpp>
 
-//GLuint CreateGpuProgram(GLuint vertex_shader_id, GLuint fragment_shader_id); // Cria um programa de GPU
-void update_free_camera_position();
-
 // Funções callback para comunicação com o sistema operacional e interação do
 // usuário. Veja mais comentários nas definições das mesmas, abaixo.
 //void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
 void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
-
-void update_free_camera_direction(); 
 
 using engine::EngineController;
 using engine::WindowConfig;
@@ -90,27 +85,9 @@ struct SceneObject {
 // Abaixo definimos variáveis globais utilizadas em várias funções do código.
 EngineController* g_engine_controller;
 
-// Razão de proporção da janela (largura/altura). Veja função FramebufferSizeCallback().
-//float g_ScreenRatio = 1.0f;
-
-// Variáveis que definem a câmera em coordenadas esféricas, controladas pelo
-// usuário através do mouse (veja função CursorPosCallback()). A posição
-// efetiva da câmera é calculada dentro da função main(), dentro do loop de
-// renderização.
-float g_CameraTheta = -3.14159265f; // Ângulo no plano ZX em relação ao eixo Z
-float g_CameraPhi = 0.0f;   // Ângulo em relação ao eixo Y
-float g_CameraDistance = 2.5f; // Distância da câmera para a origem
-
-const Vec3 g_camera_start_position = Vec3(0.0f, 0.0f, 2.5f);
-
-Vec3 g_free_camera_view_unit_vector = Vec3(0.0f, 0.0f, -1.0f);
 Vec3 g_free_camera_right_vector     = Vec3(1.0f, 0.0f, 0.0f);
 Vec3 g_free_camera_up_vector        = Vec3(0.0f, 1.0f, 0.0f);
 Vec2 g_free_camera_move_vector      = Vec2(0.0f, 0.0f);
-
-float g_free_camera_speed = 0.1f;
-
-const float g_sensitivity = 0.005f;
 
 void update();
 
@@ -121,9 +98,6 @@ int main() {
         800,
         "FCG - Trabalho Final"
     ));
-
-    g_engine_controller->input()->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
-    g_engine_controller->input()->subscribe_dpad(&g_free_camera_move_vector, GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT);
     
     // Subscribe F11 key to toggle fullscreen
     g_engine_controller->input()->subscribe_press_button(GLFW_KEY_F11, [&]() {
@@ -145,54 +119,9 @@ int main() {
 }
 
 void update() {
-    Vec3 camera_view_unit_vector; // Direction the camera is pointing
-
-    // Update da posição da câmera de acordo com o input de movimento
-    update_free_camera_position();
-    update_free_camera_direction();
-
-    camera_view_unit_vector = g_free_camera_view_unit_vector;
-
-    float y = sin(g_CameraPhi);
-    float z = cos(g_CameraPhi)*cos(g_CameraTheta);
-    float x = cos(g_CameraPhi)*sin(g_CameraTheta);
-    
-    camera_view_unit_vector = Vec3(x, y, z);
-
     auto main_camera = Camera::get_main();
     // main_camera->set_basis_from_up_view(g_free_camera_up_vector, camera_view_unit_vector);
     Mat4 view = invert_orthonormal_matrix(main_camera->get_vobject()->transform().get_model_matrix());
     main_camera->view = view;
     g_free_camera_right_vector = Vec3(view[0][0], view[1][0], view[2][0]);
-}
-
-void update_free_camera_position() {
-    auto& camt = temp::player_controller->get_vobject()->transform();
-    camt.position() += g_free_camera_speed * g_free_camera_move_vector.y * g_free_camera_view_unit_vector;
-    camt.position() += g_free_camera_speed * g_free_camera_move_vector.x * g_free_camera_right_vector;
-}
-
-void update_free_camera_direction() {
-    // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
-    glm::vec2 cursor_delta = g_engine_controller->input()->get_cursor_position_delta();
-
-    // Atualizamos parâmetros da câmera com os deslocamentos
-    g_CameraTheta -= g_sensitivity*cursor_delta.x;
-    g_CameraPhi   -= g_sensitivity*cursor_delta.y;
-
-    // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
-    float phimax = 3.141592f/2;
-    float phimin = -phimax;
-
-    if (g_CameraPhi > phimax)
-        g_CameraPhi = phimax;
-
-    if (g_CameraPhi < phimin)
-        g_CameraPhi = phimin;
-
-    g_free_camera_view_unit_vector = Vec3(
-        cosf(g_CameraPhi) * sinf(g_CameraTheta),
-        sinf(g_CameraPhi),
-        cosf(g_CameraPhi) * cosf(g_CameraTheta)
-    );
 }
