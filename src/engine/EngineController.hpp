@@ -54,7 +54,7 @@ namespace engine {
             /// @return True if window should close
             bool update_and_test_should_close();
             float last_frame_time = 0.0f;
-            float delta_time = 0.0f;
+            static float delta_time;
         public:
             EngineController();
             ~EngineController();

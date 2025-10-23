@@ -7,6 +7,8 @@
 #include <stdexcept>
 
 namespace engine {
+
+    float EngineController::delta_time = 0.0f;
     // Definition of static members declared in controller.hpp
     // Define the singleton instance (was declared in the header but not defined)
     std::unique_ptr<EngineController> EngineController::instance;
@@ -53,7 +55,7 @@ namespace engine {
             float current_time = static_cast<float>(glfwGetTime()); 
             EngineController::delta_time = current_time - EngineController::last_frame_time;
             EngineController::last_frame_time = current_time;
-            
+
             this->input_controller->update();
             this->current_scene->update();
             EngineController::draw(); // TODO: That should not be static
@@ -424,5 +426,9 @@ namespace engine {
                                 mode->refreshRate);
             this->is_fullscreen = true;
         }
+    }
+
+    float EngineController::get_delta_time() {
+        return EngineController::delta_time;
     }
 } // namespace engine
