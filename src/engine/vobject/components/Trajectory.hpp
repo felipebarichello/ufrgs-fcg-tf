@@ -1,8 +1,8 @@
-#include "engine/math/Curve.hpp"
-#include "engine/vobject/VObject.hpp"
-#include "engine/vobject/Transform.hpp"
-#include "engine/vobject/Behavior.hpp"
-#include "engine/EngineController.hpp"
+#include <engine/math/curves/Curve.hpp>
+#include <engine/vobject/VObject.hpp>
+#include <engine/vobject/Transform.hpp>
+#include <engine/vobject/Behavior.hpp>
+#include <engine/EngineController.hpp>
 #include <memory>
 
 using namespace engine;

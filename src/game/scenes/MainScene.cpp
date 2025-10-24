@@ -3,9 +3,9 @@
 #include <engine/vobject/Transform.hpp>
 #include <game/components/drawables/BunnyDrawable.hpp>
 #include <engine/vobject/components/Trajectory.hpp>
-#include <engine/math/BezierCurve.hpp>
-#include <engine/math/CircularCurve.hpp>
-#include <engine/math/PieceWiseBezierCurve.hpp>
+#include <engine/math/curves/BezierCurve.hpp>
+#include <engine/math/curves/CircularCurve.hpp>
+#include <engine/math/curves/PieceWiseBezierCurve.hpp>
 #include <cmath>
 
 using engine::SceneRoot;
