@@ -19,7 +19,7 @@ namespace engine {
     
     EngineController::~EngineController() = default;
     float EngineController::screen_ratio = 1.0f;
-    GLuint EngineController::gpu_program_id = 0;
+    GLuint EngineController::gouraud_program_id = 0;
     std::vector<Drawable*> EngineController::drawables;
 
     EngineController* EngineController::start_engine(WindowConfig window_config) {
@@ -352,8 +352,8 @@ namespace engine {
         
         // Construímos os caminhos para os shaders relativos ao executável
         // Assumindo estrutura: bin/Debug/main.exe e src/shader_*.glsl
-        std::string vertex_shader_path = exe_dir + "/../../src/engine/shaders/shader_vertex.glsl";
-        std::string fragment_shader_path = exe_dir + "/../../src/engine/shaders/shader_fragment.glsl";
+        std::string vertex_shader_path = exe_dir + "/../../src/engine/shaders/GouraudVertexShader.glsl";
+        std::string fragment_shader_path = exe_dir + "/../../src/engine/shaders/GouraudFragmentShader.glsl";
 
         printf("Loading shaders from:\n");
         printf("  Vertex: %s\n", vertex_shader_path.c_str());
@@ -363,11 +363,11 @@ namespace engine {
         GLuint fragment_shader_id = load_shader_fragment(fragment_shader_path.c_str());
 
         // Deletamos o programa de GPU anterior, caso ele exista.
-        if (gpu_program_id != 0)
-            glDeleteProgram(gpu_program_id);
+        if (gouraud_program_id != 0)
+            glDeleteProgram(gouraud_program_id);
 
         // Criamos um programa de GPU utilizando os shaders carregados acima.
-        gpu_program_id = create_gpu_program(vertex_shader_id, fragment_shader_id);
+        gouraud_program_id = create_gpu_program(vertex_shader_id, fragment_shader_id);
     }
 
     void EngineController::add_drawable(Drawable* drawable) {
