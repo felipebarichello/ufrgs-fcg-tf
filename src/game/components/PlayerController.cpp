@@ -33,7 +33,7 @@ namespace game::components {
 
     void PlayerController::update_transform_due_to_environment() {
         auto& transform = this->get_vobject()->transform();
-        // auto& quaternion = transform.quaternion();
+        auto& quaternion = transform.quaternion();
 
 
         /* Position change caused by gravity */
@@ -61,10 +61,22 @@ namespace game::components {
 
         /* Direction change due to gravity */
         
-        // Vec3 up_direction = -planet_direction;
-        // Vec3 current_up = quaternion.rotate(Vec3(0.0f, 1.0f, 0.0f));
-        // Quaternion align_quat = Quaternion::from_unit_vectors(current_up, up_direction);
-        // quaternion *= align_quat;
+        Vec3 up_direction = -planet_direction;
+        Vec3 current_up = quaternion.rotate(Vec3(0.0f, 1.0f, 0.0f));
+
+        Quaternion align_quat = Quaternion::from_unit_vectors(current_up, up_direction);
+        align_quat.normalize_inplace();
+
+        // If the required alignment is very small, skip to avoid jitter.
+        Vec3 align_axis;
+        double align_angle = align_quat.from_axis_angle(align_axis);
+        if (std::abs(align_angle) > 1e-4) {
+            // Left-multiply so the alignment rotates the already-applied orientation
+            // (new = align * old), i.e. align_quat.rotate(current_up) == up_direction.
+            quaternion = align_quat * quaternion;
+            // Keep quaternion normalized after composition to avoid drift.
+            quaternion.normalize_inplace();
+        }
     }
 
     void PlayerController::update_transform_due_to_input() {
@@ -77,6 +89,7 @@ namespace game::components {
         PlayerController::SphericalInput spherical = this->get_spherical_input();
         this->set_camera_phi(this->camera_phi + spherical.delta_phi);
         quaternion *= Quaternion::from_y_rotation(spherical.delta_theta);
+        quaternion.normalize_inplace();
 
 
         /* Walking movement */
@@ -97,6 +110,7 @@ namespace game::components {
         PlayerController::SphericalInput spherical = this->get_spherical_input();
         cam_quaternion *= Quaternion::from_y_rotation(spherical.delta_theta);
         cam_quaternion *= Quaternion::from_x_rotation(spherical.delta_phi);
+        cam_quaternion.normalize_inplace();
 
         Vec3 front_of_player = cam_quaternion.rotate(Vec3(0.0f, 0.0f, -1.0f));
         Vec3 right_of_player = cam_quaternion.rotate(Vec3(1.0f, 0.0f, 0.0f));

@@ -73,36 +73,39 @@ namespace engine::math {
         return out;
     }
 
-    // FIXME: Don't know if this is working. Not tested properly.
+    // Robust conversion from two vectors (not necessarily perfectly unit) to
+    // a quaternion that rotates `source` to `target`.
     Quaternion Quaternion::from_unit_vectors(const Vec3& source, const Vec3& target) {
-        float dot = glm::dot(source, target);
+        // Normalize inputs to guard against drift
+        Vec3 u = glm::normalize(source);
+        Vec3 v = glm::normalize(target);
 
-        // TODO: Are those two branches necessary?
-        if (dot >= 1.0f) {
-            // Vectors are the same
+        // Clamp dot to [-1,1] to avoid NaNs from numeric drift
+        double dot = glm::clamp(glm::dot(u, v), -1.0f, 1.0f);
+
+        // Vectors are (almost) the same
+        if (dot > 0.999999f) {
             return Quaternion::identity();
         }
-        
-        if (dot <= -1.0f) {
-            // Vectors are opposite
-            Vec3 orthogonal = glm::cross(source, Vec3(1.0f, 0.0f, 0.0f));
-            if (orthogonal.length() < 1e-6f) {
-                orthogonal = glm::cross(source, Vec3(0.0f, 1.0f, 0.0f));
+
+        // Vectors are opposite — return a 180deg rotation around any orthogonal axis
+        if (dot < -0.999999f) {
+            Vec3 orth = glm::cross(u, Vec3(1.0f, 0.0f, 0.0f));
+            if (glm::length(orth) < 1e-6f) {
+                orth = glm::cross(u, Vec3(0.0f, 1.0f, 0.0f));
             }
-            orthogonal = glm::normalize(orthogonal);
-            return Quaternion::from_axis_angle(orthogonal, M_PI);
+            orth = glm::normalize(orth);
+            return Quaternion::from_axis_angle(orth, M_PI);
         }
 
-        Vec3 cross = glm::cross(source, target);
-        double s = sqrt((1 + dot) * 2);
-        double inv_s = 1 / s;
+        // General case
+        Vec3 cross = glm::cross(u, v);
+        double w = std::sqrt((1.0 + dot) * 0.5);
+        double inv_2w = 1.0 / (2.0 * w);
 
-        return Quaternion(
-            s * 0.5,
-            cross.x * inv_s,
-            cross.y * inv_s,
-            cross.z * inv_s
-        );
+        Quaternion q(w, cross.x * inv_2w, cross.y * inv_2w, cross.z * inv_2w);
+        // Ensure numerical normalization
+        return q.normalized();
     }
 
     double Quaternion::norm() const {
