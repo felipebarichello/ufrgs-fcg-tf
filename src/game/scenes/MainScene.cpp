@@ -16,6 +16,11 @@ using engine::math::Quaternion;
 using engine::Vec3;
 using namespace game::components;
 
+VObjectConfig Planet() {
+    return VObjectConfig()
+        .component(new ObjDrawable("sphere.obj"));
+}
+
 namespace game::scenes {
     void MainScene::hierarchy(SceneRoot& root) {
         const float player_height = 1.8f;
@@ -38,48 +43,40 @@ namespace game::scenes {
                 )
             )
             .vobject(VObjectConfig()  // Root VObject for all planets
-                .transform(TransformBuilder()
-                    .position(Vec3(0.0f, 0.0f, 0.0f)))  // Center of planetary system
-                .child(VObjectConfig()  // Central star
+                .child(Planet()  // Central star
                     .transform(TransformBuilder()
-                        .position(Vec3(0.0f, 0.0f, 0.0f))  // Center at origin
-                        .scale(1.0f * planet_scale))
-                    .component(new ObjDrawable("sphere.obj"))
+                        .scale(planet_scale))
                 )
-                .child(VObjectConfig()  // Planet 4 - tilted circular orbit
+                .child(Planet()  // Planet 4 - tilted circular orbit
                     .transform(TransformBuilder()
                         .scale(0.3f * planet_scale))
-                    .component(new ObjDrawable("sphere.obj"))
                     .component(new Trajectory(std::make_unique<engine::CircularCurve>(
                         Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
                         Vec3(0.2f, 1.0f, 0.1f),      // Tilted normal vector
                         30.0f                         // Radius
                     ), 0.2f))
                 )
-                .child(VObjectConfig()  // Planet 5 - outer circular orbit
+                .child(Planet()  // Planet 5 - outer circular orbit
                     .transform(TransformBuilder()
                         .scale(0.2f * planet_scale))
-                    .component(new ObjDrawable("sphere.obj"))
                     .component(new Trajectory(std::make_unique<engine::CircularCurve>(
                         Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
                         Vec3(1.2f, 0.0f, 0.1f),      // Tilted normal vector
                         30.0f                         // Radius
                     ), 0.5f))
                 )
-                .child(VObjectConfig()  // Planet 5 - outer circular orbit
+                .child(Planet()  // Planet 5 - outer circular orbit
                     .transform(TransformBuilder()
                         .scale(0.3f * planet_scale))
-                    .component(new ObjDrawable("sphere.obj"))
                     .component(new Trajectory(std::make_unique<engine::CircularCurve>(
                         Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
                         Vec3(1.0f, 1.0f, 1.0f),      // Tilted normal vector
                         30.0f                         // Radius
                     ), 0.6f))
                 )
-                .child(VObjectConfig()  // Planet with dynamic piecewise Bezier curve
+                .child(Planet()  // Planet with dynamic piecewise Bezier curve
                     .transform(TransformBuilder()
                         .scale(0.3f * planet_scale))
-                    .component(new ObjDrawable("sphere.obj"))
                     .component(new Trajectory(std::make_unique<engine::PieceWiseBezierCurve>(std::vector<engine::BezierCurve>{
                         // First segment: dramatic spiral outward and up
                         engine::BezierCurve(std::vector<Vec3>{
