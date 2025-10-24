@@ -40,13 +40,16 @@ namespace game::components {
         /* Position change caused by gravity */
 
         // TODO: This gravity assumes the planet is flat
-
-        const float gravity_accel = 0.5f; // TODO: Consider distance to center of mass
         
         Vec3 vec_to_planet = -transform.get_position(); // Planet is at origin
         Vec3 planet_direction = glm::normalize(vec_to_planet);
 
         Vec3 gravity_direction = planet_direction; // Planet is at origin
+
+        const float gravitational_constant = 9.81f; // Scaled gravity constant
+        float planet_mass = 3.0f;
+        float gravity_accel = gravitational_constant * planet_mass / (glm::length(vec_to_planet));
+
         this->current_velocity += gravity_accel * EngineController::get_delta_time() * gravity_direction; // FIXME: This delta time usage is wrong
 
         Vec3 new_position = transform.get_position() + this->current_velocity;

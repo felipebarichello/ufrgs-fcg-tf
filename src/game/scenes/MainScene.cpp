@@ -84,12 +84,12 @@ namespace game::scenes {
                 )
                 .child(Planet()  // Planet 4 - tilted circular orbit
                     .transform(TransformBuilder()
-                        .scale(0.3f * planet_scale))
+                        .scale(0.6f * planet_scale))
                     .component(new Trajectory(std::make_unique<engine::CircularCurve>(
                         Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
                         Vec3(0.2f, 1.0f, 0.1f),      // Tilted normal vector
-                        30.0f                         // Radius
-                    ), 0.2f))
+                        600.0f                       // Radius
+                    ), 0.01f))
                 )
                 .child(Planet()  // Planet 5 - outer circular orbit
                     .transform(TransformBuilder()
