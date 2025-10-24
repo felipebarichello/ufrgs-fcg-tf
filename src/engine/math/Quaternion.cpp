@@ -103,9 +103,7 @@ namespace engine::math {
         double w = std::sqrt((1.0 + dot) * 0.5);
         double inv_2w = 1.0 / (2.0 * w);
 
-        Quaternion q(w, cross.x * inv_2w, cross.y * inv_2w, cross.z * inv_2w);
-        // Ensure numerical normalization
-        return q.normalized();
+        return Quaternion(w, cross.x * inv_2w, cross.y * inv_2w, cross.z * inv_2w);
     }
 
     double Quaternion::norm() const {
