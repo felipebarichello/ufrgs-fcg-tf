@@ -19,6 +19,7 @@ namespace game::components {
         InputController* input = EngineController::get_input();
         input->subscribe_dpad(&this->move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
         input->subscribe_press_button(GLFW_KEY_F6, std::bind(&PlayerController::toggle_camera_release, this));
+        input->subscribe_press_button(GLFW_KEY_SPACE, std::bind(&PlayerController::jump, this));
     }
 
     void PlayerController::Update() {
@@ -40,7 +41,7 @@ namespace game::components {
 
         // TODO: This gravity assumes the planet is flat
 
-        const float gravity_accel = 1.0f; // TODO: Consider distance to center of mass
+        const float gravity_accel = 0.2f; // TODO: Consider distance to center of mass
         
         Vec3 vec_to_planet = -transform.get_position(); // Planet is at origin
         Vec3 planet_direction = glm::normalize(vec_to_planet);
@@ -140,6 +141,11 @@ namespace game::components {
             ->transform();
 
         cam_transform.quaternion() = Quaternion::from_x_rotation(this->camera_phi);
+    }
+
+    void PlayerController::jump() {
+        this->current_velocity +=
+            this->jump_strength * this->get_vobject()->transform().quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
     }
 
     void PlayerController::toggle_camera_release() {

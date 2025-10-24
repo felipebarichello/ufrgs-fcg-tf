@@ -42,7 +42,7 @@ namespace game::scenes {
     void MainScene::hierarchy(SceneRoot& root) {
         const float player_height = 1.8f;
         const float default_planet_radius = 10.0f; // Very precise estimate
-        const float planet_radius = 10.0f;
+        const float planet_radius = 40.0f;
         const float planet_scale = planet_radius / default_planet_radius;
 
         Camera* main_camera = new Camera();
