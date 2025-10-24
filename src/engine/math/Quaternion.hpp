@@ -19,7 +19,7 @@ extern "C" {
 namespace engine::math {
     using CQuaternion = ::CQuaternion;
 
-class Quaternion {
+    class Quaternion {
         public:
             // Default constructs identity quaternion
             Quaternion();
@@ -35,17 +35,17 @@ class Quaternion {
 
             // Factory
             static Quaternion identity();
-            static Quaternion fromAxisAngle(const Vec3& axis, double angle);
-            double toAxisAngle(Vec3& outAxis) const; // returns angle, fills outAxis
+            static Quaternion from_axis_angle(const Vec3& axis, double angle);
+            double from_axis_angle(Vec3& outAxis) const; // returns angle, fills outAxis
 
-            static Quaternion fromEulerZYX(const Vec3& eulerZYX);
-            Vec3 toEulerZYX() const;
+            static Quaternion from_euler_zyx(const Vec3& eulerZYX);
+            Vec3 to_euler_zyx() const;
 
-            static Quaternion fromXRotation(double angle);
-            static Quaternion fromYRotation(double angle);
-            static Quaternion fromZRotation(double angle);
+            static Quaternion from_x_rotation(double angle);
+            static Quaternion from_y_rotation(double angle);
+            static Quaternion from_z_rotation(double angle);
 
-            static Quaternion fromUnitVectors(const Vec3& source, const Vec3& target);
+            static Quaternion from_unit_vectors(const Vec3& source, const Vec3& target);
 
             double norm() const;
             Quaternion normalized() const;
@@ -59,6 +59,7 @@ class Quaternion {
                 this->multiply(rhs, *this);
                 return *this;
             }
+            
             void multiply(const Quaternion& rhs, Quaternion& out) const; // out = (*this) * rhs
 
             // Rotate a vector by this quaternion

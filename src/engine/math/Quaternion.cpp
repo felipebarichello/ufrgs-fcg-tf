@@ -28,53 +28,53 @@ namespace engine::math {
         return Quaternion();
     }
 
-    Quaternion Quaternion::fromAxisAngle(const Vec3& axis, double angle) {
+    Quaternion Quaternion::from_axis_angle(const Vec3& axis, double angle) {
         Quaternion out;
         double a[3] = { axis.x, axis.y, axis.z };
         Quaternion_fromAxisAngle(a, angle, &out.inner);
         return out;
     }
 
-    double Quaternion::toAxisAngle(Vec3& outAxis) const {
+    double Quaternion::from_axis_angle(Vec3& outAxis) const {
         double a[3];
         double angle = Quaternion_toAxisAngle(const_cast<CQuaternion*>(&this->inner), a);
         outAxis = Vec3((float)a[0], (float)a[1], (float)a[2]);
         return angle;
     }
 
-    Quaternion Quaternion::fromEulerZYX(const Vec3& eulerZYX) {
+    Quaternion Quaternion::from_euler_zyx(const Vec3& eulerZYX) {
         Quaternion out;
         double e[3] = { eulerZYX.x, eulerZYX.y, eulerZYX.z };
         Quaternion_fromEulerZYX(e, &out.inner);
         return out;
     }
 
-    Vec3 Quaternion::toEulerZYX() const {
+    Vec3 Quaternion::to_euler_zyx() const {
         double e[3];
         Quaternion_toEulerZYX(const_cast<CQuaternion*>(&this->inner), e);
         return Vec3((float)e[0], (float)e[1], (float)e[2]);
     }
 
-    Quaternion Quaternion::fromXRotation(double angle) {
+    Quaternion Quaternion::from_x_rotation(double angle) {
         Quaternion out;
         Quaternion_fromXRotation(angle, &out.inner);
         return out;
     }
 
-    Quaternion Quaternion::fromYRotation(double angle) {
+    Quaternion Quaternion::from_y_rotation(double angle) {
         Quaternion out;
         Quaternion_fromYRotation(angle, &out.inner);
         return out;
     }
 
-    Quaternion Quaternion::fromZRotation(double angle) {
+    Quaternion Quaternion::from_z_rotation(double angle) {
         Quaternion out;
         Quaternion_fromZRotation(angle, &out.inner);
         return out;
     }
 
     // FIXME: Don't know if this is working. Not tested properly.
-    Quaternion Quaternion::fromUnitVectors(const Vec3& source, const Vec3& target) {
+    Quaternion Quaternion::from_unit_vectors(const Vec3& source, const Vec3& target) {
         float dot = glm::dot(source, target);
 
         // TODO: Are those two branches necessary?
@@ -90,7 +90,7 @@ namespace engine::math {
                 orthogonal = glm::cross(source, Vec3(0.0f, 1.0f, 0.0f));
             }
             orthogonal = glm::normalize(orthogonal);
-            return Quaternion::fromAxisAngle(orthogonal, M_PI);
+            return Quaternion::from_axis_angle(orthogonal, M_PI);
         }
 
         Vec3 cross = glm::cross(source, target);

@@ -195,7 +195,7 @@ void ObjLoader::ComputeNormals(ObjModel* model) {
                 // PREENCHA AQUI o cálculo da normal de um triângulo cujos vértices
                 // estão nos pontos "a", "b", e "c", definidos no sentido anti-horário.
                 //const glm::vec4  n = glm::vec4(0.0f,0.0f,0.0f,0.0f);
-                glm::vec4 n = crossproduct(b - a, c - a);
+                glm::vec4 n = h_cross_product(b - a, c - a);
 
                 for (size_t vertex = 0; vertex < 3; ++vertex)
                 {
@@ -215,7 +215,7 @@ void ObjLoader::ComputeNormals(ObjModel* model) {
                 continue;
 
             glm::vec4 n = vertex_normals[vertex_index] / (float)num_triangles_per_vertex[vertex_index];
-            n /= norm(n);
+            n /= h_norm(n);
 
             model->attrib.normals.push_back( n.x );
             model->attrib.normals.push_back( n.y );
