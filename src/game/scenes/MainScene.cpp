@@ -16,9 +16,26 @@ using engine::math::Quaternion;
 using engine::Vec3;
 using namespace game::components;
 
+VObjectConfig Player(Camera* main_camera, float height, float planet_radius) {
+    return VObjectConfig()
+        .transform(TransformBuilder()
+            .position(Vec3(0.0f, 0.0f, 20.0f)))
+        .component(new PlayerController(main_camera, planet_radius))
+        .child(VObjectConfig()
+            .transform(TransformBuilder()
+                .position(Vec3(0.0f, height, 0.0f)))
+            .component(main_camera)
+        );
+}
+
 VObjectConfig Planet() {
     return VObjectConfig()
-        .component(new ObjDrawable("sphere.obj"));
+        .child(VObjectConfig()
+            .transform(TransformBuilder()
+                .position(Vec3(0.0f, -10.0f, 0.0f))
+            )
+            .component(new ObjDrawable("sphere.obj"))
+        );
 }
 
 namespace game::scenes {
@@ -32,16 +49,7 @@ namespace game::scenes {
         Camera::set_main(main_camera);
 
         root
-            .vobject(VObjectConfig()
-                .transform(TransformBuilder()
-                    .position(Vec3(0.0f, 0.0f, 20.0f)))
-                .component(new PlayerController(main_camera, planet_radius))
-                .child(VObjectConfig()
-                    .transform(TransformBuilder()
-                        .position(Vec3(0.0f, player_height, 0.0f)))
-                    .component(main_camera)
-                )
-            )
+            .vobject(Player(main_camera, player_height, planet_radius))
             .vobject(VObjectConfig()  // Root VObject for all planets
                 .child(Planet()  // Central star
                     .transform(TransformBuilder()
