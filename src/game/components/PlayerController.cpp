@@ -19,29 +19,47 @@ namespace game::components {
         InputController* input = EngineController::get_input();
         input->subscribe_dpad(&this->move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
         input->subscribe_press_button(GLFW_KEY_F6, std::bind(&PlayerController::toggle_camera_release, this));
+        // Use a press to perform a single jump impulse instead of holding space.
         input->subscribe_press_button(GLFW_KEY_SPACE, std::bind(&PlayerController::jump, this));
     }
 
     void PlayerController::Update() {
-        this->update_velocity_due_to_input();
-        this->update_velocity_due_to_environment();
+
+        float dt = EngineController::get_delta_time();
+
+        Vec3 gravity_accel = this->compute_gravity_accel();
+        Vec3 pos = this->get_vobject()->transform().get_position();
+        Vec3 up = -glm::normalize(pos);
+        Vec3 input_vel = this->compute_input_velocity();
+
+        if (grounded) {
+            float vertical_component = glm::dot(this->current_velocity, up);
+            this->current_velocity = input_vel + up * vertical_component;
+        } else {
+            // TODO: it is not phyisically correct
+            this->current_velocity += input_vel * dt;
+        }
+
+        this->current_velocity += gravity_accel * dt;
         this->update_transform();
     }
 
-    void PlayerController::update_velocity_due_to_environment() {
+
+    Vec3 PlayerController::compute_gravity_accel() {
         auto& transform = this->get_vobject()->transform();
 
-        /* Position change caused by gravity */
+            /* Position change caused by gravity */
 
-        // TODO: This gravity assumes the planet is flat
+            // TODO: This gravity assumes the planet is flat
 
-        const float gravity_accel = 100.0f; // TODO: Consider distance to center of mass
-        
+        const float gravity_accel = 30.0f; // approximate gravity magnitude (units/sec^2)
+
         Vec3 vec_to_planet = -transform.get_position(); // Planet is at origin
         Vec3 planet_direction = glm::normalize(vec_to_planet);
 
-        Vec3 gravity_direction = planet_direction; // Planet is at origin
-        this->current_velocity += gravity_accel * gravity_direction; // FIXME: This delta time usage is wrong
+        Vec3 gravity_direction = planet_direction; // direction towards center
+        // Integrate gravity using dt: v += a * dt
+        return gravity_accel * gravity_direction;
     }
 
     void PlayerController::align_quaternion_to_planet_surface() {
@@ -76,7 +94,7 @@ namespace game::components {
         quaternion.normalize();
     }
 
-    void PlayerController::update_velocity_due_to_input() {
+    Vec3 PlayerController::compute_input_velocity() {
         auto& transform = this->get_vobject()->transform();
         auto& quaternion = transform.quaternion();
 
@@ -95,29 +113,31 @@ namespace game::components {
         Vec3 front_of_player = quaternion.rotate(Vec3(0.0f, 0.0f, -1.0f));
         Vec3 right_of_player = quaternion.rotate(Vec3(1.0f, 0.0f, 0.0f));
 
-        this->current_velocity = Vec3(0.0f, 0.0f, 0.0f);
-        this->current_velocity += this->speed * this->move_vector.y * front_of_player;
-        this->current_velocity += this->speed * this->move_vector.x * right_of_player;
+        return  this->speed * this->move_vector.y * front_of_player +
+                this->speed * this->move_vector.x * right_of_player;
     }
 
     void PlayerController::update_transform() {
         auto& transform = this->get_vobject()->transform();
-        Vec3 new_position = transform.position() + this->current_velocity * EngineController::get_delta_time();
+        float dt = EngineController::get_delta_time();
+        Vec3 new_position = transform.position() + this->current_velocity * dt;
 
         if (h_norm(new_position) < this->planet_radius) {
-            // Prevent going inside the planet
+            this->grounded = true;
+            // Prevent going inside the planet: clamp to surface
             Vec3 planet_direction = glm::normalize(new_position);
             transform.position() = planet_direction * this->planet_radius;
-            // Zero out velocity component towards planet center
+            // Remove any inward velocity component so we don't immediately
+            // re-enter the planet on the next frame.
             float velocity_towards_center = glm::dot(this->current_velocity, -planet_direction);
-
-            if (velocity_towards_center > 0.0f) 
+            if (velocity_towards_center > 0.0f) {
                 this->current_velocity -= velocity_towards_center * -planet_direction;
-            
-        } 
+            }
+        } else {
+            transform.position() = new_position;
+            this->grounded = false;
+        }
 
-        transform.position() += this->current_velocity * EngineController::get_delta_time();
-        
         this->align_quaternion_to_planet_surface();
     }
 
@@ -135,6 +155,15 @@ namespace game::components {
 
         cam_transform.position() += this->speed * this->move_vector.y * front_of_player;
         cam_transform.position() += this->speed * this->move_vector.x * right_of_player;
+    }
+
+    void PlayerController::jump() {
+        auto& transform = this->get_vobject()->transform();
+        auto& quaternion = transform.quaternion();
+        Vec3 player_up = quaternion.rotate(Vec3(0.0f, 1.0f, 0.0f));
+        // Store impulse as a velocity change (instant)
+        this->jump_impulse = this->jump_strength * player_up; // units: m/s
+        this->current_velocity += this->jump_impulse;
     }
 
     PlayerController::SphericalInput PlayerController::get_spherical_input() {
@@ -159,11 +188,6 @@ namespace game::components {
 
         cam_transform.quaternion() = Quaternion::from_x_rotation(this->camera_phi);
         cam_transform.quaternion().normalize();
-    }
-
-    void PlayerController::jump() {
-        this->current_velocity +=
-            this->jump_strength * this->get_vobject()->transform().quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
     }
 
     void PlayerController::toggle_camera_release() {

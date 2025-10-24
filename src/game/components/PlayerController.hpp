@@ -6,6 +6,7 @@
 using engine::Transform;
 using engine::h_norm;
 using engine::h_normalize;
+using engine::Vec3;
 
 namespace game::components {
     class PlayerController : public engine::Behavior {
@@ -31,10 +32,12 @@ namespace game::components {
             engine::Vec2 secondary_move_vector {0.0f, 0.0f};
             float phi_max = 3.141592f/2;
             float phi_min = -3.141592f/2;
-            float jump_strength = 110.0f;
+            float jump_strength = 10.0f;  
 
-            void update_velocity_due_to_environment();
-            void update_velocity_due_to_input();
+            Vec3 compute_gravity_accel(); 
+            Vec3 compute_input_velocity();
+            Vec3 compute_grounded_velocity();
+            Vec3 compute_airbone_velocity();
 
             void update_transform();
 
@@ -45,6 +48,9 @@ namespace game::components {
             void toggle_camera_release();
             void align_quaternion_to_planet_surface();
 
-            float jumped = false;
+            Vec3 jump_velocity {0.0f, 0.0f, 0.0f};
+            Vec3 jump_impulse {0.0f, 0.0f, 0.0f};
+            bool has_jump_impulse = false;
+            bool grounded = false;
     };
 } // namespace game::components
