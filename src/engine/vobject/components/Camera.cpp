@@ -18,14 +18,14 @@ namespace engine {
         float r = t * EngineController::get_instance()->get_screen_ratio();
         float l = -r;
 
-        Mat4 p_matrix = Matrix(
+        Mat4 p_matrix = h_line_matrix(
             n,    0.0f, 0.0f, 0.0f,
             0.0f, n,    0.0f, 0.0f,
             0.0f, 0.0f, n+f,  -f*n,
             0.0f, 0.0f, 1.0f, 0.0f
         );
 
-        Mat4 m_matrix = Matrix_Orthographic(l, r, b, t, n, f);
+        Mat4 m_matrix = h_ortographic_matrix(l, r, b, t, n, f);
 
         return -m_matrix * p_matrix;
     }

@@ -46,9 +46,9 @@ void Transform::update_matrix() {
     rot[2] = glm::vec4(m02, m12, m22, 0.0f);
     rot[3] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-    this->transform_matrix = Matrix_Translate(this->_position.x, this->_position.y, this->_position.z)
+    this->transform_matrix = h_translate_matrix(this->_position.x, this->_position.y, this->_position.z)
                 * rot
-                * Matrix_Scale(this->_scale.x, this->_scale.y, this->_scale.z);
+                * h_scale_matrix(this->_scale.x, this->_scale.y, this->_scale.z);
 
     this->dirty = false;
 }
