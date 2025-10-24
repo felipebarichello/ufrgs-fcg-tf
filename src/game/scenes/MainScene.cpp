@@ -1,7 +1,6 @@
 #include "MainScene.hpp"
 #include <game/components/PlayerController.hpp>
 #include <engine/vobject/Transform.hpp>
-#include <game/components/drawables/BunnyDrawable.hpp>
 #include <engine/vobject/components/Trajectory.hpp>
 #include <engine/math/BezierCurve.hpp>
 #include <engine/math/CircularCurve.hpp>
