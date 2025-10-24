@@ -11,6 +11,12 @@ ObjDrawable::ObjDrawable(std::string file_name) {
     this->vao_ptr = ObjLoader::load(model_path.c_str());
 }
 
+ObjDrawable::ObjDrawable(std::string file_name, bool use_phong_shading) {
+    std::string model_path = EngineController::get_executable_directory() + "/../../assets/" + file_name;
+    this->vao_ptr = ObjLoader::load(model_path.c_str());
+    this->use_phong_shading = use_phong_shading;
+}
+
 void ObjDrawable::draw() {
     GLuint program_id = EngineController::get_gouraud_program_id();
     GLint Kd = glGetUniformLocation(program_id, "diffuse_reflectance");
