@@ -23,45 +23,35 @@ namespace game::components {
     }
 
     void PlayerController::Update() {
-        this->update_transform_due_to_environment();
-
-        if (this->released_camera) {
-            this->update_released_camera();
-        } else {
-            this->update_transform_due_to_input();
-        }
+        this->update_velocity_due_to_input();
+        this->update_velocity_due_to_environment();
+        this->update_transform();
     }
 
-    void PlayerController::update_transform_due_to_environment() {
+    void PlayerController::update_velocity_due_to_environment() {
         auto& transform = this->get_vobject()->transform();
-        auto& quaternion = transform.quaternion();
-
 
         /* Position change caused by gravity */
 
         // TODO: This gravity assumes the planet is flat
 
-        const float gravity_accel = 0.5f; // TODO: Consider distance to center of mass
+        const float gravity_accel = 100.0f; // TODO: Consider distance to center of mass
         
         Vec3 vec_to_planet = -transform.get_position(); // Planet is at origin
         Vec3 planet_direction = glm::normalize(vec_to_planet);
 
         Vec3 gravity_direction = planet_direction; // Planet is at origin
-        this->current_velocity += gravity_accel * EngineController::get_delta_time() * gravity_direction; // FIXME: This delta time usage is wrong
+        this->current_velocity += gravity_accel * gravity_direction; // FIXME: This delta time usage is wrong
+    }
 
-        Vec3 new_position = transform.get_position() + this->current_velocity;
-        Vec3 new_vec_to_planet = -new_position; // Planet is at origin
-        float distance_to_planet = glm::length(new_vec_to_planet);
+    void PlayerController::align_quaternion_to_planet_surface() {
 
-        if (distance_to_planet < this->planet_radius) {
-            this->current_velocity = Vec3(0.0f);
-        } else {
-            transform.position() = new_position;
-        }
+        auto& transform = this->get_vobject()->transform();
+        auto& quaternion = transform.quaternion();
 
+        Vec3 vec_to_planet = -transform.get_position(); // Planet is at origin
+        Vec3 planet_direction = glm::normalize(vec_to_planet);
 
-        /* Direction change due to gravity */
-        
         Vec3 up_direction = -planet_direction;
         Vec3 current_up = quaternion.rotate(Vec3(0.0f, 1.0f, 0.0f));
 
@@ -86,7 +76,7 @@ namespace game::components {
         quaternion.normalize();
     }
 
-    void PlayerController::update_transform_due_to_input() {
+    void PlayerController::update_velocity_due_to_input() {
         auto& transform = this->get_vobject()->transform();
         auto& quaternion = transform.quaternion();
 
@@ -105,8 +95,30 @@ namespace game::components {
         Vec3 front_of_player = quaternion.rotate(Vec3(0.0f, 0.0f, -1.0f));
         Vec3 right_of_player = quaternion.rotate(Vec3(1.0f, 0.0f, 0.0f));
 
-        transform.position() += this->speed * this->move_vector.y * front_of_player;
-        transform.position() += this->speed * this->move_vector.x * right_of_player;
+        this->current_velocity = Vec3(0.0f, 0.0f, 0.0f);
+        this->current_velocity += this->speed * this->move_vector.y * front_of_player;
+        this->current_velocity += this->speed * this->move_vector.x * right_of_player;
+    }
+
+    void PlayerController::update_transform() {
+        auto& transform = this->get_vobject()->transform();
+        Vec3 new_position = transform.position() + this->current_velocity * EngineController::get_delta_time();
+
+        if (h_norm(new_position) < this->planet_radius) {
+            // Prevent going inside the planet
+            Vec3 planet_direction = glm::normalize(new_position);
+            transform.position() = planet_direction * this->planet_radius;
+            // Zero out velocity component towards planet center
+            float velocity_towards_center = glm::dot(this->current_velocity, -planet_direction);
+
+            if (velocity_towards_center > 0.0f) 
+                this->current_velocity -= velocity_towards_center * -planet_direction;
+            
+        } 
+
+        transform.position() += this->current_velocity * EngineController::get_delta_time();
+        
+        this->align_quaternion_to_planet_surface();
     }
 
     void PlayerController::update_released_camera() {
