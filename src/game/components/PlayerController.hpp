@@ -32,10 +32,10 @@ namespace game::components {
             engine::Vec2 secondary_move_vector {0.0f, 0.0f};
             float phi_max = 3.141592f/2;
             float phi_min = -3.141592f/2;
-            float jump_strength = 10.0f;  
+            float jump_strength = 20.0f;  
 
             Vec3 compute_gravity_accel(); 
-            Vec3 compute_input_velocity();
+            Vec3 compute_input_velocity(); 
             Vec3 compute_grounded_velocity();
             Vec3 compute_airbone_velocity();
 

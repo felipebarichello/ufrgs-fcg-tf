@@ -47,7 +47,7 @@ namespace game::scenes {
     void MainScene::hierarchy(SceneRoot& root) {
         const float player_height = 1.8f;
         const float default_planet_radius = 10.0f; // Very precise estimate
-        const float planet_radius = 10.0f;
+        const float planet_radius = 80.0f;
         const float planet_scale = planet_radius / default_planet_radius;
 
         Camera* main_camera = new Camera();
@@ -89,7 +89,7 @@ namespace game::scenes {
                         Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
                         Vec3(0.2f, 1.0f, 0.1f),      // Tilted normal vector
                         30.0f                         // Radius
-                    ), 0.2f))
+                    ), 0.1f))
                 )
                 .child(Planet()  // Planet 5 - outer circular orbit
                     .transform(TransformBuilder()
@@ -98,7 +98,7 @@ namespace game::scenes {
                         Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
                         Vec3(1.2f, 0.0f, 0.1f),      // Tilted normal vector
                         30.0f                         // Radius
-                    ), 0.5f))
+                    ), 0.1f))
                 )
                 .child(Planet()  // Planet 5 - outer circular orbit
                     .transform(TransformBuilder()
@@ -107,7 +107,7 @@ namespace game::scenes {
                         Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
                         Vec3(1.0f, 1.0f, 1.0f),      // Tilted normal vector
                         30.0f                         // Radius
-                    ), 0.6f))
+                    ), 0.1f))
                 )
                 .child(Planet()  // Planet with dynamic piecewise Bezier curve
                     .transform(TransformBuilder()
