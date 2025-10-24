@@ -128,14 +128,20 @@ namespace game::components {
     void PlayerController::toggle_camera_release() {
         this->released_camera = !this->released_camera;
         auto camera_vobj = this->camera->get_vobject();
+        auto& cam_transf = camera_vobj->transform();
 
         if (this->released_camera) {
+            Transform& player_transform = this->get_vobject()->transform(); 
+
             this->get_vobject()->disown_child(camera_vobj);
-            this->stored_child_cam_transform = camera_vobj->transform();
-            camera_vobj->transform().copy_values_from(this->get_vobject()->transform()); // Keep transform after disowning
+            this->stored_child_cam_transform = cam_transf;
+
+            // Keep transform after disowning
+            cam_transf.copy_values_from(player_transform);
+            cam_transf.position() += cam_transf.quaternion().rotate(this->stored_child_cam_transform.get_position());
         } else {
             this->get_vobject()->add_child(this->camera->get_vobject());
-            camera_vobj->transform() = this->stored_child_cam_transform;
+            cam_transf = this->stored_child_cam_transform;
         }
     }
 }
