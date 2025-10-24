@@ -95,6 +95,18 @@ namespace engine {
         return sqrt( vx*vx + vy*vy + vz*vz );
     }
 
+    glm::vec3 h_normalize(glm::vec3 v)
+    {
+        float norm = h_norm(v);
+        if ( norm == 0.0f )
+        {
+            fprintf(stderr, "ERROR: Normalization of zero vector.\n");
+            std::exit(EXIT_FAILURE);
+        }
+
+        return v / norm;
+    }
+
     glm::mat4 h_matrix_rotate(float angle, glm::vec4 axis)
     {
         float c = cos(angle);
