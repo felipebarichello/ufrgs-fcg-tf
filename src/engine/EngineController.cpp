@@ -397,7 +397,7 @@ namespace engine {
         Mat4 projection = main_camera->get_perspective_matrix();
         Mat4 view = main_camera->get_view_matrix();
 
-        glUseProgram(EngineController::get_instance()->get_gpu_program_id());
+        glUseProgram(EngineController::get_instance()->get_gouraud_program_id());
         glUniformMatrix4fv(EngineController::instance->g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
         glUniformMatrix4fv(EngineController::instance->g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
         glBindVertexArray(0);

@@ -12,7 +12,7 @@ ObjDrawable::ObjDrawable(std::string file_name) {
 }
 
 void ObjDrawable::draw() {
-    GLuint program_id = EngineController::get_gpu_program_id();
+    GLuint program_id = EngineController::get_gouraud_program_id();
     GLint Kd = glGetUniformLocation(program_id, "diffuse_reflectance");
     GLint Ks = glGetUniformLocation(program_id, "specular_reflectance");
     GLint Ka = glGetUniformLocation(program_id, "enviornment_reflectance");
