@@ -37,6 +37,18 @@ namespace game::scenes {
                         .component(main_camera)
                 )
             )
+            // Phong Shading bunny
+            .vobject(VObjectConfig()
+                .transform(TransformBuilder()
+                    .position(Vec3(0.0f, 0.0f, 100.0f)))
+                .component(new ObjDrawable("bunny.obj", true))
+            )
+            // Gouraud Shading Bunny
+            .vobject(VObjectConfig()
+                .transform(TransformBuilder()
+                    .position(Vec3(0.0f, 0.0f, 102.0f)))
+                .component(new ObjDrawable("bunny.obj", false))
+            )
             .vobject(VObjectConfig()  // Root VObject for all planets
                 .transform(TransformBuilder()
                     .position(Vec3(0.0f, 0.0f, 0.0f)))  // Center of solar system
