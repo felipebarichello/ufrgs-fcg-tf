@@ -31,17 +31,16 @@ namespace game::scenes {
                 .transform(TransformBuilder()
                     .position(Vec3(0.0f, 0.0f, 20.0f)))
                 .component(new PlayerController(main_camera, planet_radius))
-                .child(
-                    VObjectConfig()
-                        .transform(TransformBuilder()
-                            .position(Vec3(0.0f, player_height, 0.0f)))
-                        .component(main_camera)
+                .child(VObjectConfig()
+                    .transform(TransformBuilder()
+                        .position(Vec3(0.0f, player_height, 0.0f)))
+                    .component(main_camera)
                 )
             )
             .vobject(VObjectConfig()  // Root VObject for all planets
                 .transform(TransformBuilder()
-                    .position(Vec3(0.0f, 0.0f, 0.0f)))  // Center of solar system
-                .child(VObjectConfig()  // Central sun/star
+                    .position(Vec3(0.0f, 0.0f, 0.0f)))  // Center of planetary system
+                .child(VObjectConfig()  // Central star
                     .transform(TransformBuilder()
                         .position(Vec3(0.0f, 0.0f, 0.0f))  // Center at origin
                         .scale(1.0f * planet_scale))
