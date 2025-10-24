@@ -118,7 +118,7 @@ namespace engine::math {
         return out;
     }
 
-    void Quaternion::normalize_inplace() {
+    void Quaternion::normalize() {
         CQuaternion tmp;
         Quaternion_normalize(&this->inner, &tmp);
         this->inner = tmp;
@@ -138,6 +138,16 @@ namespace engine::math {
 
     void Quaternion::multiply(const Quaternion& rhs, Quaternion& out) const {
         Quaternion_multiply(const_cast<CQuaternion*>(&this->inner), const_cast<CQuaternion*>(&rhs.inner), &out.inner);
+    }
+
+    void Quaternion::global_compose(const Quaternion& multiplier) const {
+        Quaternion& self = const_cast<Quaternion&>(*this);
+        self = multiplier * self;
+    }
+
+    void Quaternion::local_compose(const Quaternion& multiplier) const {
+        Quaternion& self = const_cast<Quaternion&>(*this);
+        self = self * multiplier;
     }
 
     Vec3 Quaternion::rotate(const Vec3& v) const {

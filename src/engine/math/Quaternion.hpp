@@ -49,18 +49,16 @@ namespace engine::math {
 
             double norm() const;
             Quaternion normalized() const;
-            void normalize_inplace();
+            void normalize();
 
             Quaternion conjugated() const;
 
             // Multiplication (rotation composition)
             Quaternion operator*(const Quaternion& rhs) const;
-            Quaternion& operator*=(const Quaternion& rhs) {
-                this->multiply(rhs, *this);
-                return *this;
-            }
             
             void multiply(const Quaternion& rhs, Quaternion& out) const; // out = (*this) * rhs
+            void global_compose(const Quaternion& multiplier) const; // (*this) = multiplier * (*this)
+            void local_compose(const Quaternion& multiplier) const; // (*this) = (*this) * multiplier
 
             // Rotate a vector by this quaternion
             Vec3 rotate(const Vec3& v) const;

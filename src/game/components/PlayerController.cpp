@@ -41,7 +41,7 @@ namespace game::components {
 
         // TODO: This gravity assumes the planet is flat
 
-        const float gravity_accel = 0.2f; // TODO: Consider distance to center of mass
+        const float gravity_accel = 0.5f; // TODO: Consider distance to center of mass
         
         Vec3 vec_to_planet = -transform.get_position(); // Planet is at origin
         Vec3 planet_direction = glm::normalize(vec_to_planet);
@@ -66,18 +66,24 @@ namespace game::components {
         Vec3 current_up = quaternion.rotate(Vec3(0.0f, 1.0f, 0.0f));
 
         Quaternion align_quat = Quaternion::from_unit_vectors(current_up, up_direction);
-        align_quat.normalize_inplace();
 
-        // If the required alignment is very small, skip to avoid jitter.
-        Vec3 align_axis;
-        double align_angle = align_quat.from_axis_angle(align_axis);
-        if (std::abs(align_angle) > 1e-4) {
-            // Left-multiply so the alignment rotates the already-applied orientation
-            // (new = align * old), i.e. align_quat.rotate(current_up) == up_direction.
-            quaternion = align_quat * quaternion;
-            // Keep quaternion normalized after composition to avoid drift.
-            quaternion.normalize_inplace();
-        }
+        // Apply only portion of the required alignment each update (smooth/small-step rotation).
+
+        // The closer to the planet, the stronger the alignment
+        // float point_of_full_alignment = distance_to_planet - this->planet_radius;
+        // float clamped_distance_to_surface = std::max(0.0f, distance_to_planet - this->planet_radius);
+        // float alignment_decay = 0.5f;
+        // float portion_of_alignment = point_of_full_alignment / (1.0f + clamped_distance_to_surface * alignment_decay);
+        // Vec3 full_axis;
+        // double full_angle = align_quat.from_axis_angle(full_axis);
+        // if (std::abs(full_angle) > 1e-12) {
+        //     double step_angle = full_angle * portion_of_alignment;
+        //     align_quat = Quaternion::from_axis_angle(full_axis, step_angle);
+        //     align_quat.normalize_inplace();
+        // }
+
+        quaternion.global_compose(align_quat);
+        quaternion.normalize();
     }
 
     void PlayerController::update_transform_due_to_input() {
@@ -89,8 +95,7 @@ namespace game::components {
 
         PlayerController::SphericalInput spherical = this->get_spherical_input();
         this->set_camera_phi(this->camera_phi + spherical.delta_phi);
-        quaternion *= Quaternion::from_y_rotation(spherical.delta_theta);
-        quaternion.normalize_inplace();
+        quaternion.local_compose(Quaternion::from_y_rotation(spherical.delta_theta));
 
 
         /* Walking movement */
@@ -109,9 +114,9 @@ namespace game::components {
         auto& cam_quaternion = cam_transform.quaternion();
 
         PlayerController::SphericalInput spherical = this->get_spherical_input();
-        cam_quaternion *= Quaternion::from_y_rotation(spherical.delta_theta);
-        cam_quaternion *= Quaternion::from_x_rotation(spherical.delta_phi);
-        cam_quaternion.normalize_inplace();
+        cam_quaternion.local_compose(Quaternion::from_y_rotation(spherical.delta_theta));
+        cam_quaternion.local_compose(Quaternion::from_x_rotation(spherical.delta_phi));
+        cam_quaternion.normalize();
 
         Vec3 front_of_player = cam_quaternion.rotate(Vec3(0.0f, 0.0f, -1.0f));
         Vec3 right_of_player = cam_quaternion.rotate(Vec3(1.0f, 0.0f, 0.0f));
@@ -141,6 +146,7 @@ namespace game::components {
             ->transform();
 
         cam_transform.quaternion() = Quaternion::from_x_rotation(this->camera_phi);
+        cam_transform.quaternion().normalize();
     }
 
     void PlayerController::jump() {

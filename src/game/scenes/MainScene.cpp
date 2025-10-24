@@ -23,6 +23,12 @@ VObjectConfig Player(Camera* main_camera, float height, float planet_radius) {
         .component(new PlayerController(main_camera, planet_radius))
         .child(VObjectConfig()
             .transform(TransformBuilder()
+                .position(Vec3(0.0f, 18.0f, 0.0f))
+                .scale(Vec3(10.0f)))
+            .component(new ObjDrawable("bunny.obj"))
+        )
+        .child(VObjectConfig()
+            .transform(TransformBuilder()
                 .position(Vec3(0.0f, height, 0.0f)))
             .component(main_camera)
         );
@@ -42,7 +48,7 @@ namespace game::scenes {
     void MainScene::hierarchy(SceneRoot& root) {
         const float player_height = 1.8f;
         const float default_planet_radius = 10.0f; // Very precise estimate
-        const float planet_radius = 40.0f;
+        const float planet_radius = 5.0f;
         const float planet_scale = planet_radius / default_planet_radius;
 
         Camera* main_camera = new Camera();
