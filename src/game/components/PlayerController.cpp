@@ -73,7 +73,7 @@ namespace game::components {
 
         PlayerController::SphericalInput spherical = this->get_spherical_input();
         this->set_camera_phi(this->camera_phi + spherical.delta_phi);
-        quaternion *= Quaternion::fromYRotation(spherical.delta_theta);
+        quaternion *= Quaternion::from_y_rotation(spherical.delta_theta);
 
 
         /* Walking movement */
@@ -92,8 +92,8 @@ namespace game::components {
         auto& cam_quaternion = cam_transform.quaternion();
 
         PlayerController::SphericalInput spherical = this->get_spherical_input();
-        cam_quaternion *= Quaternion::fromYRotation(spherical.delta_theta);
-        cam_quaternion *= Quaternion::fromXRotation(spherical.delta_phi);
+        cam_quaternion *= Quaternion::from_y_rotation(spherical.delta_theta);
+        cam_quaternion *= Quaternion::from_x_rotation(spherical.delta_phi);
 
         Vec3 front_of_player = cam_quaternion.rotate(Vec3(0.0f, 0.0f, -1.0f));
         Vec3 right_of_player = cam_quaternion.rotate(Vec3(1.0f, 0.0f, 0.0f));
@@ -122,7 +122,7 @@ namespace game::components {
             ->get_vobject()
             ->transform();
 
-        cam_transform.quaternion() = Quaternion::fromXRotation(this->camera_phi);
+        cam_transform.quaternion() = Quaternion::from_x_rotation(this->camera_phi);
     }
 
     void PlayerController::toggle_camera_release() {
