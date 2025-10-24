@@ -78,6 +78,7 @@ namespace engine {
             float get_screen_ratio() { return screen_ratio; }
             void set_screen_ratio(float ratio) { screen_ratio = ratio; }
             static GLuint get_gouraud_program_id() { return gouraud_program_id; }
+            static GLuint get_phong_program_id() { return phong_program_id; }
             static std::string get_executable_directory();
             static float get_delta_time();
     };
