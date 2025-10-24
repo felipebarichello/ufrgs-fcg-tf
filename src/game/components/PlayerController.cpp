@@ -32,35 +32,38 @@ namespace game::components {
     }
 
     void PlayerController::update_transform_due_to_environment() {
-        // auto& transform = this->get_vobject()->transform();
+        auto& transform = this->get_vobject()->transform();
         // auto& quaternion = transform.quaternion();
 
 
         /* Position change caused by gravity */
 
         // TODO: This gravity assumes the planet is flat
-        // const float estimated_frame_period = 1.0f / 60.0f; // TODO: Delta time (note: estimate integration)
-        // const float gravity_accel = 4.0f; // TODO: Consider distance to center of mass
-        // Vec3 gravity_direction = -glm::normalize(transform.position()); // Planet is at origin
-        // this->current_velocity += gravity_accel * estimated_frame_period * gravity_direction;
 
-        // Vec3 new_position = transform.position() + this->current_velocity;
-        // Vec3 vec_distance_to_planet = new_position; // Planet is at origin
-        // float distance_to_planet = glm::length(vec_distance_to_planet);
+        const float gravity_accel = 1.0f; // TODO: Consider distance to center of mass
+        
+        Vec3 vec_to_planet = -transform.get_position(); // Planet is at origin
+        Vec3 planet_direction = glm::normalize(vec_to_planet);
 
-        // if (distance_to_planet < this->planet_radius) {
-        //     this->current_velocity = Vec3(0.0f);
-        // } else {
-        //     transform.position() = new_position;
-        // }
+        Vec3 gravity_direction = planet_direction; // Planet is at origin
+        this->current_velocity += gravity_accel * EngineController::get_delta_time() * gravity_direction; // FIXME: This delta time usage is wrong
+
+        Vec3 new_position = transform.get_position() + this->current_velocity;
+        Vec3 new_vec_to_planet = -new_position; // Planet is at origin
+        float distance_to_planet = glm::length(new_vec_to_planet);
+
+        if (distance_to_planet < this->planet_radius) {
+            this->current_velocity = Vec3(0.0f);
+        } else {
+            transform.position() = new_position;
+        }
 
 
         /* Direction change due to gravity */
-
-        // Vec3 vec_distance_to_planet = transform.position(); // Planet is at origin
-        // Vec3 up_direction = glm::normalize(vec_distance_to_planet);
+        
+        // Vec3 up_direction = -planet_direction;
         // Vec3 current_up = quaternion.rotate(Vec3(0.0f, 1.0f, 0.0f));
-        // Quaternion align_quat = Quaternion::fromUnitVectors(current_up, up_direction);
+        // Quaternion align_quat = Quaternion::from_unit_vectors(current_up, up_direction);
         // quaternion *= align_quat;
     }
 
