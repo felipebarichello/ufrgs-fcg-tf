@@ -9,7 +9,7 @@ BezierCurve::BezierCurve(const std::vector<Vec3> pts) {
     this->points = pts;
 }
 
-Vec3 BezierCurve::get_point(float t) {
+Vec3 BezierCurve::get_point(float t) const {
     Vec3 p0 = points[0];
     Vec3 p1 = points[1];
     Vec3 p2 = points[2];
@@ -20,7 +20,7 @@ Vec3 BezierCurve::get_point(float t) {
             t*t*t*p3;
 }
 
-Vec3 BezierCurve::get_tangent(float t) {
+Vec3 BezierCurve::get_tangent(float t) const {
     Vec3 p0 = points[0];
     Vec3 p1 = points[1];
     Vec3 p2 = points[2];
