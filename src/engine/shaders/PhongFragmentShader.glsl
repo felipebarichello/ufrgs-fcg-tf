@@ -61,6 +61,8 @@ void main()
     // Espectro da luz ambiente
     vec3 Ia = vec3(0.2, 0.2, 0.2); // PREENCHA AQUI o espectro da luz ambiente
 
+    vec4 h = normalize(l + v); // half-way entre l e v
+
     // Termo difuso utilizando a lei dos cossenos de Lambert
     vec3 lambert_diffuse_term = diffuse_reflectance*I*max(0.0, dot(n,l)); // PREENCHA AQUI o termo difuso de Lambert
 
@@ -68,7 +70,7 @@ void main()
     vec3 ambient_term = enviornment_reflectance*Ia; // PREENCHA AQUI o termo ambiente
 
     // Termo especular utilizando o modelo de iluminação de Phong
-    vec3 phong_specular_term  = specular_reflectance*I*pow(max(0.0, dot(r,v)), specular_exponent); // PREENCH AQUI o termo especular de Phong
+    vec3 blinn_phong_specular_term  = specular_reflectance*I*pow(max(0.0, dot(n, h)), specular_exponent); // PREENCH AQUI o termo especular de Phong
 
     // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
     // necessário:
@@ -86,10 +88,9 @@ void main()
 
     // Cor final do fragmento calculada com uma combinação dos termos difuso,
     // especular, e ambiente. Veja slide 48 do documento Aula_17_e_18_Modelos_de_Iluminacao - RESUMO.pdf e slide 129 do documento Aula_17_e_18_Modelos_de_Iluminacao.pdf.
-    color.rgb = lambert_diffuse_term + ambient_term + phong_specular_term;
+    color.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
 
     // Cor final com correção gamma, considerando monitor sRGB.
     // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
     color.rgb = pow(color.rgb, vec3(1.0,1.0,1.0)/2.2);
 } 
-

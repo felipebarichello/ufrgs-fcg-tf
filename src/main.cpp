@@ -21,8 +21,8 @@ int main() {
     });
 
     // TODO: Take this out of here
-    engine_controller->g_view_uniform       = glGetUniformLocation(engine_controller->get_gpu_program_id(), "view"); // Variável da matriz "view" em shader_vertex.glsl
-    engine_controller->g_projection_uniform = glGetUniformLocation(engine_controller->get_gpu_program_id(), "projection"); // Variável da matriz "projection" em shader_vertex.glsl
+    engine_controller->g_view_uniform       = glGetUniformLocation(engine_controller->get_gouraud_program_id(), "view"); // Variável da matriz "view" em shader_vertex.glsl
+    engine_controller->g_projection_uniform = glGetUniformLocation(engine_controller->get_gouraud_program_id(), "projection"); // Variável da matriz "projection" em shader_vertex.glsl
 
     // Enable z-buffer
     // TODO: Take this out of here

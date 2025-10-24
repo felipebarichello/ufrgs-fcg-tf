@@ -38,7 +38,8 @@ namespace engine {
 
             static std::unique_ptr<EngineController> instance; // TODO: Remove this singleton pattern
             static float screen_ratio; // TODO: Separate screen ratio and aspect ratio
-            static GLuint gpu_program_id;
+            static GLuint gouraud_program_id;
+            static GLuint phong_program_id;
             static void frame_buffer_size_callback(GLFWwindow* window, int width, int height);
             static void error_callback(int error, const char* description);
             static GLFWwindow* init_window(WindowConfig window_config);
@@ -76,7 +77,8 @@ namespace engine {
             InputController* input();
             float get_screen_ratio() { return screen_ratio; }
             void set_screen_ratio(float ratio) { screen_ratio = ratio; }
-            static GLuint get_gpu_program_id() { return gpu_program_id; }
+            static GLuint get_gouraud_program_id() { return gouraud_program_id; }
+            static GLuint get_phong_program_id() { return phong_program_id; }
             static std::string get_executable_directory();
             static float get_delta_time();
     };

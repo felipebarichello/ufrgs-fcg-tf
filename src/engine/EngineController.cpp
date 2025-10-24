@@ -19,7 +19,8 @@ namespace engine {
     
     EngineController::~EngineController() = default;
     float EngineController::screen_ratio = 1.0f;
-    GLuint EngineController::gpu_program_id = 0;
+    GLuint EngineController::gouraud_program_id = 0;
+    GLuint EngineController::phong_program_id = 0;
     std::vector<Drawable*> EngineController::drawables;
 
     EngineController* EngineController::start_engine(WindowConfig window_config) {
@@ -347,13 +348,11 @@ namespace engine {
     //
     void EngineController::load_shaders_from_files()
     {
-        // Obtemos o diretório do executável e construímos os caminhos relativos aos shaders
         std::string exe_dir = get_executable_directory();
         
-        // Construímos os caminhos para os shaders relativos ao executável
-        // Assumindo estrutura: bin/Debug/main.exe e src/shader_*.glsl
-        std::string vertex_shader_path = exe_dir + "/../../src/engine/shaders/shader_vertex.glsl";
-        std::string fragment_shader_path = exe_dir + "/../../src/engine/shaders/shader_fragment.glsl";
+        // Load Gouraud shaders
+        std::string vertex_shader_path = exe_dir + "/../../src/engine/shaders/GouraudVertexShader.glsl";
+        std::string fragment_shader_path = exe_dir + "/../../src/engine/shaders/GouraudFragmentShader.glsl";
 
         printf("Loading shaders from:\n");
         printf("  Vertex: %s\n", vertex_shader_path.c_str());
@@ -363,11 +362,27 @@ namespace engine {
         GLuint fragment_shader_id = load_shader_fragment(fragment_shader_path.c_str());
 
         // Deletamos o programa de GPU anterior, caso ele exista.
-        if (gpu_program_id != 0)
-            glDeleteProgram(gpu_program_id);
+        if (gouraud_program_id != 0)
+            glDeleteProgram(gouraud_program_id);
 
-        // Criamos um programa de GPU utilizando os shaders carregados acima.
-        gpu_program_id = create_gpu_program(vertex_shader_id, fragment_shader_id);
+        gouraud_program_id = create_gpu_program(vertex_shader_id, fragment_shader_id);
+
+        // Load Phong shaders
+        vertex_shader_path = exe_dir + "/../../src/engine/shaders/PhongVertexShader.glsl";
+        fragment_shader_path = exe_dir + "/../../src/engine/shaders/PhongFragmentShader.glsl";
+
+        printf("Loading shaders from:\n");
+        printf("  Vertex: %s\n", vertex_shader_path.c_str());
+        printf("  Fragment: %s\n", fragment_shader_path.c_str());
+
+        vertex_shader_id = load_shader_vertex(vertex_shader_path.c_str());
+        fragment_shader_id = load_shader_fragment(fragment_shader_path.c_str());
+
+        // Deletamos o programa de GPU anterior, caso ele exista.
+        if (phong_program_id != 0)
+            glDeleteProgram(phong_program_id);
+        
+        phong_program_id = create_gpu_program(vertex_shader_id, fragment_shader_id);
     }
 
     void EngineController::add_drawable(Drawable* drawable) {
@@ -397,9 +412,14 @@ namespace engine {
         Mat4 projection = main_camera->get_perspective_matrix();
         Mat4 view = main_camera->get_view_matrix();
 
-        glUseProgram(EngineController::get_instance()->get_gpu_program_id());
+        glUseProgram(EngineController::get_instance()->get_gouraud_program_id());
         glUniformMatrix4fv(EngineController::instance->g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
         glUniformMatrix4fv(EngineController::instance->g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
+
+        glUseProgram(EngineController::get_instance()->get_phong_program_id());
+        glUniformMatrix4fv(EngineController::instance->g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
+        glUniformMatrix4fv(EngineController::instance->g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
+
         glBindVertexArray(0);
     }
 

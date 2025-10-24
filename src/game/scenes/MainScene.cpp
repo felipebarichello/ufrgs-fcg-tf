@@ -1,7 +1,6 @@
 #include "MainScene.hpp"
 #include <game/components/PlayerController.hpp>
 #include <engine/vobject/Transform.hpp>
-#include <game/components/drawables/BunnyDrawable.hpp>
 #include <engine/vobject/components/Trajectory.hpp>
 #include <engine/math/curves/BezierCurve.hpp>
 #include <engine/math/curves/CircularCurve.hpp>
@@ -55,7 +54,29 @@ namespace game::scenes {
         Camera::set_main(main_camera);
 
         root
-            .vobject(Player(main_camera, player_height, planet_radius))
+            .vobject(VObjectConfig()
+                .transform(TransformBuilder()
+                    .position(Vec3(0.0f, 0.0f, 100.0f)))
+                .component(new PlayerController(main_camera, planet_radius))
+                .child(
+                    VObjectConfig()
+                        .transform(TransformBuilder()
+                            .position(Vec3(0.0f, player_height, 0.0f)))
+                        .component(main_camera)
+                )
+            )
+            // Phong Shading bunny
+            .vobject(VObjectConfig()
+                .transform(TransformBuilder()
+                    .position(Vec3(0.0f, 0.0f, 100.0f)))
+                .component(new ObjDrawable("bunny.obj", true))
+            )
+            // Gouraud Shading Bunny
+            .vobject(VObjectConfig()
+                .transform(TransformBuilder()
+                    .position(Vec3(0.0f, 0.0f, 102.0f)))
+                .component(new ObjDrawable("bunny.obj", false))
+            )
             .vobject(VObjectConfig()  // Root VObject for all planets
                 .child(Planet()  // Central star
                     .transform(TransformBuilder()
