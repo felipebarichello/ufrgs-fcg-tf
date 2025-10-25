@@ -1,11 +1,15 @@
 #include "MainScene.hpp"
 #include <game/components/PlayerController.hpp>
+#include <game/components/CameraController.hpp>
 #include <engine/vobject/Transform.hpp>
 #include <engine/vobject/components/Trajectory.hpp>
 #include <engine/math/curves/BezierCurve.hpp>
 #include <engine/math/curves/CircularCurve.hpp>
 #include <engine/math/curves/PieceWiseBezierCurve.hpp>
 #include <cmath>
+#include <random>
+#include <vector>
+#include <memory>
 
 using engine::SceneRoot;
 using engine::Camera;
@@ -15,20 +19,50 @@ using engine::math::Quaternion;
 using engine::Vec3;
 using namespace game::components;
 
-VObjectConfig Player(Camera* main_camera, float height, float planet_radius) {
+// Small local Curve wrapper that lets us specify a phase (starting angle) so a circular
+// trajectory starts at the desired position without jumping when Trajectory::t == 0.
+namespace {
+    class PhaseCircularCurve : public engine::Curve {
+    public:
+        PhaseCircularCurve(const engine::Vec3& center, const engine::Vec3& normal, float radius, float phase)
+            : inner(center, normal, radius), phase(phase) {}
+
+        engine::Vec3 get_point(float t) const override {
+            float tp = std::fmod(t + phase, 1.0f);
+            if (tp < 0.0f) tp += 1.0f;
+            return inner.get_point(tp);
+        }
+
+        engine::Vec3 get_tangent(float t) const override {
+            float tp = std::fmod(t + phase, 1.0f);
+            if (tp < 0.0f) tp += 1.0f;
+            return inner.get_tangent(tp);
+        }
+
+    private:
+        engine::CircularCurve inner;
+        float phase = 0.0f;
+    };
+}
+
+VObjectConfig Player(Camera* main_camera, float planet_radius, game::components::PlayerController** out_controller = nullptr) {
+    // create player controller explicitly so callers can keep the raw pointer
+    auto* pc = new game::components::PlayerController(main_camera, planet_radius);
+    if (out_controller) *out_controller = pc;
+
     return VObjectConfig()
         .transform(TransformBuilder()
             .position(Vec3(0.0f, 0.0f, 200.0f)))
-        .component(new PlayerController(main_camera, planet_radius))
+        .component(pc)
+        // player model (bunny) as child
         .child(VObjectConfig()
             .transform(TransformBuilder()
-                .position(Vec3(0.0f, 18.0f, 0.0f))
-                .scale(Vec3(10.0f)))
+                .position(Vec3(0.0f, 0.0f, 0.0f))
+                .rotation(Quaternion::from_axis_angle(Vec3(0.0, 1.0, 0.0), -M_PI/2.0)))
             .component(new ObjDrawable("bunny.obj"))
         )
+        // camera positioned behind and slightly above the bunny
         .child(VObjectConfig()
-            .transform(TransformBuilder()
-                .position(Vec3(0.0f, height, 0.0f)))
             .component(main_camera)
         );
 }
@@ -45,111 +79,85 @@ VObjectConfig Planet() {
 
 namespace game::scenes {
     void MainScene::hierarchy(SceneRoot& root) {
-        const float player_height = 1.8f;
         const float default_planet_radius = 10.0f; // Very precise estimate
-        const float planet_radius = 80.0f;
+        const float planet_radius = 170.0f;
         const float planet_scale = planet_radius / default_planet_radius;
 
-        Camera* main_camera = new Camera();
-        Camera::set_main(main_camera);
+        Camera* first_person_camera = new Camera();
+        Camera* third_person_camera = new Camera();
+        Camera::set_main(third_person_camera);
 
-        root
-            .vobject(VObjectConfig()
-                .transform(TransformBuilder()
-                    .position(Vec3(0.0f, 0.0f, 100.0f)))
-                .component(new PlayerController(main_camera, planet_radius))
-                .child(
-                    VObjectConfig()
-                        .transform(TransformBuilder()
-                            .position(Vec3(0.0f, player_height, 0.0f)))
-                        .component(main_camera)
-                )
-            )
-            // Phong Shading bunny
-            .vobject(VObjectConfig()
-                .transform(TransformBuilder()
-                    .position(Vec3(0.0f, 0.0f, 100.0f)))
-                .component(new ObjDrawable("bunny.obj", true))
-            )
-            // Gouraud Shading Bunny
-            .vobject(VObjectConfig()
-                .transform(TransformBuilder()
-                    .position(Vec3(0.0f, 0.0f, 102.0f)))
-                .component(new ObjDrawable("bunny.obj", false))
-            )
-            .vobject(VObjectConfig()  // Root VObject for all planets
-                .child(Planet()  // Central star
+    // Ensure the third-person camera is attached to a VObject so its
+    // Component::vobject_ptr is set during Scene instantiation. Without
+    // this the camera's get_vobject() is null and controllers that use
+    // the camera will dereference a null pointer.
+    VObjectConfig third_person_camera_config;
+    third_person_camera_config.component(third_person_camera);
+    root.vobject(third_person_camera_config);
+
+        PlayerController* player_controller = nullptr;
+        VObjectConfig player_config = Player(first_person_camera, planet_radius, &player_controller);
+        player_config.transform(TransformBuilder().position(Vec3(10.0f*planet_radius, planet_radius, planet_radius)));
+
+        VObjectConfig camera_controller_config;
+        camera_controller_config.component(new CameraController(
+            player_controller,
+            third_person_camera
+        ));
+
+        VObjectConfig main_planet_config = Planet();
+        main_planet_config.transform(TransformBuilder().scale(planet_scale));
+    // main planet will be added below together with other root objects
+
+        // Generate satellites placed on discrete rings to avoid collisions and
+        // keep the layout simple and predictable.
+        VObjectConfig satellitesRoot;
+        std::mt19937 rng(123456);
+
+        const int N_rings = 5;
+        const int per_ring = 4; // total = N_rings * per_ring
+        const float minR = planet_radius * 10.0f;
+        const float maxR = planet_radius * 100.0f;
+        std::vector<float> rings;
+        rings.reserve(N_rings);
+        float ring_step = (maxR - minR) / static_cast<float>(std::max(1, N_rings - 1));
+        for (int r = 0; r < N_rings; ++r) rings.push_back(minR + r * ring_step);
+
+        std::uniform_real_distribution<float> angleJitter(-0.08f, 0.08f);
+        std::uniform_real_distribution<float> radiusJitter(-ring_step * 0.15f, ring_step * 0.15f);
+        std::uniform_real_distribution<float> yDist(-planet_radius * 0.5f, planet_radius * 0.5f);
+        std::uniform_real_distribution<float> scaleDist(0.35f, 0.75f); // relative to planet_scale
+        std::uniform_real_distribution<float> speedDist(0.003f, 0.005f);
+        std::uniform_real_distribution<float> tiltDist(-0.04f, 0.04f); // small common tilt (~±2.3°)
+        std::uniform_real_distribution<float> phaseDist(0.0f, 1.0f); // random starting phase [0,1)
+
+        // single small tilt for all orbits (keeps orbits nearly coplanar)
+        float common_tilt = tiltDist(rng);
+        float sin_t = std::sin(common_tilt);
+        float cos_t = std::cos(common_tilt);
+        engine::Vec3 common_orbit_normal(sin_t, cos_t, 0.0f);
+
+        for (int r = 0; r < N_rings; ++r) {
+            for (int k = 0; k < per_ring; ++k) {
+                float radius = rings[r] + radiusJitter(rng);
+                float s = scaleDist(rng) * planet_scale;
+                float phase = phaseDist(rng);
+                float speed = speedDist(rng);
+
+                satellitesRoot.child(Planet()
                     .transform(TransformBuilder()
-                        .scale(planet_scale))
-                )
-                .child(Planet()  // Planet 4 - tilted circular orbit
-                    .transform(TransformBuilder()
-                        .scale(0.3f * planet_scale))
-                    .component(new Trajectory(std::make_unique<engine::CircularCurve>(
-                        Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
-                        Vec3(0.2f, 1.0f, 0.1f),      // Tilted normal vector
-                        30.0f                         // Radius
-                    ), 0.2f))
-                )
-                .child(Planet()  // Planet 5 - outer circular orbit
-                    .transform(TransformBuilder()
-                        .scale(0.2f * planet_scale))
-                    .component(new Trajectory(std::make_unique<engine::CircularCurve>(
-                        Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
-                        Vec3(1.2f, 0.0f, 0.1f),      // Tilted normal vector
-                        30.0f                         // Radius
-                    ), 0.5f))
-                )
-                .child(Planet()  // Planet 5 - outer circular orbit
-                    .transform(TransformBuilder()
-                        .scale(0.3f * planet_scale))
-                    .component(new Trajectory(std::make_unique<engine::CircularCurve>(
-                        Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
-                        Vec3(1.0f, 1.0f, 1.0f),      // Tilted normal vector
-                        30.0f                         // Radius
-                    ), 0.6f))
-                )
-                .child(Planet()  // Planet with dynamic piecewise Bezier curve
-                    .transform(TransformBuilder()
-                        .scale(0.3f * planet_scale))
-                    .component(new Trajectory(std::make_unique<engine::PieceWiseBezierCurve>(std::vector<engine::BezierCurve>{
-                        // First segment: dramatic spiral outward and up
-                        engine::BezierCurve(std::vector<Vec3>{
-                            Vec3(30.0f, 0.0f, 0.0f),       // Start point
-                            Vec3(45.0f, 25.0f, 20.0f),     // Control point 1 - high and forward
-                            Vec3(15.0f, 50.0f, 35.0f),     // Control point 2 - very high with twist
-                            Vec3(-20.0f, 35.0f, 15.0f)     // End point - back and left
-                        }),
-                        // Second segment: swooping dive with twist
-                        engine::BezierCurve(std::vector<Vec3>{
-                            Vec3(-20.0f, 35.0f, 15.0f),    // Start point (same as previous end)
-                            Vec3(-50.0f, 15.0f, -10.0f),   // Control point 1 - far left and down
-                            Vec3(-60.0f, -20.0f, -30.0f),  // Control point 2 - deep dive
-                            Vec3(-25.0f, -45.0f, -15.0f)   // End point - coming back up
-                        }),
-                        // Third segment: figure-8 loop
-                        engine::BezierCurve(std::vector<Vec3>{
-                            Vec3(-25.0f, -45.0f, -15.0f),  // Start point
-                            Vec3(10.0f, -60.0f, 5.0f),     // Control point 1 - loop around
-                            Vec3(40.0f, -35.0f, 25.0f),    // Control point 2 - completing loop
-                            Vec3(35.0f, -10.0f, 10.0f)     // End point - rising
-                        }),
-                        // Fourth segment: high altitude curve with dramatic descent
-                        engine::BezierCurve(std::vector<Vec3>{
-                            Vec3(35.0f, -10.0f, 10.0f),    // Start point
-                            Vec3(55.0f, 15.0f, 40.0f),     // Control point 1 - soaring high
-                            Vec3(50.0f, 30.0f, 25.0f),     // Control point 2 - peak altitude
-                            Vec3(30.0f, 0.0f, 0.0f)        // End point - back to start with smooth landing
-                        }),
-                        // Fifth segment: bonus corkscrew for extra dynamics
-                        engine::BezierCurve(std::vector<Vec3>{
-                            Vec3(30.0f, 0.0f, 0.0f),       // Start point (same as very first)
-                            Vec3(25.0f, -15.0f, -25.0f),   // Control point 1 - diving down
-                            Vec3(45.0f, -25.0f, -15.0f),   // Control point 2 - corkscrew motion
-                            Vec3(30.0f, 0.0f, 0.0f)        // End point - complete the loop
-                        })
-                    }), 15.0f))
-                )
-            );
+                        .scale(s))
+                    .component(new Trajectory(
+                        std::make_unique<PhaseCircularCurve>(engine::Vec3(0.0f), common_orbit_normal, radius, phase),
+                        speed
+                    ))
+                );
+            }
+        }
+
+    root.vobject(camera_controller_config);
+    root.vobject(player_config);
+        root.vobject(main_planet_config);
+        root.vobject(satellitesRoot);
     }
 }
