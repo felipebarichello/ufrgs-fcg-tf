@@ -11,6 +11,7 @@
 #include <random>
 #include <vector>
 #include <memory>
+#include <game/components/Drawables/Particles.hpp>
 
 using engine::SceneRoot;
 using engine::Camera;
@@ -101,6 +102,7 @@ namespace game::scenes {
     // Component::vobject_ptr is set during Scene instantiation. Without
     // this the camera's get_vobject() is null and controllers that use
     // the camera will dereference a null pointer.
+    
     VObjectConfig third_person_camera_config;
     third_person_camera_config.component(third_person_camera);
     root.vobject(third_person_camera_config);
@@ -114,6 +116,7 @@ namespace game::scenes {
             player_controller,
             third_person_camera
         ));
+        camera_controller_config.component(new Particles(100, &player_controller->speed));
 
         VObjectConfig main_planet_config = Planet();
         main_planet_config.transform(TransformBuilder().scale(planet_scale));
