@@ -75,6 +75,7 @@ namespace engine {
 
         private:
             GLuint vao_id;
+            bool has_ebo = false;
 
             void add_buffer(GLenum target, size_t buffer_size, void* data, GLenum usage_hint);
     };
