@@ -41,19 +41,12 @@ namespace game::components {
         quaternion.local_compose(Quaternion::from_x_rotation(spherical.delta_phi));
         quaternion.local_compose(Quaternion::from_z_rotation(-this->move_vector.x*0.01));
         quaternion.normalize();
-
-        // TODO: Should not be able to walk while not touching ground
-
-        // Vec3 front_of_player = quaternion.rotate(Vec3(0.0f, 0.0f, -1.0f));
-        // Vec3 right_of_player = quaternion.rotate(Vec3(1.0f, 0.0f, 0.0f));
-
-        // transform.position() += this->speed * this->move_vector.y * front_of_player;
-        // transform.position() += this->speed * this->move_vector.x * right_of_player;
+        
     }
 
     void PlayerController::update_camera() {
         auto& cam_transform = this->camera->get_vobject()->transform();
-        cam_transform.position() = Vec3(0.0f, 0.0f, 10.0f);
+        cam_transform.position() = Vec3(0.0f, 0.0f, -1.0f);
     }
 
     PlayerController::SphericalInput PlayerController::get_spherical_input() {

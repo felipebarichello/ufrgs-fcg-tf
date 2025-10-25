@@ -6,6 +6,7 @@
 #include <engine/math/curves/BezierCurve.hpp>
 #include <engine/math/curves/CircularCurve.hpp>
 #include <engine/math/curves/PieceWiseBezierCurve.hpp>
+#include <engine/EngineController.hpp>
 #include <cmath>
 #include <random>
 #include <vector>
@@ -86,6 +87,15 @@ namespace game::scenes {
         Camera* first_person_camera = new Camera();
         Camera* third_person_camera = new Camera();
         Camera::set_main(third_person_camera);
+        
+        InputController* input = EngineController::get_input();
+        input->subscribe_press_button(GLFW_KEY_C, [third_person_camera, first_person_camera]() {
+            if (Camera::get_main() == third_person_camera) {
+                Camera::set_main(first_person_camera);
+            } else {
+                Camera::set_main(third_person_camera);
+            }
+        });
 
     // Ensure the third-person camera is attached to a VObject so its
     // Component::vobject_ptr is set during Scene instantiation. Without
@@ -155,8 +165,8 @@ namespace game::scenes {
             }
         }
 
-    root.vobject(camera_controller_config);
     root.vobject(player_config);
+    root.vobject(camera_controller_config);
         root.vobject(main_planet_config);
         root.vobject(satellitesRoot);
     }
