@@ -14,14 +14,6 @@ namespace engine {
     Vec3 negate(Vec3 v);
     Mat4 invert_orthonormal_matrix(const Mat4& m);
 
-    struct HyperVec3 {
-        Vec3 x;
-        Vec3 y;
-        Vec3 z;
-
-        HyperVec3() = default;
-        HyperVec3(Vec3 x, Vec3 y, Vec3 z) : x(x), y(y), z(z) {}
-    };
-
+    std::ostream& operator<<(std::ostream& os, const Vec3& v);
     std::ostream& operator<<(std::ostream& os, const Mat4& m);
 }

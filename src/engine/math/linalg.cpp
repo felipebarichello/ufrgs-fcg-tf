@@ -23,6 +23,11 @@ namespace engine {
         );
     }
 
+    std::ostream& operator<<(std::ostream& os, const Vec3& v) {
+        os << "(" << v.x << ", " << v.y << ", " << v.z << ")";
+        return os;
+    }
+
     std::ostream& operator<<(std::ostream& os, const Mat4& m) {
         os << "["
            << m[0][0] << ", " << m[1][0] << ", " << m[2][0] << ", " << m[3][0] << "; "
