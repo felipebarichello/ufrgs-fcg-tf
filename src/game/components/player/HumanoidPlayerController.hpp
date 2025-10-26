@@ -26,7 +26,7 @@ namespace game::components {
             engine::Vec2 move_vector_2d {0.0f, 0.0f};
             engine::Vec3 current_velocity {0.0f, 0.0f, 0.0f};
             float walk_accel = 50.0f;
-            float walk_deaccel = 60.0f;
+            float walk_deaccel = 80.0f;
             float max_walk_speed = 100.0f;
             float camera_phi = 0.0f;
             float v_sensitivity = 0.001f;
