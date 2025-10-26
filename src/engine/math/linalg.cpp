@@ -5,6 +5,10 @@ namespace engine {
         return Vec3(-v.x, -v.y, -v.z);
     }
 
+    bool is_zero(Vec2 v) {
+        return (v.x == 0.0f) && (v.y == 0.0f);
+    }
+
     bool is_zero(Vec3 v) {
         return (v.x == 0.0f) && (v.y == 0.0f) && (v.z == 0.0f);
     }

@@ -11,6 +11,7 @@ using engine::Vec3;
 using engine::math::Quaternion;
 using engine::is_zero;
 using engine::Transform;
+using engine::operator<<;
 
 namespace game::components {
     struct PlayerController::SphericalInput {
@@ -20,7 +21,7 @@ namespace game::components {
 
     void PlayerController::Start() {
         InputController* input = EngineController::get_input();
-        input->subscribe_dpad(&this->move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
+        input->subscribe_dpad(&this->move_vector_2d, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
         input->subscribe_press_button(GLFW_KEY_F6, std::bind(&PlayerController::toggle_camera_release, this));
         input->subscribe_press_button(GLFW_KEY_SPACE, std::bind(&PlayerController::jump, this));
     }
@@ -43,7 +44,6 @@ namespace game::components {
         // Calculate (vector) gravity sum from all planets.
         // Each planet contributes (mass / distance) * direction_to_planet.
         Vec3 gravity_sum {0.0f, 0.0f, 0.0f};
-
         Vec3 equivalent_gravity(0.0f);
 
         if (!this->grounded_to.has_value()) {
@@ -54,7 +54,6 @@ namespace game::components {
         // TODO: Is this physically accurate?
         transform.position() += this->current_velocity * EngineController::get_delta_time();
         this->correct_planet_collision();
-
 
         /* Direction change due to gravity or planet alignment */
 
@@ -79,11 +78,77 @@ namespace game::components {
         if (this->grounded_to.has_value()) {
             Vec3 front_of_player = quaternion.rotate(Vec3(0.0f, 0.0f, -1.0f));
             Vec3 right_of_player = quaternion.rotate(Vec3(1.0f, 0.0f, 0.0f));
-            
-            transform.position() += this->speed * this->move_vector.y * front_of_player;
-            transform.position() += this->speed * this->move_vector.x * right_of_player;
 
-            // Get back to the surface because you should not get away from the planet while grounded grounded
+            Vec3 move_vector_3d = this->move_vector_2d.y * front_of_player;
+            move_vector_3d += this->move_vector_2d.x * right_of_player;
+            Vec3 desired_velocity_change = this->walk_accel * move_vector_3d * EngineController::get_delta_time();
+            Vec3 desired_velocity = this->current_velocity + desired_velocity_change;
+            float desired_speed = glm::length(desired_velocity);
+
+            if (desired_speed > this->max_walk_speed) {
+                // Can't walk faster. Correct that.
+                Vec3 velocity_direction = glm::normalize(this->current_velocity);
+                Vec3 max_velocity_component = velocity_direction * this->max_walk_speed;
+                Vec3 excess_velocity = desired_velocity - max_velocity_component;
+                
+                // Walking can only operate on the non-excess part
+                Vec3 desired_vel_component = max_velocity_component + desired_velocity_change;
+                float vel_component_speed = glm::length(desired_vel_component);
+                if (vel_component_speed > this->max_walk_speed) {
+                    // Clamp to max walk speed
+                    desired_vel_component = desired_vel_component / vel_component_speed * this->max_walk_speed;
+                }
+
+                desired_velocity = desired_vel_component + excess_velocity;
+            }
+
+            { // Deaccelerate in the direction orthogonal to movement and when stopped (and also when moving opposite)
+                Vec3 up = transform.quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
+                Vec3 horizontal_velocity = this->current_velocity - glm::dot(this->current_velocity, up) * up;
+
+                if (is_zero(move_vector_3d)) {
+                    // No input, deaccelerate fully
+                    float horizontal_speed = glm::length(horizontal_velocity);
+                    if (horizontal_speed > 1e-6f) {
+                        Vec3 horizontal_direction = horizontal_velocity / horizontal_speed;
+                        float deaccel_amount = std::min(horizontal_speed, this->walk_deaccel * EngineController::get_delta_time());
+                        desired_velocity -= deaccel_amount * horizontal_direction;
+                    }
+                } else {
+                    // Input present: deaccelerate orthogonal component and any component opposite to the input
+                    Vec3 input_direction = glm::normalize(move_vector_3d);
+
+                    float horiz_speed = glm::length(horizontal_velocity);
+                    if (horiz_speed > 1e-6f) {
+                        // scalar component along input (can be negative if moving opposite)
+                        float scalar_along = glm::dot(horizontal_velocity, input_direction);
+
+                        // orthogonal component (horizontal_velocity minus its projection onto input_direction)
+                        Vec3 orthogonal_vec = horizontal_velocity - scalar_along * input_direction;
+                        float orthogonal_speed = glm::length(orthogonal_vec);
+
+                        float dt = EngineController::get_delta_time();
+
+                        // Deaccelerate orthogonal component
+                        if (orthogonal_speed > 1e-6f) {
+                            Vec3 orthogonal_dir = orthogonal_vec / orthogonal_speed;
+                            float deaccel_amount = std::min(orthogonal_speed, this->walk_deaccel * dt);
+                            desired_velocity -= deaccel_amount * orthogonal_dir;
+                        }
+
+                        // If moving opposite to input, deaccelerate that opposite component towards zero
+                        if (scalar_along < -1e-6f) {
+                            float opposite_speed = -scalar_along;
+                            float deaccel_amount = std::min(opposite_speed, this->walk_deaccel * dt);
+                            // Move velocity along input direction (positive) to reduce the negative component
+                            desired_velocity += deaccel_amount * input_direction;
+                        }
+                    }
+                }
+            }
+            this->current_velocity = desired_velocity;
+
+            // Get back to the surface because you should not walk away from the planet while grounded
             PlanetInfo* planet = this->grounded_to.value();
             Vec3 planet_position = planet->get_vobject()->transform().get_position();
             Vec3 direction_from_planet = glm::normalize(transform.get_position() - planet_position);
@@ -103,8 +168,8 @@ namespace game::components {
         Vec3 front_of_camera = cam_quaternion.rotate(Vec3(0.0f, 0.0f, -1.0f));
         Vec3 right_of_camera = cam_quaternion.rotate(Vec3(1.0f, 0.0f, 0.0f));
 
-        cam_transform.position() += this->released_camera_speed * this->move_vector.y * front_of_camera;
-        cam_transform.position() += this->released_camera_speed * this->move_vector.x * right_of_camera;
+        cam_transform.position() += this->released_camera_speed * this->move_vector_2d.y * front_of_camera;
+        cam_transform.position() += this->released_camera_speed * this->move_vector_2d.x * right_of_camera;
     }
 
     PlayerController::SphericalInput PlayerController::get_spherical_input() {

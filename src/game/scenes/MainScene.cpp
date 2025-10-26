@@ -15,7 +15,7 @@ using namespace game::components;
 VObjectConfig Player(Camera* main_camera, float height, std::vector<PlanetInfo*> planets) {
     return VObjectConfig()
         .transform(TransformBuilder()
-            .position(Vec3(0.0f, 0.0f, 400.0f)))
+            .position(Vec3(0.0f, 200.0f, 50.0f)))
         .component(new PlayerController(main_camera, planets))
         .child(VObjectConfig()
             .transform(TransformBuilder()
@@ -59,6 +59,11 @@ namespace game::scenes {
                 .child(Planet(planets[0])  // Central star
                     .transform(TransformBuilder()
                         .scale(200.0f * planet_model_normalize))
+                    .child(VObjectConfig()
+                        .transform(TransformBuilder()
+                            .position(Vec3(0.0f, 11.0f, 0.0f)))
+                        .component(new ObjDrawable("bunny.obj"))
+                    )
                 )
                 .child(Planet(planets[1])  // Tilted circular orbit
                     .transform(TransformBuilder()

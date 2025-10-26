@@ -22,9 +22,11 @@ namespace game::components {
             std::vector<PlanetInfo*> planets;
             
             engine::Transform stored_child_cam_transform;
-            engine::Vec2 move_vector {0.0f, 0.0f};
+            engine::Vec2 move_vector_2d {0.0f, 0.0f};
             engine::Vec3 current_velocity {0.0f, 0.0f, 0.0f};
-            float speed = 10.0f;
+            float walk_accel = 20.0f;
+            float walk_deaccel = 60.0f;
+            float max_walk_speed = 10.0f;
             float camera_phi = 0.0f;
             float v_sensitivity = 0.001f;
             float h_sensitivity = 0.001f;
