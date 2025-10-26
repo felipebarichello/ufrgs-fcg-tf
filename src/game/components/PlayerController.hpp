@@ -4,8 +4,6 @@
 #include <memory>
 #include "PlanetInfo.hpp"
 
-using engine::Transform;
-
 namespace game::components {
     class PlayerController : public engine::Behavior {
         public:
@@ -17,14 +15,16 @@ namespace game::components {
             struct SphericalInput;
 
             static constexpr float GRAVITATIONAL_CONSTANT = 6.6743e-11f;
+            static constexpr float MIN_SURFACE_ALIGNMENT_DISTANCE = 1.0f;
+            static constexpr float MAX_SURFACE_ALIGNMENT_DISTANCE = 200.0f;
 
             engine::Camera* camera;
             std::vector<PlanetInfo*> planets;
             
-            Transform stored_child_cam_transform;
+            engine::Transform stored_child_cam_transform;
             engine::Vec2 move_vector {0.0f, 0.0f};
             engine::Vec3 current_velocity {0.0f, 0.0f, 0.0f};
-            float speed = 1.0f;
+            float speed = 10.0f;
             float camera_phi = 0.0f;
             float v_sensitivity = 0.001f;
             float h_sensitivity = 0.001f;
@@ -35,6 +35,7 @@ namespace game::components {
             float phi_min = -3.141592f/2;
             float jump_strength = 50.0f;
             std::optional<PlanetInfo*> grounded_to = std::nullopt;
+            PlanetInfo* closest_planet = nullptr;
 
             void update_transform_due_to_environment();
             void update_transform_due_to_input();
@@ -45,5 +46,6 @@ namespace game::components {
             void jump();
             void toggle_camera_release();
             void correct_planet_collision();
+            void align_to_closest_planet();
     };
 } // namespace game::components
