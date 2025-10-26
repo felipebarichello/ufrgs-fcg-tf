@@ -5,9 +5,9 @@
 #include <game/components/PlanetInfo.hpp>
 
 namespace game::components {
-    class PlayerController : public engine::Behavior {
+    class HumanoidPlayerController : public engine::Behavior {
         public:
-            PlayerController(engine::Camera* camera, std::vector<PlanetInfo*> planets) : camera(camera), planets(planets) {}
+            HumanoidPlayerController(engine::Camera* camera, std::vector<PlanetInfo*> planets) : camera(camera), planets(planets) {}
             void Start() override;
             void Update() override;
 

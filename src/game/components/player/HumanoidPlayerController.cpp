@@ -1,4 +1,4 @@
-#include "PlayerController.hpp"
+#include "HumanoidPlayerController.hpp"
 #include <engine>
 #include <InputController.hpp>
 #include <algorithm>
@@ -13,19 +13,19 @@ using engine::is_zero;
 using engine::Transform;
 
 namespace game::components {
-    struct PlayerController::SphericalInput {
+    struct HumanoidPlayerController::SphericalInput {
         float delta_theta;
         float delta_phi;
     };
 
-    void PlayerController::Start() {
+    void HumanoidPlayerController::Start() {
         InputController* input = EngineController::get_input();
         input->subscribe_dpad(&this->move_vector_2d, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
-        input->subscribe_press_button(GLFW_KEY_F6, std::bind(&PlayerController::toggle_camera_release, this));
-        input->subscribe_press_button(GLFW_KEY_SPACE, std::bind(&PlayerController::jump, this));
+        input->subscribe_press_button(GLFW_KEY_F6, std::bind(&HumanoidPlayerController::toggle_camera_release, this));
+        input->subscribe_press_button(GLFW_KEY_SPACE, std::bind(&HumanoidPlayerController::jump, this));
     }
 
-    void PlayerController::Update() {
+    void HumanoidPlayerController::Update() {
         if (this->released_camera) {
             this->update_released_camera();
         } else {
@@ -35,7 +35,7 @@ namespace game::components {
         this->update_transform_due_to_environment();
     }
 
-    void PlayerController::update_transform_due_to_environment() {
+    void HumanoidPlayerController::update_transform_due_to_environment() {
         Transform& transform = this->get_vobject()->transform();
 
         /* Position change caused by gravity */
@@ -59,14 +59,14 @@ namespace game::components {
         this->align_to_closest_planet();
     }
 
-    void PlayerController::update_transform_due_to_input() {
+    void HumanoidPlayerController::update_transform_due_to_input() {
         auto& transform = this->get_vobject()->transform();
         auto& quaternion = transform.quaternion();
 
 
         /* Camera (attached) movement */
 
-        PlayerController::SphericalInput spherical = this->get_spherical_input();
+        HumanoidPlayerController::SphericalInput spherical = this->get_spherical_input();
         this->set_camera_phi(this->camera_phi + spherical.delta_phi);
         quaternion.local_compose(Quaternion::from_y_rotation(spherical.delta_theta));
 
@@ -155,11 +155,11 @@ namespace game::components {
         }
     }
 
-    void PlayerController::update_released_camera() {
+    void HumanoidPlayerController::update_released_camera() {
         Transform& cam_transform = this->camera->get_vobject()->transform();
         Quaternion& cam_quaternion = cam_transform.quaternion();
 
-        PlayerController::SphericalInput spherical = this->get_spherical_input();
+        HumanoidPlayerController::SphericalInput spherical = this->get_spherical_input();
         cam_quaternion.local_compose(Quaternion::from_y_rotation(spherical.delta_theta));
         cam_quaternion.local_compose(Quaternion::from_x_rotation(spherical.delta_phi));
         cam_quaternion.normalize();
@@ -171,8 +171,8 @@ namespace game::components {
         cam_transform.position() += this->released_camera_speed * this->move_vector_2d.x * right_of_camera;
     }
 
-    PlayerController::SphericalInput PlayerController::get_spherical_input() {
-        PlayerController::SphericalInput spherical;
+    HumanoidPlayerController::SphericalInput HumanoidPlayerController::get_spherical_input() {
+        HumanoidPlayerController::SphericalInput spherical;
 
         // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
         Vec2 cursor_delta = EngineController::get_input()->get_cursor_position_delta();
@@ -184,7 +184,7 @@ namespace game::components {
         return spherical;
     }
 
-    void PlayerController::set_camera_phi(float new_phi) {
+    void HumanoidPlayerController::set_camera_phi(float new_phi) {
         this->camera_phi = std::clamp(new_phi, this->phi_min, this->phi_max); // Don't let the player break their neck
         
         auto& cam_transform = this->camera
@@ -195,7 +195,7 @@ namespace game::components {
         cam_transform.quaternion().normalize();
     }
 
-    Vec3 PlayerController::compute_equivalent_gravity() {
+    Vec3 HumanoidPlayerController::compute_equivalent_gravity() {
         Vec3 gravity_sum(0.0f);
         for (PlanetInfo* planet : this->planets) {
             Vec3 vec_to_planet = planet->get_vobject()->transform().get_position() - this->get_vobject()->transform().get_position();
@@ -206,10 +206,10 @@ namespace game::components {
             }
         }
 
-        return gravity_sum * PlayerController::GRAVITATIONAL_CONSTANT;
+        return gravity_sum * HumanoidPlayerController::GRAVITATIONAL_CONSTANT;
     }
 
-    void PlayerController::jump() {
+    void HumanoidPlayerController::jump() {
         // Can only jump if grounded
         if (this->grounded_to.has_value()) {
             this->current_velocity +=
@@ -219,7 +219,7 @@ namespace game::components {
         }
     }
 
-    void PlayerController::toggle_camera_release() {
+    void HumanoidPlayerController::toggle_camera_release() {
         this->released_camera = !this->released_camera;
         auto camera_vobj = this->camera->get_vobject();
         auto& cam_transf = camera_vobj->transform();
@@ -239,7 +239,7 @@ namespace game::components {
         }
     }
 
-    void PlayerController::correct_planet_collision() {
+    void HumanoidPlayerController::correct_planet_collision() {
         // No need to keep checking if already grounded
         if (this->grounded_to.has_value()) {
             return;
@@ -280,7 +280,7 @@ namespace game::components {
         }
     }
 
-    void PlayerController::align_to_closest_planet() {
+    void HumanoidPlayerController::align_to_closest_planet() {
         Transform& transform = this->get_vobject()->transform();
         Quaternion& quaternion = transform.quaternion();
         Vec3 current_up = quaternion.rotate(Vec3(0.0f, 1.0f, 0.0f));
@@ -306,14 +306,14 @@ namespace game::components {
             float closest_point_distance = glm::length(vec_to_closest_point);
 
             // If too far from the planet, don't align at all
-            if (closest_point_distance > PlayerController::MAX_SURFACE_ALIGNMENT_DISTANCE) {
+            if (closest_point_distance > HumanoidPlayerController::MAX_SURFACE_ALIGNMENT_DISTANCE) {
                 return;
             }
 
             Quaternion align_quat = Quaternion::from_unit_vectors(current_up, -glm::normalize(vec_to_closest_planet));
 
             // If very close to the planet's surface, snap to planet normal as if grounded
-            if (closest_point_distance < PlayerController::MIN_SURFACE_ALIGNMENT_DISTANCE) {
+            if (closest_point_distance < HumanoidPlayerController::MIN_SURFACE_ALIGNMENT_DISTANCE) {
                 quaternion.global_compose(align_quat);
                 quaternion.normalize();
                 return;
@@ -321,8 +321,8 @@ namespace game::components {
 
             // Otherwise, align partially based on distance to surface
             float planet_alignment_force = 
-                (PlayerController::MAX_SURFACE_ALIGNMENT_DISTANCE - closest_point_distance) / // This is OK because closest_point_distance can't be grater here
-                    (closest_point_distance - PlayerController::MIN_SURFACE_ALIGNMENT_DISTANCE);
+                (HumanoidPlayerController::MAX_SURFACE_ALIGNMENT_DISTANCE - closest_point_distance) / // This is OK because closest_point_distance can't be grater here
+                    (closest_point_distance - HumanoidPlayerController::MIN_SURFACE_ALIGNMENT_DISTANCE);
 
             float frame_planet_alignment = planet_alignment_force * EngineController::get_delta_time();
 

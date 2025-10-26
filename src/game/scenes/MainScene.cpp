@@ -1,5 +1,5 @@
 #include "MainScene.hpp"
-#include <game/components/player/PlayerController.hpp>
+#include <game/components/player/HumanoidPlayerController.hpp>
 #include <engine/vobject/Transform.hpp>
 #include <engine/vobject/components/Trajectory.hpp>
 #include <engine/math/curves/BezierCurve.hpp>
@@ -16,7 +16,7 @@ VObjectConfig Player(Camera* main_camera, float height, std::vector<PlanetInfo*>
     return VObjectConfig()
         .transform(TransformBuilder()
             .position(Vec3(0.0f, 200.0f, 50.0f)))
-        .component(new PlayerController(main_camera, planets))
+        .component(new HumanoidPlayerController(main_camera, planets))
         .child(VObjectConfig()
             .transform(TransformBuilder()
                 .position(Vec3(0.0f, height, 0.0f)))
