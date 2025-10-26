@@ -19,12 +19,6 @@ VObjectConfig Player(Camera* main_camera, float height, std::vector<PlanetInfo*>
         .component(new PlayerController(main_camera, planets))
         .child(VObjectConfig()
             .transform(TransformBuilder()
-                .position(Vec3(0.0f, 18.0f, 0.0f))
-                .scale(Vec3(10.0f)))
-            .component(new ObjDrawable("bunny.obj"))
-        )
-        .child(VObjectConfig()
-            .transform(TransformBuilder()
                 .position(Vec3(0.0f, height, 0.0f)))
             .component(main_camera)
         );
@@ -65,12 +59,12 @@ namespace game::scenes {
                 )
                 .child(Planet(planets[1])  // Planet 4 - tilted circular orbit
                     .transform(TransformBuilder()
-                        .scale(50.0f * planet_model_normalize))
+                        .scale(80.0f * planet_model_normalize))
                     .component(new Trajectory(std::make_unique<engine::CircularCurve>(
                         Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
                         Vec3(0.2f, 1.0f, 0.1f),      // Tilted normal vector
-                        600.0f                       // Radius
-                    ), 0.01f))
+                        900.0f                      // Radius
+                    ), 0.002f))
                 )
                 .child(Planet(planets[2])  // Planet 5 - outer circular orbit
                     .transform(TransformBuilder()

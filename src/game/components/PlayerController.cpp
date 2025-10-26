@@ -9,6 +9,7 @@ using engine::InputController;
 using engine::Vec2;
 using engine::Vec3;
 using engine::math::Quaternion;
+using engine::is_zero;
 
 namespace game::components {
     struct PlayerController::SphericalInput {
@@ -53,29 +54,31 @@ namespace game::components {
 
 
         /* Direction change due to gravity */
-        
-        Vec3 up_direction = -glm::normalize(equivalent_gravity);
-        Vec3 current_up = quaternion.rotate(Vec3(0.0f, 1.0f, 0.0f));
 
-        Quaternion align_quat = Quaternion::from_unit_vectors(current_up, up_direction);
+        if (!is_zero(equivalent_gravity)) { // Else, no significant gravity to align to (omitting could cause NaNs)
+            Vec3 up_direction = -glm::normalize(equivalent_gravity);
+            Vec3 current_up = quaternion.rotate(Vec3(0.0f, 1.0f, 0.0f));
 
-        // Apply only portion of the required alignment each update (smooth/small-step rotation).
+            Quaternion align_quat = Quaternion::from_unit_vectors(current_up, up_direction);
 
-        // The closer to the planet, the stronger the alignment
-        // float point_of_full_alignment = distance_to_planet - this->planet_radius;
-        // float clamped_distance_to_surface = std::max(0.0f, distance_to_planet - this->planet_radius);
-        // float alignment_decay = 0.5f;
-        // float portion_of_alignment = point_of_full_alignment / (1.0f + clamped_distance_to_surface * alignment_decay);
-        // Vec3 full_axis;
-        // double full_angle = align_quat.from_axis_angle(full_axis);
-        // if (std::abs(full_angle) > 1e-12) {
-        //     double step_angle = full_angle * portion_of_alignment;
-        //     align_quat = Quaternion::from_axis_angle(full_axis, step_angle);
-        //     align_quat.normalize_inplace();
-        // }
+            // Apply only portion of the required alignment each update (smooth/small-step rotation).
 
-        quaternion.global_compose(align_quat);
-        quaternion.normalize();
+            // The closer to the planet, the stronger the alignment
+            // float point_of_full_alignment = distance_to_planet - this->planet_radius;
+            // float clamped_distance_to_surface = std::max(0.0f, distance_to_planet - this->planet_radius);
+            // float alignment_decay = 0.5f;
+            // float portion_of_alignment = point_of_full_alignment / (1.0f + clamped_distance_to_surface * alignment_decay);
+            // Vec3 full_axis;
+            // double full_angle = align_quat.from_axis_angle(full_axis);
+            // if (std::abs(full_angle) > 1e-12) {
+            //     double step_angle = full_angle * portion_of_alignment;
+            //     align_quat = Quaternion::from_axis_angle(full_axis, step_angle);
+            //     align_quat.normalize_inplace();
+            // }
+
+            quaternion.global_compose(align_quat);
+            quaternion.normalize();
+        }
     }
 
     void PlayerController::update_transform_due_to_input() {
@@ -120,8 +123,8 @@ namespace game::components {
         Vec3 front_of_player = cam_quaternion.rotate(Vec3(0.0f, 0.0f, -1.0f));
         Vec3 right_of_player = cam_quaternion.rotate(Vec3(1.0f, 0.0f, 0.0f));
 
-        cam_transform.position() += this->speed * this->move_vector.y * front_of_player;
-        cam_transform.position() += this->speed * this->move_vector.x * right_of_player;
+        cam_transform.position() += this->released_camera_speed * this->move_vector.y * front_of_player;
+        cam_transform.position() += this->released_camera_speed * this->move_vector.x * right_of_player;
     }
 
     PlayerController::SphericalInput PlayerController::get_spherical_input() {

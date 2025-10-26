@@ -24,11 +24,12 @@ namespace game::components {
             Transform stored_child_cam_transform;
             engine::Vec2 move_vector {0.0f, 0.0f};
             engine::Vec3 current_velocity {0.0f, 0.0f, 0.0f};
-            float speed = 0.5f;
+            float speed = 1.0f;
             float camera_phi = 0.0f;
             float v_sensitivity = 0.001f;
             float h_sensitivity = 0.001f;
             bool released_camera = false;
+            float released_camera_speed = 5.0f;
             engine::Vec2 secondary_move_vector {0.0f, 0.0f};
             float phi_max = 3.141592f/2;
             float phi_min = -3.141592f/2;
