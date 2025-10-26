@@ -15,7 +15,7 @@ using namespace game::components;
 VObjectConfig Player(Camera* main_camera, float height, std::vector<PlanetInfo*> planets) {
     return VObjectConfig()
         .transform(TransformBuilder()
-            .position(Vec3(0.0f, 200.0f, 50.0f)))
+            .position(Vec3(0.0f, 400.0f, 50.0f)))
         .component(new HumanoidPlayerController(main_camera, planets))
         .child(VObjectConfig()
             .transform(TransformBuilder()
@@ -50,7 +50,7 @@ namespace game::scenes {
         Camera::set_main(main_camera);
 
         std::vector<PlanetInfo*> planets;
-        planets.push_back(new PlanetInfo(50.0e12f, 50.0f));
+        planets.push_back(new PlanetInfo(50.0e12f, 200.0f));
         planets.push_back(new PlanetInfo(20.0e12f, 50.0f));
 
         root
@@ -58,7 +58,7 @@ namespace game::scenes {
             .vobject(VObjectConfig()  // Root VObject for all planets
                 .child(Planet(planets[0])  // Central star
                     .transform(TransformBuilder()
-                        .scale(50.0f * planet_model_normalize))
+                        .scale(200.0f * planet_model_normalize))
                     .child(VObjectConfig()
                         .transform(TransformBuilder()
                             .position(Vec3(0.0f, 11.0f, 0.0f)))
