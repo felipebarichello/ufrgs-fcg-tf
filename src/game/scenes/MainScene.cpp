@@ -57,17 +57,7 @@ namespace game::scenes {
         planets.push_back(new PlanetInfo(0.0f, 24.0f));
 
         root
-            .vobject(VObjectConfig()
-                .transform(TransformBuilder()
-                    .position(Vec3(0.0f, 0.0f, 200.0f)))
-                .component(new PlayerController(main_camera, planets))
-                .child(
-                    VObjectConfig()
-                        .transform(TransformBuilder()
-                            .position(Vec3(0.0f, player_height, 0.0f)))
-                        .component(main_camera)
-                )
-            )
+            .vobject(Player(main_camera, player_height, planets))
             .vobject(VObjectConfig()  // Root VObject for all planets
                 .child(Planet(planets[0])  // Central star
                     .transform(TransformBuilder()
