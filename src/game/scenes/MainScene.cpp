@@ -6,20 +6,18 @@
 #include <engine/math/curves/CircularCurve.hpp>
 #include <engine/math/curves/PieceWiseBezierCurve.hpp>
 #include <cmath>
+#include <vector>
+#include <game/components/PlanetInfo.hpp>
 
-using engine::SceneRoot;
-using engine::Camera;
-using engine::VObjectConfig;
-using engine::TransformBuilder;
-using engine::math::Quaternion;
-using engine::Vec3;
+using namespace engine;
 using namespace game::components;
 
-VObjectConfig Player(Camera* main_camera, float height, float planet_radius) {
+VObjectConfig Player(Camera* main_camera, float height, std::vector<PlanetInfo*> planets) {
+    (void)planets; // Currently unused
     return VObjectConfig()
         .transform(TransformBuilder()
             .position(Vec3(0.0f, 0.0f, 200.0f)))
-        .component(new PlayerController(main_camera, planet_radius))
+        .component(new PlayerController(main_camera, 80.0f))
         .child(VObjectConfig()
             .transform(TransformBuilder()
                 .position(Vec3(0.0f, 18.0f, 0.0f))
@@ -33,8 +31,9 @@ VObjectConfig Player(Camera* main_camera, float height, float planet_radius) {
         );
 }
 
-VObjectConfig Planet() {
+VObjectConfig Planet(PlanetInfo* planet_info) {
     return VObjectConfig()
+        .component(planet_info)
         .child(VObjectConfig()
             .transform(TransformBuilder()
                 .position(Vec3(0.0f, -10.0f, 0.0f))
@@ -46,18 +45,28 @@ VObjectConfig Planet() {
 namespace game::scenes {
     void MainScene::hierarchy(SceneRoot& root) {
         const float player_height = 1.8f;
-        const float default_planet_radius = 10.0f; // Very precise estimate
-        const float planet_radius = 80.0f;
-        const float planet_scale = planet_radius / default_planet_radius;
+        const float planet_model_normalize = 1.0f / 10.0f; // Very precise estimate
 
         Camera* main_camera = new Camera();
         Camera::set_main(main_camera);
+
+        std::vector<PlanetInfo*> planets;
+        // planets.push_back(new PlanetInfo(5.972e24f, 80.0f));
+        // planets.push_back(new PlanetInfo(6.4171e23f, 50.0f));
+        // planets.push_back(new PlanetInfo(1.898e27f, 16.0f));
+        // planets.push_back(new PlanetInfo(5.6834e26f, 24.0f));
+        // planets.push_back(new PlanetInfo(7.349e22f, 24.0f));
+        planets.push_back(new PlanetInfo(0.0f, 80.0f));
+        planets.push_back(new PlanetInfo(0.0f, 50.0f));
+        planets.push_back(new PlanetInfo(0.0f, 16.0f));
+        planets.push_back(new PlanetInfo(0.0f, 24.0f));
+        planets.push_back(new PlanetInfo(0.0f, 24.0f));
 
         root
             .vobject(VObjectConfig()
                 .transform(TransformBuilder()
                     .position(Vec3(0.0f, 0.0f, 100.0f)))
-                .component(new PlayerController(main_camera, planet_radius))
+                .component(new PlayerController(main_camera, 80.0f))
                 .child(
                     VObjectConfig()
                         .transform(TransformBuilder()
@@ -78,40 +87,40 @@ namespace game::scenes {
                 .component(new ObjDrawable("bunny.obj", false))
             )
             .vobject(VObjectConfig()  // Root VObject for all planets
-                .child(Planet()  // Central star
+                .child(Planet(planets[0])  // Central star
                     .transform(TransformBuilder()
-                        .scale(planet_scale))
+                        .scale(80.0f * planet_model_normalize))
                 )
-                .child(Planet()  // Planet 4 - tilted circular orbit
+                .child(Planet(planets[1])  // Planet 4 - tilted circular orbit
                     .transform(TransformBuilder()
-                        .scale(0.6f * planet_scale))
+                        .scale(50.0f * planet_model_normalize))
                     .component(new Trajectory(std::make_unique<engine::CircularCurve>(
                         Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
                         Vec3(0.2f, 1.0f, 0.1f),      // Tilted normal vector
                         600.0f                       // Radius
                     ), 0.01f))
                 )
-                .child(Planet()  // Planet 5 - outer circular orbit
+                .child(Planet(planets[2])  // Planet 5 - outer circular orbit
                     .transform(TransformBuilder()
-                        .scale(0.2f * planet_scale))
+                        .scale(16.0f * planet_model_normalize))
                     .component(new Trajectory(std::make_unique<engine::CircularCurve>(
                         Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
                         Vec3(1.2f, 0.0f, 0.1f),      // Tilted normal vector
                         30.0f                         // Radius
                     ), 0.5f))
                 )
-                .child(Planet()  // Planet 5 - outer circular orbit
+                .child(Planet(planets[3])  // Planet 5 - outer circular orbit
                     .transform(TransformBuilder()
-                        .scale(0.3f * planet_scale))
+                        .scale(24.0f * planet_model_normalize))
                     .component(new Trajectory(std::make_unique<engine::CircularCurve>(
                         Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
                         Vec3(1.0f, 1.0f, 1.0f),      // Tilted normal vector
                         30.0f                         // Radius
                     ), 0.6f))
                 )
-                .child(Planet()  // Planet with dynamic piecewise Bezier curve
+                .child(Planet(planets[4])  // Planet with dynamic piecewise Bezier curve
                     .transform(TransformBuilder()
-                        .scale(0.3f * planet_scale))
+                        .scale(24.0f * planet_model_normalize))
                     .component(new Trajectory(std::make_unique<engine::PieceWiseBezierCurve>(std::vector<engine::BezierCurve>{
                         // First segment: dramatic spiral outward and up
                         engine::BezierCurve(std::vector<Vec3>{
