@@ -39,7 +39,7 @@ namespace game::components {
         //this->set_camera_phi(this->camera_phi + spherical.delta_phi);
         quaternion.local_compose(Quaternion::from_y_rotation(spherical.delta_theta));
         quaternion.local_compose(Quaternion::from_x_rotation(spherical.delta_phi));
-        quaternion.local_compose(Quaternion::from_z_rotation(-this->move_vector.x*0.01));
+        quaternion.local_compose(Quaternion::from_z_rotation(-this->move_vector.x*0.05));
         quaternion.normalize();
         
     }
