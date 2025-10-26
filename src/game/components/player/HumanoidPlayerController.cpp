@@ -40,8 +40,6 @@ namespace game::components {
     void HumanoidPlayerController::update_transform_due_to_environment() {
         Transform& transform = this->get_vobject()->transform();
 
-        /* Position change caused by gravity */
-
         // Calculate (vector) gravity sum from all planets.
         // Each planet contributes (mass / distance) * direction_to_planet.
         Vec3 gravity_sum {0.0f, 0.0f, 0.0f};
@@ -54,10 +52,20 @@ namespace game::components {
 
         // TODO: Is this physically accurate?
         transform.position() += this->current_velocity * EngineController::get_delta_time();
-        this->correct_planet_collision();
 
-        /* Direction change due to gravity or planet alignment */
+        if (this->grounded_to.has_value()) {
+            // If grounded, snap back to the surface when moving because you should not walk away from the planet
+            // TODO: This doesn't allow natural ungrounding
+            PlanetInfo* planet = this->grounded_to.value();
+            Vec3 planet_position = planet->get_vobject()->transform().get_position();
+            Vec3 direction_from_planet = glm::normalize(transform.get_position() - planet_position);
+            transform.position() = planet_position + direction_from_planet * planet->get_radius();
+        } else {
+            // If not grounded, check for collision
+            this->correct_planet_collision();
+        }
 
+        // Align rotation to planet
         this->align_to_closest_planet();
     }
 
@@ -147,13 +155,8 @@ namespace game::components {
                     }
                 }
             }
+            
             this->current_velocity = desired_velocity;
-
-            // Get back to the surface because you should not walk away from the planet while grounded
-            PlanetInfo* planet = this->grounded_to.value();
-            Vec3 planet_position = planet->get_vobject()->transform().get_position();
-            Vec3 direction_from_planet = glm::normalize(transform.get_position() - planet_position);
-            transform.position() = planet_position + direction_from_planet * planet->get_radius();
         }
     }
 

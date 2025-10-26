@@ -25,9 +25,9 @@ namespace game::components {
             engine::Transform stored_child_cam_transform;
             engine::Vec2 move_vector_2d {0.0f, 0.0f};
             engine::Vec3 current_velocity {0.0f, 0.0f, 0.0f};
-            float walk_accel = 20.0f;
+            float walk_accel = 50.0f;
             float walk_deaccel = 60.0f;
-            float max_walk_speed = 10.0f;
+            float max_walk_speed = 100.0f;
             float camera_phi = 0.0f;
             float v_sensitivity = 0.001f;
             float h_sensitivity = 0.001f;
@@ -36,7 +36,7 @@ namespace game::components {
             engine::Vec2 secondary_move_vector {0.0f, 0.0f};
             float phi_max = 3.141592f/2;
             float phi_min = -3.141592f/2;
-            float jump_strength = 80.0f;
+            float jump_strength = 40.0f;
             std::optional<PlanetInfo*> grounded_to = std::nullopt;
             PlanetInfo* closest_planet = nullptr;
 
