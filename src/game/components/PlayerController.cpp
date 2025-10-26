@@ -56,7 +56,7 @@ namespace game::components {
         Vec3 new_vec_to_planet = -new_position; // Planet is at origin
         float distance_to_planet = glm::length(new_vec_to_planet);
 
-        if (distance_to_planet < this->planet_radius) {
+        if (distance_to_planet < 80.0f) {
             this->current_velocity = Vec3(0.0f);
         } else {
             transform.position() = new_position;

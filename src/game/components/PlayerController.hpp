@@ -2,13 +2,14 @@
 
 #include <engine>
 #include <memory>
+#include "PlanetInfo.hpp"
 
 using engine::Transform;
 
 namespace game::components {
     class PlayerController : public engine::Behavior {
         public:
-            PlayerController(engine::Camera* camera, float planet_radius) : camera(camera), planet_radius(planet_radius) {}
+            PlayerController(engine::Camera* camera, std::vector<PlanetInfo*> planets) : camera(camera), planets(planets) {}
             void Start() override;
             void Update() override;
 
@@ -16,7 +17,7 @@ namespace game::components {
             struct SphericalInput;
 
             engine::Camera* camera;
-            float planet_radius;
+            std::vector<PlanetInfo*> planets;
             
             Transform stored_child_cam_transform;
             engine::Vec2 move_vector {0.0f, 0.0f};

@@ -13,11 +13,10 @@ using namespace engine;
 using namespace game::components;
 
 VObjectConfig Player(Camera* main_camera, float height, std::vector<PlanetInfo*> planets) {
-    (void)planets; // Currently unused
     return VObjectConfig()
         .transform(TransformBuilder()
             .position(Vec3(0.0f, 0.0f, 200.0f)))
-        .component(new PlayerController(main_camera, 80.0f))
+        .component(new PlayerController(main_camera, planets))
         .child(VObjectConfig()
             .transform(TransformBuilder()
                 .position(Vec3(0.0f, 18.0f, 0.0f))
@@ -66,7 +65,7 @@ namespace game::scenes {
             .vobject(VObjectConfig()
                 .transform(TransformBuilder()
                     .position(Vec3(0.0f, 0.0f, 100.0f)))
-                .component(new PlayerController(main_camera, 80.0f))
+                .component(new PlayerController(main_camera, planets))
                 .child(
                     VObjectConfig()
                         .transform(TransformBuilder()
