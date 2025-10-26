@@ -15,7 +15,7 @@ using namespace game::components;
 VObjectConfig Player(Camera* main_camera, float height, std::vector<PlanetInfo*> planets) {
     return VObjectConfig()
         .transform(TransformBuilder()
-            .position(Vec3(0.0f, 0.0f, 200.0f)))
+            .position(Vec3(0.0f, 0.0f, 240.0f)))
         .component(new PlayerController(main_camera, planets))
         .child(VObjectConfig()
             .transform(TransformBuilder()
@@ -50,12 +50,7 @@ namespace game::scenes {
         Camera::set_main(main_camera);
 
         std::vector<PlanetInfo*> planets;
-        // planets.push_back(new PlanetInfo(5.972e24f, 80.0f));
-        // planets.push_back(new PlanetInfo(6.4171e23f, 50.0f));
-        // planets.push_back(new PlanetInfo(1.898e27f, 16.0f));
-        // planets.push_back(new PlanetInfo(5.6834e26f, 24.0f));
-        // planets.push_back(new PlanetInfo(7.349e22f, 24.0f));
-        planets.push_back(new PlanetInfo(0.0f, 80.0f));
+        planets.push_back(new PlanetInfo(5.0f, 200.0f));
         planets.push_back(new PlanetInfo(0.0f, 50.0f));
         planets.push_back(new PlanetInfo(0.0f, 16.0f));
         planets.push_back(new PlanetInfo(0.0f, 24.0f));
@@ -64,7 +59,7 @@ namespace game::scenes {
         root
             .vobject(VObjectConfig()
                 .transform(TransformBuilder()
-                    .position(Vec3(0.0f, 0.0f, 100.0f)))
+                    .position(Vec3(0.0f, 0.0f, 200.0f)))
                 .component(new PlayerController(main_camera, planets))
                 .child(
                     VObjectConfig()
@@ -73,22 +68,10 @@ namespace game::scenes {
                         .component(main_camera)
                 )
             )
-            // Phong Shading bunny
-            .vobject(VObjectConfig()
-                .transform(TransformBuilder()
-                    .position(Vec3(0.0f, 0.0f, 100.0f)))
-                .component(new ObjDrawable("bunny.obj", true))
-            )
-            // Gouraud Shading Bunny
-            .vobject(VObjectConfig()
-                .transform(TransformBuilder()
-                    .position(Vec3(0.0f, 0.0f, 102.0f)))
-                .component(new ObjDrawable("bunny.obj", false))
-            )
             .vobject(VObjectConfig()  // Root VObject for all planets
                 .child(Planet(planets[0])  // Central star
                     .transform(TransformBuilder()
-                        .scale(80.0f * planet_model_normalize))
+                        .scale(200.0f * planet_model_normalize))
                 )
                 .child(Planet(planets[1])  // Planet 4 - tilted circular orbit
                     .transform(TransformBuilder()

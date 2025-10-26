@@ -6,7 +6,7 @@ namespace game::components {
     class PlanetInfo : public engine::Component {
         public:
             PlanetInfo(float gravity_mass, float radius) : gravity_mass(gravity_mass), radius(radius) {}
-            float get_gravity_mass() const { return 0.0f; }
+            float get_gravity_mass() const { return this->gravity_mass; }
             float get_radius() const { return this->radius; }
 
         private:
