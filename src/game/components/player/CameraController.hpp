@@ -2,7 +2,7 @@
 
 #include <engine>
 #include <memory>
-#include "PlayerController.hpp"
+#include "SpaceshipPlayerController.hpp"
 
 using engine::Vec3;
 
