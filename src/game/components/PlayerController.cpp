@@ -40,23 +40,11 @@ namespace game::components {
 
         /* Position change caused by gravity */
 
-        // TODO: This gravity assumes the planet is flat
-
-        const float gravitational_constant = 9.8f;
-
         // Calculate (vector) gravity sum from all planets.
         // Each planet contributes (mass / distance) * direction_to_planet.
         Vec3 gravity_sum {0.0f, 0.0f, 0.0f};
-        for (PlanetInfo* planet : this->planets) {
-            Vec3 vec_to_planet = planet->get_vobject()->transform().get_position() - transform.get_position();
-            float distance_to_planet = glm::length(vec_to_planet);
-            if (distance_to_planet > 1e-6f) {
-                Vec3 grav_direction = glm::normalize(vec_to_planet);
-                gravity_sum += (planet->get_gravity_mass() / distance_to_planet) * grav_direction; // Linear gravity falloff (vector)
-            }
-        }
 
-        Vec3 equivalent_gravity = gravitational_constant * gravity_sum;
+        Vec3 equivalent_gravity = this->compute_equivalent_gravity();
         this->current_velocity += equivalent_gravity * EngineController::get_delta_time();
 
         Vec3 new_position = transform.get_position() + this->current_velocity;
@@ -159,6 +147,20 @@ namespace game::components {
         cam_transform.quaternion().normalize();
     }
 
+    Vec3 PlayerController::compute_equivalent_gravity() {
+        Vec3 gravity_sum(0.0f);
+        for (PlanetInfo* planet : this->planets) {
+            Vec3 vec_to_planet = planet->get_vobject()->transform().get_position() - this->get_vobject()->transform().get_position();
+            float distance_to_planet = glm::length(vec_to_planet);
+            if (distance_to_planet > 1e-6f) {
+                Vec3 grav_direction = glm::normalize(vec_to_planet);
+                gravity_sum += (planet->get_gravity_mass() / distance_to_planet) * grav_direction; // Linear gravity falloff (vector)
+            }
+        }
+
+        return gravity_sum * PlayerController::GRAVITATIONAL_CONSTANT;
+    }
+
     void PlayerController::jump() {
         this->current_velocity +=
             this->jump_strength * this->get_vobject()->transform().quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
@@ -180,7 +182,7 @@ namespace game::components {
             cam_transf.position() += cam_transf.quaternion().rotate(this->stored_child_cam_transform.get_position());
         } else {
             this->get_vobject()->add_child(this->camera->get_vobject());
-            cam_transf = this->stored_child_cam_transform;
+            cam_transf.copy_values_from(this->stored_child_cam_transform);
         }
     }
 }

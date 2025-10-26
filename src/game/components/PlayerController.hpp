@@ -16,6 +16,8 @@ namespace game::components {
         private:
             struct SphericalInput;
 
+            static constexpr float GRAVITATIONAL_CONSTANT = 6.6743e-11f;
+
             engine::Camera* camera;
             std::vector<PlanetInfo*> planets;
             
@@ -35,6 +37,7 @@ namespace game::components {
             void update_transform_due_to_environment();
             void update_transform_due_to_input();
             void update_released_camera();
+            engine::Vec3 compute_equivalent_gravity();
             SphericalInput get_spherical_input();
             void set_camera_phi(float new_phi);
             void jump();

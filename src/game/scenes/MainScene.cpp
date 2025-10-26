@@ -50,7 +50,7 @@ namespace game::scenes {
         Camera::set_main(main_camera);
 
         std::vector<PlanetInfo*> planets;
-        planets.push_back(new PlanetInfo(5.0f, 200.0f));
+        planets.push_back(new PlanetInfo(10.0e11f, 200.0f));
         planets.push_back(new PlanetInfo(0.0f, 50.0f));
         planets.push_back(new PlanetInfo(0.0f, 16.0f));
         planets.push_back(new PlanetInfo(0.0f, 24.0f));
