@@ -1,5 +1,5 @@
 #include "MainScene.hpp"
-#include <game/components/PlayerController.hpp>
+#include <game/components/player/PlayerController.hpp>
 #include <engine/vobject/Transform.hpp>
 #include <engine/vobject/components/Trajectory.hpp>
 #include <engine/math/curves/BezierCurve.hpp>

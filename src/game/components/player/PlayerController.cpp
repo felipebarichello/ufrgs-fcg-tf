@@ -2,7 +2,7 @@
 #include <engine>
 #include <InputController.hpp>
 #include <algorithm>
-#include "PlanetInfo.hpp"
+#include <game/components/PlanetInfo.hpp>
 
 using engine::EngineController;
 using engine::InputController;

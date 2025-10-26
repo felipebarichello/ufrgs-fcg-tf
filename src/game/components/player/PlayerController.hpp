@@ -2,7 +2,7 @@
 
 #include <engine>
 #include <memory>
-#include "PlanetInfo.hpp"
+#include <game/components/PlanetInfo.hpp>
 
 namespace game::components {
     class PlayerController : public engine::Behavior {
