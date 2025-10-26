@@ -1,12 +1,16 @@
 #include "linalg.hpp"
 
 namespace engine {
-    Mat4 identity_matrix() {
-        return Mat4(1.0f);
-    }
-
     Vec3 negate(Vec3 v) {
         return Vec3(-v.x, -v.y, -v.z);
+    }
+
+    bool is_zero(Vec3 v) {
+        return (v.x == 0.0f) && (v.y == 0.0f) && (v.z == 0.0f);
+    }
+
+    Mat4 identity_matrix() {
+        return Mat4(1.0f);
     }
 
     Mat4 invert_orthonormal_matrix(const Mat4& m) {

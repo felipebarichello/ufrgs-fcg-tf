@@ -10,8 +10,9 @@ namespace engine {
     using Vec4 = glm::vec4;
     using Mat4 = glm::mat4;
 
-    Mat4 h_identity_matrix();
     Vec3 negate(Vec3 v);
+    bool is_zero(Vec3 v);
+    Mat4 h_identity_matrix();
     Mat4 invert_orthonormal_matrix(const Mat4& m);
 
     std::ostream& operator<<(std::ostream& os, const Vec3& v);
