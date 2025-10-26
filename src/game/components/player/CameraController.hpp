@@ -11,14 +11,14 @@ using engine::Transform;
 namespace game::components {
     class CameraController : public engine::Behavior {
         public:
-            CameraController(PlayerController* player_controller, engine::Camera* camera);
+            CameraController(SpaceshipPlayerController* player_controller, engine::Camera* camera);
             void Update() override;
 
         private:
             struct SphericalInput;
 
             engine::Camera* camera;
-            PlayerController* player_controller;
+            SpaceshipPlayerController* player_controller;
 
             float camera_smooth_speed = 0.1f; 
             Vec3 offset = {0.0, 2.0, 10.0};
