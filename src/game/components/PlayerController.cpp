@@ -11,7 +11,6 @@ using engine::Vec3;
 using engine::math::Quaternion;
 using engine::is_zero;
 using engine::Transform;
-using engine::operator<<;
 
 namespace game::components {
     struct PlayerController::SphericalInput {
