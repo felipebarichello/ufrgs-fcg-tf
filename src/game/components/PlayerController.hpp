@@ -32,7 +32,7 @@ namespace game::components {
             engine::Vec2 secondary_move_vector {0.0f, 0.0f};
             float phi_max = 3.141592f/2;
             float phi_min = -3.141592f/2;
-            float jump_strength = 1.0f;
+            float jump_strength = 50.0f;
 
             void update_transform_due_to_environment();
             void update_transform_due_to_input();

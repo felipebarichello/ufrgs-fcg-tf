@@ -47,7 +47,8 @@ namespace game::components {
         Vec3 equivalent_gravity = this->compute_equivalent_gravity();
         this->current_velocity += equivalent_gravity * EngineController::get_delta_time();
 
-        Vec3 new_position = transform.get_position() + this->current_velocity;
+        // TODO: Is this physically accurate?
+        Vec3 new_position = transform.get_position() + this->current_velocity * EngineController::get_delta_time();
         Vec3 new_vec_to_planet = -new_position; // Planet is at origin
         float distance_to_planet = glm::length(new_vec_to_planet);
 
