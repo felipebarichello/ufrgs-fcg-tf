@@ -99,13 +99,20 @@ namespace game::components {
 
         /* Walking movement */
 
-        // TODO: Should not be able to walk while not touching ground
+        // Can only walk if grounded
+        if (this->grounded_to.has_value()) {
+            Vec3 front_of_player = quaternion.rotate(Vec3(0.0f, 0.0f, -1.0f));
+            Vec3 right_of_player = quaternion.rotate(Vec3(1.0f, 0.0f, 0.0f));
+            
+            transform.position() += this->speed * this->move_vector.y * front_of_player;
+            transform.position() += this->speed * this->move_vector.x * right_of_player;
 
-        Vec3 front_of_player = quaternion.rotate(Vec3(0.0f, 0.0f, -1.0f));
-        Vec3 right_of_player = quaternion.rotate(Vec3(1.0f, 0.0f, 0.0f));
-
-        transform.position() += this->speed * this->move_vector.y * front_of_player;
-        transform.position() += this->speed * this->move_vector.x * right_of_player;
+            // Get back to the surface because is grounded
+            PlanetInfo* planet = this->grounded_to.value();
+            Vec3 planet_position = planet->get_vobject()->transform().get_position();
+            Vec3 direction_from_planet = glm::normalize(transform.get_position() - planet_position);
+            transform.position() = planet_position + direction_from_planet * planet->get_radius();
+        }
     }
 
     void PlayerController::update_released_camera() {
@@ -163,8 +170,11 @@ namespace game::components {
     }
 
     void PlayerController::jump() {
-        this->current_velocity +=
-            this->jump_strength * this->get_vobject()->transform().quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
+        // Can only jump if grounded
+        // if (this->grounded_to.has_value()) {
+            this->current_velocity +=
+                this->jump_strength * this->get_vobject()->transform().quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
+        // }
     }
 
     void PlayerController::toggle_camera_release() {
@@ -184,6 +194,34 @@ namespace game::components {
         } else {
             this->get_vobject()->add_child(this->camera->get_vobject());
             cam_transf.copy_values_from(this->stored_child_cam_transform);
+        }
+    }
+
+    void PlayerController::correct_planet_collision() {
+        if (this->grounded_to.has_value()) {
+            return;
+        }
+
+        Transform& transform = this->get_vobject()->transform();
+
+        for (PlanetInfo* planet : this->planets) {
+            Vec3 planet_position = planet->get_vobject()->transform().get_position();
+            Vec3 vec_to_planet = planet_position - transform.get_position();
+            float distance_to_planet = glm::length(vec_to_planet);
+
+            if (distance_to_planet < planet->get_radius()) {
+                /* Collision detected. Correcting... */
+
+                // Remove velocity component in the direction of the planet
+                Vec3 direction_to_planet = glm::normalize(vec_to_planet);
+                this->current_velocity -= glm::dot(this->current_velocity, direction_to_planet) * direction_to_planet;
+
+                // Set position to surface
+                transform.position() = planet_position - direction_to_planet * planet->get_radius();
+                this->grounded_to = planet;
+
+                return; // Please don't collide with multiple planets at once
+            }
         }
     }
 }

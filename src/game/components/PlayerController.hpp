@@ -33,6 +33,7 @@ namespace game::components {
             float phi_max = 3.141592f/2;
             float phi_min = -3.141592f/2;
             float jump_strength = 50.0f;
+            std::optional<PlanetInfo*> grounded_to = std::nullopt;
 
             void update_transform_due_to_environment();
             void update_transform_due_to_input();
@@ -42,5 +43,6 @@ namespace game::components {
             void set_camera_phi(float new_phi);
             void jump();
             void toggle_camera_release();
+            void correct_planet_collision();
     };
 } // namespace game::components
