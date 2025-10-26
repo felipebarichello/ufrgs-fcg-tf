@@ -12,6 +12,7 @@
 #include <vector>
 #include <memory>
 #include <game/components/Drawables/Particles.hpp>
+#include <game/components/Drawables/Stars.hpp>
 
 using engine::SceneRoot;
 using engine::Camera;
@@ -97,80 +98,74 @@ namespace game::scenes {
                 Camera::set_main(third_person_camera);
             }
         });
-
-    // Ensure the third-person camera is attached to a VObject so its
-    // Component::vobject_ptr is set during Scene instantiation. Without
-    // this the camera's get_vobject() is null and controllers that use
-    // the camera will dereference a null pointer.
     
-    VObjectConfig third_person_camera_config;
-    third_person_camera_config.component(third_person_camera);
-    root.vobject(third_person_camera_config);
+        VObjectConfig third_person_camera_config;
+        third_person_camera_config.component(third_person_camera);
+        root.vobject(third_person_camera_config);
 
         PlayerController* player_controller = nullptr;
         VObjectConfig player_config = Player(first_person_camera, planet_radius, &player_controller);
-        player_config.transform(TransformBuilder().position(Vec3(10.0f*planet_radius, planet_radius, planet_radius)));
+            player_config.transform(TransformBuilder().position(Vec3(10.0f*planet_radius, planet_radius, planet_radius)));
 
         VObjectConfig camera_controller_config;
-        camera_controller_config.component(new CameraController(
-            player_controller,
-            third_person_camera
-        ));
-        camera_controller_config.component(new Particles(100, &player_controller->speed));
+        CameraController* camera_controller = new CameraController(player_controller, third_person_camera);
+            camera_controller_config.component(camera_controller);
+            camera_controller_config.component(new Stars(player_controller, 20000));
+
+        VObjectConfig particles_config;
+            particles_config.component(new Particles(100));
 
         VObjectConfig main_planet_config = Planet();
-        main_planet_config.transform(TransformBuilder().scale(planet_scale));
-    // main planet will be added below together with other root objects
+            main_planet_config.transform(TransformBuilder().scale(planet_scale));
 
-        // Generate satellites placed on discrete rings to avoid collisions and
-        // keep the layout simple and predictable.
         VObjectConfig satellitesRoot;
-        std::mt19937 rng(123456);
+            std::mt19937 rng(123456);
 
-        const int N_rings = 5;
-        const int per_ring = 4; // total = N_rings * per_ring
-        const float minR = planet_radius * 10.0f;
-        const float maxR = planet_radius * 100.0f;
-        std::vector<float> rings;
-        rings.reserve(N_rings);
-        float ring_step = (maxR - minR) / static_cast<float>(std::max(1, N_rings - 1));
-        for (int r = 0; r < N_rings; ++r) rings.push_back(minR + r * ring_step);
+            const int N_rings = 5;
+            const int per_ring = 4; // total = N_rings * per_ring
+            const float minR = planet_radius * 10.0f;
+            const float maxR = planet_radius * 100.0f;
+            std::vector<float> rings;
+            rings.reserve(N_rings);
+            float ring_step = (maxR - minR) / static_cast<float>(std::max(1, N_rings - 1));
+            for (int r = 0; r < N_rings; ++r) rings.push_back(minR + r * ring_step);
 
-        std::uniform_real_distribution<float> angleJitter(-0.08f, 0.08f);
-        std::uniform_real_distribution<float> radiusJitter(-ring_step * 0.15f, ring_step * 0.15f);
-        std::uniform_real_distribution<float> yDist(-planet_radius * 0.5f, planet_radius * 0.5f);
-        std::uniform_real_distribution<float> scaleDist(0.35f, 0.75f); // relative to planet_scale
-        std::uniform_real_distribution<float> speedDist(0.003f, 0.005f);
-        std::uniform_real_distribution<float> tiltDist(-0.04f, 0.04f); // small common tilt (~±2.3°)
-        std::uniform_real_distribution<float> phaseDist(0.0f, 1.0f); // random starting phase [0,1)
+            std::uniform_real_distribution<float> angleJitter(-0.08f, 0.08f);
+            std::uniform_real_distribution<float> radiusJitter(-ring_step * 0.15f, ring_step * 0.15f);
+            std::uniform_real_distribution<float> yDist(-planet_radius * 0.5f, planet_radius * 0.5f);
+            std::uniform_real_distribution<float> scaleDist(0.35f, 0.75f); // relative to planet_scale
+            std::uniform_real_distribution<float> speedDist(0.003f, 0.005f);
+            std::uniform_real_distribution<float> tiltDist(-0.04f, 0.04f); // small common tilt (~±2.3°)
+            std::uniform_real_distribution<float> phaseDist(0.0f, 1.0f); // random starting phase [0,1)
 
-        // single small tilt for all orbits (keeps orbits nearly coplanar)
-        float common_tilt = tiltDist(rng);
-        float sin_t = std::sin(common_tilt);
-        float cos_t = std::cos(common_tilt);
-        engine::Vec3 common_orbit_normal(sin_t, cos_t, 0.0f);
+            // single small tilt for all orbits (keeps orbits nearly coplanar)
+            float common_tilt = tiltDist(rng);
+            float sin_t = std::sin(common_tilt);
+            float cos_t = std::cos(common_tilt);
+            engine::Vec3 common_orbit_normal(sin_t, cos_t, 0.0f);
 
-        for (int r = 0; r < N_rings; ++r) {
-            for (int k = 0; k < per_ring; ++k) {
-                float radius = rings[r] + radiusJitter(rng);
-                float s = scaleDist(rng) * planet_scale;
-                float phase = phaseDist(rng);
-                float speed = speedDist(rng);
+            for (int r = 0; r < N_rings; ++r) {
+                for (int k = 0; k < per_ring; ++k) {
+                    float radius = rings[r] + radiusJitter(rng);
+                    float s = scaleDist(rng) * planet_scale;
+                    float phase = phaseDist(rng);
+                    float speed = speedDist(rng);
 
-                satellitesRoot.child(Planet()
-                    .transform(TransformBuilder()
-                        .scale(s))
-                    .component(new Trajectory(
-                        std::make_unique<PhaseCircularCurve>(engine::Vec3(0.0f), common_orbit_normal, radius, phase),
-                        speed
-                    ))
-                );
+                    satellitesRoot.child(Planet()
+                        .transform(TransformBuilder()
+                            .scale(s))
+                        .component(new Trajectory(
+                            std::make_unique<PhaseCircularCurve>(engine::Vec3(0.0f), common_orbit_normal, radius, phase),
+                            speed
+                        ))
+                    );
+                }
             }
-        }
 
-    root.vobject(player_config);
-    root.vobject(camera_controller_config);
+        root.vobject(player_config);
+        root.vobject(camera_controller_config);
         root.vobject(main_planet_config);
         root.vobject(satellitesRoot);
+
     }
 }
