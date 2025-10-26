@@ -18,6 +18,7 @@ namespace game::components {
             static constexpr float MIN_SURFACE_ALIGNMENT_DISTANCE = 1.0f;
             static constexpr float MAX_SURFACE_ALIGNMENT_DISTANCE = 200.0f;
 
+            bool active = true;
             engine::Camera* camera;
             std::vector<PlanetInfo*> planets;
             

@@ -26,13 +26,15 @@ namespace game::components {
     }
 
     void HumanoidPlayerController::Update() {
-        if (this->released_camera) {
-            this->update_released_camera();
-        } else {
-            this->update_transform_due_to_input();
-        }
+        if (this->active) {
+            if (this->released_camera) {
+                this->update_released_camera();
+            } else {
+                this->update_transform_due_to_input();
+            }
 
-        this->update_transform_due_to_environment();
+            this->update_transform_due_to_environment();
+        }
     }
 
     void HumanoidPlayerController::update_transform_due_to_environment() {
