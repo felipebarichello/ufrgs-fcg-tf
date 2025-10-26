@@ -54,7 +54,6 @@ namespace game::components {
                 Vec3 grav_direction = glm::normalize(vec_to_planet);
                 gravity_sum += (planet->get_gravity_mass() / distance_to_planet) * grav_direction; // Linear gravity falloff (vector)
             }
-            std::cout << "REAL: Gravity sum: " << glm::length(gravity_sum) << std::endl;
         }
 
         Vec3 equivalent_gravity = gravitational_constant * gravity_sum;
