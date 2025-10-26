@@ -11,6 +11,8 @@ layout (location = 3) in vec4 position;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform float alpha;
+uniform vec4 absolute_color;
 
 uniform vec3 diffuse_reflectance;
 uniform vec3 specular_reflectance;
@@ -44,8 +46,9 @@ void main()
     vec3 Ia = vec3(0.2, 0.2, 0.2); // espectro da luz ambiente
     vec3 lambert_diffuse_term = diffuse_reflectance*I*max(0.0, dot(n,l)); // termo difuso de Lambert
     vec3 ambient_term = enviornment_reflectance*Ia; // termo ambiente
-    vec3 blinn_phong_specular_term  = specular_reflectance*I*pow(max(0.0, dot(n,h)), specular_exponent); // PREENCH AQUI o termo especular de Phong
-    interpolated_color.a = 1;
+
+    vec3 blinn_phong_specular_term  = specular_reflectance*I*pow(max(0.0, dot(n,h)), specular_exponent);
+    interpolated_color.a = 1.0;
     interpolated_color.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
     interpolated_color.rgb = pow(interpolated_color.rgb, vec3(1.0,1.0,1.0)/2.2);
 }
