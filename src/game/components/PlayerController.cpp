@@ -243,11 +243,8 @@ namespace game::components {
 
             // If too far from the planet, don't align at all
             if (closest_point_distance > PlayerController::MAX_SURFACE_ALIGNMENT_DISTANCE) {
-                std::cout << "Too far" << std::endl;
                 return;
             }
-
-            std::cout << "Not too far" << std::endl;
 
             Quaternion align_quat = Quaternion::from_unit_vectors(current_up, -glm::normalize(vec_to_closest_planet));
 
