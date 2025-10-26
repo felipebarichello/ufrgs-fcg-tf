@@ -48,15 +48,8 @@ namespace game::components {
         this->current_velocity += equivalent_gravity * EngineController::get_delta_time();
 
         // TODO: Is this physically accurate?
-        Vec3 new_position = transform.get_position() + this->current_velocity * EngineController::get_delta_time();
-        Vec3 new_vec_to_planet = -new_position; // Planet is at origin
-        float distance_to_planet = glm::length(new_vec_to_planet);
-
-        if (distance_to_planet < 200.0f) {
-            this->current_velocity = Vec3(0.0f);
-        } else {
-            transform.position() = new_position;
-        }
+        transform.position() += this->current_velocity * EngineController::get_delta_time();
+        this->correct_planet_collision();
 
 
         /* Direction change due to gravity */
@@ -171,10 +164,12 @@ namespace game::components {
 
     void PlayerController::jump() {
         // Can only jump if grounded
-        // if (this->grounded_to.has_value()) {
+        if (this->grounded_to.has_value()) {
             this->current_velocity +=
                 this->jump_strength * this->get_vobject()->transform().quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
-        // }
+            
+            this->grounded_to = std::nullopt;
+        }
     }
 
     void PlayerController::toggle_camera_release() {
@@ -198,6 +193,7 @@ namespace game::components {
     }
 
     void PlayerController::correct_planet_collision() {
+        // No need to keep checking if already grounded
         if (this->grounded_to.has_value()) {
             return;
         }
