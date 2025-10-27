@@ -1,5 +1,4 @@
 #include "MainScene.hpp"
-#include <game/components/player/HumanoidPlayerController.hpp>
 #include <engine/vobject/Transform.hpp>
 #include <engine/vobject/components/Trajectory.hpp>
 #include <engine/math/curves/BezierCurve.hpp>
@@ -7,16 +6,19 @@
 #include <engine/math/curves/PieceWiseBezierCurve.hpp>
 #include <cmath>
 #include <vector>
-#include <game/components/PlanetInfo.hpp>
+#include <game/components/include.hpp>
 
 using namespace engine;
 using namespace game::components;
 
-VObjectConfig Player(Camera* main_camera, float height, std::vector<PlanetInfo*> planets) {
+VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera, float height, std::vector<PlanetInfo*> planets) {
+    HumanoidPlayerController* controller = new HumanoidPlayerController(main_camera, planets);
+    player_ref = controller;
+
     return VObjectConfig()
         .transform(TransformBuilder()
             .position(Vec3(0.0f, 220.0f, 50.0f)))
-        .component(new HumanoidPlayerController(main_camera, planets))
+        .component(controller)
         .child(VObjectConfig()
             .transform(TransformBuilder()
                 .position(Vec3(0.0f, height, 0.0f)))
@@ -28,6 +30,19 @@ VObjectConfig Player(Camera* main_camera, float height, std::vector<PlanetInfo*>
         //     )
         //     .component(new ObjDrawable("bunny.obj"))
         // );
+}
+
+VObjectConfig Enemy(HumanoidPlayerController* player_ref, std::vector<PlanetInfo*> planets) {
+    return VObjectConfig()
+        .transform(TransformBuilder()
+            .position(Vec3(50.0f, 220.0f, 0.0f)))
+        .component(new GroundEnemyController(player_ref, planets))
+        .child(VObjectConfig()
+            .transform(TransformBuilder()
+                .position(Vec3(0.0f, 0.0f, 0.0f))
+            )
+            .component(new ObjDrawable("bunny.obj"))
+        );
 }
 
 VObjectConfig Planet(PlanetInfo* planet_info) {
@@ -56,13 +71,15 @@ namespace game::scenes {
 
         Camera* main_camera = new Camera();
         Camera::set_main(main_camera);
+        HumanoidPlayerController* player_ref = nullptr;
 
         std::vector<PlanetInfo*> planets;
         planets.push_back(new PlanetInfo(50.0e12f, 200.0f));
         planets.push_back(new PlanetInfo(20.0e12f, 50.0f));
 
         root
-            .vobject(Player(main_camera, player_height, planets))
+            .vobject(Player(player_ref, main_camera, player_height, planets))
+            .vobject(Enemy(player_ref, planets))
             .vobject(VObjectConfig()  // Root VObject for all planets
                 .child(Planet(planets[0])  // Central star
                     .transform(TransformBuilder()
