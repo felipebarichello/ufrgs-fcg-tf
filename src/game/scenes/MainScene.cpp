@@ -59,7 +59,7 @@ namespace game::scenes {
 
         std::vector<PlanetInfo*> planets;
         planets.push_back(new PlanetInfo(50.0e12f, 200.0f));
-        // planets.push_back(new PlanetInfo(20.0e12f, 50.0f));
+        planets.push_back(new PlanetInfo(20.0e12f, 50.0f));
 
         root
             .vobject(Player(main_camera, player_height, planets))
@@ -73,15 +73,15 @@ namespace game::scenes {
                         .child(BunnyObj())
                     )
                 )
-                // .child(Planet(planets[1])  // Tilted circular orbit
-                //     .transform(TransformBuilder()
-                //         .scale(50.0f * planet_model_normalize))
-                //     .component(new Trajectory(std::make_unique<engine::CircularCurve>(
-                //         Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
-                //         Vec3(0.2f, 1.0f, 0.1f),      // Tilted normal vector
-                //         700.0f                      // Radius
-                //     ), 0.002f))
-                // )
+                .child(Planet(planets[1])  // Tilted circular orbit
+                    .transform(TransformBuilder()
+                        .scale(50.0f * planet_model_normalize))
+                    .component(new Trajectory(std::make_unique<engine::CircularCurve>(
+                        Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
+                        Vec3(0.2f, 1.0f, 0.1f),      // Tilted normal vector
+                        700.0f                      // Radius
+                    ), 0.002f))
+                )
             );
     }
 }

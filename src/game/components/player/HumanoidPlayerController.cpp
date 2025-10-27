@@ -62,6 +62,11 @@ namespace game::components {
             Vec3 planet_position = planet->get_vobject()->transform().get_position();
             Vec3 direction_from_planet = glm::normalize(transform.get_position() - planet_position);
             transform.position() = planet_position + direction_from_planet * planet->get_radius();
+            
+            // Remove vertical component of velocity
+            Vec3 up_direction = direction_from_planet;
+            Vec3 vertical_velocity = glm::dot(this->current_velocity, up_direction) * up_direction;
+            this->current_velocity -= vertical_velocity;
         } else {
             // If not grounded, check for collision
             this->correct_planet_collision();
@@ -330,7 +335,7 @@ namespace game::components {
             float planet_alignment_force = 1.0f -
                 (closest_point_distance - HumanoidPlayerController::MIN_SURFACE_ALIGNMENT_DISTANCE) / // This is OK because closest_point_distance can't be grater here
                     (HumanoidPlayerController::MAX_SURFACE_ALIGNMENT_DISTANCE - HumanoidPlayerController::MIN_SURFACE_ALIGNMENT_DISTANCE);
-
+            
             float frame_planet_alignment = planet_alignment_force;
 
             Quaternion partial_align_quat = Quaternion::slerp(Quaternion::identity(), align_quat, frame_planet_alignment);
