@@ -3,6 +3,7 @@
 #include <InputController.hpp>
 #include <algorithm>
 #include <game/components/PlanetInfo.hpp>
+#include <cstdio>
 
 using engine::EngineController;
 using engine::InputController;
@@ -11,6 +12,7 @@ using engine::Vec3;
 using engine::math::Quaternion;
 using engine::is_zero;
 using engine::Transform;
+using engine::to_string;
 
 namespace game::components {
     struct HumanoidPlayerController::SphericalInput {
@@ -60,6 +62,11 @@ namespace game::components {
             Vec3 planet_position = planet->get_vobject()->transform().get_position();
             Vec3 direction_from_planet = glm::normalize(transform.get_position() - planet_position);
             transform.position() = planet_position + direction_from_planet * planet->get_radius();
+            
+            // Remove vertical component of velocity
+            Vec3 up_direction = direction_from_planet;
+            Vec3 vertical_velocity = glm::dot(this->current_velocity, up_direction) * up_direction;
+            this->current_velocity -= vertical_velocity;
         } else {
             // If not grounded, check for collision
             this->correct_planet_collision();
@@ -311,14 +318,14 @@ namespace game::components {
             float closest_point_distance = glm::length(vec_to_closest_point);
 
             // If too far from the planet, don't align at all
-            if (closest_point_distance > HumanoidPlayerController::MAX_SURFACE_ALIGNMENT_DISTANCE) {
+            if (closest_point_distance > HumanoidPlayerController::MAX_SURFACE_ALIGN_DISTANCE) {
                 return;
             }
 
             Quaternion align_quat = Quaternion::from_unit_vectors(current_up, -glm::normalize(vec_to_closest_planet));
 
             // If very close to the planet's surface, snap to planet normal as if grounded
-            if (closest_point_distance < HumanoidPlayerController::MIN_SURFACE_ALIGNMENT_DISTANCE) {
+            if (closest_point_distance <= HumanoidPlayerController::MIN_SURFACE_ALIGN_DISTANCE) {
                 quaternion.global_compose(align_quat);
                 quaternion.normalize();
                 return;
@@ -326,10 +333,10 @@ namespace game::components {
 
             // Otherwise, align partially based on distance to surface
             float planet_alignment_force = 
-                (HumanoidPlayerController::MAX_SURFACE_ALIGNMENT_DISTANCE - closest_point_distance) / // This is OK because closest_point_distance can't be grater here
-                    (closest_point_distance - HumanoidPlayerController::MIN_SURFACE_ALIGNMENT_DISTANCE);
-
-            float frame_planet_alignment = planet_alignment_force * EngineController::get_delta_time();
+                (HumanoidPlayerController::MAX_SURFACE_ALIGN_DISTANCE - closest_point_distance) / // This is OK because closest_point_distance can't be grater here
+                    (HumanoidPlayerController::MAX_SURFACE_ALIGN_DISTANCE - HumanoidPlayerController::MIN_SURFACE_ALIGN_DISTANCE);
+            
+            float frame_planet_alignment = powf(planet_alignment_force, 16.0f);
 
             Quaternion partial_align_quat = Quaternion::slerp(Quaternion::identity(), align_quat, frame_planet_alignment);
             quaternion.global_compose(partial_align_quat);
