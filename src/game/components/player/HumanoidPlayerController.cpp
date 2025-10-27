@@ -3,6 +3,7 @@
 #include <InputController.hpp>
 #include <algorithm>
 #include <game/components/PlanetInfo.hpp>
+#include <cstdio>
 
 using engine::EngineController;
 using engine::InputController;
@@ -11,6 +12,7 @@ using engine::Vec3;
 using engine::math::Quaternion;
 using engine::is_zero;
 using engine::Transform;
+using engine::to_string;
 
 namespace game::components {
     struct HumanoidPlayerController::SphericalInput {
@@ -325,11 +327,11 @@ namespace game::components {
             }
 
             // Otherwise, align partially based on distance to surface
-            float planet_alignment_force = 
-                (HumanoidPlayerController::MAX_SURFACE_ALIGNMENT_DISTANCE - closest_point_distance) / // This is OK because closest_point_distance can't be grater here
-                    (closest_point_distance - HumanoidPlayerController::MIN_SURFACE_ALIGNMENT_DISTANCE);
+            float planet_alignment_force = 1.0f -
+                (closest_point_distance - HumanoidPlayerController::MIN_SURFACE_ALIGNMENT_DISTANCE) / // This is OK because closest_point_distance can't be grater here
+                    (HumanoidPlayerController::MAX_SURFACE_ALIGNMENT_DISTANCE - HumanoidPlayerController::MIN_SURFACE_ALIGNMENT_DISTANCE);
 
-            float frame_planet_alignment = planet_alignment_force * EngineController::get_delta_time();
+            float frame_planet_alignment = planet_alignment_force;
 
             Quaternion partial_align_quat = Quaternion::slerp(Quaternion::identity(), align_quat, frame_planet_alignment);
             quaternion.global_compose(partial_align_quat);

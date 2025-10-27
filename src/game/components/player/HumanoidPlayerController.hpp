@@ -36,7 +36,7 @@ namespace game::components {
             engine::Vec2 secondary_move_vector {0.0f, 0.0f};
             float phi_max = 3.141592f/2;
             float phi_min = -3.141592f/2;
-            float jump_strength = 40.0f;
+            float jump_strength = 10.0f;
             std::optional<PlanetInfo*> grounded_to = std::nullopt;
             PlanetInfo* closest_planet = nullptr;
 
