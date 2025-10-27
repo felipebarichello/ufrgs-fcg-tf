@@ -58,17 +58,60 @@ namespace game::components {
         // Accelerate towards dir on the horizontal/tangent component
         this->current_velocity += dir * (this->move_accel * dt);
 
-        // Clamp horizontal speed relative to surface up if grounded
+        // If grounded, apply deacceleration to horizontal/tangent components
         if (this->grounded_to.has_value()) {
             PlanetInfo* planet = this->grounded_to.value();
             Vec3 planet_pos = planet->get_vobject()->transform().get_position();
             Vec3 up = glm::normalize(transform.get_position() - planet_pos);
 
+            // Separate horizontal (tangent) and vertical components
             Vec3 horizontal_velocity = this->current_velocity - glm::dot(this->current_velocity, up) * up;
+
+            // If we're very close to the target, deaccelerate horizontally to stop
+            const float stop_distance = 1.0f;
+            if (dist <= stop_distance) {
+                float horizontal_speed = glm::length(horizontal_velocity);
+                if (horizontal_speed > 1e-6f) {
+                    Vec3 horizontal_dir = horizontal_velocity / horizontal_speed;
+                    float deaccel_amount = std::min(horizontal_speed, this->move_deaccel * dt);
+                    this->current_velocity -= deaccel_amount * horizontal_dir;
+                }
+            } else {
+                // Otherwise, deaccelerate orthogonal component and any component opposite to the desired direction
+                Vec3 input_direction = dir; // already projected earlier when necessary
+
+                float horiz_speed = glm::length(horizontal_velocity);
+                if (horiz_speed > 1e-6f) {
+                    float scalar_along = glm::dot(horizontal_velocity, input_direction);
+
+                    // orthogonal component (horizontal_velocity minus its projection onto input_direction)
+                    Vec3 orthogonal_vec = horizontal_velocity - scalar_along * input_direction;
+                    float orthogonal_speed = glm::length(orthogonal_vec);
+
+                    // Remove orthogonal component up to deaccel amount
+                    if (orthogonal_speed > 1e-6f) {
+                        float deaccel_amount = std::min(orthogonal_speed, this->move_deaccel * dt);
+                        Vec3 orth_dir = orthogonal_vec / orthogonal_speed;
+                        horizontal_velocity -= deaccel_amount * orth_dir;
+                    }
+
+                    // If moving opposite to desired direction, reduce that component as well
+                    if (scalar_along < 0.0f) {
+                        float opp_amount = std::min(-scalar_along, this->move_deaccel * dt);
+                        horizontal_velocity += opp_amount * input_direction; // add because scalar_along is negative
+                    }
+                }
+
+                // Recompose velocity keeping vertical component
+                Vec3 vertical = glm::dot(this->current_velocity, up) * up;
+                this->current_velocity = horizontal_velocity + vertical;
+            }
+
+            // Clamp horizontal speed after deaccel
+            horizontal_velocity = this->current_velocity - glm::dot(this->current_velocity, up) * up;
             float hspeed = glm::length(horizontal_velocity);
             if (hspeed > this->max_move_speed) {
                 horizontal_velocity = horizontal_velocity / hspeed * this->max_move_speed;
-                // keep vertical component
                 Vec3 vertical = glm::dot(this->current_velocity, up) * up;
                 this->current_velocity = horizontal_velocity + vertical;
             }
