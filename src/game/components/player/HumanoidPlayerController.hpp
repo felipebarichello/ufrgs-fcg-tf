@@ -15,8 +15,8 @@ namespace game::components {
             struct SphericalInput;
 
             static constexpr float GRAVITATIONAL_CONSTANT = 6.6743e-11f;
-            static constexpr float MIN_SURFACE_ALIGNMENT_DISTANCE = 1.0f;
-            static constexpr float MAX_SURFACE_ALIGNMENT_DISTANCE = 200.0f;
+            static constexpr float MIN_SURFACE_ALIGN_DISTANCE = 2.0f;
+            static constexpr float MAX_SURFACE_ALIGN_DISTANCE = 200.0f;
 
             bool active = true;
             engine::Camera* camera;
@@ -36,7 +36,7 @@ namespace game::components {
             engine::Vec2 secondary_move_vector {0.0f, 0.0f};
             float phi_max = 3.141592f/2;
             float phi_min = -3.141592f/2;
-            float jump_strength = 100.0f;
+            float jump_strength = 80.0f;
             std::optional<PlanetInfo*> grounded_to = std::nullopt;
             PlanetInfo* closest_planet = nullptr;
 

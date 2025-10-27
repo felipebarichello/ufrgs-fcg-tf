@@ -318,25 +318,25 @@ namespace game::components {
             float closest_point_distance = glm::length(vec_to_closest_point);
 
             // If too far from the planet, don't align at all
-            if (closest_point_distance > HumanoidPlayerController::MAX_SURFACE_ALIGNMENT_DISTANCE) {
+            if (closest_point_distance > HumanoidPlayerController::MAX_SURFACE_ALIGN_DISTANCE) {
                 return;
             }
 
             Quaternion align_quat = Quaternion::from_unit_vectors(current_up, -glm::normalize(vec_to_closest_planet));
 
             // If very close to the planet's surface, snap to planet normal as if grounded
-            if (closest_point_distance < HumanoidPlayerController::MIN_SURFACE_ALIGNMENT_DISTANCE) {
+            if (closest_point_distance <= HumanoidPlayerController::MIN_SURFACE_ALIGN_DISTANCE) {
                 quaternion.global_compose(align_quat);
                 quaternion.normalize();
                 return;
             }
 
             // Otherwise, align partially based on distance to surface
-            float planet_alignment_force = 1.0f -
-                (closest_point_distance - HumanoidPlayerController::MIN_SURFACE_ALIGNMENT_DISTANCE) / // This is OK because closest_point_distance can't be grater here
-                    (HumanoidPlayerController::MAX_SURFACE_ALIGNMENT_DISTANCE - HumanoidPlayerController::MIN_SURFACE_ALIGNMENT_DISTANCE);
+            float planet_alignment_force = 
+                (HumanoidPlayerController::MAX_SURFACE_ALIGN_DISTANCE - closest_point_distance) / // This is OK because closest_point_distance can't be grater here
+                    (HumanoidPlayerController::MAX_SURFACE_ALIGN_DISTANCE - HumanoidPlayerController::MIN_SURFACE_ALIGN_DISTANCE);
             
-            float frame_planet_alignment = planet_alignment_force;
+            float frame_planet_alignment = powf(planet_alignment_force, 16.0f);
 
             Quaternion partial_align_quat = Quaternion::slerp(Quaternion::identity(), align_quat, frame_planet_alignment);
             quaternion.global_compose(partial_align_quat);
