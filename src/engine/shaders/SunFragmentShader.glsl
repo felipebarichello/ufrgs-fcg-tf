@@ -38,7 +38,8 @@ void main()
     // Cálculo do efeito Fresnel
     // O efeito Fresnel faz com que a borda do sol brilhe mais intensamente
     // quando vista de um ângulo rasante (grazing angle)
-    float fresnel = pow(1.0 - max(0.0, dot(n, v)), fresnel_power);
+    float NdotV = max(0.0, dot(n, v));
+    float fresnel = pow(1.0 - NdotV, fresnel_power);
     
     // Cor final do sol combinando:
     // 1. Brilho base (emissivo) - o sol sempre brilha
@@ -46,9 +47,14 @@ void main()
     vec3 emissive = sun_color * base_intensity;
     vec3 fresnel_glow = sun_color * fresnel * fresnel_intensity;
     
-    color.rgb = emissive + fresnel_glow;
+    // Combine colors (HDR)
+    vec3 hdr_color = emissive + fresnel_glow;
+    
+    // Simple tone mapping to prevent over-bright whites
+    // Reinhard tone mapping: L_out = L_in / (1 + L_in)
+    vec3 tone_mapped = hdr_color / (vec3(1.0) + hdr_color);
+    
+    // Apply gamma correction
+    color.rgb = pow(tone_mapped, vec3(1.0/2.2));
     color.a = 1.0;
-
-    // Cor final com correção gamma, considerando monitor sRGB
-    color.rgb = pow(color.rgb, vec3(1.0,1.0,1.0)/2.2);
 }
