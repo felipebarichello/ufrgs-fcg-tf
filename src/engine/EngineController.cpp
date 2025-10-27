@@ -21,6 +21,7 @@ namespace engine {
     float EngineController::screen_ratio = 1.0f;
     GLuint EngineController::gouraud_program_id = 0;
     GLuint EngineController::phong_program_id = 0;
+    GLuint EngineController::sun_program_id = 0;
     std::vector<Drawable*> EngineController::drawables;
 
     EngineController* EngineController::start_engine(WindowConfig window_config) {
@@ -383,6 +384,23 @@ namespace engine {
             glDeleteProgram(phong_program_id);
         
         phong_program_id = create_gpu_program(vertex_shader_id, fragment_shader_id);
+
+        // Load Sun shaders
+        vertex_shader_path = exe_dir + "/../../src/engine/shaders/SunVertexShader.glsl";
+        fragment_shader_path = exe_dir + "/../../src/engine/shaders/SunFragmentShader.glsl";
+
+        printf("Loading shaders from:\n");
+        printf("  Vertex: %s\n", vertex_shader_path.c_str());
+        printf("  Fragment: %s\n", fragment_shader_path.c_str());
+
+        vertex_shader_id = load_shader_vertex(vertex_shader_path.c_str());
+        fragment_shader_id = load_shader_fragment(fragment_shader_path.c_str());
+
+        // Deletamos o programa de GPU anterior, caso ele exista.
+        if (sun_program_id != 0)
+            glDeleteProgram(sun_program_id);
+        
+        sun_program_id = create_gpu_program(vertex_shader_id, fragment_shader_id);
     }
 
     void EngineController::add_drawable(Drawable* drawable) {

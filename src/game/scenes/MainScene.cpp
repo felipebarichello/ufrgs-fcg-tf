@@ -2,6 +2,7 @@
 #include <game/components/player/HumanoidPlayerController.hpp>
 #include <engine/vobject/Transform.hpp>
 #include <engine/vobject/components/Trajectory.hpp>
+#include <engine/vobject/components/SunDrawable.hpp>
 #include <engine/math/curves/BezierCurve.hpp>
 #include <engine/math/curves/CircularCurve.hpp>
 #include <engine/math/curves/PieceWiseBezierCurve.hpp>
@@ -41,6 +42,17 @@ VObjectConfig Planet(PlanetInfo* planet_info) {
         );
 }
 
+VObjectConfig Sun(PlanetInfo* planet_info) {
+    return VObjectConfig()
+        .component(planet_info)
+        .child(VObjectConfig()
+            .transform(TransformBuilder()
+                .position(Vec3(0.0f, -10.0f, 0.0f))
+            )
+            .component(new SunDrawable("sphere.obj"))
+        );
+}
+
 VObjectConfig BunnyObj() {
     return VObjectConfig()
         .transform(TransformBuilder()
@@ -64,7 +76,7 @@ namespace game::scenes {
         root
             .vobject(Player(main_camera, player_height, planets))
             .vobject(VObjectConfig()  // Root VObject for all planets
-                .child(Planet(planets[0])  // Central star
+                .child(Sun(planets[0])  // Central star (sun)
                     .transform(TransformBuilder()
                         .scale(200.0f * planet_model_normalize))
                     .child(VObjectConfig()
