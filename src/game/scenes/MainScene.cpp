@@ -1,6 +1,8 @@
 #include "MainScene.hpp"
 #include <engine/vobject/Transform.hpp>
 #include <engine/vobject/components/Trajectory.hpp>
+#include <engine/vobject/components/SunDrawable.hpp>
+#include <engine/vobject/components/GlowDrawable.hpp>
 #include <engine/math/curves/BezierCurve.hpp>
 #include <engine/math/curves/CircularCurve.hpp>
 #include <engine/math/curves/PieceWiseBezierCurve.hpp>
@@ -46,6 +48,23 @@ VObjectConfig Planet(PlanetInfo* planet_info) {
         );
 }
 
+VObjectConfig Sun(PlanetInfo* planet_info) {
+    return VObjectConfig()
+        .component(planet_info)
+        .child(VObjectConfig()
+            .transform(TransformBuilder()
+                .position(Vec3(0.0f, -10.0f, 0.0f))
+            )
+            .component(new SunDrawable("sphere.obj"))
+        )
+        .child(VObjectConfig()  // Glow sphere - larger, transparent
+            .transform(TransformBuilder()
+                .position(Vec3(0.0f, -10.0f, 0.0f))
+                .scale(1.4f))  // 40% larger for atmospheric glow
+            .component(new GlowDrawable("sphere.obj"))
+        );
+}
+
 VObjectConfig BunnyObj() {
     return VObjectConfig()
         .transform(TransformBuilder()
@@ -80,7 +99,7 @@ namespace game::scenes {
             .vobject(Player(player_ref, main_camera, player_height, planets))
             .vobject(Enemy(player_ref, planets))
             .vobject(VObjectConfig()  // Root VObject for all planets
-                .child(Planet(planets[0])  // Central star
+                .child(Sun(planets[0])  // Central star (sun)
                     .transform(TransformBuilder()
                         .scale(200.0f * planet_model_normalize))
                     .child(VObjectConfig()
