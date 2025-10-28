@@ -13,6 +13,6 @@ class GlowDrawable : public engine::Drawable {
         void draw() override;
     private:
         glm::vec3 glow_color{1.0f, 0.9f, 0.5f};
-        float glow_intensity{2.5f};
-        float glow_falloff{1.5f};
+        float glow_intensity{3.5f};      // Increased for brighter corona
+        float glow_falloff{0.3f};        // Lower value = slower falloff = wider corona spread
 };
