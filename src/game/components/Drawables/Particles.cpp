@@ -38,8 +38,12 @@ Particles::Particles(int max_particles) {
 
         // Position = camera_pos + forward*depth + lateral jitter
         p.position = cam_pos + forward * depth + right * rx + up * ry;
-        // Move toward camera (i.e. opposite to forward)
-        p.direction = -forward;
+        // Move in a random direction away from the camera
+        p.direction = normalize(Vec3(
+            (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f),
+            (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f),
+            (static_cast<float>(rand()) / RAND_MAX * 0.5f + 0.5f) // bias forward
+        ));
         p.color = engine::Vec4(1.0f, 1.0f, 1.0f, 0.6f);
         // randomize per-particle speed multiplier and lifetime to avoid sync
         p.speed_mul = 0.6f + (static_cast<float>(rand()) / RAND_MAX) * 1.4f; // [0.6,2.0]
@@ -84,10 +88,11 @@ void Particles::update() {
         bool expired = particle.age >= particle.lifetime;
         engine::Vec3 to_particle = particle.position - camera_postion;
         float forward_dot = to_particle.x * camera_forward.x + to_particle.y * camera_forward.y + to_particle.z * camera_forward.z;
+        particle.position += particle.direction * delta_time * particle.speed_mul;
         if (expired || forward_dot <= 0.0f) {
             first_time = false;
 
-            particle.direction = -camera_forward;
+            //particle.direction = -camera_forward;
             particle.position = camera_postion + camera_forward * this->max_distance;
 
             particle.position += camera_right * (static_cast<float>(rand()) / RAND_MAX - 0.5f) * this->max_radial_distance;
