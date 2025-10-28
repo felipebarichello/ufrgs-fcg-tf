@@ -15,6 +15,8 @@ namespace game::components {
 
             // Input interface (called by HumanoidPlayerController)
             void set_move_vector(engine::Vec2 mv) { this->move_vector = mv; }
+            // Query input state for other components (e.g. camera bobbing)
+            engine::Vec2 get_move_vector() const { return this->move_vector; }
             void request_jump() { this->jump_requested = true; }
 
         private:

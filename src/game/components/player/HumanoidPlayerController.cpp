@@ -28,6 +28,11 @@ namespace game::components {
         input->subscribe_press_button(GLFW_KEY_F6, std::bind(&HumanoidPlayerController::toggle_camera_release, this));
         // Jump now forwarded to WalkerController
         input->subscribe_press_button(GLFW_KEY_SPACE, std::bind(&HumanoidPlayerController::on_jump_pressed, this));
+
+        // Capture the initial local transform of the child camera (used as base for bobbing offsets)
+        if (this->camera && this->camera->get_vobject()) {
+            this->stored_child_cam_transform = this->camera->get_vobject()->transform();
+        }
     }
 
     void HumanoidPlayerController::Update() {
@@ -55,6 +60,30 @@ namespace game::components {
         HumanoidPlayerController::SphericalInput spherical = this->get_spherical_input();
         this->set_camera_phi(this->camera_phi + spherical.delta_phi);
         quaternion.local_compose(Quaternion::from_y_rotation(spherical.delta_theta));
+
+        // Apply view bobbing to the child camera when attached
+        if (!this->released_camera && this->camera && this->walker) {
+            // Use input magnitude as a proxy for movement intensity
+            engine::Vec2 mv = this->walker->get_move_vector();
+            float input_mag = glm::length(mv);
+
+            float dt = EngineController::get_delta_time();
+            if (input_mag > this->bob_min_input_threshold) {
+                // Advance bob timer faster when moving more
+                this->bob_timer += dt * (this->bob_frequency * (0.5f + input_mag));
+            } else {
+                // Slowly decay bob timer when stopped to make bobbing stop smoothly
+                this->bob_timer += dt * (this->bob_frequency * 0.2f);
+            }
+
+            float bob_y = sinf(this->bob_timer * 2.0f) * this->bob_vertical_amplitude * input_mag;
+            float bob_x = sinf(this->bob_timer) * this->bob_sway_amplitude * input_mag;
+
+            // Apply offset in local camera space based on stored child transform
+            Transform& cam_transform = this->camera->get_vobject()->transform();
+            cam_transform.copy_values_from(this->stored_child_cam_transform);
+            cam_transform.position() += cam_transform.quaternion().rotate(Vec3(bob_x, bob_y, 0.0f));
+        }
 
         // Forwarded movement input is handled by WalkerController; Humanoid doesn't change position directly.
     }
