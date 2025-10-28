@@ -81,7 +81,8 @@ namespace game::components {
 
             // Apply offset in local camera space based on stored child transform
             Transform& cam_transform = this->camera->get_vobject()->transform();
-            cam_transform.copy_values_from(this->stored_child_cam_transform);
+            // Preserve camera quaternion (pitch) set by set_camera_phi; only reset local position to stored base
+            cam_transform.position() = this->stored_child_cam_transform.get_position();
             cam_transform.position() += cam_transform.quaternion().rotate(Vec3(bob_x, bob_y, 0.0f));
         }
 
