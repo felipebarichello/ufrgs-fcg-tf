@@ -3,8 +3,7 @@
 #include <engine>
 #include <memory>
 #include <game/components/PlanetInfo.hpp>
-// Forward declare WalkerController to avoid include cycle
-namespace game::components { class WalkerController; }
+#include <game/components/WalkerController.hpp>
 
 namespace game::components {
     class HumanoidPlayerController : public engine::Behavior {
