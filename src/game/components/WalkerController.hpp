@@ -28,7 +28,7 @@ namespace game::components {
             // Tuning
             float walk_accel = 70.0f;
             float walk_deaccel = 200.0f;
-            float max_walk_speed = 50.0f;
+            float max_walk_speed = 30.0f;
             float jump_strength = 80.0f;
 
             // Gravity / grounding
