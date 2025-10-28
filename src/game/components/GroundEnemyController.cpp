@@ -61,6 +61,23 @@ namespace game::components {
 
         Vec2 move_vec(right_comp, forward_comp);
         if (this->walker) this->walker->set_move_vector(move_vec);
+
+        // Also rotate the VObject to face the movement direction (projected)
+        Quaternion& quaternion = transform.quaternion();
+        // Recompute forward projection onto tangent plane
+        Vec3 forward_proj = forward - glm::dot(forward, up) * up;
+        float fwd_len = glm::length(forward_proj);
+        float proj_len = glm::length(projected);
+        if (fwd_len > 1e-6f && proj_len > 1e-6f) {
+            Vec3 fwd_n = forward_proj / fwd_len;
+            Vec3 proj_n = projected / proj_len;
+
+            // Rotation that brings fwd_n -> proj_n
+            Quaternion face_rot = Quaternion::from_unit_vectors(fwd_n, proj_n);
+            // Apply rotation in global frame so the up direction remains consistent
+            quaternion.global_compose(face_rot);
+            quaternion.normalize();
+        }
     }
 
 } // namespace game::components
