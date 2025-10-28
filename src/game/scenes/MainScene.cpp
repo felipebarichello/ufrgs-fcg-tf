@@ -12,12 +12,15 @@ using namespace engine;
 using namespace game::components;
 
 VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera, float height, std::vector<PlanetInfo*> planets) {
-    HumanoidPlayerController* controller = new HumanoidPlayerController(main_camera, planets);
+    // Create walker component first and then the humanoid which will forward inputs to it.
+    WalkerController* walker = new WalkerController(planets);
+    HumanoidPlayerController* controller = new HumanoidPlayerController(main_camera, walker);
     player_ref = controller;
 
     return VObjectConfig()
         .transform(TransformBuilder()
             .position(Vec3(0.0f, 220.0f, 50.0f)))
+        .component(walker)
         .component(controller)
         .child(VObjectConfig()
             .transform(TransformBuilder()
