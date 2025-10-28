@@ -42,11 +42,11 @@ namespace game::components {
         if (desired_speed > this->max_walk_speed) {
             // Can't walk faster. Correct that.
             Vec3 velocity_direction = glm::normalize(this->current_velocity);
-            Vec3 max_velocity_component = velocity_direction * this->max_walk_speed;
-            Vec3 excess_velocity = desired_velocity - max_velocity_component;
-            
+            Vec3 clamped_cur_vel = velocity_direction * this->max_walk_speed;
+            Vec3 excess_velocity = this->current_velocity - clamped_cur_vel;
+
             // Walking can only operate on the non-excess part
-            Vec3 desired_vel_component = max_velocity_component + desired_velocity_change;
+            Vec3 desired_vel_component = clamped_cur_vel + desired_velocity_change;
             float vel_component_speed = glm::length(desired_vel_component);
             if (vel_component_speed > this->max_walk_speed) {
                 // Clamp to max walk speed
