@@ -26,6 +26,7 @@ namespace game::components {
             // Walker component responsible for all movement physics
             WalkerController* walker = nullptr;
 
+            /// @brief Used both for storing camera transform before releasing and for bobbing.
             engine::Transform stored_child_cam_transform;
             
             // View bobbing
