@@ -35,19 +35,6 @@ VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera,
         // );
 }
 
-VObjectConfig Enemy(HumanoidPlayerController* player_ref, std::vector<PlanetInfo*> planets) {
-    return VObjectConfig()
-        .transform(TransformBuilder()
-            .position(Vec3(50.0f, 220.0f, 0.0f)))
-        .component(new GroundEnemyController(player_ref, planets))
-        .child(VObjectConfig()
-            .transform(TransformBuilder()
-                .position(Vec3(0.0f, 0.0f, 0.0f))
-            )
-            .component(new ObjDrawable("bunny.obj"))
-        );
-}
-
 VObjectConfig Planet(PlanetInfo* planet_info) {
     return VObjectConfig()
         .component(planet_info)
@@ -65,6 +52,14 @@ VObjectConfig BunnyObj() {
             .position(Vec3(0.0f, 0.95f, 0.0f))
         )
         .component(new ObjDrawable("bunny.obj"));
+}
+
+VObjectConfig Enemy(HumanoidPlayerController* player_ref, std::vector<PlanetInfo*> planets) {
+    return VObjectConfig()
+        .transform(TransformBuilder()
+            .position(Vec3(50.0f, 220.0f, 0.0f)))
+        .component(new GroundEnemyController(player_ref, planets))
+        .child(BunnyObj());
 }
 
 namespace game::scenes {
