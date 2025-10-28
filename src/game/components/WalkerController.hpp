@@ -24,9 +24,9 @@ namespace game::components {
             engine::Vec3 current_velocity {0.0f, 0.0f, 0.0f};
 
             // Tuning
-            float walk_accel = 50.0f;
+            float walk_accel = 70.0f;
             float walk_deaccel = 200.0f;
-            float max_walk_speed = 80.0f;
+            float max_walk_speed = 60.0f;
             float jump_strength = 80.0f;
 
             // Gravity / grounding

@@ -5,6 +5,8 @@
 #include <vector>
 #include <optional>
 #include <game/components/player/HumanoidPlayerController.hpp>
+// Forward declare WalkerController
+namespace game::components { class WalkerController; }
 
 namespace game::components {
     class GroundEnemyController : public engine::Behavior {
@@ -17,28 +19,17 @@ namespace game::components {
             void Update() override;
 
         private:
-            // Movement state
+            // Target references
             HumanoidPlayerController* target_controller = nullptr;
             engine::VObject* target_vobj = nullptr;
+
+            // AI: planets available for any future needs
             std::vector<PlanetInfo*> planets;
-            engine::Vec3 current_velocity {0.0f, 0.0f, 0.0f};
 
-            // Tuning
-            float move_accel = 10.0f;         // acceleration towards the target
-            float move_deaccel = 120.0f;       // deceleration on surface
-            float max_move_speed = 40.0f;     // max horizontal speed
-            float jump_strength = 50.0f;      // TODO: Use
-
-            // Gravity / grounding
-            static constexpr float GRAVITATIONAL_CONSTANT = 6.6743e-11f;
-            std::optional<PlanetInfo*> grounded_to = std::nullopt;
-            PlanetInfo* closest_planet = nullptr;
+            // Walker component used to perform physics for this enemy
+            WalkerController* walker = nullptr;
 
             // Internal helpers
-            void update_transform_due_to_environment();
             void update_follow_target();
-            engine::Vec3 compute_equivalent_gravity();
-            void correct_planet_collision();
-            void align_to_closest_planet();
     };
 } // namespace game::components
