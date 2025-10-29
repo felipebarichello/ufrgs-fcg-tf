@@ -32,7 +32,7 @@ namespace game::components {
             // View bobbing
             float bob_timer = 0.0f;
             float bob_frequency = 6.0f; // how fast bob cycles when moving
-            float bob_vertical_amplitude = 0.1f; // vertical bob amplitude in local units
+            float bob_vertical_amplitude = 0.02f; // vertical bob amplitude in local units
             float bob_sway_amplitude = 0.1f; // horizontal sway amplitude
             float bob_min_input_threshold = 0.01f; // ignore tiny inputs
 
