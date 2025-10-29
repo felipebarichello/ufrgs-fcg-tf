@@ -7,6 +7,9 @@
 #include <cmath>
 #include <vector>
 #include <game/components/include.hpp>
+#include <game/components/player/CameraController.hpp>
+#include <game/components/player/HumanoidPlayerController.hpp>
+#include <game/components/player/SpaceshipPlayerController.hpp>
 
 using namespace engine;
 using namespace game::components;
@@ -33,6 +36,17 @@ VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera,
         //     )
         //     .component(new ObjDrawable("bunny.obj"))
         // );
+}
+
+VObjectConfig SpaceShipPlayer(SpaceshipPlayerController*& controller_ref, Camera* first_person_camera) {
+    SpaceshipPlayerController* controller = new SpaceshipPlayerController(first_person_camera, 0.0f);
+    controller_ref = controller;
+    return VObjectConfig()
+        .component(controller)
+        .component(new ObjDrawable("bunny.obj"))
+        .child(VObjectConfig()
+            .component(first_person_camera)
+        );
 }
 
 VObjectConfig Planet(PlanetInfo* planet_info) {
@@ -68,16 +82,25 @@ namespace game::scenes {
         const float player_height = 1.8f;
         const float planet_model_normalize = 1.0f / 10.0f; // Very precise estimate
 
-        Camera* main_camera = new Camera();
-        Camera::set_main(main_camera);
+        Camera* humanoid_camera = new Camera();
+        Camera* spaceship_third_person_camera = new Camera();
+        Camera* spaceship_first_person_camera = new Camera();
+        Camera::set_main(humanoid_camera);
         HumanoidPlayerController* player_ref = nullptr;
-
         std::vector<PlanetInfo*> planets;
         planets.push_back(new PlanetInfo(50.0e12f, 200.0f));
         planets.push_back(new PlanetInfo(20.0e12f, 50.0f));
 
+        SpaceshipPlayerController* spaceship_controller_ref = nullptr;
+
         root
-            .vobject(Player(player_ref, main_camera, player_height, planets))
+            // Spaceship player
+            .vobject(VObjectConfig().component(spaceship_third_person_camera))
+            .vobject(SpaceShipPlayer(spaceship_controller_ref, spaceship_first_person_camera))
+            .vobject(VObjectConfig().component(new CameraController(spaceship_controller_ref, spaceship_third_person_camera)))
+            // HumanoidPlayer
+            .vobject(Player(player_ref, humanoid_camera, player_height, planets))
+            // ensure the camera component is attached to a VObject so Camera::get_vobject() is valid
             .vobject(Enemy(player_ref, planets))
             .vobject(VObjectConfig()  // Root VObject for all planets
                 .child(Planet(planets[0])  // Central star
