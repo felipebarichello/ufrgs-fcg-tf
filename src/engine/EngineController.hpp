@@ -40,6 +40,8 @@ namespace engine {
             static float screen_ratio; // TODO: Separate screen ratio and aspect ratio
             static GLuint gouraud_program_id;
             static GLuint phong_program_id;
+            static GLuint star_program_id;
+            static GLuint particle_program_id;
             static void frame_buffer_size_callback(GLFWwindow* window, int width, int height);
             static void error_callback(int error, const char* description);
             static GLFWwindow* init_window(WindowConfig window_config);
@@ -79,6 +81,8 @@ namespace engine {
             void set_screen_ratio(float ratio) { screen_ratio = ratio; }
             static GLuint get_gouraud_program_id() { return gouraud_program_id; }
             static GLuint get_phong_program_id() { return phong_program_id; }
+            static GLuint get_star_program_id() { return star_program_id; }
+            static GLuint get_particle_program_id() { return particle_program_id; }
             static std::string get_executable_directory();
             static float get_delta_time();
     };

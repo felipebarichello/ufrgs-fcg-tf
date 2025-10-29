@@ -11,6 +11,7 @@ namespace game::components {
             SpaceshipPlayerController(engine::Camera* camera, float planet_radius) : camera(camera), planet_radius(planet_radius) {}
             void Start() override;
             void Update() override;
+            float speed = 100.0f;
 
         private:
             struct SphericalInput;
@@ -25,7 +26,6 @@ namespace game::components {
             float camera_height = 2.0f; // vertical offset above player
             engine::Vec2 move_vector {0.0f, 0.0f};
             engine::Vec3 current_velocity {0.0f, 0.0f, 0.0f};
-            float speed = 100.0f;
             float camera_phi = 0.0f;
             float v_sensitivity = 0.001f;
             float h_sensitivity = 0.001f;

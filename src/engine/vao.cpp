@@ -62,7 +62,12 @@ namespace engine {
 
     void Vao::draw() const {
         this->bind();
-        glDrawElements(this->topology_mode, this->topology_size, this->topology_type, 0);
+        // If no element array buffer (topology_type == 0) was provided, draw arrays
+        if (this->topology_type == 0) {
+            glDrawArrays(this->topology_mode, 0, this->topology_size);
+        } else {
+            glDrawElements(this->topology_mode, this->topology_size, this->topology_type, 0);
+        }
         this->unbind();
     }
 
@@ -100,11 +105,15 @@ namespace engine {
 
     VaoBuilder& VaoBuilder::add_ebo(size_t buffer_size, void* data, GLenum usage_hint) {
         this->add_buffer(GL_ELEMENT_ARRAY_BUFFER, buffer_size, data, usage_hint);
+        this->has_ebo = true;
         return *this;
     }
 
     Vao VaoBuilder::build(GLenum topology_mode, GLsizei topology_size, GLenum topology_type) {
-        return Vao(this->vao_id, topology_mode, topology_size, topology_type);
+        // If no EBO was added, topology_type will be set to 0 to indicate
+        // that draw() should call glDrawArrays instead of glDrawElements.
+        GLenum store_type = this->has_ebo ? topology_type : 0;
+        return Vao(this->vao_id, topology_mode, topology_size, store_type);
     }
 
     void VaoBuilder::add_buffer(GLenum target, size_t buffer_size, void* data, GLenum usage_hint) {

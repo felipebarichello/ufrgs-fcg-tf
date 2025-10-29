@@ -21,6 +21,8 @@ namespace engine {
     float EngineController::screen_ratio = 1.0f;
     GLuint EngineController::gouraud_program_id = 0;
     GLuint EngineController::phong_program_id = 0;
+    GLuint EngineController::star_program_id = 0;
+    GLuint EngineController::particle_program_id = 0;
     std::vector<Drawable*> EngineController::drawables;
 
     EngineController* EngineController::start_engine(WindowConfig window_config) {
@@ -383,6 +385,54 @@ namespace engine {
             glDeleteProgram(phong_program_id);
         
         phong_program_id = create_gpu_program(vertex_shader_id, fragment_shader_id);
+        
+            // Load Star shaders (simple point sprite shader used only by Stars)
+            vertex_shader_path = exe_dir + "/../../src/engine/shaders/StarVertexShader.glsl";
+            fragment_shader_path = exe_dir + "/../../src/engine/shaders/StarFragmentShader.glsl";
+        
+            printf("Loading shaders from:\n");
+            printf("  Vertex: %s\n", vertex_shader_path.c_str());
+            printf("  Fragment: %s\n", fragment_shader_path.c_str());
+        
+            vertex_shader_id = load_shader_vertex(vertex_shader_path.c_str());
+            fragment_shader_id = load_shader_fragment(fragment_shader_path.c_str());
+        
+            if (star_program_id != 0)
+                glDeleteProgram(star_program_id);
+        
+            star_program_id = create_gpu_program(vertex_shader_id, fragment_shader_id);
+        
+            // Load Particle shaders
+            vertex_shader_path = exe_dir + "/../../src/engine/shaders/ParticleVertexShader.glsl";
+            fragment_shader_path = exe_dir + "/../../src/engine/shaders/ParticleFragmentShader.glsl";
+        
+            printf("Loading shaders from:\n");
+            printf("  Vertex: %s\n", vertex_shader_path.c_str());
+            printf("  Fragment: %s\n", fragment_shader_path.c_str());
+        
+            vertex_shader_id = load_shader_vertex(vertex_shader_path.c_str());
+            fragment_shader_id = load_shader_fragment(fragment_shader_path.c_str());
+        
+            if (particle_program_id != 0)
+                glDeleteProgram(particle_program_id);
+        
+            particle_program_id = create_gpu_program(vertex_shader_id, fragment_shader_id);
+
+        // Load Star shaders (simple point sprite shader used only by Stars)
+        vertex_shader_path = exe_dir + "/../../src/engine/shaders/StarVertexShader.glsl";
+        fragment_shader_path = exe_dir + "/../../src/engine/shaders/StarFragmentShader.glsl";
+
+        printf("Loading shaders from:\n");
+        printf("  Vertex: %s\n", vertex_shader_path.c_str());
+        printf("  Fragment: %s\n", fragment_shader_path.c_str());
+
+        vertex_shader_id = load_shader_vertex(vertex_shader_path.c_str());
+        fragment_shader_id = load_shader_fragment(fragment_shader_path.c_str());
+
+        if (star_program_id != 0)
+            glDeleteProgram(star_program_id);
+
+        star_program_id = create_gpu_program(vertex_shader_id, fragment_shader_id);
     }
 
     void EngineController::add_drawable(Drawable* drawable) {
@@ -419,6 +469,22 @@ namespace engine {
         glUseProgram(EngineController::get_instance()->get_phong_program_id());
         glUniformMatrix4fv(EngineController::instance->g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
         glUniformMatrix4fv(EngineController::instance->g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
+
+        if (star_program_id != 0) {
+            glUseProgram(star_program_id);
+            GLint view_loc = glGetUniformLocation(star_program_id, "view");
+            GLint proj_loc = glGetUniformLocation(star_program_id, "projection");
+            if (view_loc != -1) glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
+            if (proj_loc != -1) glUniformMatrix4fv(proj_loc, 1, GL_FALSE, glm::value_ptr(projection));
+        }
+
+        if (particle_program_id != 0) {
+            glUseProgram(particle_program_id);
+            GLint view_loc = glGetUniformLocation(particle_program_id, "view");
+            GLint proj_loc = glGetUniformLocation(particle_program_id, "projection");
+            if (view_loc != -1) glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
+            if (proj_loc != -1) glUniformMatrix4fv(proj_loc, 1, GL_FALSE, glm::value_ptr(projection));
+        }
 
         glBindVertexArray(0);
     }
