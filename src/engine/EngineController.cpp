@@ -385,38 +385,40 @@ namespace engine {
             glDeleteProgram(phong_program_id);
         
         phong_program_id = create_gpu_program(vertex_shader_id, fragment_shader_id);
-        
-            // Load Star shaders (simple point sprite shader used only by Stars)
-            vertex_shader_path = exe_dir + "/../../src/engine/shaders/StarVertexShader.glsl";
-            fragment_shader_path = exe_dir + "/../../src/engine/shaders/StarFragmentShader.glsl";
-        
-            printf("Loading shaders from:\n");
-            printf("  Vertex: %s\n", vertex_shader_path.c_str());
-            printf("  Fragment: %s\n", fragment_shader_path.c_str());
-        
-            vertex_shader_id = load_shader_vertex(vertex_shader_path.c_str());
-            fragment_shader_id = load_shader_fragment(fragment_shader_path.c_str());
-        
-            if (star_program_id != 0)
-                glDeleteProgram(star_program_id);
-        
-            star_program_id = create_gpu_program(vertex_shader_id, fragment_shader_id);
-        
-            // Load Particle shaders
-            vertex_shader_path = exe_dir + "/../../src/engine/shaders/ParticleVertexShader.glsl";
-            fragment_shader_path = exe_dir + "/../../src/engine/shaders/ParticleFragmentShader.glsl";
-        
-            printf("Loading shaders from:\n");
-            printf("  Vertex: %s\n", vertex_shader_path.c_str());
-            printf("  Fragment: %s\n", fragment_shader_path.c_str());
-        
-            vertex_shader_id = load_shader_vertex(vertex_shader_path.c_str());
-            fragment_shader_id = load_shader_fragment(fragment_shader_path.c_str());
-        
-            if (particle_program_id != 0)
-                glDeleteProgram(particle_program_id);
-        
-            particle_program_id = create_gpu_program(vertex_shader_id, fragment_shader_id);
+        glUseProgram(phong_program_id);
+        glUniform1i(glGetUniformLocation(phong_program_id, "TextureImage"), 0);
+
+        // Load Star shaders (simple point sprite shader used only by Stars)
+        vertex_shader_path = exe_dir + "/../../src/engine/shaders/StarVertexShader.glsl";
+        fragment_shader_path = exe_dir + "/../../src/engine/shaders/StarFragmentShader.glsl";
+    
+        printf("Loading shaders from:\n");
+        printf("  Vertex: %s\n", vertex_shader_path.c_str());
+        printf("  Fragment: %s\n", fragment_shader_path.c_str());
+    
+        vertex_shader_id = load_shader_vertex(vertex_shader_path.c_str());
+        fragment_shader_id = load_shader_fragment(fragment_shader_path.c_str());
+    
+        if (star_program_id != 0)
+            glDeleteProgram(star_program_id);
+    
+        star_program_id = create_gpu_program(vertex_shader_id, fragment_shader_id);
+    
+        // Load Particle shaders
+        vertex_shader_path = exe_dir + "/../../src/engine/shaders/ParticleVertexShader.glsl";
+        fragment_shader_path = exe_dir + "/../../src/engine/shaders/ParticleFragmentShader.glsl";
+    
+        printf("Loading shaders from:\n");
+        printf("  Vertex: %s\n", vertex_shader_path.c_str());
+        printf("  Fragment: %s\n", fragment_shader_path.c_str());
+    
+        vertex_shader_id = load_shader_vertex(vertex_shader_path.c_str());
+        fragment_shader_id = load_shader_fragment(fragment_shader_path.c_str());
+    
+        if (particle_program_id != 0)
+            glDeleteProgram(particle_program_id);
+    
+        particle_program_id = create_gpu_program(vertex_shader_id, fragment_shader_id);
 
         // Load Star shaders (simple point sprite shader used only by Stars)
         vertex_shader_path = exe_dir + "/../../src/engine/shaders/StarVertexShader.glsl";
