@@ -54,6 +54,7 @@ namespace engine {
             GLuint id() const;
             Vao(GLuint vao_id, GLenum topology_mode, GLsizei topology_size, GLenum topology_type);
             void draw() const;
+            GLuint texture_id = -1;
 
         private:
             GLuint vao_id;
