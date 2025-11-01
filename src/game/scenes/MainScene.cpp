@@ -11,6 +11,7 @@
 #include <game/components/player/HumanoidPlayerController.hpp>
 #include <game/components/player/SpaceshipPlayerController.hpp>
 #include <game/components/Drawables/Stars.hpp>
+#include <game/components/Drawables/Particles.hpp>
 
 using namespace engine;
 using namespace game::components;
@@ -78,11 +79,11 @@ VObjectConfig Enemy(HumanoidPlayerController* player_ref, std::vector<PlanetInfo
         .child(SpaceshipObj());
 }
 
-VObjectConfig SkyBox(Camera* camera_ref) {
+VObjectConfig SkyBox() {
     return VObjectConfig()
         // .transform(TransformBuilder()
         //     .scale(10000.0f))
-        .component(new Stars(camera_ref, 100000));
+        .component(new Stars(50000));
 }
 
 namespace game::scenes {
@@ -107,7 +108,8 @@ namespace game::scenes {
             .vobject(SpaceShipPlayer(spaceship_controller_ref, spaceship_first_person_camera))
             .vobject(VObjectConfig().component(new CameraController(spaceship_controller_ref, spaceship_third_person_camera)))
             // HumanoidPlayer
-            .vobject(SkyBox(spaceship_third_person_camera))
+            .vobject(SkyBox())
+            .vobject(VObjectConfig().component(new Particles(200)))
             .vobject(Player(player_ref, humanoid_camera, player_height, planets))
             // ensure the camera component is attached to a VObject so Camera::get_vobject() is valid
             //.vobject(Enemy(player_ref, planets))
