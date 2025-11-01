@@ -56,7 +56,7 @@ void main()
     vec3 I = vec3(1.0,1.0,1.0); // PREENCH AQUI o espectro da fonte de luz
 
     // Espectro da luz ambiente
-    vec3 Ia = vec3(1.0, 1.0, 1.0); // PREENCHA AQUI o espectro da luz ambiente
+    vec3 Ia = vec3(0.002, 0.002, 0.002); // PREENCHA AQUI o espectro da luz ambiente
 
     vec4 h = normalize(l + v); // half-way entre l e v
 
@@ -66,7 +66,7 @@ void main()
     vec3 lambert_diffuse_term = Kd*I*max(0.0, dot(n,l)); // PREENCHA AQUI o termo difuso de Lambert
 
     // Termo ambiente
-    vec3 ambient_term = Ka*Ia; // PREENCHA AQUI o termo ambiente
+    vec3 ambient_term = Kd*Ia; // PREENCHA AQUI o termo ambiente
 
     // Termo especular utilizando o modelo de iluminação de Phong
     vec3 blinn_phong_specular_term  = Ks*I*pow(max(0.0, dot(n, h)), Ns); // PREENCH AQUI o termo especular de Phong
