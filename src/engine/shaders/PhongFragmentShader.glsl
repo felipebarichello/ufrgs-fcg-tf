@@ -7,9 +7,10 @@
 in vec4 position_world;
 in vec4 normal;
 
-uniform vec3 Kd;
+in vec2 texcoords;
+
 uniform vec3 Ks;
-uniform vec3 ka;
+uniform vec3 Ka;
 uniform float Ns;
 
 // Matrizes computadas no código C++ e enviadas para a GPU
@@ -18,15 +19,11 @@ uniform mat4 view;
 uniform mat4 projection;
 
 // Identificador que define qual objeto está sendo desenhado no momento
-uniform int object_id;
+
+uniform sampler2D TextureImage;
 
 // O valor de saída ("out") de um Fragment Shader é a cor final do fragmento.
 out vec4 color;
-
-float max(float a, float b)
-{
-    return (a > b) ? a : b;
-}
 
 void main()
 {
@@ -63,6 +60,8 @@ void main()
 
     vec4 h = normalize(l + v); // half-way entre l e v
 
+    vec3 Kd = texture(TextureImage, vec2(texcoords.x, texcoords.y)).rgb;
+
     // Termo difuso utilizando a lei dos cossenos de Lambert
     vec3 lambert_diffuse_term = Kd*I*max(0.0, dot(n,l)); // PREENCHA AQUI o termo difuso de Lambert
 
@@ -72,18 +71,6 @@ void main()
     // Termo especular utilizando o modelo de iluminação de Phong
     vec3 blinn_phong_specular_term  = Ks*I*pow(max(0.0, dot(n, h)), Ns); // PREENCH AQUI o termo especular de Phong
 
-    // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
-    // necessário:
-    // 1) Habilitar a operação de "blending" de OpenGL logo antes de realizar o
-    //    desenho dos objetos transparentes, com os comandos abaixo no código C++:
-    //      glEnable(GL_BLEND);
-    //      glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    // 2) Realizar o desenho de todos objetos transparentes *após* ter desenhado
-    //    todos os objetos opacos; e
-    // 3) Realizar o desenho de objetos transparentes ordenados de acordo com
-    //    suas distâncias para a câmera (desenhando primeiro objetos
-    //    transparentes que estão mais longe da câmera).
-    // Alpha default = 1 = 100% opaco = 0% transparente
     color.a = 1;
 
     // Cor final do fragmento calculada com uma combinação dos termos difuso,
