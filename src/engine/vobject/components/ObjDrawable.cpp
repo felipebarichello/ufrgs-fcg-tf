@@ -21,6 +21,7 @@ ObjDrawable::ObjDrawable(std::string file_name, std::string texture_file_name) {
     std::string model_path = EngineController::get_executable_directory() + "/../../assets/" + file_name;
     std::string texture_path = EngineController::get_executable_directory() + "/../../assets/" + texture_file_name;
     this->vao_ptr = ObjLoader::load(model_path.c_str(), texture_path.c_str());
+    this->use_phong_shading = true;
 }
 
 void ObjDrawable::draw() {
@@ -38,7 +39,7 @@ void ObjDrawable::draw() {
     GLint Ks = glGetUniformLocation(program_id, "Ks");
     GLint Ka = glGetUniformLocation(program_id, "Ka");
     GLint q  = glGetUniformLocation(program_id, "Ns");
-    
+
     glUniform3fv(Kd, 1, &this->Kd[0]);
     glUniform3fv(Ks, 1, &this->Ks[0]);
     glUniform3fv(Ka, 1, &this->Ka[0]);
