@@ -34,6 +34,6 @@ namespace engine {
         static std::vector<std::string> loaded_texture_filenames;
         static engine::Vao build_obj_vao(ObjModel* model);
         static void ComputeNormals(ObjModel* model);
-        static void LoadTextureImage(const char* filename);
+        static GLuint LoadTextureImage(const char* filename);
     };
 } // namespace engine

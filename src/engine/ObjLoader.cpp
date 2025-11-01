@@ -26,6 +26,7 @@ Vao* ObjLoader::load(const char* filename) {
 }
 
 Vao* ObjLoader::load(const char* filename, const char* texture_filename) {
+
     if (loaded_vaos.find(filename) != loaded_vaos.end()) {
         return loaded_vaos[filename];
     }
@@ -33,10 +34,10 @@ Vao* ObjLoader::load(const char* filename, const char* texture_filename) {
     ObjModel obj_model = ObjModel(filename);
     ComputeNormals(&obj_model);
 
-    if (std::find(loaded_texture_filenames.begin(), loaded_texture_filenames.end(), std::string(texture_filename)) == loaded_texture_filenames.end())
-        LoadTextureImage(texture_filename);
+    GLuint textureunit = LoadTextureImage(texture_filename);
 
     Vao* vao = new Vao(build_obj_vao(&obj_model));
+    vao->texture_id = textureunit;
     loaded_vaos[filename] = vao;
     return vao;
 }
@@ -268,7 +269,7 @@ void ObjLoader::ComputeNormals(ObjModel* model) {
     }
 }
 
-void ObjLoader::LoadTextureImage(const char* filename)
+GLuint ObjLoader::LoadTextureImage(const char* filename)
 {
     printf("Carregando imagem \"%s\"... ", filename);
 
@@ -318,4 +319,5 @@ void ObjLoader::LoadTextureImage(const char* filename)
 
     ObjLoader::loaded_texture_filenames.push_back( std::string(filename) );
 
+    return textureunit;
 }
