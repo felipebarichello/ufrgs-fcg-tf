@@ -5,7 +5,7 @@
 #include "vao.hpp"
 
 namespace engine {
-    class Drawable : public Component {
+    class Drawable : public virtual Component {
         public:
             Drawable();
             ~Drawable();
