@@ -12,7 +12,7 @@ using namespace engine;
 
 // Definition of static member
 std::unordered_map<std::string, Vao*> ObjLoader::loaded_vaos;
-GLuint ObjLoader::loaded_textures_count = 0;
+std::vector<std::string> ObjLoader::loaded_texture_filenames;
 
 Vao* ObjLoader::load(const char* filename, const char* basepath, bool triangulate) {
     if (loaded_vaos.find(filename) != loaded_vaos.end()) {
@@ -20,6 +20,22 @@ Vao* ObjLoader::load(const char* filename, const char* basepath, bool triangulat
     }
     ObjModel obj_model = ObjModel(filename, basepath, triangulate);
     ComputeNormals(&obj_model);
+    Vao* vao = new Vao(build_obj_vao(&obj_model));
+    loaded_vaos[filename] = vao;
+    return vao;
+}
+
+Vao* ObjLoader::load(const char* filename, const char* texture_filename) {
+    if (loaded_vaos.find(filename) != loaded_vaos.end()) {
+        return loaded_vaos[filename];
+    }
+    
+    ObjModel obj_model = ObjModel(filename);
+    ComputeNormals(&obj_model);
+
+    if (std::find(loaded_texture_filenames.begin(), loaded_texture_filenames.end(), std::string(texture_filename)) == loaded_texture_filenames.end())
+        LoadTextureImage(texture_filename);
+
     Vao* vao = new Vao(build_obj_vao(&obj_model));
     loaded_vaos[filename] = vao;
     return vao;
@@ -291,7 +307,7 @@ void ObjLoader::LoadTextureImage(const char* filename)
     glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
     glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
 
-    GLuint textureunit = loaded_textures_count;
+    GLuint textureunit = ObjLoader::loaded_texture_filenames.size();
     glActiveTexture(GL_TEXTURE0 + textureunit);
     glBindTexture(GL_TEXTURE_2D, texture_id);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -300,5 +316,6 @@ void ObjLoader::LoadTextureImage(const char* filename)
 
     stbi_image_free(data);
 
-    loaded_textures_count += 1;
+    ObjLoader::loaded_texture_filenames.push_back( std::string(filename) );
+
 }

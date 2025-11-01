@@ -10,6 +10,8 @@
 #include "math/matrices.hpp"
 #include <engine/vobject/components/Drawable.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <string>
+#include <vector>
 
 namespace engine {
 
@@ -26,11 +28,12 @@ namespace engine {
     class ObjLoader {
     public:
         static Vao* load(const char* filename, const char* basepath = NULL, bool triangulate = true);
+        static Vao* load(const char* filename, const char* texture_filename);
     private:
         static std::unordered_map<std::string, Vao*> loaded_vaos;
+        static std::vector<std::string> loaded_texture_filenames;
         static engine::Vao build_obj_vao(ObjModel* model);
         static void ComputeNormals(ObjModel* model);
         static void LoadTextureImage(const char* filename);
-        static GLuint loaded_textures_count;
     };
 } // namespace engine
