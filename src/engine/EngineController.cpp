@@ -385,8 +385,6 @@ namespace engine {
             glDeleteProgram(phong_program_id);
         
         phong_program_id = create_gpu_program(vertex_shader_id, fragment_shader_id);
-        glUseProgram(phong_program_id);
-        glUniform1i(glGetUniformLocation(phong_program_id, "TextureImage"), 0);
 
         // Load Star shaders (simple point sprite shader used only by Stars)
         vertex_shader_path = exe_dir + "/../../src/engine/shaders/StarVertexShader.glsl";
