@@ -27,8 +27,18 @@ Vao* ObjLoader::load(const char* filename) {
 
 Vao* ObjLoader::load(const char* filename, const char* texture_filename) {
 
-    if (loaded_vaos.find(filename) != loaded_vaos.end()) {
-        return loaded_vaos[filename];
+    auto it = loaded_vaos.find(filename);
+    if (it != loaded_vaos.end()) {
+        // If the model was previously loaded without a texture but the caller
+        // now requests a texture, load it and attach the texture unit to the
+        // existing VAO. This handles cases where the same OBJ is first
+        // instantiated without a texture and later with one.
+        Vao* existing = it->second;
+        if (existing != nullptr && existing->texture_id == static_cast<GLuint>(-1)) {
+            GLuint textureunit = LoadTextureImage(texture_filename);
+            existing->texture_id = textureunit;
+        }
+        return existing;
     }
 
     ObjModel obj_model = ObjModel(filename);

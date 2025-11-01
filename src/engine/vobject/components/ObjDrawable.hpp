@@ -13,9 +13,9 @@ class ObjDrawable : public engine::Drawable {
         ~ObjDrawable();
         void draw() override;
     private:
-        glm::vec3 Kd{0.8f, 0.4f, 0.8f};
-        glm::vec3 Ks{0.8f, 0.8f, 0.8f};
-        glm::vec3 Ka{0.04f, 0.2f, 0.4f};
+        glm::vec3 Kd{1.0f, 1.0f, 1.0f};
+        glm::vec3 Ks{0.1f, 0.1f, 0.1f};
+        glm::vec3 Ka{0.0f, 0.0f, 0.0f};
         float Ns{32.0f};
         bool use_phong_shading{false};
 };

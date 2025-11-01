@@ -20,6 +20,7 @@ ObjDrawable::ObjDrawable(std::string file_name, bool use_phong_shading) {
 ObjDrawable::ObjDrawable(std::string file_name, std::string texture_file_name) {
     std::string model_path = EngineController::get_executable_directory() + "/../../assets/" + file_name;
     std::string texture_path = EngineController::get_executable_directory() + "/../../assets/" + texture_file_name;
+    printf("ObjDrawable ctor(with tex) model_path='%s' texture_path='%s'\n", model_path.c_str(), texture_path.c_str());
     this->vao_ptr = ObjLoader::load(model_path.c_str(), texture_path.c_str());
     this->use_phong_shading = true;
 }
@@ -33,7 +34,10 @@ void ObjDrawable::draw() {
         program_id = EngineController::get_gouraud_program_id();
 
     glUseProgram(program_id);
-    glUniform1i(glGetUniformLocation(program_id, "TextureImage"), this->vao_ptr->texture_id);
+    GLint tex_loc = glGetUniformLocation(program_id, "TextureImage");
+    if (tex_loc != -1) {
+        glUniform1i(tex_loc, this->vao_ptr->texture_id);
+    }
 
     GLint Kd = glGetUniformLocation(program_id, "Kd");
     GLint Ks = glGetUniformLocation(program_id, "Ks");

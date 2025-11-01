@@ -43,7 +43,7 @@ VObjectConfig SpaceShipPlayer(SpaceshipPlayerController*& controller_ref, Camera
     controller_ref = controller;
     return VObjectConfig()
         .component(controller)
-        .component(new ObjDrawable("bunny.obj"))
+        .component(new ObjDrawable(std::string("spaceship.obj"), std::string("spaceship.jpg")))
         .child(VObjectConfig()
             .component(first_person_camera)
         );
@@ -60,13 +60,13 @@ VObjectConfig Planet(PlanetInfo* planet_info) {
         );
 }
 
-VObjectConfig BunnyObj() {
+VObjectConfig SpaceshipObj() {
     return VObjectConfig()
         .transform(TransformBuilder()
             .position(Vec3(0.0f, 0.95f, 0.0f))
             .rotation(Quaternion::from_y_rotation(3.141592f * 1.5f))
         )
-        .component(new ObjDrawable("moon.obj", "moon.png"));
+        .component(new ObjDrawable(std::string("spaceship.obj"), std::string("spaceship.jpg")));
 }
 
 VObjectConfig Enemy(HumanoidPlayerController* player_ref, std::vector<PlanetInfo*> planets) {
@@ -74,7 +74,7 @@ VObjectConfig Enemy(HumanoidPlayerController* player_ref, std::vector<PlanetInfo
         .transform(TransformBuilder()
             .position(Vec3(50.0f, 220.0f, 0.0f)))
         .component(new GroundEnemyController(player_ref, planets))
-        .child(BunnyObj());
+        .child(SpaceshipObj());
 }
 
 namespace game::scenes {
@@ -109,7 +109,7 @@ namespace game::scenes {
                     .child(VObjectConfig()
                         .transform(TransformBuilder()
                             .position(Vec3(0.0f, 10.0f, 0.0f)))
-                        .child(BunnyObj())
+                        .child(SpaceshipObj())
                     )
                 )
                 .child(Planet(planets[1])  // Tilted circular orbit
