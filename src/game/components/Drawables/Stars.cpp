@@ -5,16 +5,16 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <engine/math/matrices.hpp>
 
-Stars::Stars(game::components::SpaceshipPlayerController* player_controller, int max_stars) {
+Stars::Stars(engine::Camera* camera, int max_stars) {
     this->max_stars = max_stars;
-    this->player_controller = player_controller;
+    this->player_controller = camera;
     this->stars.reserve(max_stars);
 
     // Random generator for positions on the sphere and for size/alpha
     std::mt19937 rng(12345);
     std::uniform_real_distribution<float> dist_phi(0.0f, 2.0f * M_PI);
     std::uniform_real_distribution<float> dist_cos_theta(-1.0f, 1.0f);
-    std::uniform_real_distribution<float> dist_size(0.5f, 2.0f);
+    std::uniform_real_distribution<float> dist_size(0.5f, 3.0f);
     std::uniform_real_distribution<float> dist_alpha(0.25f, 1.0f);
 
     for (int i = 0; i < max_stars; ++i) {

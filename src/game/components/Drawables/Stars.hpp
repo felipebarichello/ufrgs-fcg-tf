@@ -7,10 +7,11 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <vector>
 #include <game/components/player/SpaceshipPlayerController.hpp>
+#include <engine/vobject/components/Camera.hpp>
 
 class Stars : public engine::Drawable {
     public:
-        Stars(game::components::SpaceshipPlayerController* player_controller, int max_stars);
+        Stars(engine::Camera* camera, int max_stars);
         ~Stars();
 
         void update();
@@ -26,7 +27,7 @@ class Stars : public engine::Drawable {
         };
 
         std::vector<Star> stars;
-        game::components::SpaceshipPlayerController* player_controller = nullptr;
+        engine::Camera* player_controller = nullptr;
         int max_stars;
         float distance = 200.0f;
         bool use_phong_shading = false;

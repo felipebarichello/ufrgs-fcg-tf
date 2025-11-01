@@ -10,6 +10,7 @@
 #include <game/components/player/CameraController.hpp>
 #include <game/components/player/HumanoidPlayerController.hpp>
 #include <game/components/player/SpaceshipPlayerController.hpp>
+#include <game/components/Drawables/Stars.hpp>
 
 using namespace engine;
 using namespace game::components;
@@ -54,16 +55,16 @@ VObjectConfig Planet(PlanetInfo* planet_info) {
         .component(planet_info)
         .child(VObjectConfig()
             .transform(TransformBuilder()
-                .position(Vec3(0.0f, -10.0f, 0.0f))
+                .position(Vec3(0.0f, 0.0f, 0.0f))
             )
-            .component(new ObjDrawable("sphere.obj"))
+            .component(new ObjDrawable(std::string("mars.obj"), std::string("mars.jpg")))
         );
 }
 
 VObjectConfig SpaceshipObj() {
     return VObjectConfig()
         .transform(TransformBuilder()
-            .position(Vec3(0.0f, 0.95f, 0.0f))
+            .position(Vec3(0.0f, 0.0f, 0.0f))
             .rotation(Quaternion::from_y_rotation(3.141592f * 1.5f))
         )
         .component(new ObjDrawable(std::string("spaceship.obj"), std::string("spaceship.jpg")));
@@ -77,15 +78,22 @@ VObjectConfig Enemy(HumanoidPlayerController* player_ref, std::vector<PlanetInfo
         .child(SpaceshipObj());
 }
 
+VObjectConfig SkyBox(Camera* camera_ref) {
+    return VObjectConfig()
+        // .transform(TransformBuilder()
+        //     .scale(10000.0f))
+        .component(new Stars(camera_ref, 100000));
+}
+
 namespace game::scenes {
     void MainScene::hierarchy(SceneRoot& root) {
         const float player_height = 1.8f;
-        const float planet_model_normalize = 1.0f / 10.0f; // Very precise estimate
+        const float planet_model_normalize = 1.0f; // Very precise estimate
 
         Camera* humanoid_camera = new Camera();
         Camera* spaceship_third_person_camera = new Camera();
         Camera* spaceship_first_person_camera = new Camera();
-        Camera::set_main(humanoid_camera);
+        Camera::set_main(spaceship_third_person_camera);
         HumanoidPlayerController* player_ref = nullptr;
         std::vector<PlanetInfo*> planets;
         planets.push_back(new PlanetInfo(50.0e12f, 200.0f));
@@ -99,6 +107,7 @@ namespace game::scenes {
             .vobject(SpaceShipPlayer(spaceship_controller_ref, spaceship_first_person_camera))
             .vobject(VObjectConfig().component(new CameraController(spaceship_controller_ref, spaceship_third_person_camera)))
             // HumanoidPlayer
+            .vobject(SkyBox(spaceship_third_person_camera))
             .vobject(Player(player_ref, humanoid_camera, player_height, planets))
             // ensure the camera component is attached to a VObject so Camera::get_vobject() is valid
             //.vobject(Enemy(player_ref, planets))
@@ -106,11 +115,6 @@ namespace game::scenes {
                 .child(Planet(planets[0])  // Central star
                     .transform(TransformBuilder()
                         .scale(200.0f * planet_model_normalize))
-                    .child(VObjectConfig()
-                        .transform(TransformBuilder()
-                            .position(Vec3(0.0f, 10.0f, 0.0f)))
-                        .child(SpaceshipObj())
-                    )
                 )
                 .child(Planet(planets[1])  // Tilted circular orbit
                     .transform(TransformBuilder()
