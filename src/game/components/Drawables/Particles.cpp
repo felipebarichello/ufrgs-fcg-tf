@@ -34,7 +34,7 @@ Particles::Particles(int max_particles) {
         float radial_distance = static_cast<float>(rand()) / RAND_MAX * this->max_radial_distance;
         float rx = (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * radial_distance;
         float ry = (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * radial_distance;
-        float depth = static_cast<float>(rand()) / RAND_MAX * this->max_distance * 0.8f;
+        float depth = static_cast<float>(rand()) / RAND_MAX * this->max_distance;
 
         // Position = camera_pos + forward*depth + lateral jitter
         p.position = cam_pos + forward * depth + right * rx + up * ry;
@@ -117,14 +117,7 @@ void Particles::draw() {
 
     glUseProgram(program_id);
 
-    // Allow shader or GL to set point size; use a visible default
-    glEnable(GL_PROGRAM_POINT_SIZE);
 
-    // Enable alpha blending for particle transparency
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    // Do not write to depth buffer while drawing particles so blending works
-    glDepthMask(GL_FALSE);
 
     GLint color_uniform = glGetUniformLocation(program_id, "absolute_color");
     GLint model_uniform = glGetUniformLocation(program_id, "model");
@@ -146,7 +139,4 @@ void Particles::draw() {
         }
     }
 
-        // restore GL state
-        glDepthMask(GL_TRUE);
-        glDisable(GL_BLEND);
 }

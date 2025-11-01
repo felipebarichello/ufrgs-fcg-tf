@@ -31,10 +31,10 @@ private:
 
     std::vector<Particle> particles;
     int max_particles;
-    float max_radial_distance = 20.0f;
-    float max_distance = 20.0f;
-    float particle_min_lifetime = 1.0f; // seconds
-    float particle_max_lifetime = 4.0f; // seconds
+    float max_radial_distance = 50.0f;
+    float max_distance = 50.0f;
+    float particle_min_lifetime = 0.25f; // seconds
+    float particle_max_lifetime = 2.0f; // seconds
     bool use_phong_shading = false;
     engine::Vec3 color = {1.0f, 1.0f, 1.0f};
     bool first_time = true;
