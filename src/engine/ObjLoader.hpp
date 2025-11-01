@@ -30,5 +30,7 @@ namespace engine {
         static std::unordered_map<std::string, Vao*> loaded_vaos;
         static engine::Vao build_obj_vao(ObjModel* model);
         static void ComputeNormals(ObjModel* model);
+        static void LoadTextureImage(const char* filename);
+        static GLuint loaded_textures_count;
     };
 } // namespace engine
