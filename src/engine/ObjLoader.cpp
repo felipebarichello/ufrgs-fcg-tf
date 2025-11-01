@@ -14,11 +14,11 @@ using namespace engine;
 std::unordered_map<std::string, Vao*> ObjLoader::loaded_vaos;
 std::vector<std::string> ObjLoader::loaded_texture_filenames;
 
-Vao* ObjLoader::load(const char* filename, const char* basepath, bool triangulate) {
+Vao* ObjLoader::load(const char* filename) {
     if (loaded_vaos.find(filename) != loaded_vaos.end()) {
         return loaded_vaos[filename];
     }
-    ObjModel obj_model = ObjModel(filename, basepath, triangulate);
+    ObjModel obj_model = ObjModel(filename, NULL, true);
     ComputeNormals(&obj_model);
     Vao* vao = new Vao(build_obj_vao(&obj_model));
     loaded_vaos[filename] = vao;
@@ -29,7 +29,7 @@ Vao* ObjLoader::load(const char* filename, const char* texture_filename) {
     if (loaded_vaos.find(filename) != loaded_vaos.end()) {
         return loaded_vaos[filename];
     }
-    
+
     ObjModel obj_model = ObjModel(filename);
     ComputeNormals(&obj_model);
 

@@ -27,7 +27,7 @@ namespace engine {
 
     class ObjLoader {
     public:
-        static Vao* load(const char* filename, const char* basepath = NULL, bool triangulate = true);
+        static Vao* load(const char* filename);
         static Vao* load(const char* filename, const char* texture_filename);
     private:
         static std::unordered_map<std::string, Vao*> loaded_vaos;
