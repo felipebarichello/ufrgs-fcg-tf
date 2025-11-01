@@ -101,7 +101,7 @@ namespace game::scenes {
             // HumanoidPlayer
             .vobject(Player(player_ref, humanoid_camera, player_height, planets))
             // ensure the camera component is attached to a VObject so Camera::get_vobject() is valid
-            .vobject(Enemy(player_ref, planets))
+            //.vobject(Enemy(player_ref, planets))
             .vobject(VObjectConfig()  // Root VObject for all planets
                 .child(Planet(planets[0])  // Central star
                     .transform(TransformBuilder()
