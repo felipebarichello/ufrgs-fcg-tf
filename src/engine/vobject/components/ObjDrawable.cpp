@@ -32,12 +32,13 @@ void ObjDrawable::draw() {
         program_id = EngineController::get_gouraud_program_id();
 
     glUseProgram(program_id);
-    glUniform1i(glGetUniformLocation(program_id, "TextureImage"), 0);
+    glUniform1i(glGetUniformLocation(program_id, "TextureImage"), this->vao_ptr->texture_id);
 
     GLint Kd = glGetUniformLocation(program_id, "Kd");
     GLint Ks = glGetUniformLocation(program_id, "Ks");
     GLint Ka = glGetUniformLocation(program_id, "Ka");
     GLint q  = glGetUniformLocation(program_id, "Ns");
+    
     glUniform3fv(Kd, 1, &this->Kd[0]);
     glUniform3fv(Ks, 1, &this->Ks[0]);
     glUniform3fv(Ka, 1, &this->Ka[0]);
