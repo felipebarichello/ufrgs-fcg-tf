@@ -54,7 +54,10 @@ namespace engine {
             GLuint id() const;
             Vao(GLuint vao_id, GLenum topology_mode, GLsizei topology_size, GLenum topology_type);
             void draw() const;
+            // texture_id stores the texture unit assigned to this VAO (e.g., 0 = GL_TEXTURE0)
             GLuint texture_id = -1;
+            // texture_object stores the actual GL texture object id so we can rebind reliably
+            GLuint texture_object = 0;
 
         private:
             GLuint vao_id;
