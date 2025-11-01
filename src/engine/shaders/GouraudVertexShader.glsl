@@ -14,10 +14,10 @@ uniform mat4 projection;
 uniform float alpha;
 uniform vec4 absolute_color;
 
-uniform vec3 diffuse_reflectance;
-uniform vec3 specular_reflectance;
-uniform vec3 enviornment_reflectance;
-uniform float specular_exponent;
+uniform vec3 Kd;
+uniform vec3 Ks;
+uniform vec3 Ka;
+uniform float Ns;
 
 out vec4 interpolated_color;
 
@@ -44,10 +44,10 @@ void main()
     vec4 h = normalize(l + v); // half-way entre l e v
     vec3 I = vec3(1.0,1.0,1.0); // espectro da fonte de luz
     vec3 Ia = vec3(0.2, 0.2, 0.2); // espectro da luz ambiente
-    vec3 lambert_diffuse_term = diffuse_reflectance*I*max(0.0, dot(n,l)); // termo difuso de Lambert
-    vec3 ambient_term = enviornment_reflectance*Ia; // termo ambiente
+    vec3 lambert_diffuse_term = Kd*I*max(0.0, dot(n,l)); // termo difuso de Lambert
+    vec3 ambient_term = Ka*Ia; // termo ambiente
 
-    vec3 blinn_phong_specular_term  = specular_reflectance*I*pow(max(0.0, dot(n,h)), specular_exponent);
+    vec3 blinn_phong_specular_term  = Ks*I*pow(max(0.0, dot(n,h)), Ns);
     interpolated_color.a = 1.0;
     interpolated_color.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
     interpolated_color.rgb = pow(interpolated_color.rgb, vec3(1.0,1.0,1.0)/2.2);

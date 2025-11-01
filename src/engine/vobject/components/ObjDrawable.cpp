@@ -27,14 +27,14 @@ void ObjDrawable::draw() {
 
     glUseProgram(program_id);
 
-    GLint Kd = glGetUniformLocation(program_id, "diffuse_reflectance");
-    GLint Ks = glGetUniformLocation(program_id, "specular_reflectance");
-    GLint Ka = glGetUniformLocation(program_id, "enviornment_reflectance");
-    GLint q  = glGetUniformLocation(program_id, "specular_exponent");
-    glUniform3fv(Kd, 1, &this->diffuse_reflectance[0]);
-    glUniform3fv(Ks, 1, &this->specular_reflectance[0]);
-    glUniform3fv(Ka, 1, &this->enviornment_reflectance[0]);
-    glUniform1f(q, this->specular_exponent);
+    GLint Kd = glGetUniformLocation(program_id, "Kd");
+    GLint Ks = glGetUniformLocation(program_id, "Ks");
+    GLint Ka = glGetUniformLocation(program_id, "Ka");
+    GLint q  = glGetUniformLocation(program_id, "Ns");
+    glUniform3fv(Kd, 1, &this->Kd[0]);
+    glUniform3fv(Ks, 1, &this->Ks[0]);
+    glUniform3fv(Ka, 1, &this->Ka[0]);
+    glUniform1f(q, this->Ns);
     glm::mat4 model_matrix = this->get_vobject()->transform().get_model_matrix();
     GLsizei model_uniform = glGetUniformLocation(program_id, "model");
     glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model_matrix));

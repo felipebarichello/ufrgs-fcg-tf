@@ -7,10 +7,10 @@
 in vec4 position_world;
 in vec4 normal;
 
-uniform vec3 diffuse_reflectance;
-uniform vec3 specular_reflectance;
-uniform vec3 enviornment_reflectance;
-uniform float specular_exponent;
+uniform vec3 Kd;
+uniform vec3 Ks;
+uniform vec3 ka;
+uniform float Ns;
 
 // Matrizes computadas no código C++ e enviadas para a GPU
 uniform mat4 model;
@@ -64,13 +64,13 @@ void main()
     vec4 h = normalize(l + v); // half-way entre l e v
 
     // Termo difuso utilizando a lei dos cossenos de Lambert
-    vec3 lambert_diffuse_term = diffuse_reflectance*I*max(0.0, dot(n,l)); // PREENCHA AQUI o termo difuso de Lambert
+    vec3 lambert_diffuse_term = Kd*I*max(0.0, dot(n,l)); // PREENCHA AQUI o termo difuso de Lambert
 
     // Termo ambiente
-    vec3 ambient_term = enviornment_reflectance*Ia; // PREENCHA AQUI o termo ambiente
+    vec3 ambient_term = Ka*Ia; // PREENCHA AQUI o termo ambiente
 
     // Termo especular utilizando o modelo de iluminação de Phong
-    vec3 blinn_phong_specular_term  = specular_reflectance*I*pow(max(0.0, dot(n, h)), specular_exponent); // PREENCH AQUI o termo especular de Phong
+    vec3 blinn_phong_specular_term  = Ks*I*pow(max(0.0, dot(n, h)), Ns); // PREENCH AQUI o termo especular de Phong
 
     // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
     // necessário:

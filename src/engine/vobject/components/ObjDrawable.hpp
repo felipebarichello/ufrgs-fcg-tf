@@ -12,9 +12,9 @@ class ObjDrawable : public engine::Drawable {
         ~ObjDrawable();
         void draw() override;
     private:
-        glm::vec3 diffuse_reflectance{0.8f, 0.4f, 0.8f};
-        glm::vec3 specular_reflectance{0.8f, 0.8f, 0.8f};
-        glm::vec3 enviornment_reflectance{0.04f, 0.2f, 0.4f};
-        float specular_exponent{32.0f};
+        glm::vec3 Kd{0.8f, 0.4f, 0.8f};
+        glm::vec3 Ks{0.8f, 0.8f, 0.8f};
+        glm::vec3 Ka{0.04f, 0.2f, 0.4f};
+        float Ns{32.0f};
         bool use_phong_shading{false};
 };
