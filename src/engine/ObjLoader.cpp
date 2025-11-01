@@ -13,6 +13,7 @@ using namespace engine;
 // Definition of static member
 std::unordered_map<std::string, Vao*> ObjLoader::loaded_vaos;
 std::vector<std::string> ObjLoader::loaded_texture_filenames;
+std::vector<GLuint> ObjLoader::loaded_texture_objects;
 
 Vao* ObjLoader::load(const char* filename) {
     if (loaded_vaos.find(filename) != loaded_vaos.end()) {
@@ -37,6 +38,7 @@ Vao* ObjLoader::load(const char* filename, const char* texture_filename) {
         if (existing != nullptr && existing->texture_id == static_cast<GLuint>(-1)) {
             GLuint textureunit = LoadTextureImage(texture_filename);
             existing->texture_id = textureunit;
+            existing->texture_object = ObjLoader::get_texture_object_for_unit(textureunit);
         }
         return existing;
     }
@@ -45,11 +47,19 @@ Vao* ObjLoader::load(const char* filename, const char* texture_filename) {
     ComputeNormals(&obj_model);
 
     GLuint textureunit = LoadTextureImage(texture_filename);
+    //std::cout << "ObjLoader::load() textureunit=" << textureunit << std::endl;
 
     Vao* vao = new Vao(build_obj_vao(&obj_model));
     vao->texture_id = textureunit;
+    vao->texture_object = ObjLoader::get_texture_object_for_unit(textureunit);
     loaded_vaos[filename] = vao;
     return vao;
+}
+
+GLuint ObjLoader::get_texture_object_for_unit(GLuint unit) {
+    if (unit < ObjLoader::loaded_texture_objects.size())
+        return ObjLoader::loaded_texture_objects[unit];
+    return 0;
 }
 
 ObjModel::ObjModel(const char* filename, const char* basepath, bool triangulate) {
@@ -324,6 +334,10 @@ GLuint ObjLoader::LoadTextureImage(const char* filename)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
     glBindSampler(textureunit, sampler_id);
+
+    // Store GL texture object id so we can rebind it reliably at draw time
+    ObjLoader::loaded_texture_objects.push_back(texture_id);
+    printf(" GL_tex_id=%u unit=%u\n", texture_id, textureunit);
 
     stbi_image_free(data);
 

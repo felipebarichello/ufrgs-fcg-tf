@@ -29,9 +29,12 @@ namespace engine {
     public:
         static Vao* load(const char* filename);
         static Vao* load(const char* filename, const char* texture_filename);
+        // Return the GL texture object id associated with a texture unit
+        static GLuint get_texture_object_for_unit(GLuint unit);
     private:
         static std::unordered_map<std::string, Vao*> loaded_vaos;
         static std::vector<std::string> loaded_texture_filenames;
+        static std::vector<GLuint> loaded_texture_objects;
         static engine::Vao build_obj_vao(ObjModel* model);
         static void ComputeNormals(ObjModel* model);
         static GLuint LoadTextureImage(const char* filename);
