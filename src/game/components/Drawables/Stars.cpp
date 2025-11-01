@@ -5,9 +5,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <engine/math/matrices.hpp>
 
-Stars::Stars(engine::Camera* camera, int max_stars) {
+Stars::Stars(int max_stars) {
     this->max_stars = max_stars;
-    this->player_controller = camera;
     this->stars.reserve(max_stars);
 
     // Random generator for positions on the sphere and for size/alpha
@@ -69,8 +68,9 @@ Stars::~Stars() {
 }
 
 void Stars::update() {
-    if (this->player_controller && this->player_controller->get_vobject() && this->get_vobject()) {
-        auto player_pos = this->player_controller->get_vobject()->transform().get_position();
+    engine::Camera* cam = engine::Camera::get_main();
+    if (cam && this->get_vobject()) {
+        auto player_pos = cam->get_vobject()->transform().get_position();
         this->get_vobject()->transform().position() = player_pos;
     }
 }
@@ -87,13 +87,15 @@ void Stars::draw() {
     GLint proj_uniform = glGetUniformLocation(program_id, "projection");
     GLint color_uniform = glGetUniformLocation(program_id, "absolute_color");
 
+    engine::Camera* cam = engine::Camera::get_main();
+
     // Compute transform so the starfield stays centered on the player
     glm::mat4 vobject_matrix(1.0f);
-    if (this->player_controller && this->player_controller->get_vobject()) {
-        auto player_vo = this->player_controller->get_vobject();
+    if (cam && cam->get_vobject()) {
+        auto player_vo = cam->get_vobject();
         glm::mat4 player_model = player_vo->transform().get_model_matrix();
         glm::vec3 player_position = glm::vec3(player_model[3]);
-        vobject_matrix = vobject_matrix*engine::h_translate_matrix(player_position.x, player_position.y, player_position.z);
+        vobject_matrix = vobject_matrix * engine::h_translate_matrix(player_position.x, player_position.y, player_position.z);
     }
 
     glm::mat4 view = engine::Camera::get_main()->get_view_matrix();
