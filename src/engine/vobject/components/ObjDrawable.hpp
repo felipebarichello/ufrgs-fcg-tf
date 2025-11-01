@@ -9,6 +9,7 @@ class ObjDrawable : public engine::Drawable {
     public:
         ObjDrawable(std::string file_name);
         ObjDrawable(std::string file_name, bool use_phong_shading);
+        ObjDrawable(std::string file_name, std::string texture_file_name);
         ~ObjDrawable();
         void draw() override;
     private:

@@ -17,6 +17,12 @@ ObjDrawable::ObjDrawable(std::string file_name, bool use_phong_shading) {
     this->use_phong_shading = use_phong_shading;
 }
 
+ObjDrawable::ObjDrawable(std::string file_name, std::string texture_file_name) {
+    std::string model_path = EngineController::get_executable_directory() + "/../../assets/" + file_name;
+    std::string texture_path = EngineController::get_executable_directory() + "/../../assets/" + texture_file_name;
+    this->vao_ptr = ObjLoader::load(model_path.c_str(), texture_path.c_str());
+}
+
 void ObjDrawable::draw() {
     GLuint program_id;
 
