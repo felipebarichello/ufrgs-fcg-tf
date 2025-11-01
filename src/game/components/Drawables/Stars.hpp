@@ -6,11 +6,11 @@
 #include <engine/math/matrices.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <vector>
-#include <game/components/PlayerController.hpp>
+#include <game/components/player/SpaceshipPlayerController.hpp>
 
 class Stars : public engine::Drawable {
     public:
-        Stars(game::components::PlayerController* player_controller, int max_stars);
+        Stars(game::components::SpaceshipPlayerController* player_controller, int max_stars);
         ~Stars();
 
         void update();
@@ -26,7 +26,7 @@ class Stars : public engine::Drawable {
         };
 
         std::vector<Star> stars;
-    game::components::PlayerController* player_controller = nullptr;
+        game::components::SpaceshipPlayerController* player_controller = nullptr;
         int max_stars;
         float distance = 200.0f;
         bool use_phong_shading = false;

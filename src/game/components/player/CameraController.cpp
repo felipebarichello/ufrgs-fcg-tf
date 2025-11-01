@@ -4,7 +4,7 @@
 
 using namespace game::components;
 
-CameraController::CameraController(PlayerController* player_controller, engine::Camera* camera) {
+CameraController::CameraController(SpaceshipPlayerController* player_controller, engine::Camera* camera) {
     this->player_controller = player_controller;
     this->camera = camera;
 }

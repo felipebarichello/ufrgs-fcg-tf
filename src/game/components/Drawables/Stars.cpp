@@ -5,7 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <engine/math/matrices.hpp>
 
-Stars::Stars(game::components::PlayerController* player_controller, int max_stars) {
+Stars::Stars(game::components::SpaceshipPlayerController* player_controller, int max_stars) {
     this->max_stars = max_stars;
     this->player_controller = player_controller;
     this->stars.reserve(max_stars);

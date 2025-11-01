@@ -1,4 +1,4 @@
-#include "PlayerController.hpp"
+#include "SpaceshipPlayerController.hpp"
 #include <engine>
 #include <InputController.hpp>
 #include <algorithm>
@@ -10,17 +10,17 @@ using engine::Vec3;
 using engine::math::Quaternion;
 
 namespace game::components {
-    struct PlayerController::SphericalInput {
+    struct SpaceshipPlayerController::SphericalInput {
         float delta_theta;
         float delta_phi;
     };
 
-    void PlayerController::Start() {
+    void SpaceshipPlayerController::Start() {
         InputController* input = EngineController::get_input();
         input->subscribe_dpad(&this->move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
     }
 
-    void PlayerController::Update() {
+    void SpaceshipPlayerController::Update() {
         //this->update_transform_due_to_environment();
         Vec3 player_forward = this->get_vobject()->transform().quaternion().rotate(Vec3(0.0f, 0.0f, -1.0f));
         // Update player position
@@ -29,13 +29,13 @@ namespace game::components {
         this->update_camera();
     }
 
-    void PlayerController::update_transform_due_to_input() {
+    void SpaceshipPlayerController::update_transform_due_to_input() {
         auto& transform = this->get_vobject()->transform();
         auto& quaternion = transform.quaternion();
 
         /* Camera (attached) movement */
 
-        PlayerController::SphericalInput spherical = this->get_spherical_input();
+        SpaceshipPlayerController::SphericalInput spherical = this->get_spherical_input();
         //this->set_camera_phi(this->camera_phi + spherical.delta_phi);
         quaternion.local_compose(Quaternion::from_y_rotation(spherical.delta_theta));
         quaternion.local_compose(Quaternion::from_x_rotation(spherical.delta_phi));
@@ -44,13 +44,13 @@ namespace game::components {
         
     }
 
-    void PlayerController::update_camera() {
+    void SpaceshipPlayerController::update_camera() {
         auto& cam_transform = this->camera->get_vobject()->transform();
         cam_transform.position() = Vec3(0.0f, 0.0f, -1.0f);
     }
 
-    PlayerController::SphericalInput PlayerController::get_spherical_input() {
-        PlayerController::SphericalInput spherical;
+    SpaceshipPlayerController::SphericalInput SpaceshipPlayerController::get_spherical_input() {
+        SpaceshipPlayerController::SphericalInput spherical;
 
         // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
         Vec2 cursor_delta = EngineController::get_input()->get_cursor_position_delta();
