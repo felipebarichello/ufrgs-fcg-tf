@@ -66,7 +66,7 @@ VObjectConfig BunnyObj() {
             .position(Vec3(0.0f, 0.95f, 0.0f))
             .rotation(Quaternion::from_y_rotation(3.141592f * 1.5f))
         )
-        .component(new ObjDrawable("bunny.obj"));
+        .component(new ObjDrawable("moon.obj"));
 }
 
 VObjectConfig Enemy(HumanoidPlayerController* player_ref, std::vector<PlanetInfo*> planets) {
