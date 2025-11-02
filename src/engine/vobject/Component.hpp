@@ -20,6 +20,9 @@ namespace engine {
             
             friend VObject;
 
+            // Ensure proper destruction through base pointers
+            virtual ~Component() {}
+
             virtual void PreDestroy() {}
             virtual std::optional<Behavior*> try_into_behavior() { return std::nullopt; }
             

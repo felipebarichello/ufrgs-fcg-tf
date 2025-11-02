@@ -20,9 +20,13 @@ ObjDrawable::ObjDrawable(std::string file_name, bool use_phong_shading) {
 ObjDrawable::ObjDrawable(std::string file_name, std::string texture_file_name) {
     std::string model_path = EngineController::get_executable_directory() + "/../../assets/" + file_name;
     std::string texture_path = EngineController::get_executable_directory() + "/../../assets/" + texture_file_name;
-    printf("ObjDrawable ctor(with tex) model_path='%s' texture_path='%s'\n", model_path.c_str(), texture_path.c_str());
+    // Constructor: model and optional texture paths provided.
     this->vao_ptr = ObjLoader::load(model_path.c_str(), texture_path.c_str());
     this->use_phong_shading = true;
+}
+
+ObjDrawable::~ObjDrawable() {
+    // no-op; VAO lifetime is managed by ObjLoader cache
 }
 
 void ObjDrawable::draw() {

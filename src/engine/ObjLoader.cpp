@@ -5,8 +5,8 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
 
-#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+
 
 using namespace engine;
 
@@ -45,9 +45,13 @@ Vao* ObjLoader::load(const char* filename, const char* texture_filename) {
 
     ObjModel obj_model = ObjModel(filename);
     ComputeNormals(&obj_model);
+    GLuint textureunit;
+    // Only load if the texture filename is not in the array
+    
+    textureunit = LoadTextureImage(texture_filename);
+    loaded_texture_filenames.push_back(std::string(texture_filename));
+    loaded_texture_objects.push_back(textureunit);
 
-    GLuint textureunit = LoadTextureImage(texture_filename);
-    //std::cout << "ObjLoader::load() textureunit=" << textureunit << std::endl;
 
     Vao* vao = new Vao(build_obj_vao(&obj_model));
     vao->texture_id = textureunit;
@@ -339,6 +343,7 @@ GLuint ObjLoader::LoadTextureImage(const char* filename)
     ObjLoader::loaded_texture_objects.push_back(texture_id);
     printf(" GL_tex_id=%u unit=%u\n", texture_id, textureunit);
 
+    // Free the image buffer now that the texture data has been uploaded to the GPU.
     stbi_image_free(data);
 
     ObjLoader::loaded_texture_filenames.push_back( std::string(filename) );
