@@ -42,19 +42,11 @@ void main()
     vec4 p = position;
     vec4 n = normalize(normal); // normal do vertice
     vec4 l = normalize(vec4(1.0,1.0,0.5,0.0)); // vetor da luz para o ponto
-    vec4 v = normalize(camera_position - p); // vetor do ponto para a câmera
-    vec4 r = -l + 2*n*dot(n,l); // vetor de reflexão especular ideal
-    vec4 h = normalize(l + v); // half-way entre l e v
     vec3 I = vec3(1.0,1.0,1.0); // espectro da fonte de luz
     vec3 Ia = vec3(0.2, 0.2, 0.2); // espectro da luz ambiente
+
     lambert_diffuse_term = I*max(0.0, dot(n,l)); // termo difuso de Lambert
-    ambient_term = Ka*Ia; // termo ambiente
-
-    vec3 blinn_phong_specular_term  = Ks*I*pow(max(0.0, dot(n,h)), Ns);
-    interpolated_color.a = 1.0;
-    interpolated_color.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
-    interpolated_color.rgb = pow(interpolated_color.rgb, vec3(1.0,1.0,1.0)/2.2);
-
+    ambient_term = Ka*Ia;
     texcoords = texture_coefficients;
 }
 
