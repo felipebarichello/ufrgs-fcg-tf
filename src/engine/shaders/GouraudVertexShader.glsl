@@ -20,6 +20,7 @@ uniform vec3 Ka;
 uniform float Ns;
 
 out vec4 interpolated_color;
+out vec2 texcoords;
 
 float max(float a, float b)
 {
@@ -51,5 +52,7 @@ void main()
     interpolated_color.a = 1.0;
     interpolated_color.rgb = lambert_diffuse_term + ambient_term + blinn_phong_specular_term;
     interpolated_color.rgb = pow(interpolated_color.rgb, vec3(1.0,1.0,1.0)/2.2);
+
+    texcoords = texture_coefficients;
 }
 

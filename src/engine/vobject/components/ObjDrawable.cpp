@@ -22,7 +22,7 @@ ObjDrawable::ObjDrawable(std::string file_name, std::string texture_file_name) {
     std::string texture_path = EngineController::get_executable_directory() + "/../../assets/" + texture_file_name;
     // Constructor: model and optional texture paths provided.
     this->vao_ptr = ObjLoader::load(model_path.c_str(), texture_path.c_str());
-    this->use_phong_shading = true;
+    this->use_phong_shading = false;
 }
 
 ObjDrawable::~ObjDrawable() {
