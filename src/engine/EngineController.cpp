@@ -25,6 +25,17 @@ namespace engine {
     GLuint EngineController::particle_program_id = 0;
     std::vector<Drawable*> EngineController::drawables;
 
+    // Helper to map ShaderType to program id
+    GLuint EngineController::get_program_id(EngineController::ShaderType type) {
+        switch (type) {
+            case ShaderType::Gouraud:  return gouraud_program_id;
+            case ShaderType::Phong:    return phong_program_id;
+            case ShaderType::Star:     return star_program_id;
+            case ShaderType::Particle: return particle_program_id;
+            default: return 0u;
+        }
+    }
+
     EngineController* EngineController::start_engine(WindowConfig window_config) {
         EngineController::instance = std::make_unique<EngineController>();
         EngineController::instance->window = EngineController::init_window(window_config);
