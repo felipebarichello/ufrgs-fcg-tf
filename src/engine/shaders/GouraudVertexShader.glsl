@@ -22,6 +22,7 @@ uniform float Ns;
 out vec4 interpolated_color;
 out vec2 texcoords;
 out vec3 lambert_diffuse_term;
+out vec3 ambient_term;
 
 float max(float a, float b)
 {
@@ -47,7 +48,7 @@ void main()
     vec3 I = vec3(1.0,1.0,1.0); // espectro da fonte de luz
     vec3 Ia = vec3(0.2, 0.2, 0.2); // espectro da luz ambiente
     lambert_diffuse_term = I*max(0.0, dot(n,l)); // termo difuso de Lambert
-    vec3 ambient_term = Ka*Ia; // termo ambiente
+    ambient_term = Ka*Ia; // termo ambiente
 
     vec3 blinn_phong_specular_term  = Ks*I*pow(max(0.0, dot(n,h)), Ns);
     interpolated_color.a = 1.0;
