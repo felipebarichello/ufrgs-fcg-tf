@@ -10,7 +10,6 @@ in vec4 normal;
 in vec2 texcoords;
 
 uniform vec3 Ks;
-uniform vec3 Ka;
 uniform float Ns;
 
 // Matrizes computadas no código C++ e enviadas para a GPU

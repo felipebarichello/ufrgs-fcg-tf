@@ -14,15 +14,13 @@ uniform mat4 projection;
 uniform float alpha;
 uniform vec4 absolute_color;
 
-uniform vec3 Kd;
 uniform vec3 Ks;
-uniform vec3 Ka;
 uniform float Ns;
 
 out vec4 interpolated_color;
 out vec2 texcoords;
 out vec3 lambert_diffuse_term;
-out vec3 ambient_term;
+out vec3 Ia;
 
 float max(float a, float b)
 {
@@ -43,10 +41,8 @@ void main()
     vec4 n = normalize(normal); // normal do vertice
     vec4 l = normalize(vec4(1.0,1.0,0.5,0.0)); // vetor da luz para o ponto
     vec3 I = vec3(1.0,1.0,1.0); // espectro da fonte de luz
-    vec3 Ia = vec3(0.2, 0.2, 0.2); // espectro da luz ambiente
-
+    Ia = vec3(0.02, 0.02, 0.02); // espectro da luz ambiente
     lambert_diffuse_term = I*max(0.0, dot(n,l)); // termo difuso de Lambert
-    ambient_term = Ka*Ia;
     texcoords = texture_coefficients;
 }
 
