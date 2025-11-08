@@ -9,9 +9,6 @@ in vec4 normal;
 
 in vec2 texcoords;
 
-uniform vec3 Ks;
-uniform float Ns;
-
 // Matrizes computadas no código C++ e enviadas para a GPU
 uniform mat4 model;
 uniform mat4 view;
@@ -26,6 +23,9 @@ out vec4 color;
 
 void main()
 {
+    vec3 Ks = vec3(0.5, 0.5, 0.5); // coeficiente especular
+    float Ns = 32.0; // expoente especular
+
     // Obtemos a posição da câmera utilizando a inversa da matriz que define o
     // sistema de coordenadas da câmera.
     vec4 origin = vec4(0.0, 0.0, 0.0, 1.0);
