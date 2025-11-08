@@ -18,5 +18,5 @@ class ObjDrawable : public engine::Drawable {
         glm::vec3 Ks{0.1f, 0.1f, 0.1f};
         glm::vec3 Ka{0.0f, 0.0f, 0.0f};
         float Ns{32.0f};
-    engine::EngineController::ShaderType shader_type{ engine::EngineController::ShaderType::Gouraud };
+    engine::EngineController::ShaderType shader_type{ engine::EngineController::ShaderType::Planet };
 };

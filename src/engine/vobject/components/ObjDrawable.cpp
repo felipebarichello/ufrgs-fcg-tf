@@ -53,7 +53,6 @@ void ObjDrawable::draw() {
     GLsizei model_uniform = glGetUniformLocation(program_id, "model");
     glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model_matrix));
     if (this->vao_ptr) {
-        //std::cout << "Drawing ObjDrawable" << std::endl;
         this->vao_ptr->draw();
     }
 }

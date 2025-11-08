@@ -58,7 +58,7 @@ VObjectConfig Planet(PlanetInfo* planet_info) {
             .transform(TransformBuilder()
                 .position(Vec3(0.0f, 0.0f, 0.0f))
             )
-            .component(new ObjDrawable(std::string("mars.obj"), std::string("mars.jpg")))
+            .component(new ObjDrawable(std::string("mars.obj"), std::string("mars.jpg"), EngineController::ShaderType::Planet))
         );
 }
 

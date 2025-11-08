@@ -38,7 +38,7 @@ namespace engine {
 
             static std::unique_ptr<EngineController> instance; // TODO: Remove this singleton pattern
             static float screen_ratio; // TODO: Separate screen ratio and aspect ratio
-            static GLuint gouraud_program_id;
+            static GLuint planet_program_id;
             static GLuint phong_program_id;
             static GLuint star_program_id;
             static GLuint particle_program_id;
@@ -63,7 +63,7 @@ namespace engine {
             ~EngineController();
 
             enum class ShaderType {
-                Gouraud = 0,
+                Planet  = 0,
                 Phong   = 1,
                 Star    = 2,
                 Particle= 3
@@ -86,7 +86,7 @@ namespace engine {
             InputController* input();
             float get_screen_ratio() { return screen_ratio; }
             void set_screen_ratio(float ratio) { screen_ratio = ratio; }
-            static GLuint get_gouraud_program_id() { return gouraud_program_id; }
+            static GLuint get_gouraud_program_id() { return planet_program_id; }
             static GLuint get_phong_program_id() { return phong_program_id; }
             static GLuint get_star_program_id() { return star_program_id; }
             static GLuint get_particle_program_id() { return particle_program_id; }

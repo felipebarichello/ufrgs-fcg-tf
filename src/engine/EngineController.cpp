@@ -19,7 +19,7 @@ namespace engine {
     
     EngineController::~EngineController() = default;
     float EngineController::screen_ratio = 1.0f;
-    GLuint EngineController::gouraud_program_id = 0;
+    GLuint EngineController::planet_program_id = 0;
     GLuint EngineController::phong_program_id = 0;
     GLuint EngineController::star_program_id = 0;
     GLuint EngineController::particle_program_id = 0;
@@ -28,11 +28,11 @@ namespace engine {
     // Helper to map ShaderType to program id
     GLuint EngineController::get_program_id(EngineController::ShaderType type) {
         switch (type) {
-            case ShaderType::Gouraud:  return gouraud_program_id;
+            case ShaderType::Planet:   return planet_program_id;
             case ShaderType::Phong:    return phong_program_id;
             case ShaderType::Star:     return star_program_id;
             case ShaderType::Particle: return particle_program_id;
-            default: return 0u;
+            default: return phong_program_id;
         }
     }
 
@@ -362,10 +362,10 @@ namespace engine {
     void EngineController::load_shaders_from_files()
     {
         std::string exe_dir = get_executable_directory();
-        
-        // Load Gouraud shaders
-        std::string vertex_shader_path = exe_dir + "/../../src/engine/shaders/GouraudVertexShader.glsl";
-        std::string fragment_shader_path = exe_dir + "/../../src/engine/shaders/GouraudFragmentShader.glsl";
+
+        // Load Planet shaders
+        std::string vertex_shader_path = exe_dir + "/../../src/engine/shaders/PlanetVertexShader.glsl";
+        std::string fragment_shader_path = exe_dir + "/../../src/engine/shaders/PlanetFragmentShader.glsl";
 
         printf("Loading shaders from:\n");
         printf("  Vertex: %s\n", vertex_shader_path.c_str());
@@ -375,10 +375,10 @@ namespace engine {
         GLuint fragment_shader_id = load_shader_fragment(fragment_shader_path.c_str());
 
         // Deletamos o programa de GPU anterior, caso ele exista.
-        if (gouraud_program_id != 0)
-            glDeleteProgram(gouraud_program_id);
+        if (planet_program_id != 0)
+            glDeleteProgram(planet_program_id);
 
-        gouraud_program_id = create_gpu_program(vertex_shader_id, fragment_shader_id);
+        planet_program_id = create_gpu_program(vertex_shader_id, fragment_shader_id);
 
         // Load Phong shaders
         vertex_shader_path = exe_dir + "/../../src/engine/shaders/PhongVertexShader.glsl";
