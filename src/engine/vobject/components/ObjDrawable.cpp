@@ -32,25 +32,8 @@ ObjDrawable::~ObjDrawable() {
 }
 
 void ObjDrawable::draw() {
-    GLuint program_id;
 
-    switch (this->shader_type) {
-        case EngineController::ShaderType::Gouraud:
-            program_id = EngineController::get_gouraud_program_id();
-            break;
-        case EngineController::ShaderType::Phong:
-            program_id = EngineController::get_phong_program_id();
-            break;
-        case EngineController::ShaderType::Star:
-            program_id = EngineController::get_star_program_id();
-            break;
-        case EngineController::ShaderType::Particle:
-            program_id = EngineController::get_particle_program_id();
-            break;
-        default:
-            throw std::runtime_error("Unknown shader type in ObjDrawable::draw");
-    }
-
+    GLuint program_id = EngineController::get_program_id(this->shader_type);
     glUseProgram(program_id);
     GLint tex_loc = glGetUniformLocation(program_id, "TextureImage");
     if (tex_loc != -1) {
