@@ -6,23 +6,25 @@
 
 using namespace engine;
 
-ObjDrawable::ObjDrawable(std::string file_name) {
-    std::string model_path = EngineController::get_executable_directory() + "/../../assets/" + file_name;
-    this->vao_ptr = ObjLoader::load(model_path.c_str());
-}
-
-ObjDrawable::ObjDrawable(std::string file_name, bool use_phong_shading) {
-    std::string model_path = EngineController::get_executable_directory() + "/../../assets/" + file_name;
-    this->vao_ptr = ObjLoader::load(model_path.c_str());
-    this->use_phong_shading = use_phong_shading;
-}
+// ObjDrawable::ObjDrawable(std::string file_name) {
+//     std::string model_path = EngineController::get_executable_directory() + "/../../assets/" + file_name;
+//     this->vao_ptr = ObjLoader::load(model_path.c_str());
+// }
 
 ObjDrawable::ObjDrawable(std::string file_name, std::string texture_file_name) {
     std::string model_path = EngineController::get_executable_directory() + "/../../assets/" + file_name;
     std::string texture_path = EngineController::get_executable_directory() + "/../../assets/" + texture_file_name;
     // Constructor: model and optional texture paths provided.
     this->vao_ptr = ObjLoader::load(model_path.c_str(), texture_path.c_str());
-    this->use_phong_shading = false;
+    this->shader_type = EngineController::ShaderType::Phong;
+}
+
+ObjDrawable::ObjDrawable(std::string file_name, std::string texture_file_name, EngineController::ShaderType shader_type) {
+    std::string model_path = EngineController::get_executable_directory() + "/../../assets/" + file_name;
+    std::string texture_path = EngineController::get_executable_directory() + "/../../assets/" + texture_file_name;
+    // Constructor: model and optional texture paths provided.
+    this->vao_ptr = ObjLoader::load(model_path.c_str(), texture_path.c_str());
+    this->shader_type = shader_type;
 }
 
 ObjDrawable::~ObjDrawable() {
@@ -32,10 +34,22 @@ ObjDrawable::~ObjDrawable() {
 void ObjDrawable::draw() {
     GLuint program_id;
 
-    if (this->use_phong_shading)
-        program_id = EngineController::get_phong_program_id();
-    else
-        program_id = EngineController::get_gouraud_program_id();
+    switch (this->shader_type) {
+        case EngineController::ShaderType::Gouraud:
+            program_id = EngineController::get_gouraud_program_id();
+            break;
+        case EngineController::ShaderType::Phong:
+            program_id = EngineController::get_phong_program_id();
+            break;
+        case EngineController::ShaderType::Star:
+            program_id = EngineController::get_star_program_id();
+            break;
+        case EngineController::ShaderType::Particle:
+            program_id = EngineController::get_particle_program_id();
+            break;
+        default:
+            throw std::runtime_error("Unknown shader type in ObjDrawable::draw");
+    }
 
     glUseProgram(program_id);
     GLint tex_loc = glGetUniformLocation(program_id, "TextureImage");
