@@ -23,7 +23,7 @@ out vec4 color;
 
 void main()
 {
-    vec3 Ks = vec3(0.5, 0.5, 0.5); // coeficiente especular
+    vec3 Ks = vec3(1.0, 1.0, 1.0); // coeficiente especular
     float Ns = 32.0; // expoente especular
 
     // Obtemos a posição da câmera utilizando a inversa da matriz que define o
@@ -55,7 +55,7 @@ void main()
     vec3 I = vec3(1.0,1.0,1.0); // PREENCH AQUI o espectro da fonte de luz
 
     // Espectro da luz ambiente
-    vec3 Ia = vec3(0.002, 0.002, 0.002); // PREENCHA AQUI o espectro da luz ambiente
+    vec3 Ia = vec3(0.01, 0.01, 0.01); // PREENCHA AQUI o espectro da luz ambiente
 
     vec4 h = normalize(l + v); // half-way entre l e v
 
