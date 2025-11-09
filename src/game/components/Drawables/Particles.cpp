@@ -116,14 +116,16 @@ void Particles::draw() {
     }
 
     glUseProgram(program_id);
-
-
-
     GLint color_uniform = glGetUniformLocation(program_id, "absolute_color");
     GLint model_uniform = glGetUniformLocation(program_id, "model");
     GLint position_uniform = glGetUniformLocation(program_id, "position");
 
     glm::mat4 model_matrix = glm::mat4(1.0f);
+
+    // Enable blending so particle alpha is applied, and disable depth writes
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_PROGRAM_POINT_SIZE);
 
     for (const auto& particle : particles) {
         glPointSize(particle.size);
@@ -138,5 +140,9 @@ void Particles::draw() {
             this->vao_ptr->draw();
         }
     }
+
+    // Restore depth write and blending state
+    glDisable(GL_BLEND);
+    glDisable(GL_PROGRAM_POINT_SIZE);
 
 }

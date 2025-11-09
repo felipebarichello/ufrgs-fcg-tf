@@ -38,5 +38,5 @@ private:
     bool use_phong_shading = false;
     engine::Vec3 color = {1.0f, 1.0f, 1.0f};
     bool first_time = true;
-    float max_particle_size = 3.0f;
+    float max_particle_size = 2.0f;
 };  
