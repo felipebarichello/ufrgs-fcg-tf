@@ -83,7 +83,7 @@ VObjectConfig SkyBox() {
     return VObjectConfig()
         // .transform(TransformBuilder()
         //     .scale(10000.0f))
-        .component(new Stars(50000));
+        .component(new Stars(5000));
 }
 
 namespace game::scenes {
@@ -109,7 +109,7 @@ namespace game::scenes {
             .vobject(VObjectConfig().component(new CameraController(spaceship_controller_ref, spaceship_third_person_camera)))
             // HumanoidPlayer
             .vobject(SkyBox())
-            .vobject(VObjectConfig().component(new Particles(200)))
+            .vobject(VObjectConfig().component(new Particles(100)))
             .vobject(Player(player_ref, humanoid_camera, player_height, planets))
             // ensure the camera component is attached to a VObject so Camera::get_vobject() is valid
             //.vobject(Enemy(player_ref, planets))
