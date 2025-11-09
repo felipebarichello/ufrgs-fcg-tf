@@ -11,7 +11,7 @@ namespace game::components {
             SpaceshipPlayerController(engine::Camera* camera, float planet_radius) : camera(camera), planet_radius(planet_radius) {}
             void Start() override;
             void Update() override;
-            float speed = 100.0f;
+            float speed = 10.0f;
 
         private:
             struct SphericalInput;
@@ -35,6 +35,12 @@ namespace game::components {
 
             void update_transform_due_to_input();
             void update_camera();
+            engine::Vec3 velocity = engine::Vec3(0.0f);
+            float acceleration = 0.0f;
+            bool accelerating_forward = false;
+            bool accelerating_backward = false;
+            float max_speed = 500.0f;
+            float min_speed = 10.0f;
             SphericalInput get_spherical_input();
     };
 } // namespace game::components

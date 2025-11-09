@@ -18,15 +18,36 @@ namespace game::components {
     void SpaceshipPlayerController::Start() {
         InputController* input = EngineController::get_input();
         input->subscribe_dpad(&this->move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
+        input->subscribe_hold_button(GLFW_KEY_W, &this->accelerating_forward);
+        input->subscribe_hold_button(GLFW_KEY_S, &this->accelerating_backward);
     }
 
     void SpaceshipPlayerController::Update() {
         //this->update_transform_due_to_environment();
         Vec3 player_forward = this->get_vobject()->transform().quaternion().rotate(Vec3(0.0f, 0.0f, -1.0f));
         // Update player position
-        this->get_vobject()->transform().position() += player_forward * this->speed * EngineController::get_delta_time();
+        if (this->accelerating_forward) {
+            this->acceleration = 1.0f;
+        } else if (this->accelerating_backward) {
+            this->acceleration = -1.0f;
+        } else {
+            this->acceleration = 0.0f;
+        }
+
+        this->acceleration = this->acceleration;
+
+        float delta_time = EngineController::get_delta_time();    
+
+
+        this->speed += this->acceleration * delta_time * 100.0f;
+        if (this->speed > this->max_speed) this->speed = this->max_speed;
+        if (this->speed < this->min_speed) this->speed = this->min_speed;
+        this->get_vobject()->transform().position() += this->speed * delta_time * player_forward;
+
         this->update_transform_due_to_input();
         this->update_camera();
+
+        std::cout << "speed: " << this->speed << " acceleration: " << this->acceleration << std::endl;
     }
 
     void SpaceshipPlayerController::update_transform_due_to_input() {
@@ -36,10 +57,11 @@ namespace game::components {
         /* Camera (attached) movement */
 
         SpaceshipPlayerController::SphericalInput spherical = this->get_spherical_input();
-        //this->set_camera_phi(this->camera_phi + spherical.delta_phi);
-        quaternion.local_compose(Quaternion::from_y_rotation(spherical.delta_theta));
-        quaternion.local_compose(Quaternion::from_x_rotation(spherical.delta_phi));
-        quaternion.local_compose(Quaternion::from_z_rotation(-this->move_vector.x*0.05));
+        // Make rotations frame-rate independent by scaling with delta time
+        float dt = EngineController::get_delta_time();
+        quaternion.local_compose(Quaternion::from_y_rotation(spherical.delta_theta * dt * 50.0f));
+        quaternion.local_compose(Quaternion::from_x_rotation(spherical.delta_phi * dt * 50.0f));
+        quaternion.local_compose(Quaternion::from_z_rotation(-this->move_vector.x * dt * 5.0f));
         quaternion.normalize();
         
     }
