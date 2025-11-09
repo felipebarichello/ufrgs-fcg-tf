@@ -76,7 +76,7 @@ void Stars::update() {
 }
 
 void Stars::draw() {
-    GLuint program_id = engine::EngineController::get_star_program_id();
+    GLuint program_id = engine::EngineController::get_program_id(engine::EngineController::ShaderType::Star);
     if (program_id == 0) return; // shaders not ready
 
     glUseProgram(program_id);

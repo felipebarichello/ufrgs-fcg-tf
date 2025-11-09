@@ -109,10 +109,10 @@ void Particles::draw() {
 
     this->update();
 
-    GLuint program_id = engine::EngineController::get_particle_program_id();
+    GLuint program_id = engine::EngineController::get_program_id(engine::EngineController::ShaderType::Particle);
     if (program_id == 0) {
-        // fallback to gouraud if particle program not available
-        program_id = engine::EngineController::get_gouraud_program_id();
+        // fallback to planet/gouraud if particle program not available
+        program_id = engine::EngineController::get_program_id(engine::EngineController::ShaderType::Planet);
     }
 
     glUseProgram(program_id);
