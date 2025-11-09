@@ -472,31 +472,53 @@ namespace engine {
         auto main_camera = Camera::get_main();
         Mat4 projection = main_camera->get_perspective_matrix();
         Mat4 view = main_camera->get_view_matrix();
-
-        glUseProgram(EngineController::get_instance()->get_gouraud_program_id());
-        glUniformMatrix4fv(EngineController::instance->g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
-        glUniformMatrix4fv(EngineController::instance->g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
-
-        glUseProgram(EngineController::get_instance()->get_phong_program_id());
-        glUniformMatrix4fv(EngineController::instance->g_view_uniform       , 1 , GL_FALSE , glm::value_ptr(view));
-        glUniformMatrix4fv(EngineController::instance->g_projection_uniform , 1 , GL_FALSE , glm::value_ptr(projection));
-
-        if (star_program_id != 0) {
-            glUseProgram(star_program_id);
-            GLint view_loc = glGetUniformLocation(star_program_id, "view");
-            GLint proj_loc = glGetUniformLocation(star_program_id, "projection");
-            if (view_loc != -1) glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
-            if (proj_loc != -1) glUniformMatrix4fv(proj_loc, 1, GL_FALSE, glm::value_ptr(projection));
+        // For each shader type, query the program id via get_program_id and
+        // update the view/projection uniforms if the program is available.
+        {
+            GLuint prog = EngineController::get_program_id(ShaderType::Planet);
+            if (prog != 0) {
+                glUseProgram(prog);
+                GLint view_loc = glGetUniformLocation(prog, "view");
+                GLint proj_loc = glGetUniformLocation(prog, "projection");
+                if (view_loc != -1) glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
+                if (proj_loc != -1) glUniformMatrix4fv(proj_loc, 1, GL_FALSE, glm::value_ptr(projection));
+            }
         }
 
-        if (particle_program_id != 0) {
-            glUseProgram(particle_program_id);
-            GLint view_loc = glGetUniformLocation(particle_program_id, "view");
-            GLint proj_loc = glGetUniformLocation(particle_program_id, "projection");
-            if (view_loc != -1) glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
-            if (proj_loc != -1) glUniformMatrix4fv(proj_loc, 1, GL_FALSE, glm::value_ptr(projection));
+        {
+            GLuint prog = EngineController::get_program_id(ShaderType::Phong);
+            if (prog != 0) {
+                glUseProgram(prog);
+                GLint view_loc = glGetUniformLocation(prog, "view");
+                GLint proj_loc = glGetUniformLocation(prog, "projection");
+                if (view_loc != -1) glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
+                if (proj_loc != -1) glUniformMatrix4fv(proj_loc, 1, GL_FALSE, glm::value_ptr(projection));
+            }
         }
 
+        {
+            GLuint prog = EngineController::get_program_id(ShaderType::Star);
+            if (prog != 0) {
+                glUseProgram(prog);
+                GLint view_loc = glGetUniformLocation(prog, "view");
+                GLint proj_loc = glGetUniformLocation(prog, "projection");
+                if (view_loc != -1) glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
+                if (proj_loc != -1) glUniformMatrix4fv(proj_loc, 1, GL_FALSE, glm::value_ptr(projection));
+            }
+        }
+
+        {
+            GLuint prog = EngineController::get_program_id(ShaderType::Particle);
+            if (prog != 0) {
+                glUseProgram(prog);
+                GLint view_loc = glGetUniformLocation(prog, "view");
+                GLint proj_loc = glGetUniformLocation(prog, "projection");
+                if (view_loc != -1) glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
+                if (proj_loc != -1) glUniformMatrix4fv(proj_loc, 1, GL_FALSE, glm::value_ptr(projection));
+            }
+        }
+
+        // Unbind VAO
         glBindVertexArray(0);
     }
 
