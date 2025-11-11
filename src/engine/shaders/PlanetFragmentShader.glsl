@@ -3,7 +3,7 @@
 
 // FONTE: https://github.com/yiwenl/glsl-fbm.git
 
-#define NUM_OCTAVES 5
+#define NUM_OCTAVES 3
 
 float mod289(float x){return x - floor(x * (1.0 / 289.0)) * 289.0;}
 vec4 mod289(vec4 x){return x - floor(x * (1.0 / 289.0)) * 289.0;}
@@ -77,12 +77,12 @@ out vec4 color;
 
 void main()
 {
-    // --- Base colors: light, mid, and dark blue ---
+    // Base colors: light, mid, and dark blue
     vec3 color1 = vec3(0.2, 0.2, 1.0);
     vec3 color2 = vec3(0.0, 0.5, 0.75);
     vec3 color3 = vec3(0.3, 0.4, 1.0);
 
-    // --- Warp coordinates using FBM ---
+    // Warp coordinates using FBM
     float warpStrength = 0.8;
     vec3 q = vec3(
         fbm(position_model * 2.0),
@@ -91,25 +91,23 @@ void main()
     );
     vec3 warpedPos = position_model + warpStrength * q;
 
-    // --- Generate FBM patterns ---
-    float f1 = fbm(warpedPos * 2.0 + vec3(1.7, 9.2, 3.1));
-    float f2 = fbm(warpedPos * 10.0 + vec3(5.2, 1.3, 2.1));
-    float f3 = fbm(warpedPos * 50.0 + vec3(8.3, 2.8, 4.5));
+    // Generate FBM patterns
+    float f1 = fbm(warpedPos * 5.0 + vec3(1.7, 9.2, 3.1));
+    float f2 = fbm(warpedPos * 6.0 + vec3(5.2, 1.3, 2.1));
+    float f3 = fbm(warpedPos * 7.0 + vec3(8.3, 2.8, 4.5));
 
-    // --- Blend base colors based on FBM patterns ---
+    // Blend base colors based on FBM patterns
     vec3 Kd = 0.33*(f1*color1 + f2*color2 + f3*color3);
 
-    // --- Add micro-detail ---
-    float fine1 = fbm(warpedPos * 200.0 + vec3(2.5, 1.5, 3.5));
-    float fine2 = fbm(warpedPos * 500.0 + vec3(1.7, 9.2, 3.1));
-    float fineDetail = mix(fine1, fine2, 0.5);
-    Kd *= 1.0 + fineDetail;
+    // // Add micro-detail 
+    // float fine1 = fbm(warpedPos * 200.0 + vec3(2.5, 1.5, 3.5));
+    // float fine2 = fbm(warpedPos * 500.0 + vec3(1.7, 9.2, 3.1));
+    // float fineDetail = mix(fine1, fine2, 0.5);
+    // Kd *= 1.0 + fineDetail;
 
-    // --- Clamp and gamma correct for vivid colors ---
     Kd = clamp(Kd, 0.0, 1.0);
     Kd = pow(Kd, vec3(1.0/2.2)); // gamma correction
 
-    // --- Lighting ---
     vec3 ambient_term = Ia * Kd;
     color = vec4(Kd * lambert_diffuse_term + ambient_term, 1.0);
 }
