@@ -46,8 +46,6 @@ namespace game::components {
 
         this->update_transform_due_to_input();
         this->update_camera();
-
-        std::cout << "speed: " << this->speed << " acceleration: " << this->acceleration << std::endl;
     }
 
     void SpaceshipPlayerController::update_transform_due_to_input() {
