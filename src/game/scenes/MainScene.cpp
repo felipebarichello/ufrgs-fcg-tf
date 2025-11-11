@@ -44,6 +44,8 @@ VObjectConfig SpaceShipPlayer(SpaceshipPlayerController*& controller_ref, Camera
     SpaceshipPlayerController* controller = new SpaceshipPlayerController(first_person_camera, 0.0f);
     controller_ref = controller;
     return VObjectConfig()
+        .transform(TransformBuilder()
+            .position(Vec3(220.0f, 50.0f, 0.0f)))
         .component(controller)
         .component(new ObjDrawable(std::string("spaceship.obj"), std::string("spaceship.jpg")))
         .child(VObjectConfig()
@@ -97,8 +99,8 @@ namespace game::scenes {
         Camera::set_main(spaceship_third_person_camera);
         HumanoidPlayerController* player_ref = nullptr;
         std::vector<PlanetInfo*> planets;
-        planets.push_back(new PlanetInfo(50.0e12f, 200.0f));
-        planets.push_back(new PlanetInfo(20.0e12f, 50.0f));
+        planets.push_back(new PlanetInfo(55.0e12f, 200.0f));
+        planets.push_back(new PlanetInfo(25.0e12f, 50.0f));
 
         SpaceshipPlayerController* spaceship_controller_ref = nullptr;
 
