@@ -32,6 +32,9 @@ ObjDrawable::~ObjDrawable() {
 }
 
 void ObjDrawable::draw() {
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
 
     GLuint program_id = EngineController::get_program_id(this->shader_type);
     glUseProgram(program_id);
