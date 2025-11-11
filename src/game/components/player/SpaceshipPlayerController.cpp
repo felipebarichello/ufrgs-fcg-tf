@@ -34,10 +34,7 @@ namespace game::components {
             this->acceleration = 0.0f;
         }
 
-        this->acceleration = this->acceleration;
-
         float delta_time = EngineController::get_delta_time();    
-
 
         this->speed += this->acceleration * delta_time * 100.0f;
         if (this->speed > this->max_speed) this->speed = this->max_speed;
