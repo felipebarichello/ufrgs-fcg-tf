@@ -1,4 +1,4 @@
-#include "SpaceshipPlayerController.hpp"
+#include "SpaceshipController.hpp"
 #include <engine>
 #include <InputController.hpp>
 #include <algorithm>
@@ -10,19 +10,19 @@ using engine::Vec3;
 using engine::math::Quaternion;
 
 namespace game::components {
-    struct SpaceshipPlayerController::SphericalInput {
+    struct SpaceshipController::SphericalInput {
         float delta_theta;
         float delta_phi;
     };
 
-    void SpaceshipPlayerController::Start() {
+    void SpaceshipController::Start() {
         InputController* input = EngineController::get_input();
         input->subscribe_dpad(&this->move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
         input->subscribe_hold_button(GLFW_KEY_W, &this->accelerating_forward);
         input->subscribe_hold_button(GLFW_KEY_S, &this->accelerating_backward);
     }
 
-    void SpaceshipPlayerController::Update() {
+    void SpaceshipController::Update() {
         //this->update_transform_due_to_environment();
         Vec3 player_forward = this->get_vobject()->transform().quaternion().rotate(Vec3(0.0f, 0.0f, -1.0f));
         // Update player position
@@ -45,13 +45,13 @@ namespace game::components {
         this->update_camera();
     }
 
-    void SpaceshipPlayerController::update_transform_due_to_input() {
+    void SpaceshipController::update_transform_due_to_input() {
         auto& transform = this->get_vobject()->transform();
         auto& quaternion = transform.quaternion();
 
         /* Camera (attached) movement */
 
-        SpaceshipPlayerController::SphericalInput spherical = this->get_spherical_input();
+        SpaceshipController::SphericalInput spherical = this->get_spherical_input();
         // Make rotations frame-rate independent by scaling with delta time
         float dt = EngineController::get_delta_time();
         quaternion.local_compose(Quaternion::from_y_rotation(spherical.delta_theta * dt * 50.0f));
@@ -61,13 +61,13 @@ namespace game::components {
         
     }
 
-    void SpaceshipPlayerController::update_camera() {
+    void SpaceshipController::update_camera() {
         auto& cam_transform = this->camera->get_vobject()->transform();
         cam_transform.position() = Vec3(0.0f, 0.0f, -1.0f);
     }
 
-    SpaceshipPlayerController::SphericalInput SpaceshipPlayerController::get_spherical_input() {
-        SpaceshipPlayerController::SphericalInput spherical;
+    SpaceshipController::SphericalInput SpaceshipController::get_spherical_input() {
+        SpaceshipController::SphericalInput spherical;
 
         // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
         Vec2 cursor_delta = EngineController::get_input()->get_cursor_position_delta();

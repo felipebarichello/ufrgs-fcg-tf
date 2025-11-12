@@ -6,9 +6,9 @@
 using engine::Transform;
 
 namespace game::components {
-    class SpaceshipPlayerController : public engine::Behavior {
+    class SpaceshipController : public engine::Behavior {
         public:
-            SpaceshipPlayerController(engine::Camera* camera, float planet_radius) : camera(camera), planet_radius(planet_radius) {}
+            SpaceshipController(engine::Camera* camera, float planet_radius) : camera(camera), planet_radius(planet_radius) {}
             void Start() override;
             void Update() override;
             float speed = 10.0f;

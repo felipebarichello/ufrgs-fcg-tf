@@ -9,7 +9,7 @@
 #include <game/components/include.hpp>
 #include <game/components/player/CameraController.hpp>
 #include <game/components/player/PlayerController.hpp>
-#include <game/components/SpaceshipPlayerController.hpp>
+#include <game/components/SpaceshipController.hpp>
 #include <game/components/Drawables/Stars.hpp>
 #include <game/components/Drawables/Particles.hpp>
 
@@ -40,8 +40,8 @@ VObjectConfig Player(PlayerController*& player_ref, Camera* main_camera, float h
         // );
 }
 
-VObjectConfig SpaceShipPlayer(SpaceshipPlayerController*& controller_ref, Camera* first_person_camera) {
-    SpaceshipPlayerController* controller = new SpaceshipPlayerController(first_person_camera, 0.0f);
+VObjectConfig SpaceShipPlayer(SpaceshipController*& controller_ref, Camera* first_person_camera) {
+    SpaceshipController* controller = new SpaceshipController(first_person_camera, 0.0f);
     controller_ref = controller;
     return VObjectConfig()
         .transform(TransformBuilder()
@@ -102,7 +102,7 @@ namespace game::scenes {
         planets.push_back(new PlanetInfo(55.0e12f, 200.0f));
         planets.push_back(new PlanetInfo(25.0e12f, 50.0f));
 
-        SpaceshipPlayerController* spaceship_controller_ref = nullptr;
+        SpaceshipController* spaceship_controller_ref = nullptr;
 
         root
             // Spaceship player

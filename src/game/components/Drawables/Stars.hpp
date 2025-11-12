@@ -6,7 +6,7 @@
 #include <engine/math/matrices.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <vector>
-#include <game/components/SpaceshipPlayerController.hpp>
+#include <game/components/SpaceshipController.hpp>
 #include <engine/vobject/components/Camera.hpp>
 
 class Stars : public engine::Drawable {

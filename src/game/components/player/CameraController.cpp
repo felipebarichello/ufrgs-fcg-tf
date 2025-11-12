@@ -4,7 +4,7 @@
 
 using namespace game::components;
 
-CameraController::CameraController(SpaceshipPlayerController* player_controller, engine::Camera* camera) {
+CameraController::CameraController(SpaceshipController* player_controller, engine::Camera* camera) {
     this->player_controller = player_controller;
     this->camera = camera;
 }
@@ -20,7 +20,7 @@ void CameraController::Update() {
 
     engine::math::Quaternion player_q = player_transform.get_quaternion();
     Vec3 world_offset = player_q.rotate(this->offset);
-    
+
     cam_transform.position() = lerp(cam_transform.position(), player_position + world_offset, this->camera_smooth_speed);
     cam_transform.quaternion() = engine::math::Quaternion::slerp(cam_transform.quaternion(), player_q, this->camera_smooth_speed);
 }
