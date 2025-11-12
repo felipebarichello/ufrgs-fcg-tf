@@ -6,11 +6,11 @@
 #include <game/components/WalkerController.hpp>
 
 namespace game::components {
-    class HumanoidPlayerController : public engine::Behavior {
+    class PlayerController : public engine::Behavior {
         public:
             // Now HumanoidPlayerController only handles input and camera.
             // It receives a pointer to a WalkerController component that resides in the same VObject.
-            HumanoidPlayerController(engine::Camera* camera, WalkerController* walker) : camera(camera), walker(walker) {}
+            PlayerController(engine::Camera* camera, WalkerController* walker) : camera(camera), walker(walker) {}
             void Start() override;
             void Update() override;
 

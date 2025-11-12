@@ -8,7 +8,7 @@
 #include <vector>
 #include <game/components/include.hpp>
 #include <game/components/player/CameraController.hpp>
-#include <game/components/player/HumanoidPlayerController.hpp>
+#include <game/components/player/PlayerController.hpp>
 #include <game/components/player/SpaceshipPlayerController.hpp>
 #include <game/components/Drawables/Stars.hpp>
 #include <game/components/Drawables/Particles.hpp>
@@ -16,10 +16,10 @@
 using namespace engine;
 using namespace game::components;
 
-VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera, float height, std::vector<PlanetInfo*> planets) {
+VObjectConfig Player(PlayerController*& player_ref, Camera* main_camera, float height, std::vector<PlanetInfo*> planets) {
     // Create walker component first and then the humanoid which will forward inputs to it.
     WalkerController* walker = new WalkerController(planets);
-    HumanoidPlayerController* controller = new HumanoidPlayerController(main_camera, walker);
+    PlayerController* controller = new PlayerController(main_camera, walker);
     player_ref = controller;
 
     return VObjectConfig()
@@ -73,7 +73,7 @@ VObjectConfig SpaceshipObj() {
         .component(new ObjDrawable(std::string("spaceship.obj"), std::string("spaceship.jpg")));
 }
 
-VObjectConfig Enemy(HumanoidPlayerController* player_ref, std::vector<PlanetInfo*> planets) {
+VObjectConfig Enemy(PlayerController* player_ref, std::vector<PlanetInfo*> planets) {
     return VObjectConfig()
         .transform(TransformBuilder()
             .position(Vec3(50.0f, 220.0f, 0.0f)))
@@ -97,7 +97,7 @@ namespace game::scenes {
         Camera* spaceship_third_person_camera = new Camera();
         Camera* spaceship_first_person_camera = new Camera();
         Camera::set_main(spaceship_third_person_camera);
-        HumanoidPlayerController* player_ref = nullptr;
+        PlayerController* player_ref = nullptr;
         std::vector<PlanetInfo*> planets;
         planets.push_back(new PlanetInfo(55.0e12f, 200.0f));
         planets.push_back(new PlanetInfo(25.0e12f, 50.0f));

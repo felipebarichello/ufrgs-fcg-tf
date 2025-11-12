@@ -1,5 +1,5 @@
 #pragma once
 
 #include "CameraController.hpp"
-#include "HumanoidPlayerController.hpp"
+#include "PlayerController.hpp"
 #include "SpaceshipPlayerController.hpp"
