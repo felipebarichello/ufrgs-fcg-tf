@@ -9,7 +9,7 @@
 #include <game/components/include.hpp>
 #include <game/components/player/CameraController.hpp>
 #include <game/components/player/PlayerController.hpp>
-#include <game/components/player/SpaceshipPlayerController.hpp>
+#include <game/components/SpaceshipPlayerController.hpp>
 #include <game/components/Drawables/Stars.hpp>
 #include <game/components/Drawables/Particles.hpp>
 
