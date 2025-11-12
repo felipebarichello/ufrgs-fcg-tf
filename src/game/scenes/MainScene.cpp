@@ -19,7 +19,8 @@ using namespace game::components;
 VObjectConfig Player(PlayerController*& player_ref, Camera* main_camera, float height, std::vector<PlanetInfo*> planets) {
     // Create walker component first and then the humanoid which will forward inputs to it.
     WalkerController* walker = new WalkerController(planets);
-    PlayerController* controller = new PlayerController(main_camera, walker);
+    // TODO: add spaceship controller pointer (nullptr for now)
+    PlayerController* controller = new PlayerController(main_camera, walker, NULL);
     player_ref = controller;
 
     return VObjectConfig()

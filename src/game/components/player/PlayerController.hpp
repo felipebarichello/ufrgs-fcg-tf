@@ -4,13 +4,14 @@
 #include <memory>
 #include <game/components/PlanetInfo.hpp>
 #include <game/components/WalkerController.hpp>
+#include <game/components/SpaceshipController.hpp>
 
 namespace game::components {
     class PlayerController : public engine::Behavior {
         public:
             // Now HumanoidPlayerController only handles input and camera.
             // It receives a pointer to a WalkerController component that resides in the same VObject.
-            PlayerController(engine::Camera* camera, WalkerController* walker) : camera(camera), walker(walker) {}
+            PlayerController(engine::Camera* camera, WalkerController* walker, SpaceshipController* spaceship) : camera(camera), walker(walker), spaceship(spaceship) {}
             void Start() override;
             void Update() override;
 
@@ -25,6 +26,9 @@ namespace game::components {
             engine::Camera* camera;
             // Walker component responsible for all movement physics
             WalkerController* walker = nullptr;
+
+            // Spaceship component (if any) responsible for spaceship movement physics
+            SpaceshipController* spaceship = nullptr;
 
             /// @brief Used both for storing camera transform before releasing and for bobbing.
             engine::Transform stored_child_cam_transform;
