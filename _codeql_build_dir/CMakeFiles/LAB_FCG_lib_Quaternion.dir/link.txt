@@ -1,2 +1,0 @@
-/usr/bin/ar qc libLAB_FCG_lib_Quaternion.a "CMakeFiles/LAB_FCG_lib_Quaternion.dir/lib-src/Quaternion/Quaternion.c.o" "CMakeFiles/LAB_FCG_lib_Quaternion.dir/lib-src/Quaternion/TestQuaternion.c.o" "CMakeFiles/LAB_FCG_lib_Quaternion.dir/lib-src/Quaternion/example.c.o"
-/usr/bin/ranlib libLAB_FCG_lib_Quaternion.a
