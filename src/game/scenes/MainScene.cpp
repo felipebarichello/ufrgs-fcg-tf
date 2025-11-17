@@ -10,6 +10,7 @@
 #include <game/components/player/CameraController.hpp>
 #include <game/components/player/PlayerController.hpp>
 #include <game/components/SpaceshipController.hpp>
+#include <game/components/FuelDisplay.hpp>
 #include <game/components/Drawables/Stars.hpp>
 #include <game/components/Drawables/Particles.hpp>
 
@@ -110,6 +111,8 @@ namespace game::scenes {
             .vobject(VObjectConfig().component(spaceship_third_person_camera))
             .vobject(SpaceShipPlayer(spaceship_controller_ref, spaceship_first_person_camera))
             .vobject(VObjectConfig().component(new CameraController(spaceship_controller_ref, spaceship_third_person_camera)))
+            // Fuel display for spaceship
+            .vobject(VObjectConfig().component(new FuelDisplay(spaceship_controller_ref)))
             // HumanoidPlayer
             .vobject(SkyBox())
             .vobject(VObjectConfig().component(new Particles(100)))
