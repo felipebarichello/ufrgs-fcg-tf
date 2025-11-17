@@ -25,16 +25,23 @@ namespace game::components {
     void SpaceshipController::Update() {
         //this->update_transform_due_to_environment();
         Vec3 player_forward = this->get_vobject()->transform().quaternion().rotate(Vec3(0.0f, 0.0f, -1.0f));
+        
+        float delta_time = EngineController::get_delta_time();
+        
         // Update player position
-        if (this->accelerating_forward) {
+        if (this->accelerating_forward && this->fuel > 0.0f) {
             this->acceleration = 1.0f;
-        } else if (this->accelerating_backward) {
+            // Consume fuel when accelerating forward
+            this->fuel -= this->fuel_consumption_rate * delta_time;
+            if (this->fuel < 0.0f) this->fuel = 0.0f;
+        } else if (this->accelerating_backward && this->fuel > 0.0f) {
             this->acceleration = -1.0f;
+            // Consume fuel when accelerating backward
+            this->fuel -= this->fuel_consumption_rate * delta_time;
+            if (this->fuel < 0.0f) this->fuel = 0.0f;
         } else {
             this->acceleration = 0.0f;
         }
-
-        float delta_time = EngineController::get_delta_time();    
 
         this->speed += this->acceleration * delta_time * 100.0f;
         if (this->speed > this->max_speed) this->speed = this->max_speed;

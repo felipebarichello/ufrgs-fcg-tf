@@ -12,6 +12,10 @@ namespace game::components {
             void Start() override;
             void Update() override;
             float speed = 10.0f;
+            
+            // Fuel system
+            float get_fuel() const { return fuel; }
+            float get_max_fuel() const { return max_fuel; }
 
         private:
             struct SphericalInput;
@@ -41,6 +45,12 @@ namespace game::components {
             bool accelerating_backward = false;
             float max_speed = 500.0f;
             float min_speed = 10.0f;
+            
+            // Fuel system
+            float fuel = 100.0f;
+            float max_fuel = 100.0f;
+            float fuel_consumption_rate = 10.0f; // units per second when accelerating
+            
             SphericalInput get_spherical_input();
     };
 } // namespace game::components
