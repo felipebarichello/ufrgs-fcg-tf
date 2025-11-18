@@ -21,13 +21,13 @@ namespace engine::collision {
     }
 
     PointSphereCollision collide_point_sphere(PointCollider& point, SphereCollider& sphere) {
-        auto vp = point.get_vobject();
-        auto vs = sphere.get_vobject();
+        auto point_vobject = point.get_vobject();
+        auto sphere_vobject = sphere.get_vobject();
 
-        Vec3 ppos = vp->transform().get_position();;
-        Vec3 spos = vs->transform().get_position();
+        Vec3 point_pos = point_vobject->transform().get_position();;
+        Vec3 sphere_pos = sphere_vobject->transform().get_position();
 
-        engine::Vec3 delta = ppos - spos;
+        engine::Vec3 delta = point_pos - sphere_pos;
         float distance_squared = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
         bool collided = distance_squared <= sphere.get_radius_squared();
 
