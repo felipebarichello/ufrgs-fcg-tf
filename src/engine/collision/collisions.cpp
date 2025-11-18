@@ -14,7 +14,7 @@ namespace engine::collision {
 
         // Compare squared distance to squared sum of radii to avoid sqrt
         float dist2 = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
-        float rsum = sphere_1.get_radius() + sphere_2.get_radius();
+        float rsum = sphere_1.get_radius_squared() + sphere_2.get_radius_squared();
         bool collided = dist2 <= (rsum * rsum);
 
         return SphereSphereCollision(collided);
@@ -28,9 +28,8 @@ namespace engine::collision {
         Vec3 spos = vs->transform().get_position();
 
         engine::Vec3 delta = ppos - spos;
-        float dist2 = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
-        float r = sphere.get_radius();
-        bool collided = dist2 <= (r * r);
+        float distance_squared = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
+        bool collided = distance_squared <= sphere.get_radius_squared();
 
         return PointSphereCollision(collided);
     }
