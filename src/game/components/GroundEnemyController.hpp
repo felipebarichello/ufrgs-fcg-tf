@@ -4,7 +4,7 @@
 #include <memory>
 #include <vector>
 #include <optional>
-#include <game/components/player/PlayerController.hpp>
+#include <game/components/player/HumanoidPlayerController.hpp>
 // Forward declare WalkerController
 namespace game::components { class WalkerController; }
 
@@ -13,14 +13,14 @@ namespace game::components {
         public:
             /// @param target The VObject the enemy should try to follow (usually the player VObject)
             /// @param planets List of planets for gravity/grounding calculations
-            GroundEnemyController(PlayerController* target_controller, std::vector<PlanetInfo*> planets) : target_controller(target_controller), planets(planets) {}
+            GroundEnemyController(HumanoidPlayerController* target_controller, std::vector<PlanetInfo*> planets) : target_controller(target_controller), planets(planets) {}
 
             void Awake() override;
             void Update() override;
 
         private:
             // Target references
-            PlayerController* target_controller = nullptr;
+            HumanoidPlayerController* target_controller = nullptr;
             engine::VObject* target_vobj = nullptr;
 
             // AI: planets available for any future needs

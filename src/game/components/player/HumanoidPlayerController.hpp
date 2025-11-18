@@ -7,11 +7,11 @@
 #include <game/components/SpaceshipController.hpp>
 
 namespace game::components {
-    class PlayerController : public engine::Behavior {
+    class HumanoidPlayerController : public engine::Behavior {
         public:
             // Now HumanoidPlayerController only handles input and camera.
             // It receives a pointer to a WalkerController component that resides in the same VObject.
-            PlayerController(engine::Camera* camera, WalkerController* walker, SpaceshipController* spaceship) : camera(camera), walker(walker), spaceship(spaceship) {}
+            HumanoidPlayerController(engine::Camera* camera, WalkerController* walker, SpaceshipController* spaceship) : camera(camera), walker(walker), spaceship(spaceship) {}
             void Start() override;
             void Update() override;
 

@@ -1,4 +1,4 @@
-#include "PlayerController.hpp"
+#include "HumanoidPlayerController.hpp"
 #include <engine>
 #include <InputController.hpp>
 #include <algorithm>
@@ -16,18 +16,18 @@ using engine::Transform;
 using engine::to_string;
 
 namespace game::components {
-    struct PlayerController::SphericalInput {
+    struct HumanoidPlayerController::SphericalInput {
         float delta_theta;
         float delta_phi;
     };
 
-    void PlayerController::Start() {
+    void HumanoidPlayerController::Start() {
         InputController* input = EngineController::get_input();
         // Subscribe input into local move vector and forward it to WalkerController in Update
         input->subscribe_dpad(&this->move_vector_2d, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
-        input->subscribe_press_button(GLFW_KEY_F6, std::bind(&PlayerController::toggle_camera_release, this));
+        input->subscribe_press_button(GLFW_KEY_F6, std::bind(&HumanoidPlayerController::toggle_camera_release, this));
         // Jump now forwarded to WalkerController
-        input->subscribe_press_button(GLFW_KEY_SPACE, std::bind(&PlayerController::on_jump_pressed, this));
+        input->subscribe_press_button(GLFW_KEY_SPACE, std::bind(&HumanoidPlayerController::on_jump_pressed, this));
 
         // Capture the initial local transform of the child camera (used as base for bobbing offsets)
         if (this->camera && this->camera->get_vobject()) {
@@ -35,7 +35,7 @@ namespace game::components {
         }
     }
 
-    void PlayerController::Update() {
+    void HumanoidPlayerController::Update() {
         if (this->active) {
             if (this->released_camera) {
                 this->update_released_camera();
@@ -52,12 +52,12 @@ namespace game::components {
 
     // Movement/environment handled by WalkerController. Humanoid keeps camera and input only.
 
-    void PlayerController::update_transform_due_to_input() {
+    void HumanoidPlayerController::update_transform_due_to_input() {
         auto& transform = this->get_vobject()->transform();
         auto& quaternion = transform.quaternion();
 
         /* Camera (attached) movement */
-        PlayerController::SphericalInput spherical = this->get_spherical_input();
+        HumanoidPlayerController::SphericalInput spherical = this->get_spherical_input();
         this->set_camera_phi(this->camera_phi + spherical.delta_phi);
         quaternion.local_compose(Quaternion::from_y_rotation(spherical.delta_theta));
 
@@ -89,11 +89,11 @@ namespace game::components {
         // Forwarded movement input is handled by WalkerController; Humanoid doesn't change position directly.
     }
 
-    void PlayerController::update_released_camera() {
+    void HumanoidPlayerController::update_released_camera() {
         Transform& cam_transform = this->camera->get_vobject()->transform();
         Quaternion& cam_quaternion = cam_transform.quaternion();
 
-        PlayerController::SphericalInput spherical = this->get_spherical_input();
+        HumanoidPlayerController::SphericalInput spherical = this->get_spherical_input();
         cam_quaternion.local_compose(Quaternion::from_y_rotation(spherical.delta_theta));
         cam_quaternion.local_compose(Quaternion::from_x_rotation(spherical.delta_phi));
         cam_quaternion.normalize();
@@ -105,8 +105,8 @@ namespace game::components {
         cam_transform.position() += this->released_camera_speed * this->move_vector_2d.x * right_of_camera;
     }
 
-    PlayerController::SphericalInput PlayerController::get_spherical_input() {
-        PlayerController::SphericalInput spherical;
+    HumanoidPlayerController::SphericalInput HumanoidPlayerController::get_spherical_input() {
+        HumanoidPlayerController::SphericalInput spherical;
 
         // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
         Vec2 cursor_delta = EngineController::get_input()->get_cursor_position_delta();
@@ -118,7 +118,7 @@ namespace game::components {
         return spherical;
     }
 
-    void PlayerController::set_camera_phi(float new_phi) {
+    void HumanoidPlayerController::set_camera_phi(float new_phi) {
         this->camera_phi = std::clamp(new_phi, this->phi_min, this->phi_max); // Don't let the player break their neck
         
         auto& cam_transform = this->camera
@@ -129,11 +129,11 @@ namespace game::components {
         cam_transform.quaternion().normalize();
     }
 
-    void PlayerController::on_jump_pressed() {
+    void HumanoidPlayerController::on_jump_pressed() {
         if (this->walker) this->walker->request_jump();
     }
 
-    void PlayerController::toggle_camera_release() {
+    void HumanoidPlayerController::toggle_camera_release() {
         this->released_camera = !this->released_camera;
         auto camera_vobj = this->camera->get_vobject();
         auto& cam_transf = camera_vobj->transform();
