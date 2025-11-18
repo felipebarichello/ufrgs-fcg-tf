@@ -5,5 +5,4 @@
 #include "EngineController.hpp"
 #include "InputController.hpp"
 #include "ObjLoader.hpp"
-#include "TextRenderer.hpp"
 #include "vao.hpp"
