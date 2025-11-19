@@ -38,4 +38,15 @@ namespace engine::collision {
     };
 
     CylinderCylinderCollision collide_cylinder_cylinder(const CylinderCollider& c1, const CylinderCollider& c2);
+
+    class CylinderSphereCollision {
+        public:
+            CylinderSphereCollision(bool collided) : collided(collided) {}
+            bool has_collided() const { return this->collided; }
+
+        private:
+            bool collided;
+    };
+
+    CylinderSphereCollision collide_cylinder_sphere(const CylinderCollider& cyl, const SphereCollider& sphere);
 }

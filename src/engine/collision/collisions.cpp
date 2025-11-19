@@ -61,4 +61,47 @@ namespace engine::collision {
 
         return CylinderCylinderCollision(horiz_overlap && vert_overlap);
     }
+
+    CylinderSphereCollision collide_cylinder_sphere(const CylinderCollider& cyl, const SphereCollider& sphere) {
+        // Get world positions from attached VObjects (if any).
+        auto vc = cyl.get_vobject();
+        auto vs = sphere.get_vobject();
+
+        engine::Vec3 pc {0.0f, 0.0f, 0.0f};
+        engine::Vec3 ps {0.0f, 0.0f, 0.0f};
+        if (vc) pc = vc->transform().get_position();
+        if (vs) ps = vs->transform().get_position();
+
+        float r_c = cyl.get_radius();
+        float r_s = sphere.get_radius();
+
+        // Vertical clamp
+        float half_h = cyl.get_height() * 0.5f;
+        float cyl_top = pc.y + half_h;
+        float cyl_bottom = pc.y - half_h;
+        float closest_y = std::min(std::max(ps.y, cyl_bottom), cyl_top);
+
+        // Horizontal (XZ) clamp
+        float dx = ps.x - pc.x;
+        float dz = ps.z - pc.z;
+        float radial2 = dx*dx + dz*dz;
+        float radial = std::sqrt(radial2);
+        float clamped_radial = radial;
+        if (clamped_radial > r_c) clamped_radial = r_c;
+
+        float closest_x = pc.x;
+        float closest_z = pc.z;
+        if (radial > 1e-6f) {
+            float scale = clamped_radial / radial;
+            closest_x = pc.x + dx * scale;
+            closest_z = pc.z + dz * scale;
+        }
+
+        engine::Vec3 closest_point { closest_x, closest_y, closest_z };
+        engine::Vec3 delta = ps - closest_point;
+        float dist2 = delta.x*delta.x + delta.y*delta.y + delta.z*delta.z;
+
+        bool collided = dist2 <= (r_s * r_s);
+        return CylinderSphereCollision(collided);
+    }
 } // namespace engine::collision
