@@ -10,7 +10,7 @@
 namespace game::components {
     class WalkerController : public engine::Behavior {
         public:
-            WalkerController(std::vector<PlanetInfo*> planets, engine::PointCollider* point_collider) : planets(planets), point_collider(point_collider) {}
+            WalkerController(std::vector<PlanetInfo*> planets, engine::PointCollider* point_collider, engine::CylinderCollider* cylinder_collider) : planets(planets), point_collider(point_collider), cylinder_collider(cylinder_collider) {}
             void Update() override;
 
             // Input interface (called by HumanoidPlayerController)
@@ -19,6 +19,7 @@ namespace game::components {
             engine::Vec2 get_move_vector() const { return this->move_vector; }
             void request_jump() { this->jump_requested = true; }
             engine::PointCollider* get_point_collider() { return this->point_collider; }
+            engine::CylinderCollider* get_cylinder_collider() { return this->cylinder_collider; }
 
         private:
             engine::Vec2 move_vector {0.0f, 0.0f};
@@ -40,6 +41,7 @@ namespace game::components {
 
             // Point collider attached to this walker (created in Start)
             engine::PointCollider* point_collider;
+            engine::CylinderCollider* cylinder_collider;
 
             void update_transform_due_to_environment();
             void update_transform_due_to_input();
