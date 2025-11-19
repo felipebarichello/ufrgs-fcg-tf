@@ -16,16 +16,9 @@ namespace game::components {
     void GroundEnemyController::Awake() {
         // Keep reference to target VObject for positional queries
         this->target_vobj = this->target_controller->get_vobject();
-
-        // Create a WalkerController for this enemy and attach it to our VObject so it handles physics
-        this->walker = new WalkerController(this->planets);
-        // Add the walker component to this VObject so it will be scheduled by the scene
-        this->get_vobject()->add_component(std::unique_ptr<engine::Component>(this->walker));
     }
 
     void GroundEnemyController::Update() {
-        if (this->target_vobj == nullptr) return;
-
         // Compute an AI input vector and forward to our walker
         this->update_follow_target();
     }

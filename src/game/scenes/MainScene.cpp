@@ -17,10 +17,13 @@ using namespace engine;
 using namespace game::components;
 
 VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera, float height, std::vector<PlanetInfo*> planets) {
+    // engine::PointCollider* point_collider = new engine::PointCollider();
+
     // Create walker component first and then the humanoid which will forward inputs to it.
     WalkerController* walker = new WalkerController(planets);
+
     // TODO: add spaceship controller pointer (nullptr for now)
-    HumanoidPlayerController* controller = new HumanoidPlayerController(main_camera, walker, NULL);
+    HumanoidPlayerController* controller = new HumanoidPlayerController(main_camera, walker, nullptr);
     player_ref = controller;
 
     return VObjectConfig()
@@ -28,6 +31,7 @@ VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera,
             .position(Vec3(0.0f, 220.0f, 50.0f)))
         .component(walker)
         .component(controller)
+        // .component(point_collider)
         .child(VObjectConfig()
             .transform(TransformBuilder()
                 .position(Vec3(0.0f, height, 0.0f)))
@@ -44,6 +48,7 @@ VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera,
 VObjectConfig SpaceShipPlayer(SpaceshipController*& controller_ref, Camera* first_person_camera) {
     SpaceshipController* controller = new SpaceshipController(first_person_camera, 0.0f);
     controller_ref = controller;
+
     return VObjectConfig()
         .transform(TransformBuilder()
             .position(Vec3(220.0f, 50.0f, 0.0f)))
@@ -57,6 +62,7 @@ VObjectConfig SpaceShipPlayer(SpaceshipController*& controller_ref, Camera* firs
 VObjectConfig Planet(PlanetInfo* planet_info) {
     return VObjectConfig()
         .component(planet_info)
+        .component(new SphereCollider(planet_info->get_radius()))
         .child(VObjectConfig()
             .transform(TransformBuilder()
                 .position(Vec3(0.0f, 0.0f, 0.0f))
@@ -75,10 +81,13 @@ VObjectConfig SpaceshipObj() {
 }
 
 VObjectConfig Enemy(HumanoidPlayerController* player_ref, std::vector<PlanetInfo*> planets) {
+    WalkerController* walker = new WalkerController(planets);
+
     return VObjectConfig()
         .transform(TransformBuilder()
             .position(Vec3(50.0f, 220.0f, 0.0f)))
-        .component(new GroundEnemyController(player_ref, planets))
+        .component(walker)
+        .component(new GroundEnemyController(walker, player_ref))
         .child(SpaceshipObj());
 }
 
@@ -97,7 +106,7 @@ namespace game::scenes {
         Camera* humanoid_camera = new Camera();
         Camera* spaceship_third_person_camera = new Camera();
         Camera* spaceship_first_person_camera = new Camera();
-        Camera::set_main(spaceship_third_person_camera);
+        Camera::set_main(humanoid_camera);
         HumanoidPlayerController* player_ref = nullptr;
         std::vector<PlanetInfo*> planets;
         planets.push_back(new PlanetInfo(55.0e12f, 200.0f));
@@ -115,7 +124,7 @@ namespace game::scenes {
             .vobject(VObjectConfig().component(new Particles(100)))
             .vobject(Player(player_ref, humanoid_camera, player_height, planets))
             // ensure the camera component is attached to a VObject so Camera::get_vobject() is valid
-            //.vobject(Enemy(player_ref, planets))
+            .vobject(Enemy(player_ref, planets))
             .vobject(VObjectConfig()  // Root VObject for all planets
                 .child(Planet(planets[0])  // Central star
                     .transform(TransformBuilder()
