@@ -24,7 +24,7 @@ namespace engine::collision {
         auto point_vobject = point.get_vobject();
         auto sphere_vobject = sphere.get_vobject();
 
-        Vec3 point_pos = point_vobject->transform().get_position();;
+        Vec3 point_pos = point_vobject->transform().get_position();
         Vec3 sphere_pos = sphere_vobject->transform().get_position();
 
         engine::Vec3 delta = point_pos - sphere_pos;

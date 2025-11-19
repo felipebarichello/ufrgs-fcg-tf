@@ -12,10 +12,6 @@ using engine::math::Quaternion;
 
 namespace game::components {
 
-    void WalkerController::Start() {
-        // nothing for now
-    }
-
     void WalkerController::Update() {
         // Apply input-driven walking only when grounded
         this->update_transform_due_to_input();
@@ -180,7 +176,7 @@ namespace game::components {
                 closest_planet_distance = distance_to_planet;
             }
 
-            if (distance_to_planet < planet->get_radius()) {
+            if (engine::collision::collide_point_sphere(*this->get_point_collider(), *planet->get_sphere_collider()).has_collided()) {
                 // Collision detected. Correcting...
                 Vec3 direction_to_planet = glm::normalize(vec_to_planet);
                 Vec3 velocity_to_planet = glm::dot(this->current_velocity, direction_to_planet) * direction_to_planet;
