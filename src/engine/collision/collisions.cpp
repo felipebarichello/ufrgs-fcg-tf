@@ -1,7 +1,7 @@
 #include <engine>
 
 namespace engine::collision {
-    SphereSphereCollision collide_sphere_sphere(SphereCollider& sphere_1, SphereCollider& sphere_2) {
+    SphereSphereCollision collide_sphere_sphere(const SphereCollider& sphere_1, const SphereCollider& sphere_2) {
         // Get world positions from attached VObjects (if any).
         auto vobj1 = sphere_1.get_vobject();
         auto vobj2 = sphere_2.get_vobject();
@@ -20,7 +20,7 @@ namespace engine::collision {
         return SphereSphereCollision(collided);
     }
 
-    PointSphereCollision collide_point_sphere(PointCollider& point, SphereCollider& sphere) {
+    PointSphereCollision collide_point_sphere(const PointCollider& point, const SphereCollider& sphere) {
         auto point_vobject = point.get_vobject();
         auto sphere_vobject = sphere.get_vobject();
 
