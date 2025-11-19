@@ -6,10 +6,10 @@
 
 using namespace engine;
 
-// ObjDrawable::ObjDrawable(std::string file_name) {
-//     std::string model_path = EngineController::get_executable_directory() + "/../../assets/" + file_name;
-//     this->vao_ptr = ObjLoader::load(model_path.c_str());
-// }
+ObjDrawable::ObjDrawable(std::string file_name) {
+    std::string model_path = EngineController::get_executable_directory() + "/../../assets/" + file_name;
+    this->vao_ptr = ObjLoader::load(model_path.c_str());
+}
 
 ObjDrawable::ObjDrawable(std::string file_name, std::string texture_file_name) {
     std::string model_path = EngineController::get_executable_directory() + "/../../assets/" + file_name;

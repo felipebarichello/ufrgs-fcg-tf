@@ -1,9 +1,5 @@
 #include "MainScene.hpp"
-#include <engine/vobject/Transform.hpp>
-#include <engine/vobject/components/Trajectory.hpp>
-#include <engine/math/curves/BezierCurve.hpp>
-#include <engine/math/curves/CircularCurve.hpp>
-#include <engine/math/curves/PieceWiseBezierCurve.hpp>
+#include <engine>
 #include <cmath>
 #include <vector>
 #include <game/components/include.hpp>
@@ -79,6 +75,16 @@ VObjectConfig SpaceshipObj() {
         .component(new ObjDrawable(std::string("spaceship.obj"), std::string("spaceship.jpg")));
 }
 
+VObjectConfig EnemyObj() {
+    return VObjectConfig()
+        .transform(TransformBuilder()
+            .scale(0.03f)
+            .position(Vec3(0.0f, -2.0f, 0.0f))
+            .rotation(Quaternion::from_y_rotation(3.141592f * 1.5f))
+        )
+        .component(new ObjDrawable(std::string("VacuumCleaner/VacuumCleaner.obj")));
+}
+
 VObjectConfig Enemy(HumanoidPlayerController* player_ref, std::vector<PlanetInfo*> planets) {
     PointCollider* point_collider = new PointCollider();
     WalkerController* walker = new WalkerController(planets, point_collider);
@@ -89,7 +95,7 @@ VObjectConfig Enemy(HumanoidPlayerController* player_ref, std::vector<PlanetInfo
         .component(walker)
         .component(point_collider)
         .component(new GroundEnemyController(walker, player_ref))
-        .child(SpaceshipObj());
+        .child(EnemyObj());
 }
 
 VObjectConfig SkyBox() {
