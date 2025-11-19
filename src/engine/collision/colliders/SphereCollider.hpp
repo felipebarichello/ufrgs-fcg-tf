@@ -1,6 +1,7 @@
 #pragma once
 
 #include <engine/vobject/Component.hpp>
+#include <cmath>
 
 namespace engine {
     class SphereCollider : public Component {
