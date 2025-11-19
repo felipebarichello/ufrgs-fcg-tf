@@ -113,7 +113,7 @@ namespace game::scenes {
         Camera* humanoid_camera = new Camera();
         Camera* spaceship_third_person_camera = new Camera();
         Camera* spaceship_first_person_camera = new Camera();
-        Camera::set_main(humanoid_camera);
+        Camera::set_main(spaceship_third_person_camera);
         HumanoidPlayerController* player_ref = nullptr;
 
         std::vector<PlanetInfo*> planets;

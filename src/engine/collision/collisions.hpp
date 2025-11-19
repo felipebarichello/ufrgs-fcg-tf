@@ -3,6 +3,7 @@
 #include <engine/collision/colliders/SphereCollider.hpp>
 
 #include <engine/collision/colliders/PointCollider.hpp>
+#include <engine/collision/colliders/CylinderCollider.hpp>
 
 namespace engine::collision {
     class SphereSphereCollision {
@@ -26,4 +27,15 @@ namespace engine::collision {
     };
 
     PointSphereCollision collide_point_sphere(const PointCollider& point, const SphereCollider& sphere);
+
+    class CylinderCylinderCollision {
+        public:
+            CylinderCylinderCollision(bool collided) : collided(collided) {}
+            bool has_collided() const { return this->collided; }
+
+        private:
+            bool collided;
+    };
+
+    CylinderCylinderCollision collide_cylinder_cylinder(const CylinderCollider& c1, const CylinderCollider& c2);
 }
