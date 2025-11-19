@@ -26,7 +26,7 @@ namespace engine {
             virtual void PreDestroy() {}
             virtual std::optional<Behavior*> try_into_behavior() { return std::nullopt; }
             
-            VObject* get_vobject() { return this->vobject_ptr; }
+            VObject* get_vobject() const { return this->vobject_ptr; }
         
         private:
             VObject* vobject_ptr;
