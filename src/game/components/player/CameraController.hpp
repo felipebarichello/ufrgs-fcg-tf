@@ -9,9 +9,9 @@ using engine::Vec3;
 using engine::Transform;
 
 namespace game::components {
-    class CameraController : public engine::Behavior {
+    class SpaceshipCameraController : public engine::Behavior {
         public:
-            CameraController(SpaceshipController* player_controller, engine::Camera* camera);
+            SpaceshipCameraController(SpaceshipController* player_controller, engine::Camera* camera);
             void Update() override;
 
         private:

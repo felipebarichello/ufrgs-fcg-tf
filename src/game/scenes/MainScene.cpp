@@ -112,8 +112,8 @@ namespace game::scenes {
         const float planet_model_normalize = 1.0f; // Very precise estimate
 
         Camera* humanoid_camera = new Camera();
-        Camera* spaceship_third_person_camera = new Camera();
-        Camera::set_main(spaceship_third_person_camera);
+        Camera* spaceship_camera = new Camera();
+        Camera::set_main(spaceship_camera);
         HumanoidPlayerController* player_ref = nullptr;
 
         std::vector<PlanetInfo*> planets;
@@ -124,9 +124,9 @@ namespace game::scenes {
 
         root
             // Spaceship player
-            .vobject(VObjectConfig().component(spaceship_third_person_camera))
+            .vobject(VObjectConfig().component(spaceship_camera))
             .vobject(SpaceshipPlayer(spaceship_controller_ref))
-            .vobject(VObjectConfig().component(new CameraController(spaceship_controller_ref, spaceship_third_person_camera)))
+            .vobject(VObjectConfig().component(new SpaceshipCameraController(spaceship_controller_ref, spaceship_camera)))
             // HumanoidPlayer
             .vobject(SkyBox())
             .vobject(VObjectConfig().component(new Particles(100)))
