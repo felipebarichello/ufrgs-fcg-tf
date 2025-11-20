@@ -1,4 +1,4 @@
-#include "CameraController.hpp"
+#include "SpaceshipCameraController.hpp"
 #include <engine/EngineController.hpp>
 #include <engine/math/linalg.hpp>
 #include <cmath>

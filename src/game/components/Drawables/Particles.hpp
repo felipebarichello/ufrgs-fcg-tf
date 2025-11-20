@@ -8,7 +8,7 @@
 #include <engine/math/matrices.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <vector>
-#include <game/components/player/CameraController.hpp>
+#include <game/components/player/SpaceshipCameraController.hpp>
 
 class Particles : public engine::Drawable {
 public:

@@ -3,7 +3,7 @@
 #include <cmath>
 #include <vector>
 #include <game/components/include.hpp>
-#include <game/components/player/CameraController.hpp>
+#include <game/components/player/SpaceshipCameraController.hpp>
 #include <game/components/player/HumanoidPlayerController.hpp>
 #include <game/components/SpaceshipController.hpp>
 #include <game/components/Drawables/Stars.hpp>
