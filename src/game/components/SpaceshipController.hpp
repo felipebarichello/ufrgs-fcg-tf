@@ -18,28 +18,18 @@ namespace game::components {
 
             float planet_radius;
             
-            Transform stored_child_cam_transform;
             // Camera smoothing parameters
-            float camera_smooth_speed = 0.1f; // higher = snappier
-            float camera_distance = 10.0f;
-            float camera_height = 2.0f; // vertical offset above player
             engine::Vec2 move_vector {0.0f, 0.0f};
             engine::Vec3 current_velocity {0.0f, 0.0f, 0.0f};
-            float camera_phi = 0.0f;
             float v_sensitivity = 0.001f;
             float h_sensitivity = 0.001f;
-            engine::Vec2 secondary_move_vector {0.0f, 0.0f};
-            float phi_max = 3.141592f/2;
-            float phi_min = -3.141592f/2;
             float thrust_power = 200.0f; // meters/s^2 applied when thrusting
 
             void update_rotation_due_to_input();
             engine::Vec3 velocity = engine::Vec3(0.0f);
-            float acceleration = 0.0f;
+            float acceleration2 = 0.0f;
             bool accelerating_forward = false;
             bool accelerating_backward = false;
-            float max_speed = 500.0f;
-            float min_speed = 10.0f;
             SphericalInput get_spherical_input();
     };
 } // namespace game::components

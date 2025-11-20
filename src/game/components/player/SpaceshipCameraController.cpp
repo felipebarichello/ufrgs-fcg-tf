@@ -11,9 +11,9 @@ SpaceshipCameraController::SpaceshipCameraController(SpaceshipController* player
 }
 
 void SpaceshipCameraController::Update() {
-    auto& player_transform = this->player_controller->get_vobject()->transform();
+    Transform& player_transform = this->player_controller->get_vobject()->transform();
     Vec3 player_position = player_transform.get_position();
-    auto& cam_transform = this->camera->get_vobject()->transform();
+    Transform& cam_transform = this->camera->get_vobject()->transform();
 
     engine::math::Quaternion player_q = player_transform.get_quaternion();
     Vec3 world_offset = player_q.rotate(this->offset);

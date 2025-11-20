@@ -29,9 +29,10 @@ namespace game::components {
         float dt = EngineController::get_delta_time();
 
         // Build acceleration vector from input
-        Vec3 accel_vec(0.0f);
-        if (this->accelerating_forward) accel_vec += forward * thrust_power;
-        if (this->accelerating_backward) accel_vec -= forward * thrust_power;
+        float accel_dir = 0.0f;
+        if (this->accelerating_forward)  accel_dir += thrust_power;
+        if (this->accelerating_backward) accel_dir -= thrust_power;
+        Vec3 accel_vec = forward * accel_dir;
 
         // Integrate velocity
         this->current_velocity += accel_vec * dt;
