@@ -133,6 +133,10 @@ namespace game::components {
         if (this->walker) this->walker->request_jump();
     }
 
+    void HumanoidPlayerController::hit_by_enemy() {
+        std::printf("HumanoidPlayerController: hit by enemy!\n");
+    }
+
     void HumanoidPlayerController::toggle_camera_release() {
         this->released_camera = !this->released_camera;
         auto camera_vobj = this->camera->get_vobject();

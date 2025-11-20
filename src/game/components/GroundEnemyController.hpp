@@ -10,14 +10,17 @@
 namespace game::components {
     class GroundEnemyController : public engine::Behavior {
         public:
-            GroundEnemyController(WalkerController* walker, HumanoidPlayerController* target_controller) : walker(walker), target_controller(target_controller) {}
+            GroundEnemyController(WalkerController* walker, engine::CylinderCollider* cylinder_collider, HumanoidPlayerController* target_controller) : walker(walker), cylinder_collider(cylinder_collider), target_controller(target_controller) {}
 
             void Awake() override;
             void Update() override;
 
+            engine::CylinderCollider* get_cylinder_collider() { return this->cylinder_collider; }
+
         private:
             // Walker component used to perform physics for this enemy
             WalkerController* walker = nullptr;
+            engine::CylinderCollider* cylinder_collider = nullptr;
 
             // Target references
             HumanoidPlayerController* target_controller = nullptr;

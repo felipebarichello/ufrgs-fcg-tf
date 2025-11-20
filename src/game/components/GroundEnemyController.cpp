@@ -55,6 +55,19 @@ namespace game::components {
         Vec2 move_vec(right_comp, forward_comp);
         if (this->walker) this->walker->set_move_vector(move_vec);
 
+        // Use the target controller's walker/collider to detect a proper collision
+        if (this->target_controller) {
+            WalkerController* target_walker = this->target_controller->get_walker();
+            if (target_walker) {
+                auto enemy_cyl = this->get_cylinder_collider();
+                auto target_cyl = this->target_controller->get_cylinder_collider();
+
+                if (engine::collision::collide_cylinder_cylinder(*enemy_cyl, *target_cyl).has_collided()) {
+                    this->target_controller->hit_by_enemy();
+                }
+            }
+        }
+
         // Also rotate the VObject to face the movement direction (projected)
         Quaternion& quaternion = transform.quaternion();
         // Recompute forward projection onto tangent plane

@@ -11,9 +11,17 @@ namespace game::components {
         public:
             // Now HumanoidPlayerController only handles input and camera.
             // It receives a pointer to a WalkerController component that resides in the same VObject.
-            HumanoidPlayerController(engine::Camera* camera, WalkerController* walker, SpaceshipController* spaceship) : camera(camera), walker(walker), spaceship(spaceship) {}
+            HumanoidPlayerController(engine::Camera* camera, WalkerController* walker, engine::CylinderCollider* cylinder_collider) : camera(camera), walker(walker), cylinder_collider(cylinder_collider) {}
             void Start() override;
             void Update() override;
+
+            // Expose walker for external queries (e.g., collision checks)
+            WalkerController* get_walker() { return this->walker; }
+
+            engine::CylinderCollider* get_cylinder_collider() { return this->cylinder_collider; }
+            
+            // Called by enemies when they hit this player
+            void hit_by_enemy();
 
         private:
             struct SphericalInput;
@@ -27,8 +35,7 @@ namespace game::components {
             // Walker component responsible for all movement physics
             WalkerController* walker = nullptr;
 
-            // Spaceship component (if any) responsible for spaceship movement physics
-            SpaceshipController* spaceship = nullptr;
+            engine::CylinderCollider* cylinder_collider;
 
             /// @brief Used both for storing camera transform before releasing and for bobbing.
             engine::Transform stored_child_cam_transform;
