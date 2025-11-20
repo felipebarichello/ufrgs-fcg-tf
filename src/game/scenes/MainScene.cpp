@@ -43,7 +43,7 @@ VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera,
         // );
 }
 
-VObjectConfig SpaceShipPlayer(SpaceshipController*& controller_ref, Camera* first_person_camera) {
+VObjectConfig SpaceshipPlayer(SpaceshipController*& controller_ref, Camera* first_person_camera) {
     SpaceshipController* controller = new SpaceshipController(first_person_camera, 0.0f);
     controller_ref = controller;
     return VObjectConfig()
@@ -129,7 +129,7 @@ namespace game::scenes {
         root
             // Spaceship player
             .vobject(VObjectConfig().component(spaceship_third_person_camera))
-            .vobject(SpaceShipPlayer(spaceship_controller_ref, spaceship_first_person_camera))
+            .vobject(SpaceshipPlayer(spaceship_controller_ref, spaceship_first_person_camera))
             .vobject(VObjectConfig().component(new CameraController(spaceship_controller_ref, spaceship_third_person_camera)))
             // HumanoidPlayer
             .vobject(SkyBox())
