@@ -23,47 +23,41 @@ namespace game::components {
     }
 
     void SpaceshipController::Update() {
-        //this->update_transform_due_to_environment();
-        Vec3 player_forward = this->get_vobject()->transform().quaternion().rotate(Vec3(0.0f, 0.0f, -1.0f));
-        // Update player position
-        if (this->accelerating_forward) {
-            this->acceleration = 1.0f;
-        } else if (this->accelerating_backward) {
-            this->acceleration = -1.0f;
-        } else {
-            this->acceleration = 0.0f;
-        }
+        // Inertial spaceship: integrate acceleration -> velocity -> position
+        Vec3 forward = this->get_vobject()->transform().get_quaternion().rotate(Vec3(0.0f, 0.0f, -1.0f));
 
-        float delta_time = EngineController::get_delta_time();    
+        float dt = EngineController::get_delta_time();
 
-        this->speed += this->acceleration * delta_time * 100.0f;
-        if (this->speed > this->max_speed) this->speed = this->max_speed;
-        if (this->speed < this->min_speed) this->speed = this->min_speed;
-        this->get_vobject()->transform().position() += this->speed * delta_time * player_forward;
+        // Thrust parameters
+        const float THRUST_POWER = 200.0f; // units/s^2 applied when holding forward/back
 
-        this->update_transform_due_to_input();
-        this->update_camera();
+        // Build acceleration vector from input
+        Vec3 accel_vec(0.0f);
+        if (this->accelerating_forward) accel_vec += forward * THRUST_POWER;
+        if (this->accelerating_backward) accel_vec -= forward * THRUST_POWER;
+
+        // Integrate velocity
+        this->current_velocity += accel_vec * dt;
+
+        // Integrate position
+        this->get_vobject()->transform().position() += this->current_velocity * dt;
+
+        // Update rotation from input and camera
+        this->update_rotation_due_to_input();
     }
 
-    void SpaceshipController::update_transform_due_to_input() {
-        auto& transform = this->get_vobject()->transform();
-        auto& quaternion = transform.quaternion();
+    void SpaceshipController::update_rotation_due_to_input() {
+        Transform& transform = this->get_vobject()->transform();
+        Quaternion& quaternion = transform.quaternion();
 
         /* Camera (attached) movement */
 
         SpaceshipController::SphericalInput spherical = this->get_spherical_input();
-        // Make rotations frame-rate independent by scaling with delta time
         float dt = EngineController::get_delta_time();
         quaternion.local_compose(Quaternion::from_y_rotation(spherical.delta_theta * dt * 50.0f));
         quaternion.local_compose(Quaternion::from_x_rotation(spherical.delta_phi * dt * 50.0f));
         quaternion.local_compose(Quaternion::from_z_rotation(-this->move_vector.x * dt * 5.0f));
         quaternion.normalize();
-        
-    }
-
-    void SpaceshipController::update_camera() {
-        auto& cam_transform = this->camera->get_vobject()->transform();
-        cam_transform.position() = Vec3(0.0f, 0.0f, -1.0f);
     }
 
     SpaceshipController::SphericalInput SpaceshipController::get_spherical_input() {

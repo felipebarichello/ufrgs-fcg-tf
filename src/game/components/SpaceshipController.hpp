@@ -8,7 +8,7 @@ using engine::Transform;
 namespace game::components {
     class SpaceshipController : public engine::Behavior {
         public:
-            SpaceshipController(engine::Camera* camera, float planet_radius) : camera(camera), planet_radius(planet_radius) {}
+            SpaceshipController(float planet_radius) : planet_radius(planet_radius) {}
             void Start() override;
             void Update() override;
             float speed = 10.0f;
@@ -16,7 +16,6 @@ namespace game::components {
         private:
             struct SphericalInput;
 
-            engine::Camera* camera;
             float planet_radius;
             
             Transform stored_child_cam_transform;
@@ -33,8 +32,7 @@ namespace game::components {
             float phi_max = 3.141592f/2;
             float phi_min = -3.141592f/2;
 
-            void update_transform_due_to_input();
-            void update_camera();
+            void update_rotation_due_to_input();
             engine::Vec3 velocity = engine::Vec3(0.0f);
             float acceleration = 0.0f;
             bool accelerating_forward = false;

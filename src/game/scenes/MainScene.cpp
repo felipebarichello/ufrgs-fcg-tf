@@ -43,17 +43,14 @@ VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera,
         // );
 }
 
-VObjectConfig SpaceshipPlayer(SpaceshipController*& controller_ref, Camera* first_person_camera) {
-    SpaceshipController* controller = new SpaceshipController(first_person_camera, 0.0f);
+VObjectConfig SpaceshipPlayer(SpaceshipController*& controller_ref) {
+    SpaceshipController* controller = new SpaceshipController(0.0f);
     controller_ref = controller;
     return VObjectConfig()
         .transform(TransformBuilder()
             .position(Vec3(220.0f, 50.0f, 0.0f)))
         .component(controller)
-        .component(new ObjDrawable(std::string("spaceship.obj"), std::string("spaceship.jpg")))
-        .child(VObjectConfig()
-            .component(first_person_camera)
-        );
+        .component(new ObjDrawable(std::string("spaceship.obj"), std::string("spaceship.jpg")));
 }
 
 VObjectConfig Planet(PlanetInfo* planet_info) {
@@ -116,8 +113,7 @@ namespace game::scenes {
 
         Camera* humanoid_camera = new Camera();
         Camera* spaceship_third_person_camera = new Camera();
-        Camera* spaceship_first_person_camera = new Camera();
-        Camera::set_main(humanoid_camera);
+        Camera::set_main(spaceship_third_person_camera);
         HumanoidPlayerController* player_ref = nullptr;
 
         std::vector<PlanetInfo*> planets;
@@ -129,7 +125,7 @@ namespace game::scenes {
         root
             // Spaceship player
             .vobject(VObjectConfig().component(spaceship_third_person_camera))
-            .vobject(SpaceshipPlayer(spaceship_controller_ref, spaceship_first_person_camera))
+            .vobject(SpaceshipPlayer(spaceship_controller_ref))
             .vobject(VObjectConfig().component(new CameraController(spaceship_controller_ref, spaceship_third_person_camera)))
             // HumanoidPlayer
             .vobject(SkyBox())
