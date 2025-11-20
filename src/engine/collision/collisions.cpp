@@ -1,6 +1,76 @@
 #include <engine>
+#include <algorithm>
+#include <cmath>
 
 namespace engine::collision {
+
+    static float clampf(float v, float lo, float hi) {
+        return std::max(lo, std::min(hi, v));
+    }
+
+    // Closest point on segment AB to point P
+    static engine::Vec3 closest_point_on_segment(const engine::Vec3& a, const engine::Vec3& b, const engine::Vec3& p) {
+        engine::Vec3 ab = b - a;
+        float ab2 = glm::dot(ab, ab);
+        if (ab2 <= 1e-12f) return a;
+        float t = glm::dot(p - a, ab) / ab2;
+        t = clampf(t, 0.0f, 1.0f);
+        return a + ab * t;
+    }
+
+    // Squared distance between two segments [p1,q1] and [p2,q2]
+    static float segment_segment_distance_squared(const engine::Vec3& p1, const engine::Vec3& q1, const engine::Vec3& p2, const engine::Vec3& q2) {
+        engine::Vec3   d1 = q1 - p1; // Direction vector of segment S1
+        engine::Vec3   d2 = q2 - p2; // Direction vector of segment S2
+        engine::Vec3   r = p1 - p2;
+        float a = glm::dot(d1,d1); // squared length of segment S1
+        float e = glm::dot(d2,d2); // squared length of segment S2
+        float f = glm::dot(d2,r);
+
+        float s, t;
+
+        const float EPS = 1e-12f;
+
+        if (a <= EPS && e <= EPS) {
+            // Both segments degenerate to points
+            return glm::dot(p1 - p2, p1 - p2);
+        }
+        if (a <= EPS) {
+            // First segment degenerates to a point
+            s = 0.0f;
+            t = clampf(f / e, 0.0f, 1.0f);
+        } else {
+            float c = glm::dot(d1, r);
+            if (e <= EPS) {
+                // Second segment degenerates to a point
+                t = 0.0f;
+                s = clampf(-c / a, 0.0f, 1.0f);
+            } else {
+                float b = glm::dot(d1, d2);
+                float denom = a*e - b*b;
+                if (denom != 0.0f) {
+                    s = clampf((b*f - c*e) / denom, 0.0f, 1.0f);
+                } else {
+                    s = 0.0f;
+                }
+                t = (b*s + f) / e;
+
+                if (t < 0.0f) {
+                    t = 0.0f;
+                    s = clampf(-c / a, 0.0f, 1.0f);
+                } else if (t > 1.0f) {
+                    t = 1.0f;
+                    s = clampf((b - c) / a, 0.0f, 1.0f);
+                }
+            }
+        }
+
+        engine::Vec3 c1 = p1 + d1 * s;
+        engine::Vec3 c2 = p2 + d2 * t;
+        engine::Vec3 diff = c1 - c2;
+        return glm::dot(diff, diff);
+    }
+
     SphereSphereCollision collide_sphere_sphere(const SphereCollider& sphere_1, const SphereCollider& sphere_2) {
         // Get world positions from attached VObjects (if any).
         auto vobj1 = sphere_1.get_vobject();
@@ -27,7 +97,7 @@ namespace engine::collision {
         Vec3 point_pos = point_vobject->transform().get_position();
         Vec3 sphere_pos = sphere_vobject->transform().get_position();
 
-        engine::Vec3 delta = point_pos - sphere_pos;
+        Vec3 delta = point_pos - sphere_pos;
         float distance_squared = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
         bool collided = distance_squared <= sphere.get_radius_squared();
 
@@ -35,73 +105,54 @@ namespace engine::collision {
     }
 
     CylinderCylinderCollision collide_cylinder_cylinder(const CylinderCollider& c1, const CylinderCollider& c2) {
-        // Get world positions from attached VObjects (if any).
+        // Get world positions and transforms
         auto vobj1 = c1.get_vobject();
         auto vobj2 = c2.get_vobject();
 
-        engine::Vec3 pos1 {0.0f, 0.0f, 0.0f};
-        engine::Vec3 pos2 {0.0f, 0.0f, 0.0f};
+        Vec3 pos1 = vobj1->transform().get_position();
+        Vec3 pos2 = vobj2->transform().get_position();
 
-        if (vobj1) pos1 = vobj1->transform().get_position();
-        if (vobj2) pos2 = vobj2->transform().get_position();
+        // Axes (apply rotation)
+        Vec3 axis1 = vobj1->transform().get_quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
+        Vec3 axis2 = vobj2->transform().get_quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
 
-        // Horizontal distance on XZ plane
-        float dx = pos2.x - pos1.x;
-        float dz = pos2.z - pos1.z;
-        float horiz_dist2 = dx*dx + dz*dz;
+        // Segment endpoints for the axes
+        Vec3 a1 = pos1;
+        Vec3 b1 = pos1 + axis1 * c1.get_height();
+        Vec3 a2 = pos2;
+        Vec3 b2 = pos2 + axis2 * c2.get_height();
+
+        float dist2 = segment_segment_distance_squared(a1, b1, a2, b2);
         float rsum = c1.get_radius() + c2.get_radius();
+        bool collided = dist2 <= (rsum * rsum);
 
-        bool horiz_overlap = horiz_dist2 <= (rsum * rsum);
-
-        // Vertical overlap along Y axis: compare center Y distance to half-heights
-        float half_h1 = c1.get_height() * 0.5f;
-        float half_h2 = c2.get_height() * 0.5f;
-        float dy = std::fabs(pos2.y - pos1.y);
-        bool vert_overlap = dy <= (half_h1 + half_h2);
-
-        return CylinderCylinderCollision(horiz_overlap && vert_overlap);
+        return CylinderCylinderCollision(collided);
     }
 
     CylinderSphereCollision collide_cylinder_sphere(const CylinderCollider& cyl, const SphereCollider& sphere) {
-        // Get world positions from attached VObjects (if any).
-        auto vc = cyl.get_vobject();
-        auto vs = sphere.get_vobject();
+        auto cylinder_vobj = cyl.get_vobject();
+        auto sphere_vobj = sphere.get_vobject();
 
-        engine::Vec3 pc {0.0f, 0.0f, 0.0f};
-        engine::Vec3 ps {0.0f, 0.0f, 0.0f};
-        if (vc) pc = vc->transform().get_position();
-        if (vs) ps = vs->transform().get_position();
+        Vec3 cyl_pos = cylinder_vobj->transform().get_position();
+        Vec3 sphere_pos = sphere_vobj->transform().get_position();
 
-        float r_c = cyl.get_radius();
-        float r_s = sphere.get_radius();
+        // Cylinder axis and scale
+        Vec3 axis = cylinder_vobj->transform().get_quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
+        float cyl_radius = cyl.get_radius();
 
-        // Vertical clamp
-        float half_h = cyl.get_height() * 0.5f;
-        float cyl_top = pc.y + half_h;
-        float cyl_bottom = pc.y - half_h;
-        float closest_y = std::min(std::max(ps.y, cyl_bottom), cyl_top);
+        float sphere_radius = sphere.get_radius();
 
-        // Horizontal (XZ) clamp
-        float dx = ps.x - pc.x;
-        float dz = ps.z - pc.z;
-        float radial2 = dx*dx + dz*dz;
-        float radial = std::sqrt(radial2);
-        float clamped_radial = radial;
-        if (clamped_radial > r_c) clamped_radial = r_c;
+        // Cylinder segment endpoints
+        Vec3 a = cyl_pos;
+        Vec3 b = cyl_pos + axis * cyl.get_height();
 
-        float closest_x = pc.x;
-        float closest_z = pc.z;
-        if (radial > 1e-6f) {
-            float scale = clamped_radial / radial;
-            closest_x = pc.x + dx * scale;
-            closest_z = pc.z + dz * scale;
-        }
+        // Closest point on cylinder segment to sphere center
+        Vec3 closest = closest_point_on_segment(a, b, sphere_pos);
+        Vec3 diff = sphere_pos - closest;
+        float dist2 = glm::dot(diff, diff);
 
-        engine::Vec3 closest_point { closest_x, closest_y, closest_z };
-        engine::Vec3 delta = ps - closest_point;
-        float dist2 = delta.x*delta.x + delta.y*delta.y + delta.z*delta.z;
-
-        bool collided = dist2 <= (r_s * r_s);
+        bool collided = dist2 <= ((cyl_radius + sphere_radius) * (cyl_radius + sphere_radius));
         return CylinderSphereCollision(collided);
     }
+
 } // namespace engine::collision
