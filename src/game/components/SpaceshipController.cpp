@@ -28,13 +28,10 @@ namespace game::components {
 
         float dt = EngineController::get_delta_time();
 
-        // Thrust parameters
-        const float THRUST_POWER = 200.0f; // units/s^2 applied when holding forward/back
-
         // Build acceleration vector from input
         Vec3 accel_vec(0.0f);
-        if (this->accelerating_forward) accel_vec += forward * THRUST_POWER;
-        if (this->accelerating_backward) accel_vec -= forward * THRUST_POWER;
+        if (this->accelerating_forward) accel_vec += forward * thrust_power;
+        if (this->accelerating_backward) accel_vec -= forward * thrust_power;
 
         // Integrate velocity
         this->current_velocity += accel_vec * dt;
