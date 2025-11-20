@@ -14,6 +14,10 @@ namespace engine {
         return (v.x == 0.0f) && (v.y == 0.0f) && (v.z == 0.0f);
     }
 
+    Vec3 lerp(const Vec3& start, const Vec3& end, float t) {
+        return start + t * (end - start);
+    }
+
     Mat4 identity_matrix() {
         return Mat4(1.0f);
     }

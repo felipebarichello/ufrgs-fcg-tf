@@ -14,6 +14,7 @@ namespace engine {
     Vec3 negate(Vec3 v);
     bool is_zero(Vec2 v);
     bool is_zero(Vec3 v);
+    Vec3 lerp(const Vec3& start, const Vec3& end, float t);
     Mat4 h_identity_matrix();
     Mat4 invert_orthonormal_matrix(const Mat4& m);
 
