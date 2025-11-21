@@ -20,6 +20,7 @@ namespace game::components {
             void request_jump() { this->jump_requested = true; }
             engine::PointCollider* get_point_collider() { return this->point_collider; }
             engine::Vec3 get_velocity() const { return this->current_velocity; }
+            bool is_grounded() const { return this->grounded_to.has_value(); }
 
         private:
             engine::Vec2 move_vector {0.0f, 0.0f};

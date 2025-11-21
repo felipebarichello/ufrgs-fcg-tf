@@ -78,4 +78,12 @@ namespace game::components {
         return spherical;
     }
 
+    void SpaceshipController::enable() {
+        this->active = true;
+    }
+
+    void SpaceshipController::disable() {
+        this->active = false;
+    }
+
 }

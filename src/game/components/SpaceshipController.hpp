@@ -8,12 +8,13 @@ using engine::Transform;
 namespace game::components {
     class SpaceshipController : public engine::Behavior {
         public:
-            SpaceshipController(float planet_radius) : planet_radius(planet_radius) {}
+            SpaceshipController(engine::ObjDrawable* spaceship_drawable) : spaceship_drawable(spaceship_drawable) {}
             void Start() override;
             void Update() override;
             engine::Vec3 get_velocity() const { return this->velocity; }
 
-            void set_active(bool a) { this->active = a; }
+            void enable();
+            void disable();
             bool is_active() const { return this->active; }
 
             float speed = 10.0f;
@@ -21,7 +22,7 @@ namespace game::components {
         private:
             struct SphericalInput;
 
-            float planet_radius;
+            engine::ObjDrawable* spaceship_drawable = nullptr;
             
             // Camera smoothing parameters
             engine::Vec2 move_vector {0.0f, 0.0f};

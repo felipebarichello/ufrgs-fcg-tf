@@ -4,6 +4,9 @@
 
 using engine::EngineController;
 using engine::InputController;
+using engine::Camera;
+using engine::Transform;
+using engine::Quaternion;
 
 namespace game::components {
 
@@ -16,18 +19,32 @@ namespace game::components {
 
     void PlayerSwitcherController::toggle_active() {
         if (!this->humanoid || !this->spaceship) return;
+        if (this->humanoid->get_walker()->is_grounded()) return; // Only allow switching when humanoid is not grounded
 
-        bool humanoid_was = this->humanoid->is_active();
-        this->humanoid->set_active(!humanoid_was);
-        this->spaceship->set_active(humanoid_was);
+        bool was_humanoid = this->humanoid->is_active();
+        Transform& human_transform = this->humanoid->get_vobject()->transform();
+        Transform& ship_transform = this->spaceship->get_vobject()->transform();
 
         // Swap main camera if cameras provided
         if (this->humanoid_cam && this->ship_cam) {
-            if (!humanoid_was) {
-                // humanoid was inactive and now active -> set humanoid camera
-                engine::Camera::set_main(this->humanoid_cam);
+            if (was_humanoid) {
+                this->humanoid->disable();
+                
+                ship_transform.position() = human_transform.position();
+                ship_transform.quaternion() = human_transform.get_quaternion();
+
+                this->spaceship->enable();
+
+                Camera::set_main(this->ship_cam);
             } else {
-                engine::Camera::set_main(this->ship_cam);
+                this->spaceship->disable();
+
+                human_transform.position() = ship_transform.position();
+                human_transform.quaternion() = ship_transform.get_quaternion();
+
+                this->humanoid->enable();
+                
+                Camera::set_main(this->humanoid_cam);
             }
         }
     }

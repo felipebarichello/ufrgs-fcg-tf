@@ -45,13 +45,15 @@ VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera,
 }
 
 VObjectConfig SpaceshipPlayer(SpaceshipController*& controller_ref) {
-    SpaceshipController* controller = new SpaceshipController(0.0f);
+    ObjDrawable* drawable = new ObjDrawable(std::string("spaceship.obj"), std::string("spaceship.jpg"));
+    SpaceshipController* controller = new SpaceshipController(drawable);
     controller_ref = controller;
+
     return VObjectConfig()
         .transform(TransformBuilder()
             .position(Vec3(220.0f, 50.0f, 0.0f)))
         .component(controller)
-        .component(new ObjDrawable(std::string("spaceship.obj"), std::string("spaceship.jpg")));
+        .component(drawable);
 }
 
 VObjectConfig Planet(PlanetInfo* planet_info) {
