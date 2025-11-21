@@ -2,6 +2,8 @@
 
 #include <engine>
 #include <memory>
+// Text rendering helper
+#include <engine/vobject/components/TextDrawable.hpp>
 
 using engine::Transform;
 
@@ -32,6 +34,9 @@ namespace game::components {
             float thrust_power = 50.0f; // meters/s^2 applied when thrusting
             float fuel = 100.0f;
             float fuel_consumption_rate = 1.0f; // units per second when thrusting
+
+            // Text drawable to show fuel on screen
+            TextDrawable* fuel_text = nullptr;
 
             void update_rotation_due_to_input();
             engine::Vec3 velocity = engine::Vec3(0.0f);

@@ -2,6 +2,10 @@
 #include <engine>
 #include <InputController.hpp>
 #include <algorithm>
+#include <engine/vobject/components/TextDrawable.hpp>
+#include <glm/vec3.hpp>
+#include <sstream>
+#include <iomanip>
 
 using engine::EngineController;
 using engine::InputController;
@@ -20,6 +24,12 @@ namespace game::components {
         input->subscribe_dpad(&this->move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
         input->subscribe_hold_button(GLFW_KEY_W, &this->accelerating_forward);
         input->subscribe_hold_button(GLFW_KEY_S, &this->accelerating_backward);
+
+        // Create text drawable to show fuel on-screen (top-left corner)
+        this->fuel_text = new TextDrawable();
+        std::ostringstream init_ss;
+        init_ss << std::fixed << std::setprecision(1) << this->fuel;
+        this->fuel_text->setText(std::string("Fuel: ") + init_ss.str(), 1.5f, glm::vec3(1.0f), -0.95f, 0.9f);
     }
 
     void SpaceshipController::Update() {
@@ -46,6 +56,13 @@ namespace game::components {
 
         // Integrate position
         this->get_vobject()->transform().position() += this->current_velocity * dt;
+
+        // Update on-screen fuel text
+        if (this->fuel_text) {
+            std::ostringstream ss;
+            ss << std::fixed << std::setprecision(1) << std::max(0.0f, this->fuel);
+            this->fuel_text->setText(std::string("Fuel: ") + ss.str(), 1.8f, glm::vec3(1.0f), -0.95f, 0.95f);
+        }
 
         // Update rotation from input and camera
         this->update_rotation_due_to_input();
