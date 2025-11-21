@@ -41,7 +41,7 @@ SpaceParticles::SpaceParticles(int max_particles) {
         // Position = camera_pos + forward*depth + lateral jitter
         p.position = cam_pos + forward * depth + right * rx + up * ry;
         // Move in a random direction away from the camera
-        p.direction = glm::normalize(Vec3(
+        p.direction = engine::h_normalize(Vec3(
             (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f),
             (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f),
             (static_cast<float>(rand()) / RAND_MAX * 0.5f + 0.5f) // bias forward
@@ -122,7 +122,7 @@ void SpaceParticles::draw() {
     GLint model_uniform = glGetUniformLocation(program_id, "model");
     GLint position_uniform = glGetUniformLocation(program_id, "position");
 
-    glm::mat4 model_matrix = glm::mat4(1.0f);
+    engine::Mat4 model_matrix = engine::Mat4(1.0f);
 
     // Enable blending so particle alpha is applied, and disable depth writes
     glEnable(GL_BLEND);
@@ -133,7 +133,7 @@ void SpaceParticles::draw() {
         glPointSize(particle.size);
         if (position_uniform != -1) {
             // shader declares a vec4 position; upload a vec4
-            glm::vec4 pos4(particle.position, 1.0f);
+            engine::Vec4 pos4(particle.position, 1.0f);
             glUniform4fv(position_uniform, 1, glm::value_ptr(pos4));
         }
         if (model_uniform != -1) glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model_matrix));
