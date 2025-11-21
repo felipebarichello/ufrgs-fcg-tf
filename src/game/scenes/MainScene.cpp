@@ -6,6 +6,7 @@
 #include <game/components/player/SpaceshipCameraController.hpp>
 #include <game/components/player/HumanoidPlayerController.hpp>
 #include <game/components/SpaceshipController.hpp>
+#include <game/components/player/PlayerSwitcherController.hpp>
 #include <game/components/Drawables/Stars.hpp>
 #include <game/components/Drawables/SpaceParticles.hpp>
 
@@ -148,7 +149,7 @@ namespace game::scenes {
             // HumanoidPlayer
             .vobject(SkyBox())
             .vobject(Player(player_ref, humanoid_camera, player_height, planets))
-            // ensure the camera component is attached to a VObject so Camera::get_vobject() is valid
+            .vobject(VObjectConfig().component(new game::components::PlayerSwitcherController(player_ref, spaceship_controller_ref, humanoid_camera, spaceship_camera)))
             .vobject(Enemy(player_ref, planets))
             .vobject(VObjectConfig()  // Root VObject for all planets
                 .child(Planet(planets[0])  // Central star

@@ -1,0 +1,24 @@
+#pragma once
+
+#include <engine>
+#include "HumanoidPlayerController.hpp"
+#include <game/components/SpaceshipController.hpp>
+
+namespace game::components {
+    class PlayerSwitcherController : public engine::Behavior {
+    public:
+        PlayerSwitcherController(HumanoidPlayerController* humanoid, SpaceshipController* spaceship, engine::Camera* humanoid_cam, engine::Camera* ship_cam)
+            : humanoid(humanoid), spaceship(spaceship), humanoid_cam(humanoid_cam), ship_cam(ship_cam) {}
+
+        void Start() override;
+        void Update() override {}
+
+    private:
+        HumanoidPlayerController* humanoid = nullptr;
+        SpaceshipController* spaceship = nullptr;
+        engine::Camera* humanoid_cam = nullptr;
+        engine::Camera* ship_cam = nullptr;
+
+        void toggle_active();
+    };
+}

@@ -13,6 +13,9 @@ namespace game::components {
             void Update() override;
             engine::Vec3 get_velocity() const { return this->velocity; }
 
+            void set_active(bool a) { this->active = a; }
+            bool is_active() const { return this->active; }
+
             float speed = 10.0f;
 
         private:
@@ -33,6 +36,7 @@ namespace game::components {
             engine::Vec3 velocity = engine::Vec3(0.0f);
             bool accelerating_forward = false;
             bool accelerating_backward = false;
+            bool active = true;
             SphericalInput get_spherical_input();
     };
 } // namespace game::components

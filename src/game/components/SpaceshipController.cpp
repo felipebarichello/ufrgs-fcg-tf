@@ -23,6 +23,8 @@ namespace game::components {
     }
 
     void SpaceshipController::Update() {
+        if (!this->active) return;
+        
         // Inertial spaceship: integrate acceleration -> velocity -> position
         Vec3 forward = this->get_vobject()->transform().get_quaternion().rotate(Vec3(0.0f, 0.0f, -1.0f));
 

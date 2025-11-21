@@ -15,6 +15,9 @@ namespace game::components {
             void Start() override;
             void Update() override;
 
+            void set_active(bool a) { this->active = a; }
+            bool is_active() const { return this->active; }
+
             // Expose walker for external queries (e.g., collision checks)
             WalkerController* get_walker() { return this->walker; }
 
