@@ -4,6 +4,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <cstdio>
+#include <stdexcept>
 
 namespace engine {
 
@@ -51,13 +52,15 @@ void TextRenderer::init_freetype(const char* font_path, unsigned int font_size) 
     // Initialize FreeType library
     if (FT_Init_FreeType(&ft)) {
         fprintf(stderr, "ERROR::FREETYPE: Could not init FreeType Library\n");
-        return;
+        throw std::runtime_error("Failed to initialize FreeType");
     }
 
     // Load font face
     if (FT_New_Face(ft, font_path, 0, &face)) {
         fprintf(stderr, "ERROR::FREETYPE: Failed to load font from %s\n", font_path);
-        return;
+        FT_Done_FreeType(ft);
+        ft = nullptr;
+        throw std::runtime_error("Failed to load font");
     }
 
     // Set font size
@@ -189,9 +192,9 @@ void TextRenderer::render_text(const std::string& text, float x, float y, float 
     glGetIntegerv(GL_CURRENT_PROGRAM, &last_program);
     GLboolean last_blend_enabled = glIsEnabled(GL_BLEND);
     GLboolean last_depth_test = glIsEnabled(GL_DEPTH_TEST);
-    GLint last_blend_src, last_blend_dst;
-    glGetIntegerv(GL_BLEND_SRC_ALPHA, &last_blend_src);
-    glGetIntegerv(GL_BLEND_DST_ALPHA, &last_blend_dst);
+    GLint last_blend_src_rgb, last_blend_dst_rgb;
+    glGetIntegerv(GL_BLEND_SRC_RGB, &last_blend_src_rgb);
+    glGetIntegerv(GL_BLEND_DST_RGB, &last_blend_dst_rgb);
 
     // Activate shader
     glUseProgram(shader_program);
@@ -264,7 +267,7 @@ void TextRenderer::render_text(const std::string& text, float x, float y, float 
     if (!last_blend_enabled) {
         glDisable(GL_BLEND);
     } else {
-        glBlendFunc(last_blend_src, last_blend_dst);
+        glBlendFunc(last_blend_src_rgb, last_blend_dst_rgb);
     }
     
     glUseProgram(last_program);

@@ -51,7 +51,13 @@ namespace engine {
         
         // Initialize text renderer with a system font
         EngineController::instance->text_renderer = std::make_unique<TextRenderer>();
-        EngineController::instance->text_renderer->init("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 48);
+        try {
+            EngineController::instance->text_renderer->init("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 48);
+        } catch (const std::exception& e) {
+            fprintf(stderr, "WARNING: Failed to initialize text renderer: %s\n", e.what());
+            fprintf(stderr, "         Text rendering will be disabled.\n");
+            EngineController::instance->text_renderer.reset();
+        }
         
         return EngineController::instance.get();
     }
