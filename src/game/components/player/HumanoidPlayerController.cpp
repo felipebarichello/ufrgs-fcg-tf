@@ -157,5 +157,14 @@ namespace game::components {
         }
     }
 
-    // Humanoid no longer handles gravity/collision/alignment. That is WalkerController's responsibility.
+    void HumanoidPlayerController::enable() {
+        this->active = true;
+        this->walker->enable();
+    }
+
+    void HumanoidPlayerController::disable() {
+        this->active = false;
+        this->walker->disable();
+    }
+
 }

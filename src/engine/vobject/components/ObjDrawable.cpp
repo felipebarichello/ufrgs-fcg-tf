@@ -32,6 +32,8 @@ ObjDrawable::~ObjDrawable() {
 }
 
 void ObjDrawable::draw() {
+    if (!this->visible) return;
+
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);
@@ -49,4 +51,12 @@ void ObjDrawable::draw() {
     if (this->vao_ptr) {
         this->vao_ptr->draw();
     }
+}
+
+void ObjDrawable::set_visible() {
+    this->visible = true;
+}
+
+void ObjDrawable::set_invisible() {
+    this->visible = false;
 }

@@ -13,6 +13,8 @@ using engine::math::Quaternion;
 namespace game::components {
 
     void WalkerController::Update() {
+        if (!this->active) return;
+
         // Apply input-driven walking only when grounded
         this->update_transform_due_to_input();
         // Environment (gravity, collisions, integration)

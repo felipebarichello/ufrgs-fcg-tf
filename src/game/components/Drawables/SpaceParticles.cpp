@@ -1,6 +1,8 @@
-#include "Particles.hpp"
+#include "SpaceParticles.hpp"
 
-Particles::Particles(int max_particles) {
+using namespace engine;
+
+SpaceParticles::SpaceParticles(int max_particles) {
     this->max_particles = max_particles;
     this->particles.reserve(max_particles);
     // Setup a minimal VAO used to draw a single point; actual particle
@@ -39,7 +41,7 @@ Particles::Particles(int max_particles) {
         // Position = camera_pos + forward*depth + lateral jitter
         p.position = cam_pos + forward * depth + right * rx + up * ry;
         // Move in a random direction away from the camera
-        p.direction = normalize(Vec3(
+        p.direction = glm::normalize(Vec3(
             (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f),
             (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f),
             (static_cast<float>(rand()) / RAND_MAX * 0.5f + 0.5f) // bias forward
@@ -55,14 +57,14 @@ Particles::Particles(int max_particles) {
     }
 }
 
-Particles::~Particles() {
+SpaceParticles::~SpaceParticles() {
     if (this->vao_ptr) {
         delete this->vao_ptr;
         this->vao_ptr = nullptr;
     }
 }
 
-void Particles::update() {
+void SpaceParticles::update() {
     float delta_time = engine::EngineController::get_delta_time();
 
 
@@ -105,7 +107,7 @@ void Particles::update() {
     }
 }
 
-void Particles::draw() {
+void SpaceParticles::draw() {
 
     this->update();
 

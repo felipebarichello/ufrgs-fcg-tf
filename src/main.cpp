@@ -9,11 +9,11 @@ using game::scenes::MainScene;
 
 int main() {
     // TODO: Move configuration to game?
-    EngineController* engine_controller = EngineController::start_engine(WindowConfig(
-        800,
-        800,
-        "FCG - Trabalho Final"
-    ));
+    EngineController* engine_controller = EngineController::start_engine(WindowConfig {
+        .width = 800,
+        .height = 800,
+        .title = "FCG - Trabalho Final"
+    });
     
     // Subscribe F11 key to toggle fullscreen
     engine_controller->input()->subscribe_press_button(GLFW_KEY_F11, [&]() {

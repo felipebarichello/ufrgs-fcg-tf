@@ -8,12 +8,12 @@
 #include <engine/math/matrices.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <vector>
-#include <game/components/player/CameraController.hpp>
+#include <game/components/player/SpaceshipCameraController.hpp>
 
-class Particles : public engine::Drawable {
+class SpaceParticles : public engine::Drawable {
 public:
-    Particles(int max_particles);
-    ~Particles();
+    SpaceParticles(int max_particles);
+    ~SpaceParticles();
 
     void update();
     void draw() override;
