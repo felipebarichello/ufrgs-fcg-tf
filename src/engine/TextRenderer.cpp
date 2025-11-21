@@ -222,11 +222,9 @@ void TextRenderer::render_text(const std::string& text, float x, float y, float 
     GLFWwindow* window = EngineController::get_instance()->get_window();
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
-    glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(width), 0.0f, static_cast<float>(height));
+    // Use top-left origin (0,0 at top-left) which is more intuitive for HUD rendering
+    glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(width), static_cast<float>(height), 0.0f);
     glUniformMatrix4fv(glGetUniformLocation(shader_program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-
-    // Convert y from top-origin to bottom-origin
-    y = height - y;
 
     // Iterate through all characters
     std::string::const_iterator c;

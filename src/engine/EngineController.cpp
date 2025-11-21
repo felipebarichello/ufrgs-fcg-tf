@@ -484,9 +484,9 @@ namespace engine {
             drawable->draw();
         }
         
-        // Render "Hello World" as HUD text
+        // Render "Hello World" as HUD text (larger scale for visibility)
         if (EngineController::instance && EngineController::instance->text_renderer) {
-            EngineController::instance->text_renderer->render_text("Hello World", 25.0f, 25.0f, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f));
+            EngineController::instance->text_renderer->render_text("Hello World", 50.0f, 50.0f, 1.5f, glm::vec3(1.0f, 1.0f, 1.0f));
         }
     }
 
