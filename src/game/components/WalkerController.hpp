@@ -20,6 +20,11 @@ namespace game::components {
             void request_jump() { this->jump_requested = true; }
             engine::PointCollider* get_point_collider() { return this->point_collider; }
             engine::Vec3 get_velocity() const { return this->current_velocity; }
+            void set_velocity(const engine::Vec3& vel) { this->current_velocity = vel; }
+            void set_walk_accel(float accel) { this->walk_accel = accel; }
+            void set_walk_deaccel(float deaccel) { this->walk_deaccel = deaccel; }
+            void set_max_walk_speed(float speed) { this->max_walk_speed = speed; }
+            void set_jump_strength(float strength) { this->jump_strength = strength; }
 
         private:
             engine::Vec2 move_vector {0.0f, 0.0f};

@@ -12,12 +12,26 @@
 using namespace engine;
 using namespace game::components;
 
+#define PLAYER_SPEED 10.0f
+#define PLAYER_ACCEL 30.0f
+#define PLAYER_DEACCEL 40.0f
+#define PLAYER_JUMP_STRENGTH 25.0f  
+
+#define ENEMY_SPEED 15.0f
+#define ENEMY_ACCEL 15.0f
+#define ENEMY_DEACCEL 1.0f
+
+
 VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera, float height, std::vector<PlanetInfo*> planets) {
     engine::PointCollider* point_collider = new engine::PointCollider();
     engine::CylinderCollider* cylinder_collider = new engine::CylinderCollider(height, 0.5f);
 
     // Create walker component first and then the humanoid which will forward inputs to it.
     WalkerController* walker = new WalkerController(planets, point_collider);
+    walker->set_walk_accel(PLAYER_ACCEL);
+    walker->set_walk_deaccel(PLAYER_DEACCEL);
+    walker->set_max_walk_speed(PLAYER_SPEED);
+    walker->set_jump_strength(PLAYER_JUMP_STRENGTH);
 
     // TODO: add spaceship controller pointer (nullptr for now)
     HumanoidPlayerController* controller = new HumanoidPlayerController(main_camera, walker, cylinder_collider);
@@ -88,6 +102,10 @@ VObjectConfig Enemy(HumanoidPlayerController* player_ref, std::vector<PlanetInfo
     PointCollider* point_collider = new PointCollider();
     CylinderCollider* cylinder_collider = new CylinderCollider(1.0f, 3.0f);
     WalkerController* walker = new WalkerController(planets, point_collider);
+    walker->set_walk_accel(ENEMY_ACCEL);
+    walker->set_walk_deaccel(ENEMY_DEACCEL);
+    walker->set_max_walk_speed(ENEMY_SPEED);
+
 
     return VObjectConfig()
         .transform(TransformBuilder()
@@ -113,7 +131,7 @@ namespace game::scenes {
 
         Camera* humanoid_camera = new Camera();
         Camera* spaceship_camera = new Camera();
-        Camera::set_main(spaceship_camera);
+        Camera::set_main(humanoid_camera);
         HumanoidPlayerController* player_ref = nullptr;
 
         std::vector<PlanetInfo*> planets;
@@ -129,7 +147,6 @@ namespace game::scenes {
             .vobject(VObjectConfig().component(new SpaceshipCameraController(spaceship_controller_ref, spaceship_camera)))
             // HumanoidPlayer
             .vobject(SkyBox())
-            .vobject(VObjectConfig().component(new SpaceParticles(100)))
             .vobject(Player(player_ref, humanoid_camera, player_height, planets))
             // ensure the camera component is attached to a VObject so Camera::get_vobject() is valid
             .vobject(Enemy(player_ref, planets))
