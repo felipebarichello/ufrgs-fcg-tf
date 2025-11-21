@@ -115,7 +115,7 @@ namespace glm
 	template<typename T, qualifier Q>
 	GLM_FUNC_QUALIFIER qua<T, Q> fastMix(qua<T, Q> const& x, qua<T, Q> const& y, T const& a)
 	{
-		return glm::normalize(x * (static_cast<T>(1) - a) + (y * a));
+		return engine::h_normalize(x * (static_cast<T>(1) - a) + (y * a));
 	}
 
 	template<typename T, qualifier Q>
