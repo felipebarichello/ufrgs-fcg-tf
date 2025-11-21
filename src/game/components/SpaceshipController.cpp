@@ -30,8 +30,13 @@ namespace game::components {
 
         // Build acceleration vector from input
         float accel_dir = 0.0f;
-        if (this->accelerating_forward)  accel_dir += thrust_power;
-        if (this->accelerating_backward) accel_dir -= thrust_power;
+        bool thrusting = this->accelerating_forward || this->accelerating_backward;
+        if (thrusting && this->fuel > 0.0f) {
+            this->fuel -= dt * this->fuel_consumption_rate; // Consume fuel
+            if (this->accelerating_forward)  accel_dir += thrust_power;
+            if (this->accelerating_backward) accel_dir -= thrust_power;
+        }
+
         Vec3 accel_vec = forward * accel_dir;
 
         // Integrate velocity
