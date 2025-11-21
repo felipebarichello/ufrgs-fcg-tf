@@ -12,6 +12,7 @@ namespace engine {
             virtual void Awake() {}
             virtual void Start() {}
             virtual void Update() {}
+            virtual void PostUpdate() {}
             
             std::optional<Behavior*> try_into_behavior() override {
                 return this;

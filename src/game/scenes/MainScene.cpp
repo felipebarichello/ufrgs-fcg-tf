@@ -21,7 +21,8 @@ VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera,
     ship_controller = new SpaceshipController(ship_drawable);
 
     // Create walker component first and then the humanoid which will forward inputs to it.
-    WalkerController* walker = new WalkerController(planets, point_collider);
+    KinematicBody* kinematic = new KinematicBody();
+    WalkerController* walker = new WalkerController(kinematic, planets, point_collider);
 
     // TODO: add spaceship controller pointer (nullptr for now)
     HumanoidPlayerController* humanoid_controller = new HumanoidPlayerController(main_camera, walker, cylinder_collider);
@@ -36,6 +37,7 @@ VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera,
         .component(ship_drawable)
         .component(point_collider)
         .component(cylinder_collider)
+        .component(kinematic)
         .child(VObjectConfig()
             .transform(TransformBuilder()
                 .position(Vec3(0.0f, height, 0.0f)))
@@ -83,7 +85,8 @@ VObjectConfig EnemyObj() {
 VObjectConfig Enemy(HumanoidPlayerController* player_ref, std::vector<PlanetInfo*> planets) {
     PointCollider* point_collider = new PointCollider();
     CylinderCollider* cylinder_collider = new CylinderCollider(1.0f, 3.0f);
-    WalkerController* walker = new WalkerController(planets, point_collider);
+    KinematicBody* kinematic = new KinematicBody();
+    WalkerController* walker = new WalkerController(kinematic, planets, point_collider);
 
     return VObjectConfig()
         .transform(TransformBuilder()
@@ -92,6 +95,7 @@ VObjectConfig Enemy(HumanoidPlayerController* player_ref, std::vector<PlanetInfo
         .component(point_collider)
         .component(cylinder_collider)
         .component(new GroundEnemyController(walker, cylinder_collider, player_ref))
+        .component(kinematic)
         .child(EnemyObj());
 }
 
@@ -114,7 +118,7 @@ namespace game::scenes {
 
         std::vector<PlanetInfo*> planets;
         planets.push_back(new PlanetInfo(55.0e12f, 200.0f));
-        planets.push_back(new PlanetInfo(25.0e12f, 50.0f));
+        planets.push_back(new PlanetInfo(35.0e12f, 50.0f));
 
         SpaceshipController* spaceship_controller_ref = nullptr;
 
