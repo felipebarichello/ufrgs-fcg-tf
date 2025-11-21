@@ -18,7 +18,8 @@ VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera,
     
     engine::PointCollider* point_collider = new engine::PointCollider();
     engine::CylinderCollider* cylinder_collider = new engine::CylinderCollider(height, 0.5f);
-    ship_controller = new SpaceshipController(ship_drawable);
+    engine::CylinderCollider* spaceship_collider = new engine::CylinderCollider(2.0f, 1.0f);
+    ship_controller = new SpaceshipController(planets, ship_drawable, spaceship_collider);
 
     // Create walker component first and then the humanoid which will forward inputs to it.
     WalkerController* walker = new WalkerController(planets, point_collider);
@@ -87,7 +88,7 @@ VObjectConfig Enemy(HumanoidPlayerController* player_ref, std::vector<PlanetInfo
 
     return VObjectConfig()
         .transform(TransformBuilder()
-            .position(Vec3(50.0f, 220.0f, 0.0f)))
+            .position(Vec3(0.0f, MAIN_PLANET_RADIUS, 0.0f)))
         .component(walker)
         .component(point_collider)
         .component(cylinder_collider)
@@ -133,11 +134,13 @@ namespace game::scenes {
             .vobject(SkyBox())
             .vobject(VObjectConfig().component(new game::components::PlayerSwitcherController(player_ref, spaceship_controller_ref, humanoid_camera, spaceship_camera)))
             // ensure the camera component is attached to a VObject so Camera::get_vobject() is valid
-            .vobject(Enemy(player_ref, planets))
+
             .vobject(VObjectConfig()  // Root VObject for all planets
+                .child(Enemy(player_ref, planets))
                 .child(Planet(planets[0])  // Central star
                     .transform(TransformBuilder()
                         .scale(MAIN_PLANET_RADIUS * planet_model_normalize))
+                    //.child(Enemy(player_ref, planets))
                 )
                 .child(Planet(planets[1])  // Tilted circular orbit
                     .transform(TransformBuilder()

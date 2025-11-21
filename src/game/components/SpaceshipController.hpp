@@ -4,13 +4,15 @@
 #include <memory>
 // Text rendering helper
 #include <engine/vobject/components/TextDrawable.hpp>
+#include <engine/collision/colliders/CylinderCollider.hpp>
+#include <game/components/PlanetInfo.hpp>
 
 using engine::Transform;
 
 namespace game::components {
     class SpaceshipController : public engine::Behavior {
         public:
-            SpaceshipController(engine::ObjDrawable* model) : model(model) {}
+            SpaceshipController(std::vector<PlanetInfo*> planets, engine::ObjDrawable* model, engine::CylinderCollider* cylinder_collider) : planets(planets), cylinder_collider(cylinder_collider), model(model) {}
             void Start() override;
             void Update() override;
             engine::Vec3 get_velocity() const { return this->velocity; }
@@ -22,9 +24,11 @@ namespace game::components {
             float speed = 10.0f;
 
         private:
+            std::vector<PlanetInfo*> planets;
+            engine::CylinderCollider* cylinder_collider;
             struct SphericalInput;
 
-            engine::ObjDrawable* model = nullptr;
+            engine::ObjDrawable* model;
             
             // Camera smoothing parameters
             engine::Vec2 move_vector {0.0f, 0.0f};
