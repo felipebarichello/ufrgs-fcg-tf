@@ -154,6 +154,8 @@ void TextRenderer::load_shaders() {
     if (!success) {
         glGetShaderInfoLog(vertex_shader, 512, nullptr, info_log);
         fprintf(stderr, "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n%s\n", info_log);
+        glDeleteShader(vertex_shader);
+        throw std::runtime_error("Text vertex shader compilation failed");
     }
 
     // Compile fragment shader
@@ -166,6 +168,9 @@ void TextRenderer::load_shaders() {
     if (!success) {
         glGetShaderInfoLog(fragment_shader, 512, nullptr, info_log);
         fprintf(stderr, "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n%s\n", info_log);
+        glDeleteShader(vertex_shader);
+        glDeleteShader(fragment_shader);
+        throw std::runtime_error("Text fragment shader compilation failed");
     }
 
     // Link shaders to program
@@ -179,6 +184,10 @@ void TextRenderer::load_shaders() {
     if (!success) {
         glGetProgramInfoLog(shader_program, 512, nullptr, info_log);
         fprintf(stderr, "ERROR::SHADER::PROGRAM::LINKING_FAILED\n%s\n", info_log);
+        glDeleteShader(vertex_shader);
+        glDeleteShader(fragment_shader);
+        glDeleteProgram(shader_program);
+        throw std::runtime_error("Text shader program linking failed");
     }
 
     // Clean up shaders as they're linked into our program now
@@ -267,7 +276,7 @@ void TextRenderer::render_text(const std::string& text, float x, float y, float 
     if (!last_blend_enabled) {
         glDisable(GL_BLEND);
     } else {
-        glBlendFunc(last_blend_src_rgb, last_blend_dst_rgb);
+        glBlendFunc(static_cast<GLenum>(last_blend_src_rgb), static_cast<GLenum>(last_blend_dst_rgb));
     }
     
     glUseProgram(last_program);
