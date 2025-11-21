@@ -31,7 +31,7 @@ namespace game::components {
             // If grounded, snap back to the surface when moving because you should not walk away from the planet
             PlanetInfo* planet = this->grounded_to.value();
             Vec3 planet_position = planet->get_vobject()->transform().get_position();
-            Vec3 direction_from_planet = glm::normalize(transform.get_position() - planet_position);
+            Vec3 direction_from_planet = engine::h_normalize(transform.get_position() - planet_position);
             transform.position() = planet_position + direction_from_planet * planet->get_radius();
             
             // Remove vertical component of velocity
@@ -65,7 +65,7 @@ namespace game::components {
 
         if (desired_speed > this->max_walk_speed) {
             // Can't walk faster. Correct that.
-            Vec3 velocity_direction = glm::normalize(this->kinematic->get_velocity());
+            Vec3 velocity_direction = engine::h_normalize(this->kinematic->get_velocity());
             Vec3 clamped_cur_vel = velocity_direction * this->max_walk_speed;
             Vec3 excess_velocity = this->kinematic->get_velocity() - clamped_cur_vel;
 
@@ -94,7 +94,7 @@ namespace game::components {
                 }
             } else {
                 // Input present: deaccelerate orthogonal component and any component opposite to the input
-                Vec3 input_direction = glm::normalize(move_vector_3d);
+                Vec3 input_direction = engine::h_normalize(move_vector_3d);
 
                 float horiz_speed = glm::length(horizontal_velocity);
                 if (horiz_speed > 1e-6f) {
@@ -152,7 +152,7 @@ namespace game::components {
             Vec3 vec_to_planet = planet->get_vobject()->transform().get_position() - transform.get_position();
             float distance_to_planet = glm::length(vec_to_planet);
             if (distance_to_planet > 1e-6f) {
-                Vec3 grav_direction = glm::normalize(vec_to_planet);
+                Vec3 grav_direction = engine::h_normalize(vec_to_planet);
                 gravity_sum += (planet->get_gravity_mass() / distance_to_planet) * grav_direction;
             }
         }
@@ -182,7 +182,7 @@ namespace game::components {
 
             if (engine::collision::collide_point_sphere(*this->get_point_collider(), *planet->get_sphere_collider()).has_collided()) {
                 // Collision detected. Correcting...
-                Vec3 direction_to_planet = glm::normalize(vec_to_planet);
+                Vec3 direction_to_planet = engine::h_normalize(vec_to_planet);
                 Vec3 velocity_to_planet = glm::dot(this->kinematic->get_velocity(), direction_to_planet) * direction_to_planet;
 
                 if (glm::length(velocity_to_planet) > 0.0f) {
@@ -205,7 +205,7 @@ namespace game::components {
             PlanetInfo* grounded_planet = this->grounded_to.value();
             Vec3 grounded_planet_position = grounded_planet->get_vobject()->transform().get_position();
             Vec3 vec_to_grounded_planet = grounded_planet_position - transform.get_position();
-            Vec3 grounded_up_direction = -glm::normalize(vec_to_grounded_planet);
+            Vec3 grounded_up_direction = -engine::h_normalize(vec_to_grounded_planet);
 
             Quaternion align_quat = Quaternion::from_unit_vectors(current_up, grounded_up_direction);
             quaternion.global_compose(align_quat);
@@ -217,7 +217,7 @@ namespace game::components {
 
         Vec3 closest_planet_position = this->closest_planet->get_vobject()->transform().get_position();
         Vec3 vec_to_closest_planet = closest_planet_position - transform.get_position();
-        Vec3 closest_surface_point = closest_planet_position - glm::normalize(vec_to_closest_planet) * this->closest_planet->get_radius();
+        Vec3 closest_surface_point = closest_planet_position - engine::h_normalize(vec_to_closest_planet) * this->closest_planet->get_radius();
         Vec3 vec_to_closest_point = closest_surface_point - transform.get_position();
         float closest_point_distance = glm::length(vec_to_closest_point);
 
@@ -227,7 +227,7 @@ namespace game::components {
 
         if (closest_point_distance > MAX_SURFACE_ALIGN_DISTANCE) return;
 
-        Quaternion align_quat = Quaternion::from_unit_vectors(current_up, -glm::normalize(vec_to_closest_planet));
+        Quaternion align_quat = Quaternion::from_unit_vectors(current_up, -engine::h_normalize(vec_to_closest_planet));
 
         if (closest_point_distance <= MIN_SURFACE_ALIGN_DISTANCE) {
             quaternion.global_compose(align_quat);
