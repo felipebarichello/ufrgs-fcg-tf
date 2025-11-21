@@ -26,6 +26,7 @@ namespace engine {
 
     float h_norm(glm::vec4 v);
     float h_norm(glm::vec3 v);
+    float h_norm(glm::vec2 v);
 
     glm::vec4 h_cross_product(glm::vec4 u, glm::vec4 v);
     float h_dot_product(glm::vec4 u, glm::vec4 v);

@@ -95,6 +95,14 @@ namespace engine {
         return sqrt( vx*vx + vy*vy + vz*vz );
     }
 
+    float h_norm(glm::vec2 v)
+    {
+        float vx = v.x;
+        float vy = v.y;
+
+        return sqrt( vx*vx + vy*vy );
+    }
+
     glm::mat4 h_matrix_rotate(float angle, glm::vec4 axis)
     {
         float c = cos(angle);
