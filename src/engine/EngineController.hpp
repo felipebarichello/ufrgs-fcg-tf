@@ -18,9 +18,6 @@ namespace engine {
         int width;
         int height;
         const char* title;
-
-        WindowConfig(int width, int height, const char* title)
-            : width(width), height(height), title(title) {}
     };
     
     // TODO: Reorder members
