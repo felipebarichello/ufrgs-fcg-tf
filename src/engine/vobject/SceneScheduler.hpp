@@ -41,6 +41,10 @@ namespace engine {
                 for (Behavior* behavior : this->update_subscribers) {
                     behavior->Update();
                 }
+
+                for (Behavior* behavior : this->update_subscribers) {
+                    behavior->PostUpdate();
+                }
             }
 
             void update() {

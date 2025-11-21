@@ -21,6 +21,30 @@ namespace game::components {
         this->update_transform_due_to_environment();
     }
 
+    void WalkerController::PostUpdate() {
+        Transform& transform = this->get_vobject()->transform();
+
+        // Test and correct collisions
+        if (this->grounded_to.has_value()) {
+            // If grounded, snap back to the surface when moving because you should not walk away from the planet
+            PlanetInfo* planet = this->grounded_to.value();
+            Vec3 planet_position = planet->get_vobject()->transform().get_position();
+            Vec3 direction_from_planet = glm::normalize(transform.get_position() - planet_position);
+            transform.position() = planet_position + direction_from_planet * planet->get_radius();
+            
+            // Remove vertical component of velocity
+            Vec3 up_direction = direction_from_planet;
+            Vec3 vertical_velocity = glm::dot(this->kinematic->get_velocity(), up_direction) * up_direction;
+            this->kinematic->set_velocity(this->kinematic->get_velocity() - vertical_velocity);
+        } else {
+            // If not grounded, check for collision
+            this->correct_planet_collision();
+        }
+
+        // Align rotation to planet
+        this->align_to_closest_planet();
+    }
+
     void WalkerController::update_transform_due_to_input() {
         // Only handle walking when grounded
         Transform& transform = this->get_vobject()->transform();
@@ -34,14 +58,14 @@ namespace game::components {
         Vec3 move_vector_3d = this->move_vector.y * front_of_player;
         move_vector_3d += this->move_vector.x * right_of_player;
         Vec3 desired_velocity_change = this->walk_accel * move_vector_3d * EngineController::get_delta_time();
-        Vec3 desired_velocity = this->current_velocity + desired_velocity_change;
+        Vec3 desired_velocity = this->kinematic->get_velocity() + desired_velocity_change;
         float desired_speed = glm::length(desired_velocity);
 
         if (desired_speed > this->max_walk_speed) {
             // Can't walk faster. Correct that.
-            Vec3 velocity_direction = glm::normalize(this->current_velocity);
+            Vec3 velocity_direction = glm::normalize(this->kinematic->get_velocity());
             Vec3 clamped_cur_vel = velocity_direction * this->max_walk_speed;
-            Vec3 excess_velocity = this->current_velocity - clamped_cur_vel;
+            Vec3 excess_velocity = this->kinematic->get_velocity() - clamped_cur_vel;
 
             // Walking can only operate on the non-excess part
             Vec3 desired_vel_component = clamped_cur_vel + desired_velocity_change;
@@ -56,7 +80,7 @@ namespace game::components {
 
         { // Deaccelerate in the direction orthogonal to movement and when stopped (and also when moving opposite)
             Vec3 up = transform.quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
-            Vec3 horizontal_velocity = this->current_velocity - glm::dot(this->current_velocity, up) * up;
+            Vec3 horizontal_velocity = this->kinematic->get_velocity() - glm::dot(this->kinematic->get_velocity(), up) * up;
 
             if (engine::is_zero(move_vector_3d)) {
                 // No input, deaccelerate fully
@@ -99,48 +123,24 @@ namespace game::components {
             }
         }
         
-        this->current_velocity = desired_velocity;
+        this->kinematic->set_velocity(desired_velocity);
 
         // Handle jump request
         if (this->jump_requested) {
             this->jump_requested = false;
             if (this->grounded_to.has_value()) {
-                this->current_velocity += this->jump_strength * this->get_vobject()->transform().quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
+                this->kinematic->set_velocity(this->kinematic->get_velocity() + this->jump_strength * this->get_vobject()->transform().quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f)));
                 this->grounded_to = std::nullopt;
             }
         }
     }
 
     void WalkerController::update_transform_due_to_environment() {
-        Transform& transform = this->get_vobject()->transform();
-
         // Apply gravity when not grounded
         if (!this->grounded_to.has_value()) {
             Vec3 equivalent_gravity = this->compute_equivalent_gravity();
-            this->current_velocity += equivalent_gravity * EngineController::get_delta_time();
+            this->kinematic->set_velocity(this->kinematic->get_velocity() + equivalent_gravity * EngineController::get_delta_time());
         }
-
-        // Integrate
-        transform.position() += this->current_velocity * EngineController::get_delta_time();
-
-        if (this->grounded_to.has_value()) {
-            // If grounded, snap back to the surface when moving because you should not walk away from the planet
-            PlanetInfo* planet = this->grounded_to.value();
-            Vec3 planet_position = planet->get_vobject()->transform().get_position();
-            Vec3 direction_from_planet = glm::normalize(transform.get_position() - planet_position);
-            transform.position() = planet_position + direction_from_planet * planet->get_radius();
-            
-            // Remove vertical component of velocity
-            Vec3 up_direction = direction_from_planet;
-            Vec3 vertical_velocity = glm::dot(this->current_velocity, up_direction) * up_direction;
-            this->current_velocity -= vertical_velocity;
-        } else {
-            // If not grounded, check for collision
-            this->correct_planet_collision();
-        }
-
-        // Align rotation to planet
-        this->align_to_closest_planet();
     }
 
     engine::Vec3 WalkerController::compute_equivalent_gravity() {
@@ -181,10 +181,10 @@ namespace game::components {
             if (engine::collision::collide_point_sphere(*this->get_point_collider(), *planet->get_sphere_collider()).has_collided()) {
                 // Collision detected. Correcting...
                 Vec3 direction_to_planet = glm::normalize(vec_to_planet);
-                Vec3 velocity_to_planet = glm::dot(this->current_velocity, direction_to_planet) * direction_to_planet;
+                Vec3 velocity_to_planet = glm::dot(this->kinematic->get_velocity(), direction_to_planet) * direction_to_planet;
 
                 if (glm::length(velocity_to_planet) > 0.0f) {
-                    this->current_velocity -= velocity_to_planet;
+                    this->kinematic->set_velocity(this->kinematic->get_velocity() - velocity_to_planet);
                 }
 
                 transform.position() = planet_position - direction_to_planet * planet->get_radius();

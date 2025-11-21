@@ -6,12 +6,14 @@
 #include <vector>
 #include <optional>
 #include <game/components/PlanetInfo.hpp>
+#include <game/components/KinematicBody.hpp>
 
 namespace game::components {
     class WalkerController : public engine::Behavior {
         public:
-            WalkerController(std::vector<PlanetInfo*> planets, engine::PointCollider* point_collider) : planets(planets), point_collider(point_collider) {}
+            WalkerController(KinematicBody* kinematic, std::vector<PlanetInfo*> planets, engine::PointCollider* point_collider) : kinematic(kinematic), planets(planets), point_collider(point_collider) {}
             void Update() override;
+            void PostUpdate() override;
 
             // Input interface (called by HumanoidPlayerController)
             void set_move_vector(engine::Vec2 mv) { this->move_vector = mv; }
@@ -19,7 +21,7 @@ namespace game::components {
             engine::Vec2 get_move_vector() const { return this->move_vector; }
             void request_jump() { this->jump_requested = true; }
             engine::PointCollider* get_point_collider() { return this->point_collider; }
-            engine::Vec3 get_velocity() const { return this->current_velocity; }
+            engine::Vec3 get_velocity() const { return this->kinematic->get_velocity(); }
             bool is_grounded() const { return this->grounded_to.has_value(); }
             void enable() { this->active = true; }
             void disable() { this->active = false; }
@@ -28,10 +30,10 @@ namespace game::components {
         private:
             bool active = true;
 
+            KinematicBody* kinematic;
+
             engine::Vec2 move_vector {0.0f, 0.0f};
             bool jump_requested = false;
-
-            engine::Vec3 current_velocity {0.0f, 0.0f, 0.0f};
 
             // Tuning
             float walk_accel = 70.0f;
