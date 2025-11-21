@@ -41,6 +41,7 @@ namespace game::components {
 
             // Text drawable to show fuel on screen
             TextDrawable* fuel_text = nullptr;
+            TextDrawable* game_over_text = nullptr;
 
             void update_rotation_due_to_input();
             engine::Vec3 velocity = engine::Vec3(0.0f);
