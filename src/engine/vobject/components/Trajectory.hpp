@@ -10,6 +10,7 @@ namespace engine {
         public:
             Trajectory() = default;
             Trajectory(std::unique_ptr<Curve> curve, float speed);
+            Trajectory(std::unique_ptr<Curve> curve, float speed, float t);
             void Awake() override;
             void Start() override;
             void Update() override;

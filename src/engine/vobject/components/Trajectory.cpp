@@ -8,6 +8,12 @@ Trajectory::Trajectory(std::unique_ptr<Curve> curve, float speed) {
     this->speed = speed;
 }
 
+Trajectory::Trajectory(std::unique_ptr<Curve> curve, float speed, float t) {
+    this->curve = std::move(curve);
+    this->t = t;
+    this->speed = speed;
+}
+
 void Trajectory::Awake() {
     // Initialize the trajectory    
 }
