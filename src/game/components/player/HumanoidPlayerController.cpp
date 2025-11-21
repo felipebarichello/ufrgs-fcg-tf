@@ -33,6 +33,9 @@ namespace game::components {
         if (this->camera && this->camera->get_vobject()) {
             this->stored_child_cam_transform = this->camera->get_vobject()->transform();
         }
+
+        this->game_over_text = new TextDrawable();
+        this->game_over_text->setText(std::string(""), 1.8f, glm::vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
     }
 
     void HumanoidPlayerController::Update() {
@@ -135,6 +138,7 @@ namespace game::components {
 
     void HumanoidPlayerController::hit_by_enemy() {
         std::printf("HumanoidPlayerController: hit by enemy!\n");
+        this->game_over_text->setText(std::string("GAME OVER"), 1.8f, glm::vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
     }
 
     void HumanoidPlayerController::toggle_camera_release() {

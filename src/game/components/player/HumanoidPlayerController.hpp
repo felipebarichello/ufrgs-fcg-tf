@@ -5,6 +5,8 @@
 #include <game/components/PlanetInfo.hpp>
 #include <game/components/WalkerController.hpp>
 #include <game/components/SpaceshipController.hpp>
+#include <engine/vobject/components/TextDrawable.hpp>
+
 
 namespace game::components {
     class HumanoidPlayerController : public engine::Behavior {
@@ -43,6 +45,8 @@ namespace game::components {
 
             /// @brief Used both for storing camera transform before releasing and for bobbing.
             engine::Transform stored_child_cam_transform;
+
+            TextDrawable* game_over_text = nullptr;
             
             // View bobbing
             float bob_timer = 0.0f;
