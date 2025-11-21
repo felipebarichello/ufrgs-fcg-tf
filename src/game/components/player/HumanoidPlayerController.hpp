@@ -21,6 +21,8 @@ namespace game::components {
             void disable();
             bool is_active() const { return this->active; }
 
+            float get_camera_phi() const { return this->camera_phi; }
+
             // Expose walker for external queries (e.g., collision checks)
             WalkerController* get_walker() { return this->walker; }
 

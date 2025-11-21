@@ -22,6 +22,8 @@ namespace game::components {
     }
 
     void WalkerController::PostUpdate() {
+        if (!this->active) return;
+
         Transform& transform = this->get_vobject()->transform();
 
         // Test and correct collisions
