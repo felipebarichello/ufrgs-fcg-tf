@@ -61,7 +61,7 @@ namespace game::components {
         move_vector_3d += this->move_vector.x * right_of_player;
         Vec3 desired_velocity_change = this->walk_accel * move_vector_3d * EngineController::get_delta_time();
         Vec3 desired_velocity = this->kinematic->get_velocity() + desired_velocity_change;
-        float desired_speed = glm::length(desired_velocity);
+        float desired_speed = engine::h_norm(desired_velocity);
 
         if (desired_speed > this->max_walk_speed) {
             // Can't walk faster. Correct that.
@@ -71,7 +71,7 @@ namespace game::components {
 
             // Walking can only operate on the non-excess part
             Vec3 desired_vel_component = clamped_cur_vel + desired_velocity_change;
-            float vel_component_speed = glm::length(desired_vel_component);
+            float vel_component_speed = engine::h_norm(desired_vel_component);
             if (vel_component_speed > this->max_walk_speed) {
                 // Clamp to max walk speed
                 desired_vel_component = desired_vel_component / vel_component_speed * this->max_walk_speed;
@@ -86,7 +86,7 @@ namespace game::components {
 
             if (engine::is_zero(move_vector_3d)) {
                 // No input, deaccelerate fully
-                float horizontal_speed = glm::length(horizontal_velocity);
+                float horizontal_speed = engine::h_norm(horizontal_velocity);
                 if (horizontal_speed > 1e-6f) {
                     Vec3 horizontal_direction = horizontal_velocity / horizontal_speed;
                     float deaccel_amount = std::min(horizontal_speed, this->walk_deaccel * EngineController::get_delta_time());
@@ -96,14 +96,14 @@ namespace game::components {
                 // Input present: deaccelerate orthogonal component and any component opposite to the input
                 Vec3 input_direction = engine::h_normalize(move_vector_3d);
 
-                float horiz_speed = glm::length(horizontal_velocity);
+                float horiz_speed = engine::h_norm(horizontal_velocity);
                 if (horiz_speed > 1e-6f) {
                     // scalar component along input (can be negative if moving opposite)
                     float scalar_along = glm::dot(horizontal_velocity, input_direction);
 
                     // orthogonal component (horizontal_velocity minus its projection onto input_direction)
                     Vec3 orthogonal_vec = horizontal_velocity - scalar_along * input_direction;
-                    float orthogonal_speed = glm::length(orthogonal_vec);
+                    float orthogonal_speed = engine::h_norm(orthogonal_vec);
 
                     float dt = EngineController::get_delta_time();
 
@@ -150,7 +150,7 @@ namespace game::components {
         Transform& transform = this->get_vobject()->transform();
         for (PlanetInfo* planet : this->planets) {
             Vec3 vec_to_planet = planet->get_vobject()->transform().get_position() - transform.get_position();
-            float distance_to_planet = glm::length(vec_to_planet);
+            float distance_to_planet = engine::h_norm(vec_to_planet);
             if (distance_to_planet > 1e-6f) {
                 Vec3 grav_direction = engine::h_normalize(vec_to_planet);
                 gravity_sum += (planet->get_gravity_mass() / distance_to_planet) * grav_direction;
@@ -173,7 +173,7 @@ namespace game::components {
         for (PlanetInfo* planet : this->planets) {
             Vec3 planet_position = planet->get_vobject()->transform().get_position();
             Vec3 vec_to_planet = planet_position - transform.get_position();
-            float distance_to_planet = glm::length(vec_to_planet);
+            float distance_to_planet = engine::h_norm(vec_to_planet);
 
             if (distance_to_planet < closest_planet_distance) {
                 this->closest_planet = planet;
@@ -185,7 +185,7 @@ namespace game::components {
                 Vec3 direction_to_planet = engine::h_normalize(vec_to_planet);
                 Vec3 velocity_to_planet = glm::dot(this->kinematic->get_velocity(), direction_to_planet) * direction_to_planet;
 
-                if (glm::length(velocity_to_planet) > 0.0f) {
+                if (engine::h_norm(velocity_to_planet) > 0.0f) {
                     this->kinematic->set_velocity(this->kinematic->get_velocity() - velocity_to_planet);
                 }
 
@@ -219,7 +219,7 @@ namespace game::components {
         Vec3 vec_to_closest_planet = closest_planet_position - transform.get_position();
         Vec3 closest_surface_point = closest_planet_position - engine::h_normalize(vec_to_closest_planet) * this->closest_planet->get_radius();
         Vec3 vec_to_closest_point = closest_surface_point - transform.get_position();
-        float closest_point_distance = glm::length(vec_to_closest_point);
+        float closest_point_distance = engine::h_norm(vec_to_closest_point);
 
         // Do a soft alignment when near
         float MAX_SURFACE_ALIGN_DISTANCE = 200.0f;
