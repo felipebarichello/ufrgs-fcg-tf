@@ -6,7 +6,7 @@ namespace glm
 		vec<3, T, Q> Tmp = v;
 
 		// Axis of rotation must be normalised
-		T len = glm::length(Tmp);
+		T len = engine::h_norm(Tmp);
 		if(abs(len - static_cast<T>(1)) > static_cast<T>(0.001))
 		{
 			T oneOverLen = static_cast<T>(1) / len;
