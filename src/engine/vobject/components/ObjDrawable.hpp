@@ -11,8 +11,8 @@ namespace engine {
         public:
             ObjDrawable(std::string file_name);
             ObjDrawable(std::string file_name, engine::EngineController::ShaderType shader);
-            ObjDrawable(std::string file_name, std::string texture_file_name);
             ObjDrawable(std::string file_name, std::string texture_file_name, engine::EngineController::ShaderType shader);
+            ObjDrawable(std::string file_name, std::string texture_file_name);
             ~ObjDrawable();
             void draw() override;
             void set_visible();
