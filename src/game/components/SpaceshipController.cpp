@@ -107,10 +107,11 @@ namespace game::components {
     }
 
     void SpaceshipController::test_planet_collisions() {
-        // Check for collisions with planets
         for (PlanetInfo* planet : this->planets) {
-            if (engine::collision::collide_cylinder_sphere(*this->cylinder_collider, *planet->get_sphere_collider()).has_collided()) {
-                printf("Collision with planet detected!\n");
+            bool collision_detected = engine::collision::collide_cylinder_sphere(*this->cylinder_collider, *planet->get_sphere_collider()).has_collided();
+            if (collision_detected) {
+                int *a = nullptr;
+                printf("printf %d", *a);
             }
         }
     }
