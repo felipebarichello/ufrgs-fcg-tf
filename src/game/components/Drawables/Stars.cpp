@@ -90,23 +90,23 @@ void Stars::draw() {
     engine::Camera* cam = engine::Camera::get_main();
 
     // Compute transform so the starfield stays centered on the player
-    glm::mat4 vobject_matrix(1.0f);
+    engine::Mat4 vobject_matrix(1.0f);
     if (cam && cam->get_vobject()) {
         auto player_vo = cam->get_vobject();
-        glm::mat4 player_model = player_vo->transform().get_model_matrix();
-        glm::vec3 player_position = glm::vec3(player_model[3]);
+        engine::Mat4 player_model = player_vo->transform().get_model_matrix();
+        engine::Vec3 player_position = engine::Vec3(player_model[3]);
         vobject_matrix = vobject_matrix * engine::h_translate_matrix(player_position.x, player_position.y, player_position.z);
     }
 
-    glm::mat4 view = engine::Camera::get_main()->get_view_matrix();
-    glm::mat4 proj = engine::Camera::get_main()->get_perspective_matrix();
+    engine::Mat4 view = engine::Camera::get_main()->get_view_matrix();
+    engine::Mat4 proj = engine::Camera::get_main()->get_perspective_matrix();
 
     if (model_uniform >= 0) glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(vobject_matrix));
     if (view_uniform >= 0) glUniformMatrix4fv(view_uniform, 1, GL_FALSE, glm::value_ptr(view));
     if (proj_uniform >= 0) glUniformMatrix4fv(proj_uniform, 1, GL_FALSE, glm::value_ptr(proj));
 
     if (color_uniform >= 0) {
-        glm::vec4 c = glm::vec4(this->color, 1.0f);
+        engine::Vec4 c = engine::Vec4(this->color, 1.0f);
         glUniform4fv(color_uniform, 1, glm::value_ptr(c));
     }
 
