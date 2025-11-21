@@ -35,7 +35,7 @@ namespace game::components {
         }
 
         this->game_over_text = new TextDrawable();
-        this->game_over_text->setText(std::string(""), 1.8f, glm::vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
+        this->game_over_text->setText(std::string(""), 1.8f, Vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
     }
 
     void HumanoidPlayerController::Update() {
@@ -68,7 +68,7 @@ namespace game::components {
         if (!this->released_camera && this->camera && this->walker) {
             // Use input magnitude as a proxy for movement intensity
             engine::Vec2 mv = this->walker->get_move_vector();
-            float input_mag = glm::length(mv);
+            float input_mag = engine::h_norm(mv);
 
             float dt = EngineController::get_delta_time();
             if (input_mag > this->bob_min_input_threshold) {
@@ -138,7 +138,7 @@ namespace game::components {
 
     void HumanoidPlayerController::hit_by_enemy() {
         std::printf("HumanoidPlayerController: hit by enemy!\n");
-        this->game_over_text->setText(std::string("GAME OVER"), 1.8f, glm::vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
+        this->game_over_text->setText(std::string("GAME OVER"), 1.8f, Vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
     }
 
     void HumanoidPlayerController::toggle_camera_release() {
