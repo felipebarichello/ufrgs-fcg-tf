@@ -28,15 +28,16 @@ VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera,
     HumanoidPlayerController* humanoid_controller = new HumanoidPlayerController(main_camera, walker, cylinder_collider);
     player_ref = humanoid_controller;
 
-    return VObjectConfig()
+        return VObjectConfig()
         .transform(TransformBuilder()
             .position(Vec3(0.0f, 220.0f, 50.0f)))
         .component(walker)
         .component(humanoid_controller)
-        .component(ship_controller)
-        .component(ship_drawable)
-        .component(point_collider)
-        .component(cylinder_collider)
+            .component(ship_controller)
+            .component(ship_drawable)
+            .component(point_collider)
+            .component(cylinder_collider)
+            .component(spaceship_collider)
         .child(VObjectConfig()
             .transform(TransformBuilder()
                 .position(Vec3(0.0f, height, 0.0f)))
