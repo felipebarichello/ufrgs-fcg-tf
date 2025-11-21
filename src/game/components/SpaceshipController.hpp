@@ -48,5 +48,6 @@ namespace game::components {
             bool accelerating_backward = false;
             bool active = true;
             SphericalInput get_spherical_input();
+            void test_planet_collisions();
     };
 } // namespace game::components

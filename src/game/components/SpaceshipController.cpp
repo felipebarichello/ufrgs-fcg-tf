@@ -56,6 +56,7 @@ namespace game::components {
 
         // Integrate position
         this->get_vobject()->transform().position() += this->current_velocity * dt;
+        this->test_planet_collisions();
 
         // Update on-screen fuel text
         if (this->fuel_text) {
@@ -105,4 +106,12 @@ namespace game::components {
         this->model->set_invisible();
     }
 
+    void SpaceshipController::test_planet_collisions() {
+        // Check for collisions with planets
+        for (PlanetInfo* planet : this->planets) {
+            if (engine::collision::collide_cylinder_sphere(*this->cylinder_collider, *planet->get_sphere_collider()).has_collided()) {
+                printf("Collision with planet detected!\n");
+            }
+        }
+    }
 }
