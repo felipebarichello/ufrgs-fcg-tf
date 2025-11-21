@@ -294,6 +294,8 @@ elseif(UNIX)
   find_library(MATH_LIBRARY m)
   set(THREADS_PREFER_PTHREAD_FLAG ON)
   find_package(Threads REQUIRED)
+  find_package(Freetype REQUIRED)
+  target_include_directories(${EXECUTABLE_NAME} PRIVATE ${FREETYPE_INCLUDE_DIRS})
   target_link_libraries(${EXECUTABLE_NAME} PRIVATE
     ${CMAKE_DL_LIBS}
     ${MATH_LIBRARY}
@@ -305,6 +307,7 @@ elseif(UNIX)
     ${X11_Xcursor_LIB}
     ${X11_Xinerama_LIB}
     ${X11_Xxf86vm_LIB}
+    ${FREETYPE_LIBRARIES}
   )
 
 endif()

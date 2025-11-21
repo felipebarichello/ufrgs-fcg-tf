@@ -13,6 +13,7 @@ namespace engine {
     // Forward declarations to avoid circular dependency
     class Drawable;
     class ObjLoader;
+    class TextRenderer;
 
     struct WindowConfig {
         int width;
@@ -30,6 +31,7 @@ namespace engine {
             std::unique_ptr<InputController> input_controller;
             std::unique_ptr<ObjLoader> obj_loader;
             std::unique_ptr<Scene> current_scene;
+            std::unique_ptr<TextRenderer> text_renderer;
             bool is_fullscreen;
             int windowed_width;
             int windowed_height;
@@ -84,6 +86,7 @@ namespace engine {
             static void remove_drawable(Drawable* drawable);
             GLFWwindow* get_window();
             InputController* input();
+            TextRenderer* get_text_renderer();
             float get_screen_ratio() { return screen_ratio; }
             void set_screen_ratio(float ratio) { screen_ratio = ratio; }
             static GLuint get_gouraud_program_id() { return planet_program_id; }

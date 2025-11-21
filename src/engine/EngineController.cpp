@@ -1,10 +1,12 @@
 #include <engine>
 #include <memory>
 #include "ObjLoader.hpp"
+#include "TextRenderer.hpp"
 #include <cstdio>
 #include <map>
 #include <sstream>
 #include <stdexcept>
+#include <glm/glm.hpp>
 
 namespace engine {
 
@@ -46,6 +48,11 @@ namespace engine {
 
         EngineController::instance->input_controller = std::make_unique<InputController>(EngineController::instance->window);
         EngineController::instance->input_controller->init();
+        
+        // Initialize text renderer with a system font
+        EngineController::instance->text_renderer = std::make_unique<TextRenderer>();
+        EngineController::instance->text_renderer->init("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 48);
+        
         return EngineController::instance.get();
     }
 
@@ -98,6 +105,10 @@ namespace engine {
 
     InputController* EngineController::input() {
         return this->input_controller.get();
+    }
+
+    TextRenderer* EngineController::get_text_renderer() {
+        return this->text_renderer.get();
     }
 
     InputController* EngineController::get_input() {
@@ -465,6 +476,11 @@ namespace engine {
 
         for (const auto& drawable : EngineController::drawables) {
             drawable->draw();
+        }
+        
+        // Render "Hello World" as HUD text
+        if (EngineController::instance && EngineController::instance->text_renderer) {
+            EngineController::instance->text_renderer->render_text("Hello World", 25.0f, 25.0f, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f));
         }
     }
 
