@@ -155,7 +155,7 @@ namespace game::scenes {
                         Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
                         Vec3(0.2f, 1.0f, 0.1f),      // Tilted normal vector
                         700.0f                      // Radius
-                    ), 0.001f, 0.8f))
+                    ), 0.002f, 0.8f))
                 )
                 .child(Planet(planets[3])  // Tilted circular orbit
                     .transform(TransformBuilder()
@@ -163,8 +163,8 @@ namespace game::scenes {
                     .component(new Trajectory(std::make_unique<engine::CircularCurve>(
                         Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
                         Vec3(0.2f, 1.0f, 0.1f),      // Tilted normal vector
-                        1000.0f                      // Radius
-                    ), 0.005f, 0.7f))
+                        1400.0f                      // Radius
+                    ), 0.002f, 0.7f))
                 )
                 .child(Planet(planets[4])  // Tilted circular orbit
                     .transform(TransformBuilder()
@@ -172,8 +172,8 @@ namespace game::scenes {
                     .component(new Trajectory(std::make_unique<engine::CircularCurve>(
                         Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
                         Vec3(0.2f, 1.0f, 0.1f),      // Tilted normal vector
-                        1000.0f                      // Radius
-                    ), 0.006f, 0.4f))
+                        1400.0f                      // Radius
+                    ), 0.002f, 0.4f))
                 )
                 .child(Planet(planets[5])  // Tilted circular orbit
                     .transform(TransformBuilder()
@@ -181,8 +181,8 @@ namespace game::scenes {
                     .component(new Trajectory(std::make_unique<engine::CircularCurve>(
                         Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
                         Vec3(0.2f, 1.0f, 0.1f),      // Tilted normal vector
-                        1300.0f                      // Radius
-                    ), 0.007f, 0.4f))
+                        2100.0f                      // Radius
+                    ), 0.002f, 0.4f))
                 )
                 .child(Planet(planets[6])  // Tilted circular orbit
                     .transform(TransformBuilder()
@@ -190,8 +190,8 @@ namespace game::scenes {
                     .component(new Trajectory(std::make_unique<engine::CircularCurve>(
                         Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
                         Vec3(0.2f, 1.0f, 0.1f),      // Tilted normal vector
-                        1300.0f                      // Radius
-                    ), 0.008f, 0.9f))
+                        2100.0f                      // Radius
+                    ), 0.002f, 0.9f))
                 )
                 .child(Planet(planets[7])  // Tilted circular orbit
                     .transform(TransformBuilder()
@@ -199,8 +199,8 @@ namespace game::scenes {
                     .component(new Trajectory(std::make_unique<engine::CircularCurve>(
                         Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
                         Vec3(0.2f, 1.0f, 0.1f),      // Tilted normal vector
-                        1600.0f                      // Radius
-                    ), 0.009f, 0.5f))
+                        2800.0f                      // Radius
+                    ), 0.002f, 0.5f))
                 )
                 .child(Planet(planets[8])  // Tilted circular orbit
                     .transform(TransformBuilder()
@@ -208,8 +208,8 @@ namespace game::scenes {
                     .component(new Trajectory(std::make_unique<engine::CircularCurve>(
                         Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
                         Vec3(0.2f, 1.0f, 0.1f),      // Tilted normal vector
-                        1600.0f                      // Radius
-                    ), 0.005f, 0.7f))
+                        2800.0f                      // Radius
+                    ), 0.002f, 0.7f))
                 )
             );
     }
