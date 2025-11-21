@@ -31,7 +31,7 @@ namespace game::components {
         Vec3 target_pos = this->target_vobj->transform().get_position();
 
         Vec3 to_target = target_pos - my_pos;
-        float dist = glm::length(to_target);
+        float dist = engine::h_norm(to_target);
         if (dist < 1e-6f) {
             if (this->walker) this->walker->set_move_vector(Vec2(0.0f, 0.0f));
             return;
@@ -42,7 +42,7 @@ namespace game::components {
         // Project direction onto local tangent (use the VObject's current up as the surface normal proxy).
         Vec3 up = transform.quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
         Vec3 dir_horiz = dir - glm::dot(dir, up) * up;
-        float len = glm::length(dir_horiz);
+        float len = engine::h_norm(dir_horiz);
         Vec3 projected = (len < 1e-6f) ? Vec3(0.0f) : dir_horiz / len;
 
         // Determine local forward/right basis
@@ -72,8 +72,8 @@ namespace game::components {
         Quaternion& quaternion = transform.quaternion();
         // Recompute forward projection onto tangent plane
         Vec3 forward_proj = forward - glm::dot(forward, up) * up;
-        float fwd_len = glm::length(forward_proj);
-        float proj_len = glm::length(projected);
+        float fwd_len = engine::h_norm(forward_proj);
+        float proj_len = engine::h_norm(projected);
         if (fwd_len > 1e-6f && proj_len > 1e-6f) {
             Vec3 fwd_n = forward_proj / fwd_len;
             Vec3 proj_n = projected / proj_len;
