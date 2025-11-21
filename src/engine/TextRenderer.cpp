@@ -201,9 +201,9 @@ void TextRenderer::render_text(const std::string& text, float x, float y, float 
     glGetIntegerv(GL_CURRENT_PROGRAM, &last_program);
     GLboolean last_blend_enabled = glIsEnabled(GL_BLEND);
     GLboolean last_depth_test = glIsEnabled(GL_DEPTH_TEST);
-    GLint last_blend_src_rgb, last_blend_dst_rgb;
-    glGetIntegerv(GL_BLEND_SRC_RGB, &last_blend_src_rgb);
-    glGetIntegerv(GL_BLEND_DST_RGB, &last_blend_dst_rgb);
+    GLint last_blend_src, last_blend_dst;
+    glGetIntegerv(GL_BLEND_SRC, &last_blend_src);
+    glGetIntegerv(GL_BLEND_DST, &last_blend_dst);
 
     // Activate shader
     glUseProgram(shader_program);
@@ -276,7 +276,7 @@ void TextRenderer::render_text(const std::string& text, float x, float y, float 
     if (!last_blend_enabled) {
         glDisable(GL_BLEND);
     } else {
-        glBlendFunc(static_cast<GLenum>(last_blend_src_rgb), static_cast<GLenum>(last_blend_dst_rgb));
+        glBlendFunc(static_cast<GLenum>(last_blend_src), static_cast<GLenum>(last_blend_dst));
     }
     
     glUseProgram(last_program);
