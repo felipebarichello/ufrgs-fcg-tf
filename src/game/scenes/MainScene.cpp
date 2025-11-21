@@ -13,22 +13,27 @@
 using namespace engine;
 using namespace game::components;
 
-VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera, float height, std::vector<PlanetInfo*> planets) {
+VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera, float height, std::vector<PlanetInfo*> planets, SpaceshipController*& ship_controller) {
+    ObjDrawable* ship_drawable = new ObjDrawable(std::string("spaceship.obj"), std::string("spaceship.jpg"));
+    
     engine::PointCollider* point_collider = new engine::PointCollider();
     engine::CylinderCollider* cylinder_collider = new engine::CylinderCollider(height, 0.5f);
+    ship_controller = new SpaceshipController(ship_drawable);
 
     // Create walker component first and then the humanoid which will forward inputs to it.
     WalkerController* walker = new WalkerController(planets, point_collider);
 
     // TODO: add spaceship controller pointer (nullptr for now)
-    HumanoidPlayerController* controller = new HumanoidPlayerController(main_camera, walker, cylinder_collider);
-    player_ref = controller;
+    HumanoidPlayerController* humanoid_controller = new HumanoidPlayerController(main_camera, walker, cylinder_collider);
+    player_ref = humanoid_controller;
 
     return VObjectConfig()
         .transform(TransformBuilder()
             .position(Vec3(0.0f, 220.0f, 50.0f)))
         .component(walker)
-        .component(controller)
+        .component(humanoid_controller)
+        .component(ship_controller)
+        .component(ship_drawable)
         .component(point_collider)
         .component(cylinder_collider)
         .child(VObjectConfig()
@@ -42,18 +47,6 @@ VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera,
         //     )
         //     .component(new ObjDrawable("bunny.obj"))
         // );
-}
-
-VObjectConfig SpaceshipPlayer(SpaceshipController*& controller_ref) {
-    ObjDrawable* drawable = new ObjDrawable(std::string("spaceship.obj"), std::string("spaceship.jpg"));
-    SpaceshipController* controller = new SpaceshipController(drawable);
-    controller_ref = controller;
-
-    return VObjectConfig()
-        .transform(TransformBuilder()
-            .position(Vec3(220.0f, 50.0f, 0.0f)))
-        .component(controller)
-        .component(drawable);
 }
 
 VObjectConfig Planet(PlanetInfo* planet_info) {
@@ -126,15 +119,12 @@ namespace game::scenes {
         SpaceshipController* spaceship_controller_ref = nullptr;
 
         root
-            // Spaceship player
+            .vobject(Player(player_ref, humanoid_camera, player_height, planets, spaceship_controller_ref))
             .vobject(VObjectConfig().component(spaceship_camera))
-            .vobject(SpaceshipPlayer(spaceship_controller_ref))
             .vobject(VObjectConfig().component(new SpaceshipCameraController(spaceship_controller_ref, spaceship_camera)))
             // HumanoidPlayer
             .vobject(SkyBox())
-            .vobject(VObjectConfig().component(new SpaceParticles(100)))
-               .vobject(Player(player_ref, humanoid_camera, player_height, planets))
-               .vobject(VObjectConfig().component(new game::components::PlayerSwitcherController(player_ref, spaceship_controller_ref, humanoid_camera, spaceship_camera)))
+            .vobject(VObjectConfig().component(new game::components::PlayerSwitcherController(player_ref, spaceship_controller_ref, humanoid_camera, spaceship_camera)))
             // ensure the camera component is attached to a VObject so Camera::get_vobject() is valid
             .vobject(Enemy(player_ref, planets))
             .vobject(VObjectConfig()  // Root VObject for all planets
