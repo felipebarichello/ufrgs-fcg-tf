@@ -19,6 +19,7 @@ namespace game::components {
             engine::Vec2 get_move_vector() const { return this->move_vector; }
             void request_jump() { this->jump_requested = true; }
             engine::PointCollider* get_point_collider() { return this->point_collider; }
+            engine::Vec3 get_velocity() const { return this->current_velocity; }
 
         private:
             engine::Vec2 move_vector {0.0f, 0.0f};

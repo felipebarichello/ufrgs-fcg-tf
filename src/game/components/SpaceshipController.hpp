@@ -11,6 +11,8 @@ namespace game::components {
             SpaceshipController(float planet_radius) : planet_radius(planet_radius) {}
             void Start() override;
             void Update() override;
+            engine::Vec3 get_velocity() const { return this->velocity; }
+
             float speed = 10.0f;
 
         private:
@@ -27,7 +29,6 @@ namespace game::components {
 
             void update_rotation_due_to_input();
             engine::Vec3 velocity = engine::Vec3(0.0f);
-            float acceleration2 = 0.0f;
             bool accelerating_forward = false;
             bool accelerating_backward = false;
             SphericalInput get_spherical_input();

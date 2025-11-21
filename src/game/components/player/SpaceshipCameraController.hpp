@@ -4,10 +4,6 @@
 #include <memory>
 #include <game/components/SpaceshipController.hpp>
 
-using engine::Vec3;
-
-using engine::Transform;
-
 namespace game::components {
     class SpaceshipCameraController : public engine::Behavior {
         public:
@@ -18,9 +14,14 @@ namespace game::components {
             struct SphericalInput;
 
             engine::Camera* camera;
-            SpaceshipController* player_controller;
+            SpaceshipController* ship_controller;
 
-            float camera_smooth_speed = 0.1f; 
-            Vec3 offset = {0.0, 2.0, 10.0};
+            float camera_smooth_speed = 0.1f;
+            float vertical_offset = 2.0f;
+            float camera_vel_smooth = 0.1f;
+            float default_distance = 10.0f;
+            float min_distance = 5.0f;
+            
+            engine::Vec3 velocity = engine::Vec3(0.0f);
     };
 } // namespace game::components

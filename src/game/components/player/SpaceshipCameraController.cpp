@@ -4,20 +4,25 @@
 #include <cmath>
 
 using namespace game::components;
+using engine::Vec3;
+using engine::math::Quaternion;
+using engine::Transform;
 
-SpaceshipCameraController::SpaceshipCameraController(SpaceshipController* player_controller, engine::Camera* camera) {
-    this->player_controller = player_controller;
+SpaceshipCameraController::SpaceshipCameraController(SpaceshipController* ship_controller, engine::Camera* camera) {
+    this->ship_controller = ship_controller;
     this->camera = camera;
 }
 
 void SpaceshipCameraController::Update() {
-    Transform& player_transform = this->player_controller->get_vobject()->transform();
-    Vec3 player_position = player_transform.get_position();
+    Transform& ship_transform = this->ship_controller->get_vobject()->transform();
+    Quaternion ship_quat = ship_transform.get_quaternion();
     Transform& cam_transform = this->camera->get_vobject()->transform();
+    Vec3 up_dir = ship_quat.rotate(Vec3(0.0f, 1.0f, 0.0f));
 
-    engine::math::Quaternion player_q = player_transform.get_quaternion();
-    Vec3 world_offset = player_q.rotate(this->offset);
-
-    cam_transform.position() = engine::lerp(cam_transform.position(), player_position + world_offset, this->camera_smooth_speed);
-    cam_transform.quaternion() = engine::math::Quaternion::slerp(cam_transform.quaternion(), player_q, this->camera_smooth_speed);
+    Quaternion new_cam_quat = Quaternion::slerp(cam_transform.quaternion(), ship_quat, this->camera_smooth_speed);
+    Vec3 inert_cam_offset = new_cam_quat.rotate(Vec3(0.0f, 0.0f, this->default_distance));
+    Vec3 total_cam_offset = inert_cam_offset + up_dir * this->vertical_offset;
+    
+    cam_transform.position() = ship_transform.get_position() + total_cam_offset;
+    cam_transform.quaternion() = new_cam_quat;
 }

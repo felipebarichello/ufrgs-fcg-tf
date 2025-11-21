@@ -1,5 +1,7 @@
 #include "Particles.hpp"
 
+using namespace engine;
+
 Particles::Particles(int max_particles) {
     this->max_particles = max_particles;
     this->particles.reserve(max_particles);
@@ -39,7 +41,7 @@ Particles::Particles(int max_particles) {
         // Position = camera_pos + forward*depth + lateral jitter
         p.position = cam_pos + forward * depth + right * rx + up * ry;
         // Move in a random direction away from the camera
-        p.direction = normalize(Vec3(
+        p.direction = glm::normalize(Vec3(
             (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f),
             (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f),
             (static_cast<float>(rand()) / RAND_MAX * 0.5f + 0.5f) // bias forward
