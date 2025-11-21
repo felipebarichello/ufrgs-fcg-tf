@@ -12,5 +12,9 @@ class TextDrawable : public engine::Drawable {
     void setText(const std::string& text, float scale, glm::vec3 color, float x, float y);
     void draw() override;
     private:
-    
+    float x = 0.0f;
+    float y = 0.0f;
+    float scale = 1.0f;
+    glm::vec3 color = glm::vec3(0.0f, 0.0f, 0.0f);
+    std::string text; 
 };
