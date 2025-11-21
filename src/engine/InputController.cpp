@@ -1,5 +1,6 @@
 #include "InputController.hpp"
 #include "math/linalg.hpp"
+#include <engine/math/matrices.hpp>
 #include <macros>
 
 using namespace engine;
@@ -159,7 +160,7 @@ void InputController::update_dpad_direction(DPad* dpad) {
 
     // Normalize
     if (*(dpad->direction) != Vec2(0.0f, 0.0f))
-        *(dpad->direction) = glm::normalize(*(dpad->direction));
+        *(dpad->direction) = engine::h_normalize(*(dpad->direction));
 }
 
 Vec2 InputController::get_cursor_position() {
