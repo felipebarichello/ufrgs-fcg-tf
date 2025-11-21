@@ -25,7 +25,7 @@ namespace game::components {
             engine::Vec3 current_velocity {0.0f, 0.0f, 0.0f};
             float v_sensitivity = 0.001f;
             float h_sensitivity = 0.001f;
-            float thrust_power = 200.0f; // meters/s^2 applied when thrusting
+            float thrust_power = 20.0f; // meters/s^2 applied when thrusting
 
             void update_rotation_due_to_input();
             engine::Vec3 velocity = engine::Vec3(0.0f);
