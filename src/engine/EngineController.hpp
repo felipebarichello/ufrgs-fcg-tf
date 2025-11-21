@@ -94,5 +94,8 @@ namespace engine {
             static GLuint get_program_id(ShaderType type);
             static std::string get_executable_directory();
             static float get_delta_time();
+            // Allow other engine modules to create shader programs from compiled
+            // vertex/fragment shader objects.
+            static GLuint create_gpu_program_public(GLuint vertex_shader_id, GLuint fragment_shader_id) { return create_gpu_program(vertex_shader_id, fragment_shader_id); }
     };
 }
