@@ -1,8 +1,8 @@
-#include "Particles.hpp"
+#include "SpaceParticles.hpp"
 
 using namespace engine;
 
-Particles::Particles(int max_particles) {
+SpaceParticles::SpaceParticles(int max_particles) {
     this->max_particles = max_particles;
     this->particles.reserve(max_particles);
     // Setup a minimal VAO used to draw a single point; actual particle
@@ -57,14 +57,14 @@ Particles::Particles(int max_particles) {
     }
 }
 
-Particles::~Particles() {
+SpaceParticles::~SpaceParticles() {
     if (this->vao_ptr) {
         delete this->vao_ptr;
         this->vao_ptr = nullptr;
     }
 }
 
-void Particles::update() {
+void SpaceParticles::update() {
     float delta_time = engine::EngineController::get_delta_time();
 
 
@@ -107,7 +107,7 @@ void Particles::update() {
     }
 }
 
-void Particles::draw() {
+void SpaceParticles::draw() {
 
     this->update();
 

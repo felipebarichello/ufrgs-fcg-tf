@@ -7,7 +7,7 @@
 #include <game/components/player/HumanoidPlayerController.hpp>
 #include <game/components/SpaceshipController.hpp>
 #include <game/components/Drawables/Stars.hpp>
-#include <game/components/Drawables/Particles.hpp>
+#include <game/components/Drawables/SpaceParticles.hpp>
 
 using namespace engine;
 using namespace game::components;
@@ -129,7 +129,7 @@ namespace game::scenes {
             .vobject(VObjectConfig().component(new SpaceshipCameraController(spaceship_controller_ref, spaceship_camera)))
             // HumanoidPlayer
             .vobject(SkyBox())
-            .vobject(VObjectConfig().component(new Particles(100)))
+            .vobject(VObjectConfig().component(new SpaceParticles(100)))
             .vobject(Player(player_ref, humanoid_camera, player_height, planets))
             // ensure the camera component is attached to a VObject so Camera::get_vobject() is valid
             .vobject(Enemy(player_ref, planets))
