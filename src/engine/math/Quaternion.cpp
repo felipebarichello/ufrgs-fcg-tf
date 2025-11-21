@@ -1,4 +1,6 @@
 #include "Quaternion.hpp"
+#include <engine/math/linalg.hpp>
+#include <engine/math/matrices.hpp>
 
 #include <sstream>
 #include <cmath>
@@ -88,7 +90,7 @@ namespace engine::math {
             if (orthogonal.length() < 1e-6f) {
                 orthogonal = glm::cross(source, Vec3(0.0f, 1.0f, 0.0f));
             }
-            orthogonal = glm::normalize(orthogonal);
+            orthogonal = engine::h_normalize(orthogonal);
             return Quaternion::from_axis_angle(orthogonal, M_PI);
         }
 
