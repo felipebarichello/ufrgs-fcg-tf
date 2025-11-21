@@ -7,6 +7,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <cstdlib>
 #include <cstdio>
+#include "linalg.hpp"
 
 namespace engine {
     glm::mat4 h_line_matrix(
