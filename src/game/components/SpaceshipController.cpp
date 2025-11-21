@@ -80,10 +80,12 @@ namespace game::components {
 
     void SpaceshipController::enable() {
         this->active = true;
+        this->model->set_visible();
     }
 
     void SpaceshipController::disable() {
         this->active = false;
+        this->model->set_invisible();
     }
 
 }

@@ -8,7 +8,7 @@ using engine::Transform;
 namespace game::components {
     class SpaceshipController : public engine::Behavior {
         public:
-            SpaceshipController(engine::ObjDrawable* spaceship_drawable) : spaceship_drawable(spaceship_drawable) {}
+            SpaceshipController(engine::ObjDrawable* model) : model(model) {}
             void Start() override;
             void Update() override;
             engine::Vec3 get_velocity() const { return this->velocity; }
@@ -22,7 +22,7 @@ namespace game::components {
         private:
             struct SphericalInput;
 
-            engine::ObjDrawable* spaceship_drawable = nullptr;
+            engine::ObjDrawable* model = nullptr;
             
             // Camera smoothing parameters
             engine::Vec2 move_vector {0.0f, 0.0f};

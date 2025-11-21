@@ -159,10 +159,12 @@ namespace game::components {
 
     void HumanoidPlayerController::enable() {
         this->active = true;
+        this->walker->enable();
     }
 
     void HumanoidPlayerController::disable() {
         this->active = false;
+        this->walker->disable();
     }
 
 }

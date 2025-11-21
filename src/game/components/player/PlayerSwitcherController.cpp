@@ -15,6 +15,8 @@ namespace game::components {
         
         // Toggle on 'E' press
         input->subscribe_press_button(GLFW_KEY_E, std::bind(&PlayerSwitcherController::toggle_active, this));
+
+        this->spaceship->disable();
     }
 
     void PlayerSwitcherController::toggle_active() {
@@ -22,22 +24,14 @@ namespace game::components {
         if (this->humanoid->get_walker()->is_grounded()) return; // Only allow switching when humanoid is not grounded
 
         bool was_humanoid = this->humanoid->is_active();
-        // Transform& human_transform = this->humanoid->get_vobject()->transform();
-        // Transform& ship_transform = this->spaceship->get_vobject()->transform();
-
-        // Swap main camera if cameras provided
-        if (this->humanoid_cam && this->ship_cam) {
-            if (was_humanoid) {
-                this->humanoid->disable();
-
-                this->spaceship->enable();
-                Camera::set_main(this->ship_cam);
-            } else {
-                this->spaceship->disable();
-
-                this->humanoid->enable();
-                Camera::set_main(this->humanoid_cam);
-            }
+        if (was_humanoid) {
+            this->humanoid->disable();
+            this->spaceship->enable();
+            Camera::set_main(this->ship_cam);
+        } else {
+            this->spaceship->disable();
+            this->humanoid->enable();
+            Camera::set_main(this->humanoid_cam);
         }
     }
 
