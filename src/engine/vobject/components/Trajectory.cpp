@@ -30,5 +30,5 @@ void Trajectory::Update() {
     if (this->t > 1.0f) {
         this->t -= 1.0f;
     }
-    transform.position() = curve->get_point(this->t);
+    transform.local_position() = curve->get_point(this->t);
 }

@@ -30,9 +30,9 @@ namespace game::components {
         if (this->grounded_to.has_value()) {
             // If grounded, snap back to the surface when moving because you should not walk away from the planet
             PlanetInfo* planet = this->grounded_to.value();
-            Vec3 planet_position = planet->get_vobject()->transform().get_position();
-            Vec3 direction_from_planet = engine::h_normalize(transform.get_position() - planet_position);
-            transform.position() = planet_position + direction_from_planet * planet->get_radius();
+            Vec3 planet_position = planet->get_vobject()->transform().get_world_position();
+            Vec3 direction_from_planet = engine::h_normalize(transform.get_world_position() - planet_position);
+            transform.set_world_position(planet_position + direction_from_planet * planet->get_radius());
             
             // Remove vertical component of velocity
             Vec3 up_direction = direction_from_planet;
@@ -149,7 +149,7 @@ namespace game::components {
         Vec3 gravity_sum(0.0f);
         Transform& transform = this->get_vobject()->transform();
         for (PlanetInfo* planet : this->planets) {
-            Vec3 vec_to_planet = planet->get_vobject()->transform().get_position() - transform.get_position();
+            Vec3 vec_to_planet = planet->get_vobject()->transform().get_world_position() - transform.get_world_position();
             float distance_to_planet = engine::h_norm(vec_to_planet);
             if (distance_to_planet > 1e-6f) {
                 Vec3 grav_direction = engine::h_normalize(vec_to_planet);
@@ -171,8 +171,8 @@ namespace game::components {
         this->closest_planet = nullptr;
         float closest_planet_distance = INFINITY;
         for (PlanetInfo* planet : this->planets) {
-            Vec3 planet_position = planet->get_vobject()->transform().get_position();
-            Vec3 vec_to_planet = planet_position - transform.get_position();
+            Vec3 planet_position = planet->get_vobject()->transform().get_world_position();
+            Vec3 vec_to_planet = planet_position - transform.get_world_position();
             float distance_to_planet = engine::h_norm(vec_to_planet);
 
             if (distance_to_planet < closest_planet_distance) {
@@ -189,7 +189,7 @@ namespace game::components {
                     this->kinematic->set_velocity(this->kinematic->get_velocity() - velocity_to_planet);
                 }
 
-                transform.position() = planet_position - direction_to_planet * planet->get_radius();
+                transform.set_world_position(planet_position - direction_to_planet * planet->get_radius());
                 this->grounded_to = planet;
                 return;
             }
@@ -198,13 +198,14 @@ namespace game::components {
 
     void WalkerController::align_to_closest_planet() {
         Transform& transform = this->get_vobject()->transform();
+        Vec3 world_pos = transform.get_world_position();
         Quaternion& quaternion = transform.quaternion();
         Vec3 current_up = quaternion.rotate(Vec3(0.0f, 1.0f, 0.0f));
 
         if (this->grounded_to.has_value()) {
             PlanetInfo* grounded_planet = this->grounded_to.value();
-            Vec3 grounded_planet_position = grounded_planet->get_vobject()->transform().get_position();
-            Vec3 vec_to_grounded_planet = grounded_planet_position - transform.get_position();
+            Vec3 grounded_planet_position = grounded_planet->get_vobject()->transform().get_world_position();
+            Vec3 vec_to_grounded_planet = grounded_planet_position - world_pos;
             Vec3 grounded_up_direction = -engine::h_normalize(vec_to_grounded_planet);
 
             Quaternion align_quat = Quaternion::from_unit_vectors(current_up, grounded_up_direction);
@@ -215,10 +216,10 @@ namespace game::components {
 
         if (this->closest_planet == nullptr) return;
 
-        Vec3 closest_planet_position = this->closest_planet->get_vobject()->transform().get_position();
-        Vec3 vec_to_closest_planet = closest_planet_position - transform.get_position();
+        Vec3 closest_planet_position = this->closest_planet->get_vobject()->transform().get_world_position();
+        Vec3 vec_to_closest_planet = closest_planet_position - world_pos;
         Vec3 closest_surface_point = closest_planet_position - engine::h_normalize(vec_to_closest_planet) * this->closest_planet->get_radius();
-        Vec3 vec_to_closest_point = closest_surface_point - transform.get_position();
+        Vec3 vec_to_closest_point = closest_surface_point - world_pos;
         float closest_point_distance = engine::h_norm(vec_to_closest_point);
 
         // Do a soft alignment when near

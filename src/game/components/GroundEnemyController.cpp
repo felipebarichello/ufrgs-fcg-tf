@@ -27,8 +27,8 @@ namespace game::components {
         // Compute 2D input vector (forward,right) in local space and forward to walker
         Transform& transform = this->get_vobject()->transform();
 
-        Vec3 my_pos = transform.get_position();
-        Vec3 target_pos = this->target_vobj->transform().get_position();
+        Vec3 my_pos = transform.get_world_position();
+        Vec3 target_pos = this->target_vobj->transform().get_world_position();
 
         Vec3 to_target = target_pos - my_pos;
         float dist = engine::h_norm(to_target);

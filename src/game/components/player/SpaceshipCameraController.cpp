@@ -23,6 +23,6 @@ void SpaceshipCameraController::Update() {
     Vec3 inert_cam_offset = new_cam_quat.rotate(Vec3(0.0f, 0.0f, this->default_distance));
     Vec3 total_cam_offset = inert_cam_offset + up_dir * this->vertical_offset;
     
-    cam_transform.position() = ship_transform.get_position() + total_cam_offset;
+    cam_transform.set_world_position(ship_transform.get_world_position() + total_cam_offset);
     cam_transform.quaternion() = new_cam_quat;
 }

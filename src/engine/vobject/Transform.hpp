@@ -17,11 +17,11 @@ namespace engine {
 
             Transform() = default;
 
-            Vec3 get_position() const {
+            Vec3 get_local_position() const {
                 return this->_local_position;
             }
 
-            Vec3& position() {
+            Vec3& local_position() {
                 this->dirty = true;
                 return this->_local_position;
             }

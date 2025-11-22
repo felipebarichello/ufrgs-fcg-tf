@@ -76,8 +76,8 @@ namespace engine::collision {
         auto vobj1 = sphere_1.get_vobject();
         auto vobj2 = sphere_2.get_vobject();
 
-        Vec3 pos1 = vobj1->transform().get_position();
-        Vec3 pos2 = vobj2->transform().get_position();
+        Vec3 pos1 = vobj1->transform().get_world_position();
+        Vec3 pos2 = vobj2->transform().get_world_position();
 
         // Vector between centers
         Vec3 delta = pos2 - pos1;
@@ -94,8 +94,8 @@ namespace engine::collision {
         auto point_vobject = point.get_vobject();
         auto sphere_vobject = sphere.get_vobject();
 
-        Vec3 point_pos = point_vobject->transform().get_position();
-        Vec3 sphere_pos = sphere_vobject->transform().get_position();
+        Vec3 point_pos = point_vobject->transform().get_world_position();
+        Vec3 sphere_pos = sphere_vobject->transform().get_world_position();
 
         Vec3 delta = point_pos - sphere_pos;
         float distance_squared = delta.x * delta.x + delta.y * delta.y + delta.z * delta.z;
@@ -109,8 +109,8 @@ namespace engine::collision {
         auto vobj1 = c1.get_vobject();
         auto vobj2 = c2.get_vobject();
 
-        Vec3 pos1 = vobj1->transform().get_position();
-        Vec3 pos2 = vobj2->transform().get_position();
+        Vec3 pos1 = vobj1->transform().get_world_position();
+        Vec3 pos2 = vobj2->transform().get_world_position();
 
         // Axes (apply rotation)
         Vec3 axis1 = vobj1->transform().get_quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
@@ -133,8 +133,8 @@ namespace engine::collision {
         auto cylinder_vobj = cyl.get_vobject();
         auto sphere_vobj = sphere.get_vobject();
 
-        Vec3 cyl_pos = cylinder_vobj->transform().get_position();
-        Vec3 sphere_pos = sphere_vobj->transform().get_position();
+        Vec3 cyl_pos = cylinder_vobj->transform().get_world_position();
+        Vec3 sphere_pos = sphere_vobj->transform().get_world_position();
 
         // Cylinder axis and scale
         Vec3 axis = cylinder_vobj->transform().get_quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));

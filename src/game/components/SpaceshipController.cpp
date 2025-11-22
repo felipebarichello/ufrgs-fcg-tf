@@ -37,9 +37,11 @@ namespace game::components {
 
     void SpaceshipController::Update() {
         if (!this->active) return;
+
+        Transform& transform = this->get_vobject()->transform();
         
         // Inertial spaceship: integrate acceleration -> velocity -> position
-        Vec3 forward = this->get_vobject()->transform().get_quaternion().rotate(Vec3(0.0f, 0.0f, -1.0f));
+        Vec3 forward = transform.get_quaternion().rotate(Vec3(0.0f, 0.0f, -1.0f));
 
         float dt = EngineController::get_delta_time();
 
@@ -58,7 +60,7 @@ namespace game::components {
         this->current_velocity += accel_vec * dt;
 
         // Integrate position
-        this->get_vobject()->transform().position() += this->current_velocity * dt;
+        transform.set_world_position(transform.get_world_position() + this->current_velocity * dt);
         this->test_planet_collisions();
 
         // Update on-screen fuel text

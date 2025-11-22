@@ -84,9 +84,8 @@ namespace game::components {
 
             // Apply offset in local camera space based on stored child transform
             Transform& cam_transform = this->camera->get_vobject()->transform();
-            // Preserve camera quaternion (pitch) set by set_camera_phi; only reset local position to stored base
-            cam_transform.position() = this->stored_child_cam_transform.get_position();
-            cam_transform.position() += cam_transform.quaternion().rotate(Vec3(bob_x, bob_y, 0.0f));
+            cam_transform.local_position() = this->stored_child_cam_transform.get_local_position();
+            cam_transform.local_position() += cam_transform.quaternion().rotate(Vec3(bob_x, bob_y, 0.0f));
         }
 
         // Forwarded movement input is handled by WalkerController; Humanoid doesn't change position directly.
@@ -104,8 +103,8 @@ namespace game::components {
         Vec3 front_of_camera = cam_quaternion.rotate(Vec3(0.0f, 0.0f, -1.0f));
         Vec3 right_of_camera = cam_quaternion.rotate(Vec3(1.0f, 0.0f, 0.0f));
 
-        cam_transform.position() += this->released_camera_speed * this->move_vector_2d.y * front_of_camera;
-        cam_transform.position() += this->released_camera_speed * this->move_vector_2d.x * right_of_camera;
+        cam_transform.set_world_position(cam_transform.get_world_position() + this->released_camera_speed * this->move_vector_2d.y * front_of_camera);
+        cam_transform.set_world_position(cam_transform.get_world_position() + this->released_camera_speed * this->move_vector_2d.x * right_of_camera);
     }
 
     HumanoidPlayerController::SphericalInput HumanoidPlayerController::get_spherical_input() {
@@ -153,7 +152,7 @@ namespace game::components {
 
             // Keep transform after disowning
             cam_transf.copy_values_from(player_transform);
-            cam_transf.position() += cam_transf.quaternion().rotate(this->stored_child_cam_transform.get_position());
+            cam_transf.set_world_position(cam_transf.get_world_position() + cam_transf.quaternion().rotate(this->stored_child_cam_transform.get_world_position()));
         } else {
             this->get_vobject()->add_child(this->camera->get_vobject());
             cam_transf.copy_values_from(this->stored_child_cam_transform);

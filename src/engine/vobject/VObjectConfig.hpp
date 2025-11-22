@@ -15,7 +15,7 @@ namespace engine {
             }
 
             TransformBuilder& position(Vec3 p) {
-                inner.position() = p;
+                inner.local_position() = p;
                 return *this;
             }
 

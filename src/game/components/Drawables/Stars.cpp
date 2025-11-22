@@ -70,8 +70,8 @@ Stars::~Stars() {
 void Stars::update() {
     engine::Camera* cam = engine::Camera::get_main();
     if (cam && this->get_vobject()) {
-        auto player_pos = cam->get_vobject()->transform().get_position();
-        this->get_vobject()->transform().position() = player_pos;
+        auto player_pos = cam->get_vobject()->transform().get_world_position();
+        this->get_vobject()->transform().set_world_position(player_pos);
     }
 }
 
