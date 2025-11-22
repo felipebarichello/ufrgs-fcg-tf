@@ -26,6 +26,13 @@ namespace engine {
                 return this->_position;
             }
 
+            Vec3 get_world_position() {
+                Mat4 model = this->get_model_matrix();
+                return Vec3(model[3].x, model[3].y, model[3].z);
+            }
+
+            void set_world_position(const Vec3& pos);
+
             Quaternion get_quaternion() const {
                 return this->_quaternion;
             }

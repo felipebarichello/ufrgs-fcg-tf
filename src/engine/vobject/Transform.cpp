@@ -3,6 +3,26 @@
 
 using namespace engine;
 
+void Transform::set_world_position(const Vec3& new_pos) {
+    auto parent_opt = this->get_parent();
+
+    if (parent_opt) {
+        Transform* parent_transform = parent_opt.value();
+        Mat4 parent_model = parent_transform->get_model_matrix();
+        Mat4 parent_inverse = invert_orthonormal_matrix(parent_model);
+        Vec4 new_world_pos = Vec4(new_pos, 1.0f);
+        
+        // Convert world position to local position
+        Vec4 local_pos_homogeneous = parent_inverse * new_world_pos;
+        this->_position = Vec3(local_pos_homogeneous.x, local_pos_homogeneous.y, local_pos_homogeneous.z);
+    } else {
+        // No parent, so local position is the same as world position
+        this->_position = new_pos;
+    }
+
+    this->dirty = true;
+}
+
 Mat4 Transform::get_model_matrix() {
     if (this->dirty) {
         this->update_matrix();
