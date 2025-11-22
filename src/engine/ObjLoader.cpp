@@ -209,7 +209,7 @@ void ObjLoader::ComputeNormals(ObjModel* model) {
     for (const unsigned int & sgroup : sgroup_ids)
     {
         std::vector<int> num_triangles_per_vertex(num_vertices, 0);
-        std::vector<glm::vec4> vertex_normals(num_vertices, glm::vec4(0.0f,0.0f,0.0f,0.0f));
+        std::vector<engine::Vec4> vertex_normals(num_vertices, engine::Vec4(0.0f,0.0f,0.0f,0.0f));
 
         // Acumulamos as normais dos vértices de todos triângulos deste smoothing group
         for (size_t shape = 0; shape < model->shapes.size(); ++shape)
@@ -223,24 +223,24 @@ void ObjLoader::ComputeNormals(ObjModel* model) {
                 if (sgroup_tri != sgroup)
                     continue;
 
-                glm::vec4  vertices[3];
+                engine::Vec4  vertices[3];
                 for (size_t vertex = 0; vertex < 3; ++vertex)
                 {
                     tinyobj::index_t idx = model->shapes[shape].mesh.indices[3*triangle + vertex];
                     const float vx = model->attrib.vertices[3*idx.vertex_index + 0];
                     const float vy = model->attrib.vertices[3*idx.vertex_index + 1];
                     const float vz = model->attrib.vertices[3*idx.vertex_index + 2];
-                    vertices[vertex] = glm::vec4(vx,vy,vz,1.0);
+                    vertices[vertex] = engine::Vec4(vx,vy,vz,1.0);
                 }
 
-                const glm::vec4  a = vertices[0];
-                const glm::vec4  b = vertices[1];
-                const glm::vec4  c = vertices[2];
+                const engine::Vec4  a = vertices[0];
+                const engine::Vec4  b = vertices[1];
+                const engine::Vec4  c = vertices[2];
 
                 // PREENCHA AQUI o cálculo da normal de um triângulo cujos vértices
                 // estão nos pontos "a", "b", e "c", definidos no sentido anti-horário.
-                //const glm::vec4  n = glm::vec4(0.0f,0.0f,0.0f,0.0f);
-                glm::vec4 n = h_cross_product(b - a, c - a);
+                //const engine::Vec4  n = engine::Vec4(0.0f,0.0f,0.0f,0.0f);
+                engine::Vec4 n = h_cross_product(b - a, c - a);
 
                 for (size_t vertex = 0; vertex < 3; ++vertex)
                 {
@@ -259,7 +259,7 @@ void ObjLoader::ComputeNormals(ObjModel* model) {
             if (num_triangles_per_vertex[vertex_index] == 0)
                 continue;
 
-            glm::vec4 n = vertex_normals[vertex_index] / (float)num_triangles_per_vertex[vertex_index];
+            engine::Vec4 n = vertex_normals[vertex_index] / (float)num_triangles_per_vertex[vertex_index];
             n /= h_norm(n);
 
             model->attrib.normals.push_back( n.x );
