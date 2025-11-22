@@ -21,7 +21,7 @@ SpaceParticles::SpaceParticles(int max_particles) {
     // its forward vector) and will move toward the camera.
     engine::Camera* cam = engine::Camera::get_main();
     engine::Vec3 cam_pos(0.0f);
-    engine::math::Quaternion cam_q = engine::math::Quaternion::identity();
+    engine::Quaternion cam_q = engine::Quaternion::identity();
     if (cam && cam->get_vobject() != nullptr) {
         cam_pos = cam->get_vobject()->transform().get_local_position();
         cam_q = cam->get_vobject()->transform().get_quaternion();

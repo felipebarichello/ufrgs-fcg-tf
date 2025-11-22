@@ -7,7 +7,7 @@
 #include <memory>
 
 namespace engine {
-    using engine::math::Quaternion;
+    using engine::Quaternion;
 
     class VObject; // Forward declaration
 

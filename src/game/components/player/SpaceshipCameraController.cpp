@@ -5,7 +5,7 @@
 
 using namespace game::components;
 using engine::Vec3;
-using engine::math::Quaternion;
+using engine::Quaternion;
 using engine::Transform;
 
 SpaceshipCameraController::SpaceshipCameraController(SpaceshipController* ship_controller, engine::Camera* camera) {

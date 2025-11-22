@@ -5,7 +5,7 @@
 #include <sstream>
 #include <cmath>
 
-namespace engine::math {
+namespace engine {
 
     Quaternion::Quaternion() {
         Quaternion_setIdentity(&this->inner);
@@ -184,6 +184,6 @@ namespace engine::math {
         return os;
     }
 
-} // namespace engine::math
+} // namespace engine
 
 

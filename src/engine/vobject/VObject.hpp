@@ -56,10 +56,8 @@ namespace engine {
             void destroy(); // TODO: Defer destruction to end of frame?
 
             Transform& transform();
-
-            std::optional<VObject*> get_parent() {
-                return this->parent;
-            }
+            Scene* get_scene() { return this->scene; }
+            std::optional<VObject*> get_parent() { return this->parent; }
 
         private:
             Scene* scene;

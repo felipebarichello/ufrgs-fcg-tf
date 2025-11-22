@@ -9,7 +9,7 @@ using engine::EngineController;
 using engine::Vec2;
 using engine::Vec3;
 using engine::Transform;
-using engine::math::Quaternion;
+using engine::Quaternion;
 
 namespace game::components {
 

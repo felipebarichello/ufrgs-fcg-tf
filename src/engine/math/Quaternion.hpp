@@ -16,7 +16,7 @@ extern "C" {
 }
 #undef Quaternion
 
-namespace engine::math {
+namespace engine {
     using CQuaternion = ::CQuaternion;
 
     class Quaternion {
@@ -89,4 +89,4 @@ namespace engine::math {
     // ostream support
     std::ostream& operator<<(std::ostream& os, const Quaternion& q);
 
-} // namespace engine::math
+} // namespace engine
