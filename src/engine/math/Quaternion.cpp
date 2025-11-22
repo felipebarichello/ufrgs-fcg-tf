@@ -86,15 +86,15 @@ namespace engine::math {
         
         if (dot <= -1.0f) {
             // Vectors are opposite
-            Vec3 orthogonal = glm::cross(source, Vec3(1.0f, 0.0f, 0.0f));
+            Vec3 orthogonal = engine::h_cross_product(source, Vec3(1.0f, 0.0f, 0.0f));
             if (orthogonal.length() < 1e-6f) {
-                orthogonal = glm::cross(source, Vec3(0.0f, 1.0f, 0.0f));
+                orthogonal = engine::h_cross_product(source, Vec3(0.0f, 1.0f, 0.0f));
             }
             orthogonal = engine::h_normalize(orthogonal);
             return Quaternion::from_axis_angle(orthogonal, M_PI);
         }
 
-        Vec3 cross = glm::cross(source, target);
+        Vec3 cross = engine::h_cross_product(source, target);
         double s = sqrt((1 + dot) * 2);
         double inv_s = 1 / s;
 
