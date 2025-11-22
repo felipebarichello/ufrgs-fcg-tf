@@ -7,11 +7,12 @@
 #include <game/components/PlanetInfo.hpp>
 #include <game/components/SphericalInput.hpp>
 #include <game/components/KinematicBody.hpp>
+#include <game/scenes/MainScene_vars.hpp>
 
 namespace game::components {
     class SpaceshipController : public engine::Behavior {
         public:
-            SpaceshipController(KinematicBody* kinematic, std::vector<PlanetInfo*> planets, engine::ObjDrawable* model, engine::CylinderCollider* cylinder_collider) : kinematic(kinematic), planets(planets), cylinder_collider(cylinder_collider), model(model) {}
+            SpaceshipController(KinematicBody* kinematic, engine::ObjDrawable* model, engine::CylinderCollider* cylinder_collider) : kinematic(kinematic), planets(scenes::main_scene::planets), cylinder_collider(cylinder_collider), model(model) {}
             void Start() override;
             void Update() override;
             void PostUpdate() override;

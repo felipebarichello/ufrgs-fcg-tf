@@ -4,6 +4,7 @@
 #include <engine>
 #include <game/components/PlanetInfo.hpp>
 #include <game/components/KinematicBody.hpp>
+#include <game/scenes/MainScene_vars.hpp>
 
 namespace game::components {
     
@@ -12,7 +13,8 @@ namespace game::components {
             // Gravity / grounding
             static constexpr float GRAVITATIONAL_CONSTANT = 6.6743e-11f;
 
-            Gravity(KinematicBody* kinematic, std::vector<PlanetInfo*> planets) : kinematic(kinematic), planets(planets) {}
+            Gravity(KinematicBody* kinematic) : kinematic(kinematic), planets(scenes::main_scene::planets) {}
+            // Gravity(KinematicBody* kinematic, std::vector<PlanetInfo*> planets) : kinematic(kinematic), planets(planets) {}
             void Update() override;
             engine::Vec3 compute_equivalent_gravity();
 

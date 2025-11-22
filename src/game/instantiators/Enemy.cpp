@@ -1,17 +1,23 @@
 #include "Enemy.hpp"
 #include <vector>
 
+#include <game/scenes/MainScene_vars.hpp>
+
 using namespace engine;
 using namespace game::components;
 
 namespace game::instantiators {
 
     VObjectConfig Enemy(EnemyConfig config) {
+        return Enemy(config, scenes::main_scene::player);
+    }
+
+    VObjectConfig Enemy(EnemyConfig config, game::components::HumanoidPlayerController* player) {
         PointCollider* point_collider = new PointCollider();
         CylinderCollider* cylinder_collider = new CylinderCollider(1.0f, 3.0f);
         KinematicBody* kinematic = new KinematicBody();
-        Gravity* gravity = new Gravity(kinematic, config.planets);
-        WalkerController* walker = new WalkerController(kinematic, gravity, config.planets, point_collider);
+        Gravity* gravity = new Gravity(kinematic);
+        WalkerController* walker = new WalkerController(kinematic, gravity, point_collider);
 
         return VObjectConfig()
             .transform(TransformBuilder()
@@ -19,7 +25,7 @@ namespace game::instantiators {
             .component(walker)
             .component(point_collider)
             .component(cylinder_collider)
-            .component(new GroundEnemyController(walker, cylinder_collider, config.player))
+            .component(new GroundEnemyController(walker, cylinder_collider, player))
             .component(gravity)
             .component(kinematic)
             .child(EnemyObj());

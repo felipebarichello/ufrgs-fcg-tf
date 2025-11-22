@@ -7,10 +7,9 @@
 namespace game::instantiators {
     struct EnemyConfig {
         game::components::PlanetInfo* home;
-        std::vector<game::components::PlanetInfo*> planets;
-        game::components::HumanoidPlayerController* player;
     };
     
     engine::VObjectConfig EnemyObj();
     engine::VObjectConfig Enemy(EnemyConfig config);
+    engine::VObjectConfig Enemy(EnemyConfig config, game::components::HumanoidPlayerController* player);
 }

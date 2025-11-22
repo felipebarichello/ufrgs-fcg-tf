@@ -8,11 +8,12 @@
 #include <game/components/PlanetInfo.hpp>
 #include <game/components/KinematicBody.hpp>
 #include <game/components/Gravity.hpp>
+#include <game/scenes/MainScene_vars.hpp>
 
 namespace game::components {
     class WalkerController : public engine::Behavior {
         public:
-            WalkerController(KinematicBody* kinematic, Gravity* gravity, std::vector<PlanetInfo*> planets, engine::PointCollider* point_collider) : kinematic(kinematic), gravity(gravity), planets(planets), point_collider(point_collider) {}
+            WalkerController(KinematicBody* kinematic, Gravity* gravity, engine::PointCollider* point_collider) : kinematic(kinematic), gravity(gravity), planets(scenes::main_scene::planets), point_collider(point_collider) {}
             void Update() override;
             void PostUpdate() override;
 
