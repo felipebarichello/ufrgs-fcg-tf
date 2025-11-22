@@ -3,12 +3,6 @@
 #include <cmath>
 #include <vector>
 #include <game/components/include.hpp>
-#include <game/components/player/SpaceshipCameraController.hpp>
-#include <game/components/player/HumanoidPlayerController.hpp>
-#include <game/components/SpaceshipController.hpp>
-#include <game/components/player/PlayerSwitcherController.hpp>
-#include <game/components/Drawables/Stars.hpp>
-#include <game/components/Drawables/SpaceParticles.hpp>
 
 using namespace engine;
 using namespace game::components;
@@ -16,7 +10,8 @@ using namespace game::components;
 VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera, float height, std::vector<PlanetInfo*> planets, SpaceshipController*& ship_controller) {
     KinematicBody* kinematic = new KinematicBody();
     ObjDrawable* ship_drawable = new ObjDrawable(std::string("spaceship.obj"), std::string("spaceship.jpg"));
-    
+    Gravity* gravity = new Gravity(kinematic, planets);
+
     engine::PointCollider* point_collider = new engine::PointCollider();
     engine::CylinderCollider* cylinder_collider = new engine::CylinderCollider(height, 0.5f);
     engine::CylinderCollider* spaceship_collider = new engine::CylinderCollider(2.0f, 1.0f);
@@ -40,6 +35,7 @@ VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera,
         .component(point_collider)
         .component(cylinder_collider)
         .component(spaceship_collider)
+        .component(gravity)
         .component(kinematic)
         .child(VObjectConfig()
             .transform(TransformBuilder()
@@ -138,7 +134,7 @@ namespace game::scenes {
             .vobject(VObjectConfig().component(new SpaceshipCameraController(spaceship_controller_ref, spaceship_camera)))
             // HumanoidPlayer
             .vobject(SkyBox())
-            .vobject(VObjectConfig().component(new game::components::PlayerSwitcherController(player_ref, spaceship_controller_ref, humanoid_camera, spaceship_camera)))
+            .vobject(VObjectConfig().component(new PlayerSwitcherController(player_ref, spaceship_controller_ref, humanoid_camera, spaceship_camera)))
             // ensure the camera component is attached to a VObject so Camera::get_vobject() is valid
 
             .vobject(VObjectConfig()  // Root VObject for all planets

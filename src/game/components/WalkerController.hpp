@@ -41,17 +41,13 @@ namespace game::components {
             float max_walk_speed = 30.0f;
             float jump_strength = 80.0f;
 
-            // Gravity / grounding
-            static constexpr float GRAVITATIONAL_CONSTANT = 6.6743e-11f;
             std::vector<PlanetInfo*> planets;
             std::optional<PlanetInfo*> grounded_to = std::nullopt;
             PlanetInfo* closest_planet = nullptr;
 
             engine::PointCollider* point_collider;
 
-            void update_transform_due_to_environment();
             void update_transform_due_to_input();
-            engine::Vec3 compute_equivalent_gravity();
             void correct_planet_collision();
             void align_to_closest_planet();
     };
