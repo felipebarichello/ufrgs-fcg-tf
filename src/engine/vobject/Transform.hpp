@@ -18,12 +18,12 @@ namespace engine {
             Transform() = default;
 
             Vec3 get_position() const {
-                return this->_position;
+                return this->_local_position;
             }
 
             Vec3& position() {
                 this->dirty = true;
-                return this->_position;
+                return this->_local_position;
             }
 
             Vec3 get_world_position() {
@@ -63,7 +63,7 @@ namespace engine {
             std::optional<Transform*> get_parent();
 
         private:
-            Vec3 _position {0.0f, 0.0f, 0.0f};
+            Vec3 _local_position {0.0f, 0.0f, 0.0f};
             Quaternion _quaternion;
             Vec3 _scale {1.0f, 1.0f, 1.0f};
             Mat4 transform_matrix {1.0f};

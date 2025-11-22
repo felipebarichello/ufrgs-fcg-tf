@@ -14,10 +14,10 @@ void Transform::set_world_position(const Vec3& new_pos) {
         
         // Convert world position to local position
         Vec4 local_pos_homogeneous = parent_inverse * new_world_pos;
-        this->_position = Vec3(local_pos_homogeneous.x, local_pos_homogeneous.y, local_pos_homogeneous.z);
+        this->_local_position = Vec3(local_pos_homogeneous.x, local_pos_homogeneous.y, local_pos_homogeneous.z);
     } else {
         // No parent, so local position is the same as world position
-        this->_position = new_pos;
+        this->_local_position = new_pos;
     }
 
     this->dirty = true;
@@ -66,7 +66,7 @@ void Transform::update_matrix() {
     rot[2] = engine::Vec4(m02, m12, m22, 0.0f);
     rot[3] = engine::Vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-    this->transform_matrix = h_translate_matrix(this->_position.x, this->_position.y, this->_position.z)
+    this->transform_matrix = h_translate_matrix(this->_local_position.x, this->_local_position.y, this->_local_position.z)
                 * rot
                 * h_scale_matrix(this->_scale.x, this->_scale.y, this->_scale.z);
 
@@ -74,7 +74,7 @@ void Transform::update_matrix() {
 }
 
 void Transform::copy_values_from(const Transform& other) {
-    this->_position = other._position;
+    this->_local_position = other._local_position;
     this->_quaternion = other._quaternion;
     this->_scale = other._scale;
     this->transform_matrix = other.transform_matrix;
