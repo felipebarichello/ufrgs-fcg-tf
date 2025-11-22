@@ -173,16 +173,6 @@ namespace engine {
         );
     }
 
-    glm::vec2 h_cross_product(glm::vec2 u, glm::vec2 v)
-    {
-        float u1 = u.x;
-        float u2 = u.y;
-        float v1 = v.x;
-        float v2 = v.y;
-
-        return glm::vec2(0.0f, 0.0f); // Cross product is not defined for 2D vectors
-    }
-
     float h_dot_product(glm::vec4 u, glm::vec4 v)
     {
         float u1 = u.x;

@@ -76,7 +76,7 @@ namespace engine::math {
     }
 
     Quaternion Quaternion::from_unit_vectors(const Vec3& source, const Vec3& target) {
-        float dot = glm::dot(source, target);
+        float dot = engine::h_dot_product(source, target);
 
         // TODO: Are those two branches necessary?
         if (dot >= 1.0f) {
