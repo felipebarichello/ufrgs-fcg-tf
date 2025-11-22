@@ -48,7 +48,7 @@ namespace game::components {
             /// @brief Used both for storing camera transform before releasing and for bobbing.
             engine::Transform stored_child_cam_transform;
 
-            TextDrawable* game_over_text = nullptr;
+            engine::TextDrawable* game_over_text = nullptr;
             
             // View bobbing
             float bob_timer = 0.0f;

@@ -7,11 +7,7 @@
 #include <sstream>
 #include <iomanip>
 
-using engine::EngineController;
-using engine::InputController;
-using engine::Vec2;
-using engine::Vec3;
-using engine::math::Quaternion;
+using namespace engine;
 
 namespace game::components {
     struct SpaceshipController::SphericalInput {

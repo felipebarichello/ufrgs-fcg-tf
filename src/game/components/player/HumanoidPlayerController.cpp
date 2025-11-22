@@ -6,14 +6,7 @@
 #include <cstdio>
 #include <game/components/WalkerController.hpp>
 
-using engine::EngineController;
-using engine::InputController;
-using engine::Vec2;
-using engine::Vec3;
-using engine::math::Quaternion;
-using engine::is_zero;
-using engine::Transform;
-using engine::to_string;
+using namespace engine;
 
 namespace game::components {
     struct HumanoidPlayerController::SphericalInput {

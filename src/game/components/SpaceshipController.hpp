@@ -6,8 +6,6 @@
 #include <engine/collision/colliders/CylinderCollider.hpp>
 #include <game/components/PlanetInfo.hpp>
 
-using namespace engine;
-
 namespace game::components {
     class SpaceshipController : public engine::Behavior {
         public:
@@ -23,9 +21,10 @@ namespace game::components {
             float speed = 10.0f;
 
         private:
+            struct SphericalInput;
+
             std::vector<PlanetInfo*> planets;
             engine::CylinderCollider* cylinder_collider;
-            struct SphericalInput;
 
             engine::ObjDrawable* model;
             
@@ -39,8 +38,8 @@ namespace game::components {
             float fuel_consumption_rate = 1.0f; // units per second when thrusting
 
             // Text drawable to show fuel on screen
-            TextDrawable* fuel_text = nullptr;
-            TextDrawable* game_over_text = nullptr;
+            engine::TextDrawable* fuel_text = nullptr;
+            engine::TextDrawable* game_over_text = nullptr;
 
             void update_rotation_due_to_input();
             engine::Vec3 velocity = engine::Vec3(0.0f);
