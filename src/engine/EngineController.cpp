@@ -64,6 +64,10 @@ namespace engine {
             this->current_scene->instantiate(vobject_config);
         }
 
+        // Set first frame time
+        EngineController::last_frame_time = static_cast<float>(glfwGetTime());
+        
+        // Main loop
         while (!this->update_and_test_should_close()) {
             // Update delta time
             float current_time = static_cast<float>(glfwGetTime()); 
