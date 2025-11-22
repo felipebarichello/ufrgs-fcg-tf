@@ -77,7 +77,7 @@ namespace engine {
         );
     }
 
-    float h_norm(glm::vec4 v)
+    float h_norm(engine::Vec4 v)
     {
         float vx = v.x;
         float vy = v.y;
@@ -121,12 +121,12 @@ namespace engine {
         return Vec4( v.x / norm, v.y / norm, v.z / norm, 0.0f );
     }
 
-    glm::mat4 h_matrix_rotate(float angle, glm::vec4 axis)
+    glm::mat4 h_matrix_rotate(float angle, engine::Vec4 axis)
     {
         float c = cos(angle);
         float s = sin(angle);
 
-        glm::vec4 v = normalize(axis);
+        engine::Vec4 v = normalize(axis);
 
         float vx = v.x;
         float vy = v.y;
@@ -140,7 +140,7 @@ namespace engine {
         );
     }
 
-    glm::vec4 h_cross_product(glm::vec4 u, glm::vec4 v)
+    engine::Vec4 h_cross_product(engine::Vec4 u, engine::Vec4 v)
     {
         float u1 = u.x;
         float u2 = u.y;
@@ -149,7 +149,7 @@ namespace engine {
         float v2 = v.y;
         float v3 = v.z;
 
-        return glm::vec4(
+        return engine::Vec4(
             u2*v3 - u3*v2,
             u3*v1 - u1*v3,
             u1*v2 - u2*v1,
@@ -173,7 +173,7 @@ namespace engine {
         );
     }
 
-    float h_dot_product(glm::vec4 u, glm::vec4 v)
+    float h_dot_product(engine::Vec4 u, engine::Vec4 v)
     {
         float u1 = u.x;
         float u2 = u.y;
