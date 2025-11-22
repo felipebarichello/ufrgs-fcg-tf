@@ -23,18 +23,18 @@ namespace engine {
     glm::mat4 h_rotate_x_matrix(float angle);
     glm::mat4 h_rotate_y_matrix(float angle);
     glm::mat4 h_rotate_z_matrix(float angle);
-    glm::mat4 h_matrix_rotate(float angle, glm::vec4 axis);
+    glm::mat4 h_matrix_rotate(float angle, engine::Vec4 axis);
 
-    float h_norm(glm::vec4 v);
+    float h_norm(engine::Vec4 v);
     float h_norm(glm::vec3 v);
     float h_norm(glm::vec2 v);
     Vec3 h_normalize(Vec3 v);
     Vec4 h_normalize(Vec4 v);
     Vec2 h_normalize(Vec2 v);
 
-    glm::vec4 h_cross_product(glm::vec4 u, glm::vec4 v);
+    engine::Vec4 h_cross_product(engine::Vec4 u, engine::Vec4 v);
     glm::vec3 h_cross_product(glm::vec3 u, glm::vec3 v);
-    float h_dot_product(glm::vec4 u, glm::vec4 v);
+    float h_dot_product(engine::Vec4 u, engine::Vec4 v);
     float h_dot_product(glm::vec3 u, glm::vec3 v);
     float h_dot_product(glm::vec2 u, glm::vec2 v);
 
