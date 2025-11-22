@@ -29,10 +29,10 @@ namespace game::components {
         this->fuel_text = new TextDrawable();
         std::ostringstream init_ss;
         init_ss << std::fixed << std::setprecision(1) << this->fuel;
-        this->fuel_text->setText(std::string("Fuel: ") + init_ss.str(), 1.5f, glm::vec3(1.0f), -0.95f, 0.9f);
+        this->fuel_text->setText(std::string("Fuel: ") + init_ss.str(), 1.5f, engine::Vec3(1.0f), -0.95f, 0.9f);
 
         this->game_over_text = new TextDrawable();
-        this->game_over_text->setText(std::string(""), 3.0f, glm::vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
+        this->game_over_text->setText(std::string(""), 3.0f, engine::Vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
     }
 
     void SpaceshipController::Update() {
@@ -65,7 +65,7 @@ namespace game::components {
         if (this->fuel_text) {
             std::ostringstream ss;
             ss << std::fixed << std::setprecision(1) << std::max(0.0f, this->fuel);
-            this->fuel_text->setText(std::string("Fuel: ") + ss.str(), 1.8f, glm::vec3(1.0f), -0.95f, 0.95f);
+            this->fuel_text->setText(std::string("Fuel: ") + ss.str(), 1.8f, engine::Vec3(1.0f), -0.95f, 0.95f);
         }
 
         // Update rotation from input and camera
@@ -113,7 +113,7 @@ namespace game::components {
         for (PlanetInfo* planet : this->planets) {
             bool collision_detected = engine::collision::collide_cylinder_sphere(*this->cylinder_collider, *planet->get_sphere_collider()).has_collided();
             if (collision_detected) {
-                this->game_over_text->setText(std::string("GAME OVER"), 1.8f, glm::vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
+                this->game_over_text->setText(std::string("GAME OVER"), 1.8f, engine::Vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
             }
         }
     }

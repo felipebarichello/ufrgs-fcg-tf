@@ -86,7 +86,7 @@ namespace engine {
         return sqrt( vx*vx + vy*vy + vz*vz );
     }
 
-    float h_norm(glm::vec3 v)
+    float h_norm(engine::Vec3 v)
     {
         float vx = v.x;
         float vy = v.y;
@@ -157,7 +157,7 @@ namespace engine {
         );
     }
 
-    glm::vec3 h_cross_product(glm::vec3 u, glm::vec3 v)
+    engine::Vec3 h_cross_product(engine::Vec3 u, engine::Vec3 v)
     {
         float u1 = u.x;
         float u2 = u.y;
@@ -166,7 +166,7 @@ namespace engine {
         float v2 = v.y;
         float v3 = v.z;
 
-        return glm::vec3(
+        return engine::Vec3(
             u2*v3 - u3*v2,
             u3*v1 - u1*v3,
             u1*v2 - u2*v1
@@ -193,7 +193,7 @@ namespace engine {
         return u1*v1 + u2*v2 + u3*v3;
     }
 
-    float h_dot_product(glm::vec3 u, glm::vec3 v)
+    float h_dot_product(engine::Vec3 u, engine::Vec3 v)
     {
         float u1 = u.x;
         float u2 = u.y;

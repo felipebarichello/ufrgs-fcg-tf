@@ -20,7 +20,7 @@ TextDrawable::~TextDrawable()
 {
 }
 
-void TextDrawable::setText(const std::string& text, float scale, glm::vec3 color, float x, float y)
+void TextDrawable::setText(const std::string& text, float scale, engine::Vec3 color, float x, float y)
 {
 	this->text = text;
 	this->scale = scale;
