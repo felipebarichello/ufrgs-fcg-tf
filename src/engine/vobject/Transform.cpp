@@ -41,10 +41,10 @@ void Transform::update_matrix() {
 
     glm::mat4 rot(1.0f);
     // glm is column-major: set columns
-    rot[0] = glm::vec4(m00, m10, m20, 0.0f);
-    rot[1] = glm::vec4(m01, m11, m21, 0.0f);
-    rot[2] = glm::vec4(m02, m12, m22, 0.0f);
-    rot[3] = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+    rot[0] = engine::Vec4(m00, m10, m20, 0.0f);
+    rot[1] = engine::Vec4(m01, m11, m21, 0.0f);
+    rot[2] = engine::Vec4(m02, m12, m22, 0.0f);
+    rot[3] = engine::Vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
     this->transform_matrix = h_translate_matrix(this->_position.x, this->_position.y, this->_position.z)
                 * rot
