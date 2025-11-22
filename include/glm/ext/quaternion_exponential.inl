@@ -4,7 +4,7 @@ namespace glm
 	GLM_FUNC_QUALIFIER qua<T, Q> exp(qua<T, Q> const& q)
 	{
 		vec<3, T, Q> u(q.x, q.y, q.z);
-		T const Angle = glm::length(u);
+		T const Angle = engine::h_norm(u);
 		if (Angle < epsilon<T>())
 			return qua<T, Q>();
 
