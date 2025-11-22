@@ -224,7 +224,7 @@ float TextRendering_CharWidth(GLFWwindow* window)
     return dejavufont.glyphs[32].advance_x / width * textscale;
 }
 
-void TextRendering_PrintMatrix(GLFWwindow* window, glm::mat4 M, float x, float y, float scale = 1.0f)
+void TextRendering_PrintMatrix(GLFWwindow* window, engine::Mat4 M, float x, float y, float scale = 1.0f)
 {
     char buffer[40];
     float lineheight = TextRendering_LineHeight(window) * scale;
@@ -254,7 +254,7 @@ void TextRendering_PrintVector(GLFWwindow* window, engine::Vec4 v, float x, floa
     TextRendering_PrintString(window, buffer, x, y - 3*lineheight, scale);
 }
 
-void TextRendering_PrintMatrixVectorProduct(GLFWwindow* window, glm::mat4 M, engine::Vec4 v, float x, float y, float scale = 1.0f)
+void TextRendering_PrintMatrixVectorProduct(GLFWwindow* window, engine::Mat4 M, engine::Vec4 v, float x, float y, float scale = 1.0f)
 {
     char buffer[70];
     float lineheight = TextRendering_LineHeight(window) * scale;
@@ -270,7 +270,7 @@ void TextRendering_PrintMatrixVectorProduct(GLFWwindow* window, glm::mat4 M, eng
     TextRendering_PrintString(window, buffer, x, y - 3*lineheight, scale);
 }
 
-void TextRendering_PrintMatrixVectorProductMoreDigits(GLFWwindow* window, glm::mat4 M, engine::Vec4 v, float x, float y, float scale = 1.0f)
+void TextRendering_PrintMatrixVectorProductMoreDigits(GLFWwindow* window, engine::Mat4 M, engine::Vec4 v, float x, float y, float scale = 1.0f)
 {
     char buffer[70];
     float lineheight = TextRendering_LineHeight(window) * scale;
@@ -286,7 +286,7 @@ void TextRendering_PrintMatrixVectorProductMoreDigits(GLFWwindow* window, glm::m
     TextRendering_PrintString(window, buffer, x, y - 3*lineheight, scale);
 }
 
-void TextRendering_PrintMatrixVectorProductDivW(GLFWwindow* window, glm::mat4 M, engine::Vec4 v, float x, float y, float scale = 1.0f)
+void TextRendering_PrintMatrixVectorProductDivW(GLFWwindow* window, engine::Mat4 M, engine::Vec4 v, float x, float y, float scale = 1.0f)
 {
     auto r = M*v;
     auto w = r[3];

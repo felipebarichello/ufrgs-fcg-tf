@@ -3,13 +3,13 @@
 
 namespace engine {
     // Implementations
-    glm::mat4 h_line_matrix(
+    engine::Mat4 h_line_matrix(
         float m00, float m01, float m02, float m03,
         float m10, float m11, float m12, float m13,
         float m20, float m21, float m22, float m23,
         float m30, float m31, float m32, float m33
     ) {
-        return glm::mat4(
+        return engine::Mat4(
             m00, m10, m20, m30,
             m01, m11, m21, m31,
             m02, m12, m22, m32,
@@ -17,7 +17,7 @@ namespace engine {
         );
     }
 
-    glm::mat4 h_identity_matrix() {
+    engine::Mat4 h_identity_matrix() {
         return h_line_matrix(
             1.0f , 0.0f , 0.0f , 0.0f ,
             0.0f , 1.0f , 0.0f , 0.0f ,
@@ -26,7 +26,7 @@ namespace engine {
         );
     }
 
-    glm::mat4 h_translate_matrix(float tx, float ty, float tz) {
+    engine::Mat4 h_translate_matrix(float tx, float ty, float tz) {
         return h_line_matrix(
             1.0f, 0.0f, 0.0f, tx,
             0.0f, 1.0f, 0.0f, ty,
@@ -35,7 +35,7 @@ namespace engine {
         );
     }
 
-    glm::mat4 h_scale_matrix(float sx, float sy, float sz) {
+    engine::Mat4 h_scale_matrix(float sx, float sy, float sz) {
         return h_line_matrix(
             sx,   0.0f, 0.0f, 0.0f,
             0.0f, sy,   0.0f, 0.0f,
@@ -44,7 +44,7 @@ namespace engine {
         );
     }
 
-    glm::mat4 h_rotate_x_matrix(float angle) {
+    engine::Mat4 h_rotate_x_matrix(float angle) {
         float c = cos(angle);
         float s = sin(angle);
         return h_line_matrix(
@@ -55,7 +55,7 @@ namespace engine {
         );
     }
 
-    glm::mat4 h_rotate_y_matrix(float angle) {
+    engine::Mat4 h_rotate_y_matrix(float angle) {
         float c = cos(angle);
         float s = sin(angle);
         return h_line_matrix(
@@ -66,7 +66,7 @@ namespace engine {
         );
     }
 
-    glm::mat4 h_rotate_z_matrix(float angle) {
+    engine::Mat4 h_rotate_z_matrix(float angle) {
         float c = cos(angle);
         float s = sin(angle);
         return h_line_matrix(
@@ -121,7 +121,7 @@ namespace engine {
         return Vec4( v.x / norm, v.y / norm, v.z / norm, 0.0f );
     }
 
-    glm::mat4 h_matrix_rotate(float angle, engine::Vec4 axis)
+    engine::Mat4 h_matrix_rotate(float angle, engine::Vec4 axis)
     {
         float c = cos(angle);
         float s = sin(angle);
@@ -215,9 +215,9 @@ namespace engine {
         return u1*v1 + u2*v2;
     }
 
-    glm::mat4 h_ortographic_matrix(float l, float r, float b, float t, float n, float f)
+    engine::Mat4 h_ortographic_matrix(float l, float r, float b, float t, float n, float f)
     {
-        glm::mat4 M = h_line_matrix(
+        engine::Mat4 M = h_line_matrix(
             2.0f/(r-l), 0.0f,       0.0f,       -(r+l)/(r-l),
             0.0f,       2.0f/(t-b), 0.0f,       -(t+b)/(t-b),
             0.0f,       0.0f,       2.0f/(f-n), -(f+n)/(f-n),

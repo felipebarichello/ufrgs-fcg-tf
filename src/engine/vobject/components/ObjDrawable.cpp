@@ -52,7 +52,7 @@ void ObjDrawable::draw() {
         glUniform1i(tex_loc, this->vao_ptr->texture_id);
     }
 
-    glm::mat4 model_matrix = this->get_vobject()->transform().get_model_matrix();
+    engine::Mat4 model_matrix = this->get_vobject()->transform().get_model_matrix();
     GLsizei model_uniform = glGetUniformLocation(program_id, "model");
     glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model_matrix));
     if (this->vao_ptr) {

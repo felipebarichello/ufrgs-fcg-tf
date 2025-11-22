@@ -39,7 +39,7 @@ void Transform::update_matrix() {
     float m21 = 2.0f * (y*z + w*x);
     float m22 = ww - xx - yy + zz;
 
-    glm::mat4 rot(1.0f);
+    engine::Mat4 rot(1.0f);
     // glm is column-major: set columns
     rot[0] = engine::Vec4(m00, m10, m20, 0.0f);
     rot[1] = engine::Vec4(m01, m11, m21, 0.0f);
