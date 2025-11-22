@@ -137,7 +137,6 @@ namespace game::components {
     }
 
     void HumanoidPlayerController::hit_by_enemy() {
-        std::printf("HumanoidPlayerController: hit by enemy!\n");
         this->game_over_text->setText(std::string("GAME OVER"), 1.8f, Vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
     }
 
