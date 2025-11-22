@@ -16,11 +16,9 @@ namespace game::components {
             HumanoidPlayerController(engine::Camera* camera, WalkerController* walker, engine::CylinderCollider* cylinder_collider) : camera(camera), walker(walker), cylinder_collider(cylinder_collider) {}
             void Start() override;
             void Update() override;
-
-            void enable();
-            void disable();
-            bool is_active() const { return this->active; }
-
+            void OnEnable() override;
+            void OnDisable() override;
+            
             float get_camera_phi() const { return this->camera_phi; }
 
             // Expose walker for external queries (e.g., collision checks)
@@ -35,8 +33,7 @@ namespace game::components {
             static constexpr float GRAVITATIONAL_CONSTANT = 6.6743e-11f;
             static constexpr float MIN_SURFACE_ALIGN_DISTANCE = 2.0f;
             static constexpr float MAX_SURFACE_ALIGN_DISTANCE = 200.0f;
-
-            bool active = true;
+            
             engine::Camera* camera;
             // Walker component responsible for all movement physics
             WalkerController* walker = nullptr;

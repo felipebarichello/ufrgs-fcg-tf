@@ -23,7 +23,7 @@ namespace game::components {
         if (!this->humanoid || !this->spaceship) return;
         if (this->humanoid->get_walker()->is_grounded()) return; // Only allow switching when humanoid is not grounded
 
-        bool was_humanoid = this->humanoid->is_active();
+        bool was_humanoid = this->humanoid->is_enabled();
         if (was_humanoid) {
             this->humanoid->disable();
 

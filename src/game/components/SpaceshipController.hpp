@@ -15,10 +15,8 @@ namespace game::components {
             void Start() override;
             void Update() override;
             void PostUpdate() override;
-
-            void enable();
-            void disable();
-            bool is_active() const { return this->active; }
+            void OnEnable() override;
+            void OnDisable() override;
 
             float speed = 10.0f;
 
@@ -44,7 +42,6 @@ namespace game::components {
             void update_rotation_due_to_input();
             bool accelerating_forward = false;
             bool accelerating_backward = false;
-            bool active = true;
             SphericalInput get_spherical_input();
             void test_planet_collisions();
     };

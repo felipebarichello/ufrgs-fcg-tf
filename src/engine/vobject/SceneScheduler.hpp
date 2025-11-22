@@ -15,7 +15,7 @@ namespace engine {
 
             void trigger_awaken() {
                 for (Behavior* behavior : this->awaken_queue) {
-                    behavior->Awake();
+                    behavior->call_awake();
                 }
                 
                 this->awaken_queue.clear();
@@ -27,7 +27,7 @@ namespace engine {
 
             void trigger_start() {
                 for (Behavior* behavior : this->start_queue) {
-                    behavior->Start();
+                    behavior->call_start();
                 }
                 
                 this->start_queue.clear();
@@ -39,11 +39,11 @@ namespace engine {
 
             void trigger_update() {
                 for (Behavior* behavior : this->update_subscribers) {
-                    behavior->Update();
+                    behavior->call_update();
                 }
 
                 for (Behavior* behavior : this->update_subscribers) {
-                    behavior->PostUpdate();
+                    behavior->call_post_update();
                 }
             }
 

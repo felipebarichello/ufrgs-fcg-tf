@@ -28,8 +28,6 @@ namespace game::components {
     }
 
     void SpaceshipController::Update() {
-        if (!this->active) return;
-
         Transform& transform = this->get_vobject()->transform();
 
         // Update rotation from input and camera
@@ -63,7 +61,6 @@ namespace game::components {
     }
 
     void SpaceshipController::PostUpdate() {
-        if (!this->active) return;   
         this->test_planet_collisions();
     }
 
@@ -94,13 +91,11 @@ namespace game::components {
         return spherical;
     }
 
-    void SpaceshipController::enable() {
-        this->active = true;
+    void SpaceshipController::OnEnable() {
         this->model->set_visible();
     }
 
-    void SpaceshipController::disable() {
-        this->active = false;
+    void SpaceshipController::OnDisable() {
         this->model->set_invisible();
     }
 

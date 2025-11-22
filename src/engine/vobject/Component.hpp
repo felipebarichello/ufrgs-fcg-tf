@@ -23,7 +23,9 @@ namespace engine {
             // Ensure proper destruction through base pointers
             virtual ~Component() {}
 
-            virtual void PreDestroy() {}
+            /// @brief Called before destroying the component's VObject or any of its descendants.
+            virtual void OnDestroy() {}
+            
             virtual std::optional<Behavior*> try_into_behavior() { return std::nullopt; }
             
             VObject* get_vobject() const { return this->vobject_ptr; }

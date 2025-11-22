@@ -46,7 +46,7 @@ namespace engine {
     void VObject::destroy() {
         // Tell the components they are being destroyed so they can clean up
         for (auto& item : this->components) {
-            item->PreDestroy();
+            item->OnDestroy();
         }
 
         // Destroy all children

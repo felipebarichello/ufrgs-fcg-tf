@@ -28,16 +28,14 @@ namespace game::components {
     }
 
     void HumanoidPlayerController::Update() {
-        if (this->active) {
-            if (this->released_camera) {
-                this->update_released_camera();
-            } else {
-                this->update_transform_due_to_input();
-                
-                // Forward input to walker every frame
-                if (this->walker) {
-                    this->walker->set_move_vector(this->move_vector_2d);
-                }
+        if (this->released_camera) {
+            this->update_released_camera();
+        } else {
+            this->update_transform_due_to_input();
+            
+            // Forward input to walker every frame
+            if (this->walker) {
+                this->walker->set_move_vector(this->move_vector_2d);
             }
         }
     }
@@ -148,13 +146,11 @@ namespace game::components {
         }
     }
 
-    void HumanoidPlayerController::enable() {
-        this->active = true;
+    void HumanoidPlayerController::OnEnable() {
         this->walker->enable();
     }
 
-    void HumanoidPlayerController::disable() {
-        this->active = false;
+    void HumanoidPlayerController::OnDisable() {
         this->walker->disable();
     }
 
