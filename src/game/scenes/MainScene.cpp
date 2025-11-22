@@ -112,7 +112,7 @@ namespace game::scenes {
             // ensure the camera component is attached to a VObject so Camera::get_vobject() is valid
 
             .vobject(VObjectConfig()  // Root VObject for all planets
-                .child(Enemy(EnemyConfig{
+                .child(Enemy({
                     .home = planets[0],
                     .planets = planets,
                     .player = player_ref,
