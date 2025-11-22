@@ -88,220 +88,144 @@ GLuint textVBO;
 GLuint textprogram_id;
 GLuint texttexture_id;
 
-void TextRendering_Init()
-{
-    GLuint sampler;
-
-    glGenBuffers(1, &textVBO);
-    glGenVertexArrays(1, &textVAO);
-    glGenTextures(1, &texttexture_id);
-    glGenSamplers(1, &sampler);
-    glSamplerParameteri(sampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glSamplerParameteri(sampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glSamplerParameteri(sampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glSamplerParameteri(sampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glCheckError();
-
-    GLuint textvertexshader_id = glCreateShader(GL_VERTEX_SHADER);
-    TextRendering_LoadShader(textvertexshader_source, textvertexshader_id);
-    glCheckError();
-
-    GLuint textfragmentshader_id = glCreateShader(GL_FRAGMENT_SHADER);
-    TextRendering_LoadShader(textfragmentshader_source, textfragmentshader_id);
-    glCheckError();
-
-    textprogram_id = engine::EngineController::create_gpu_program_public(textvertexshader_id, textfragmentshader_id);
-    glLinkProgram(textprogram_id);
-    glCheckError();
-
-    GLuint texttex_uniform;
-    texttex_uniform = glGetUniformLocation(textprogram_id, "tex");
-    glCheckError();
-
-    GLuint textureunit = 31;
-    glActiveTexture(GL_TEXTURE0 + textureunit);
-    glBindTexture(GL_TEXTURE_2D, texttexture_id);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, dejavufont.tex_width, dejavufont.tex_height, 0, GL_RED, GL_UNSIGNED_BYTE, dejavufont.tex_data);
-    glBindSampler(textureunit, sampler);
-    glCheckError();
-
-    glBindVertexArray(textVAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, textVBO);
-    glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
-    glEnableVertexAttribArray(0);
-    glCheckError();
-
-    glUseProgram(textprogram_id);
-    glUniform1i(texttex_uniform, textureunit);
-    glUseProgram(0);
-    glCheckError();
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-    glCheckError();
-}
-
 float textscale = 1.5f;
 
-void TextRendering_PrintString(GLFWwindow* window, const std::string &str, float x, float y, float scale)
-{
-    scale *= textscale;
-    int width, height;
-    glfwGetWindowSize(window, &width, &height);
-    float sx = scale / width;
-    float sy = scale / height;
-
-    for (size_t i = 0; i < str.size(); i++)
+namespace engine {
+    void init_text_renderer()
     {
-        // Find the glyph for the character we are looking for
-        texture_glyph_t *glyph = 0;
-        for (size_t j = 0; j < dejavufont.glyphs_count; ++j)
-        {
-            if (dejavufont.glyphs[j].codepoint == (uint32_t)str[i])
-            {
-                glyph = &dejavufont.glyphs[j];
-                break;
-            }
-        }
-        if (!glyph) {
-            continue;
-        }
-        x += glyph->kerning[0].kerning;
-        float x0 = (float) (x + glyph->offset_x * sx);
-        float y0 = (float) (y + glyph->offset_y * sy);
-        float x1 = (float) (x0 + glyph->width * sx);
-        float y1 = (float) (y0 - glyph->height * sy);
+        GLuint sampler;
 
-        float s0 = glyph->s0 - 0.5f/dejavufont.tex_width;
-        float t0 = glyph->t0 - 0.5f/dejavufont.tex_height;
-        float s1 = glyph->s1 - 0.5f/dejavufont.tex_width;
-        float t1 = glyph->t1 - 0.5f/dejavufont.tex_height;
+        glGenBuffers(1, &textVBO);
+        glGenVertexArrays(1, &textVAO);
+        glGenTextures(1, &texttexture_id);
+        glGenSamplers(1, &sampler);
+        glSamplerParameteri(sampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glSamplerParameteri(sampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glSamplerParameteri(sampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glSamplerParameteri(sampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glCheckError();
 
-        struct {float x, y, s, t;} data[6] = {
-            { x0, y0, s0, t0 },
-            { x0, y1, s0, t1 },
-            { x1, y1, s1, t1 },
-            { x0, y0, s0, t0 },
-            { x1, y1, s1, t1 },
-            { x1, y0, s1, t0 }
-        };
+        GLuint textvertexshader_id = glCreateShader(GL_VERTEX_SHADER);
+        TextRendering_LoadShader(textvertexshader_source, textvertexshader_id);
+        glCheckError();
 
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        GLuint textfragmentshader_id = glCreateShader(GL_FRAGMENT_SHADER);
+        TextRendering_LoadShader(textfragmentshader_source, textfragmentshader_id);
+        glCheckError();
 
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        glDepthFunc(GL_ALWAYS);
-        glBindBuffer(GL_ARRAY_BUFFER, textVBO);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, 24 * sizeof(float), data);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        textprogram_id = engine::EngineController::create_gpu_program_public(textvertexshader_id, textfragmentshader_id);
+        glLinkProgram(textprogram_id);
+        glCheckError();
 
-        glUseProgram(textprogram_id);
+        GLuint texttex_uniform;
+        texttex_uniform = glGetUniformLocation(textprogram_id, "tex");
+        glCheckError();
+
+        GLuint textureunit = 31;
+        glActiveTexture(GL_TEXTURE0 + textureunit);
+        glBindTexture(GL_TEXTURE_2D, texttexture_id);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, dejavufont.tex_width, dejavufont.tex_height, 0, GL_RED, GL_UNSIGNED_BYTE, dejavufont.tex_data);
+        glBindSampler(textureunit, sampler);
+        glCheckError();
+
         glBindVertexArray(textVAO);
 
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindBuffer(GL_ARRAY_BUFFER, textVBO);
+        glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(0);
+        glCheckError();
 
-        glBindVertexArray(0);
+        glUseProgram(textprogram_id);
+        glUniform1i(texttex_uniform, textureunit);
         glUseProgram(0);
-        glDepthFunc(GL_LESS);
+        glCheckError();
 
-        glDisable(GL_BLEND);
-
-        x += (glyph->advance_x * sx);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+        glCheckError();
     }
-}
 
-float TextRendering_LineHeight(GLFWwindow* window)
-{
-    int width, height;
-    glfwGetWindowSize(window, &width, &height);
-    return dejavufont.height / height * textscale;
-}
 
-float TextRendering_CharWidth(GLFWwindow* window)
-{
-    int width, height;
-    glfwGetWindowSize(window, &width, &height);
-    return dejavufont.glyphs[32].advance_x / width * textscale;
-}
+    void render_text(GLFWwindow* window, const std::string &str, float x, float y, float scale)
+    {
+        scale *= textscale;
+        int width, height;
+        glfwGetWindowSize(window, &width, &height);
+        float sx = scale / width;
+        float sy = scale / height;
 
-void TextRendering_PrintMatrix(GLFWwindow* window, engine::Mat4 M, float x, float y, float scale = 1.0f)
-{
-    char buffer[40];
-    float lineheight = TextRendering_LineHeight(window) * scale;
+        for (size_t i = 0; i < str.size(); i++)
+        {
+            // Find the glyph for the character we are looking for
+            texture_glyph_t *glyph = 0;
+            for (size_t j = 0; j < dejavufont.glyphs_count; ++j)
+            {
+                if (dejavufont.glyphs[j].codepoint == (uint32_t)str[i])
+                {
+                    glyph = &dejavufont.glyphs[j];
+                    break;
+                }
+            }
+            if (!glyph) {
+                continue;
+            }
+            x += glyph->kerning[0].kerning;
+            float x0 = (float) (x + glyph->offset_x * sx);
+            float y0 = (float) (y + glyph->offset_y * sy);
+            float x1 = (float) (x0 + glyph->width * sx);
+            float y1 = (float) (y0 - glyph->height * sy);
 
-    snprintf(buffer, 40, "[%+0.2f %+0.2f %+0.2f %+0.2f]", M[0][0], M[1][0], M[2][0], M[3][0]);
-    TextRendering_PrintString(window, buffer, x, y, scale);
-    snprintf(buffer, 40, "[%+0.2f %+0.2f %+0.2f %+0.2f]", M[0][1], M[1][1], M[2][1], M[3][1]);
-    TextRendering_PrintString(window, buffer, x, y - lineheight, scale);
-    snprintf(buffer, 40, "[%+0.2f %+0.2f %+0.2f %+0.2f]", M[0][2], M[1][2], M[2][2], M[3][2]);
-    TextRendering_PrintString(window, buffer, x, y - 2*lineheight, scale);
-    snprintf(buffer, 40, "[%+0.2f %+0.2f %+0.2f %+0.2f]", M[0][3], M[1][3], M[2][3], M[3][3]);
-    TextRendering_PrintString(window, buffer, x, y - 3*lineheight, scale);
-}
+            float s0 = glyph->s0 - 0.5f/dejavufont.tex_width;
+            float t0 = glyph->t0 - 0.5f/dejavufont.tex_height;
+            float s1 = glyph->s1 - 0.5f/dejavufont.tex_width;
+            float t1 = glyph->t1 - 0.5f/dejavufont.tex_height;
 
-void TextRendering_PrintVector(GLFWwindow* window, engine::Vec4 v, float x, float y, float scale = 1.0f)
-{
-    char buffer[10];
-    float lineheight = TextRendering_LineHeight(window) * scale;
+            struct {float x, y, s, t;} data[6] = {
+                { x0, y0, s0, t0 },
+                { x0, y1, s0, t1 },
+                { x1, y1, s1, t1 },
+                { x0, y0, s0, t0 },
+                { x1, y1, s1, t1 },
+                { x1, y0, s1, t0 }
+            };
 
-    snprintf(buffer, 10, "[%+0.2f]", v.x);
-    TextRendering_PrintString(window, buffer, x, y, scale);
-    snprintf(buffer, 10, "[%+0.2f]", v.y);
-    TextRendering_PrintString(window, buffer, x, y - lineheight, scale);
-    snprintf(buffer, 10, "[%+0.2f]", v.z);
-    TextRendering_PrintString(window, buffer, x, y - 2*lineheight, scale);
-    snprintf(buffer, 10, "[%+0.2f]", v.w);
-    TextRendering_PrintString(window, buffer, x, y - 3*lineheight, scale);
-}
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-void TextRendering_PrintMatrixVectorProduct(GLFWwindow* window, engine::Mat4 M, engine::Vec4 v, float x, float y, float scale = 1.0f)
-{
-    char buffer[70];
-    float lineheight = TextRendering_LineHeight(window) * scale;
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            glDepthFunc(GL_ALWAYS);
+            glBindBuffer(GL_ARRAY_BUFFER, textVBO);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, 24 * sizeof(float), data);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    auto r = M*v;
-    snprintf(buffer, 70, "[%+0.2f %+0.2f %+0.2f %+0.2f][%+0.2f]     [%+0.2f]\n", M[0][0], M[1][0], M[2][0], M[3][0], v[0], r[0]);
-    TextRendering_PrintString(window, buffer, x, y, scale);
-    snprintf(buffer, 70, "[%+0.2f %+0.2f %+0.2f %+0.2f][%+0.2f]     [%+0.2f]\n", M[0][1], M[1][1], M[2][1], M[3][1], v[1], r[1]);
-    TextRendering_PrintString(window, buffer, x, y - lineheight, scale);
-    snprintf(buffer, 70, "[%+0.2f %+0.2f %+0.2f %+0.2f][%+0.2f] --> [%+0.2f]\n", M[0][2], M[1][2], M[2][2], M[3][2], v[2], r[2]);
-    TextRendering_PrintString(window, buffer, x, y - 2*lineheight, scale);
-    snprintf(buffer, 70, "[%+0.2f %+0.2f %+0.2f %+0.2f][%+0.2f]     [%+0.2f]\n", M[0][3], M[1][3], M[2][3], M[3][3], v[3], r[3]);
-    TextRendering_PrintString(window, buffer, x, y - 3*lineheight, scale);
-}
+            glUseProgram(textprogram_id);
+            glBindVertexArray(textVAO);
 
-void TextRendering_PrintMatrixVectorProductMoreDigits(GLFWwindow* window, engine::Mat4 M, engine::Vec4 v, float x, float y, float scale = 1.0f)
-{
-    char buffer[70];
-    float lineheight = TextRendering_LineHeight(window) * scale;
+            glDrawArrays(GL_TRIANGLES, 0, 6);
 
-    auto r = M*v;
-    snprintf(buffer, 70, "[%5.1f %5.1f %5.1f %5.1f][%5.2f]     [%+6.1f]\n", M[0][0], M[1][0], M[2][0], M[3][0], v[0], r[0]);
-    TextRendering_PrintString(window, buffer, x, y, scale);
-    snprintf(buffer, 70, "[%5.1f %5.1f %5.1f %5.1f][%5.2f]     [%+6.1f]\n", M[0][1], M[1][1], M[2][1], M[3][1], v[1], r[1]);
-    TextRendering_PrintString(window, buffer, x, y - lineheight, scale);
-    snprintf(buffer, 70, "[%5.1f %5.1f %5.1f %5.1f][%5.2f] --> [%+6.1f]\n", M[0][2], M[1][2], M[2][2], M[3][2], v[2], r[2]);
-    TextRendering_PrintString(window, buffer, x, y - 2*lineheight, scale);
-    snprintf(buffer, 70, "[%5.1f %5.1f %5.1f %5.1f][%5.2f]     [%+6.1f]\n", M[0][3], M[1][3], M[2][3], M[3][3], v[3], r[3]);
-    TextRendering_PrintString(window, buffer, x, y - 3*lineheight, scale);
-}
+            glBindVertexArray(0);
+            glUseProgram(0);
+            glDepthFunc(GL_LESS);
 
-void TextRendering_PrintMatrixVectorProductDivW(GLFWwindow* window, engine::Mat4 M, engine::Vec4 v, float x, float y, float scale = 1.0f)
-{
-    auto r = M*v;
-    auto w = r[3];
+            glDisable(GL_BLEND);
 
-    char buffer[90];
-    float lineheight = TextRendering_LineHeight(window) * scale;
+            x += (glyph->advance_x * sx);
+        }
+    }
 
-    snprintf(buffer, 90, "[%+0.2f %+0.2f %+0.2f %+0.2f][%+0.2f]     [%+0.2f]        [%+0.2f]\n", M[0][0], M[1][0], M[2][0], M[3][0], v[0], r[0], r[0]/w);
-    TextRendering_PrintString(window, buffer, x, y, scale);
-    snprintf(buffer, 90, "[%+0.2f %+0.2f %+0.2f %+0.2f][%+0.2f]     [%+0.2f] div. w [%+0.2f]\n", M[0][1], M[1][1], M[2][1], M[3][1], v[1], r[1], r[1]/w);
-    TextRendering_PrintString(window, buffer, x, y - lineheight, scale);
-    snprintf(buffer, 90, "[%+0.2f %+0.2f %+0.2f %+0.2f][%+0.2f] --> [%+0.2f] -----> [%+0.2f]\n", M[0][2], M[1][2], M[2][2], M[3][2], v[2], r[2], r[2]/w);
-    TextRendering_PrintString(window, buffer, x, y - 2*lineheight, scale);
-    snprintf(buffer, 90, "[%+0.2f %+0.2f %+0.2f %+0.2f][%+0.2f]     [%+0.2f]        [%+0.2f]\n", M[0][3], M[1][3], M[2][3], M[3][3], v[3], r[3], r[3]/w);
-    TextRendering_PrintString(window, buffer, x, y - 3*lineheight, scale);
+    float set_text_line_height(GLFWwindow* window)
+    {
+        int width, height;
+        glfwGetWindowSize(window, &width, &height);
+        return dejavufont.height / height * textscale;
+    }
+
+    float set_text_char_width(GLFWwindow* window)
+    {
+        int width, height;
+        glfwGetWindowSize(window, &width, &height);
+        return dejavufont.glyphs[32].advance_x / width * textscale;
+    }
+
 }

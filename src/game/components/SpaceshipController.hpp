@@ -2,12 +2,11 @@
 
 #include <engine>
 #include <memory>
-// Text rendering helper
 #include <engine/vobject/components/TextDrawable.hpp>
 #include <engine/collision/colliders/CylinderCollider.hpp>
 #include <game/components/PlanetInfo.hpp>
 
-using engine::Transform;
+using namespace engine;
 
 namespace game::components {
     class SpaceshipController : public engine::Behavior {
