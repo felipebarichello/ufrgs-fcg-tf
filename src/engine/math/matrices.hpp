@@ -33,7 +33,11 @@ namespace engine {
     Vec2 h_normalize(Vec2 v);
 
     glm::vec4 h_cross_product(glm::vec4 u, glm::vec4 v);
+    glm::vec3 h_cross_product(glm::vec3 u, glm::vec3 v);
+    glm::vec2 h_cross_product(glm::vec2 u, glm::vec2 v);
     float h_dot_product(glm::vec4 u, glm::vec4 v);
+    float h_dot_product(glm::vec3 u, glm::vec3 v);
+    float h_dot_product(glm::vec2 u, glm::vec2 v);
 
     glm::mat4 h_ortographic_matrix(float l, float r, float b, float t, float n, float f);
 }
