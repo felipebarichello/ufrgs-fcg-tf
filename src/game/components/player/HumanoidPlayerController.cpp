@@ -9,10 +9,6 @@
 using namespace engine;
 
 namespace game::components {
-    struct HumanoidPlayerController::SphericalInput {
-        float delta_theta;
-        float delta_phi;
-    };
 
     void HumanoidPlayerController::Start() {
         InputController* input = EngineController::get_input();
@@ -53,7 +49,7 @@ namespace game::components {
         auto& quaternion = transform.quaternion();
 
         /* Camera (attached) movement */
-        HumanoidPlayerController::SphericalInput spherical = this->get_spherical_input();
+        SphericalInput spherical = this->get_spherical_input();
         this->set_camera_phi(this->camera_phi + spherical.delta_phi);
         quaternion.local_compose(Quaternion::from_y_rotation(spherical.delta_theta));
 
@@ -88,7 +84,7 @@ namespace game::components {
         Transform& cam_transform = this->camera->get_vobject()->transform();
         Quaternion& cam_quaternion = cam_transform.quaternion();
 
-        HumanoidPlayerController::SphericalInput spherical = this->get_spherical_input();
+        SphericalInput spherical = this->get_spherical_input();
         cam_quaternion.local_compose(Quaternion::from_y_rotation(spherical.delta_theta));
         cam_quaternion.local_compose(Quaternion::from_x_rotation(spherical.delta_phi));
         cam_quaternion.normalize();
@@ -100,8 +96,8 @@ namespace game::components {
         cam_transform.set_world_position(cam_transform.get_world_position() + this->released_camera_speed * this->move_vector_2d.x * right_of_camera);
     }
 
-    HumanoidPlayerController::SphericalInput HumanoidPlayerController::get_spherical_input() {
-        HumanoidPlayerController::SphericalInput spherical;
+    SphericalInput HumanoidPlayerController::get_spherical_input() {
+        SphericalInput spherical;
 
         // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
         Vec2 cursor_delta = EngineController::get_input()->get_cursor_position_delta();

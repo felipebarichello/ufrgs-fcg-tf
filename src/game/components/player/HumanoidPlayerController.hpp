@@ -32,8 +32,6 @@ namespace game::components {
             void hit_by_enemy();
 
         private:
-            struct SphericalInput;
-
             static constexpr float GRAVITATIONAL_CONSTANT = 6.6743e-11f;
             static constexpr float MIN_SURFACE_ALIGN_DISTANCE = 2.0f;
             static constexpr float MAX_SURFACE_ALIGN_DISTANCE = 200.0f;

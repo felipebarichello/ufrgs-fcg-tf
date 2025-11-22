@@ -10,10 +10,6 @@
 using namespace engine;
 
 namespace game::components {
-    struct SpaceshipController::SphericalInput {
-        float delta_theta;
-        float delta_phi;
-    };
 
     void SpaceshipController::Start() {
         InputController* input = EngineController::get_input();
@@ -76,7 +72,7 @@ namespace game::components {
 
         /* Camera (attached) movement */
 
-        SpaceshipController::SphericalInput spherical = this->get_spherical_input();
+        SphericalInput spherical = this->get_spherical_input();
         float dt = EngineController::get_delta_time();
         quaternion.local_compose(Quaternion::from_y_rotation(spherical.delta_theta * dt * 50.0f));
         quaternion.local_compose(Quaternion::from_x_rotation(spherical.delta_phi * dt * 50.0f));
@@ -84,8 +80,8 @@ namespace game::components {
         quaternion.normalize();
     }
 
-    SpaceshipController::SphericalInput SpaceshipController::get_spherical_input() {
-        SpaceshipController::SphericalInput spherical;
+    SphericalInput SpaceshipController::get_spherical_input() {
+        SphericalInput spherical;
 
         // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
         Vec2 cursor_delta = EngineController::get_input()->get_cursor_position_delta();

@@ -5,6 +5,7 @@
 #include <engine/vobject/components/TextDrawable.hpp>
 #include <engine/collision/colliders/CylinderCollider.hpp>
 #include <game/components/PlanetInfo.hpp>
+#include <game/components/SphericalInput.hpp>
 
 namespace game::components {
     class SpaceshipController : public engine::Behavior {
@@ -21,8 +22,6 @@ namespace game::components {
             float speed = 10.0f;
 
         private:
-            struct SphericalInput;
-
             std::vector<PlanetInfo*> planets;
             engine::CylinderCollider* cylinder_collider;
 
