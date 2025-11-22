@@ -6,13 +6,15 @@
 #include <engine/collision/colliders/CylinderCollider.hpp>
 #include <game/components/PlanetInfo.hpp>
 #include <game/components/SphericalInput.hpp>
+#include <game/components/KinematicBody.hpp>
 
 namespace game::components {
     class SpaceshipController : public engine::Behavior {
         public:
-            SpaceshipController(std::vector<PlanetInfo*> planets, engine::ObjDrawable* model, engine::CylinderCollider* cylinder_collider) : planets(planets), cylinder_collider(cylinder_collider), model(model) {}
+            SpaceshipController(KinematicBody* kinematic, std::vector<PlanetInfo*> planets, engine::ObjDrawable* model, engine::CylinderCollider* cylinder_collider) : kinematic(kinematic), planets(planets), cylinder_collider(cylinder_collider), model(model) {}
             void Start() override;
             void Update() override;
+            void PostUpdate() override;
 
             void enable();
             void disable();
@@ -21,6 +23,7 @@ namespace game::components {
             float speed = 10.0f;
 
         private:
+            KinematicBody* kinematic;
             std::vector<PlanetInfo*> planets;
             engine::CylinderCollider* cylinder_collider;
 
@@ -28,7 +31,6 @@ namespace game::components {
             
             // Camera smoothing parameters
             engine::Vec2 move_vector {0.0f, 0.0f};
-            engine::Vec3 current_velocity {0.0f, 0.0f, 0.0f};
             float v_sensitivity = 0.001f;
             float h_sensitivity = 0.001f;
             float thrust_power = 50.0f; // meters/s^2 applied when thrusting

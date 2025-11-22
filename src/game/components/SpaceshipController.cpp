@@ -31,6 +31,9 @@ namespace game::components {
         if (!this->active) return;
 
         Transform& transform = this->get_vobject()->transform();
+
+        // Update rotation from input and camera
+        this->update_rotation_due_to_input();
         
         // Inertial spaceship: integrate acceleration -> velocity -> position
         Vec3 forward = transform.get_quaternion().rotate(Vec3(0.0f, 0.0f, -1.0f));
@@ -49,11 +52,7 @@ namespace game::components {
         Vec3 accel_vec = forward * accel_dir;
 
         // Integrate velocity
-        this->current_velocity += accel_vec * dt;
-
-        // Integrate position
-        transform.set_world_position(transform.get_world_position() + this->current_velocity * dt);
-        this->test_planet_collisions();
+        this->kinematic->set_velocity(this->kinematic->get_velocity() + accel_vec * dt);
 
         // Update on-screen fuel text
         if (this->fuel_text) {
@@ -61,9 +60,11 @@ namespace game::components {
             ss << std::fixed << std::setprecision(1) << std::max(0.0f, this->fuel);
             this->fuel_text->setText(std::string("Fuel: ") + ss.str(), 1.8f, engine::Vec3(1.0f), -0.95f, 0.95f);
         }
+    }
 
-        // Update rotation from input and camera
-        this->update_rotation_due_to_input();
+    void SpaceshipController::PostUpdate() {
+        if (!this->active) return;   
+        this->test_planet_collisions();
     }
 
     void SpaceshipController::update_rotation_due_to_input() {

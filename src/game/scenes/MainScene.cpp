@@ -14,15 +14,16 @@ using namespace engine;
 using namespace game::components;
 
 VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera, float height, std::vector<PlanetInfo*> planets, SpaceshipController*& ship_controller) {
+    KinematicBody* kinematic = new KinematicBody();
     ObjDrawable* ship_drawable = new ObjDrawable(std::string("spaceship.obj"), std::string("spaceship.jpg"));
     
     engine::PointCollider* point_collider = new engine::PointCollider();
     engine::CylinderCollider* cylinder_collider = new engine::CylinderCollider(height, 0.5f);
     engine::CylinderCollider* spaceship_collider = new engine::CylinderCollider(2.0f, 1.0f);
-    ship_controller = new SpaceshipController(planets, ship_drawable, spaceship_collider);
+
+    ship_controller = new SpaceshipController(kinematic, planets, ship_drawable, spaceship_collider);
 
     // Create walker component first and then the humanoid which will forward inputs to it.
-    KinematicBody* kinematic = new KinematicBody();
     WalkerController* walker = new WalkerController(kinematic, planets, point_collider);
 
     // TODO: add spaceship controller pointer (nullptr for now)
