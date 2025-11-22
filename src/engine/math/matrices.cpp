@@ -95,7 +95,7 @@ namespace engine {
         return sqrt( vx*vx + vy*vy + vz*vz );
     }
 
-    float h_norm(glm::vec2 v)
+    float h_norm(engine::Vec2 v)
     {
         float vx = v.x;
         float vy = v.y;
@@ -205,7 +205,7 @@ namespace engine {
         return u1*v1 + u2*v2 + u3*v3;
     }
 
-    float h_dot_product(glm::vec2 u, glm::vec2 v)
+    float h_dot_product(engine::Vec2 u, engine::Vec2 v)
     {
         float u1 = u.x;
         float u2 = u.y;
