@@ -3,10 +3,6 @@
 #include "TextDrawable.hpp"
 #include <GLFW/glfw3.h>
 
-// Declare text rendering helpers implemented in TextRendering.cpp
-void TextRendering_Init();
-void TextRendering_PrintString(GLFWwindow* window, const std::string &str, float x, float y, float scale = 1.0f);
-
 TextDrawable::TextDrawable()
 {
 	static bool text_rendering_initialized = false;

@@ -12,6 +12,8 @@
 #include "utils.h"
 #include "dejavufont.h"
 
+#include "TextRendering.hpp"
+
 const GLchar* const textvertexshader_source = ""
 "#version 330\n"
 "layout (location = 0) in vec4 position;\n"
@@ -143,7 +145,7 @@ void TextRendering_Init()
 
 float textscale = 1.5f;
 
-void TextRendering_PrintString(GLFWwindow* window, const std::string &str, float x, float y, float scale = 1.0f)
+void TextRendering_PrintString(GLFWwindow* window, const std::string &str, float x, float y, float scale)
 {
     scale *= textscale;
     int width, height;

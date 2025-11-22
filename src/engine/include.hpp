@@ -6,4 +6,5 @@
 #include "EngineController.hpp"
 #include "InputController.hpp"
 #include "ObjLoader.hpp"
+#include "TextRendering.hpp"
 #include "vao.hpp"
