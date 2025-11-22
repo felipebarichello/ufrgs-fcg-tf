@@ -21,7 +21,6 @@ VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera,
     // Create walker component first and then the humanoid which will forward inputs to it.
     WalkerController* walker = new WalkerController(kinematic, gravity, planets, point_collider);
 
-    // TODO: add spaceship controller pointer (nullptr for now)
     HumanoidPlayerController* humanoid_controller = new HumanoidPlayerController(main_camera, walker, cylinder_collider);
     player_ref = humanoid_controller;
 
