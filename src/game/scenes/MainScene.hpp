@@ -3,6 +3,9 @@
 #include <vector>
 #include <engine>
 
+using engine::VObjectConfig;
+using engine::SceneRoot;
+
 #define MAIN_PLANET_RADIUS 200.0f
 #define PLANET_1_RADIUS 50.0f
 #define PLANET_2_RADIUS 60.0f
@@ -12,9 +15,6 @@
 #define PLANET_6_RADIUS 130.0f
 #define PLANET_7_RADIUS 50.0f
 #define PLANET_8_RADIUS 100.0f
-
-using engine::VObjectConfig;
-using engine::SceneRoot;
 
 namespace game::scenes {
     class MainScene : public engine::SceneBoot {

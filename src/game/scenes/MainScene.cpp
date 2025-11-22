@@ -3,9 +3,11 @@
 #include <cmath>
 #include <vector>
 #include <game/components/include.hpp>
+#include <game/instantiators/Enemy.hpp>
 
 using namespace engine;
 using namespace game::components;
+using namespace game::instantiators;
 
 VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera, float height, std::vector<PlanetInfo*> planets, SpaceshipController*& ship_controller) {
     KinematicBody* kinematic = new KinematicBody();
@@ -70,35 +72,6 @@ VObjectConfig SpaceshipObj() {
         .component(new ObjDrawable(std::string("spaceship.obj"), std::string("spaceship.jpg")));
 }
 
-VObjectConfig EnemyObj() {
-    return VObjectConfig()
-        .transform(TransformBuilder()
-            .scale(0.03f)
-            .position(Vec3(0.0f, -2.0f, 0.0f))
-            .rotation(Quaternion::from_y_rotation(3.141592f * 1.5f))
-        )
-        .component(new ObjDrawable(std::string("VacuumCleaner/VacuumCleaner.obj"), std::string("spaceship.jpg")));
-}
-
-VObjectConfig Enemy(HumanoidPlayerController* player_ref, std::vector<PlanetInfo*> planets) {
-    PointCollider* point_collider = new PointCollider();
-    CylinderCollider* cylinder_collider = new CylinderCollider(1.0f, 3.0f);
-    KinematicBody* kinematic = new KinematicBody();
-    Gravity* gravity = new Gravity(kinematic, planets);
-    WalkerController* walker = new WalkerController(kinematic, gravity, planets, point_collider);
-
-    return VObjectConfig()
-        .transform(TransformBuilder()
-            .position(Vec3(0.0f, MAIN_PLANET_RADIUS, 0.0f)))
-        .component(walker)
-        .component(point_collider)
-        .component(cylinder_collider)
-        .component(new GroundEnemyController(walker, cylinder_collider, player_ref))
-        .component(gravity)
-        .component(kinematic)
-        .child(EnemyObj());
-}
-
 VObjectConfig SkyBox() {
     return VObjectConfig()
         // .transform(TransformBuilder()
@@ -139,7 +112,11 @@ namespace game::scenes {
             // ensure the camera component is attached to a VObject so Camera::get_vobject() is valid
 
             .vobject(VObjectConfig()  // Root VObject for all planets
-                .child(Enemy(player_ref, planets))
+                .child(Enemy(EnemyConfig{
+                    .home = planets[0],
+                    .planets = planets,
+                    .player = player_ref,
+                }))
                 .child(Planet(planets[0])  // Central star
                     .transform(TransformBuilder()
                         .scale(MAIN_PLANET_RADIUS * planet_model_normalize))
