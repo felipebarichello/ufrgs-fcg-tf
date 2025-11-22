@@ -13,7 +13,6 @@ namespace game::components {
             SpaceshipController(std::vector<PlanetInfo*> planets, engine::ObjDrawable* model, engine::CylinderCollider* cylinder_collider) : planets(planets), cylinder_collider(cylinder_collider), model(model) {}
             void Start() override;
             void Update() override;
-            engine::Vec3 get_velocity() const { return this->velocity; }
 
             void enable();
             void disable();
@@ -41,7 +40,6 @@ namespace game::components {
             engine::TextDrawable* game_over_text = nullptr;
 
             void update_rotation_due_to_input();
-            engine::Vec3 velocity = engine::Vec3(0.0f);
             bool accelerating_forward = false;
             bool accelerating_backward = false;
             bool active = true;
