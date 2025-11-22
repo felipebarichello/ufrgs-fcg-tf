@@ -127,16 +127,14 @@ namespace game::components {
             this->jump_requested = false;
             if (this->grounded_to.has_value()) {
                 this->kinematic->set_velocity(this->kinematic->get_velocity() + this->jump_strength * this->get_vobject()->transform().quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f)));
-                this->grounded_to = std::nullopt;
+                this->set_not_grounded();
             }
         }
     }
 
     void WalkerController::correct_planet_collision() {
         // No need to keep checking if already grounded
-        if (this->grounded_to.has_value()) {
-            return;
-        }
+        if (this->grounded_to.has_value()) return;
 
         Transform& transform = this->get_vobject()->transform();
 
@@ -162,7 +160,7 @@ namespace game::components {
                 }
 
                 transform.set_world_position(planet_position - direction_to_planet * planet->get_radius());
-                this->grounded_to = planet;
+                this->ground_to(planet);
                 return;
             }
         }

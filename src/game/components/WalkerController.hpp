@@ -7,11 +7,12 @@
 #include <optional>
 #include <game/components/PlanetInfo.hpp>
 #include <game/components/KinematicBody.hpp>
+#include <game/components/Gravity.hpp>
 
 namespace game::components {
     class WalkerController : public engine::Behavior {
         public:
-            WalkerController(KinematicBody* kinematic, std::vector<PlanetInfo*> planets, engine::PointCollider* point_collider) : kinematic(kinematic), planets(planets), point_collider(point_collider) {}
+            WalkerController(KinematicBody* kinematic, Gravity* gravity, std::vector<PlanetInfo*> planets, engine::PointCollider* point_collider) : kinematic(kinematic), gravity(gravity), planets(planets), point_collider(point_collider) {}
             void Update() override;
             void PostUpdate() override;
 
@@ -26,6 +27,7 @@ namespace game::components {
 
         private:
             KinematicBody* kinematic;
+            Gravity* gravity;
 
             engine::Vec2 move_vector {0.0f, 0.0f};
             bool jump_requested = false;
@@ -45,5 +47,15 @@ namespace game::components {
             void update_transform_due_to_input();
             void correct_planet_collision();
             void align_to_closest_planet();
+
+            void set_not_grounded() {
+                this->grounded_to = std::nullopt;
+                this->gravity->enable();
+            }
+
+            void ground_to(PlanetInfo* planet) {
+                this->grounded_to = planet;
+                this->gravity->disable();
+            }
     };
 } // namespace game::components

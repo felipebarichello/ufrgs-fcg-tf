@@ -19,7 +19,7 @@ VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera,
     ship_controller = new SpaceshipController(kinematic, planets, ship_drawable, spaceship_collider);
 
     // Create walker component first and then the humanoid which will forward inputs to it.
-    WalkerController* walker = new WalkerController(kinematic, planets, point_collider);
+    WalkerController* walker = new WalkerController(kinematic, gravity, planets, point_collider);
 
     // TODO: add spaceship controller pointer (nullptr for now)
     HumanoidPlayerController* humanoid_controller = new HumanoidPlayerController(main_camera, walker, cylinder_collider);
@@ -85,7 +85,8 @@ VObjectConfig Enemy(HumanoidPlayerController* player_ref, std::vector<PlanetInfo
     PointCollider* point_collider = new PointCollider();
     CylinderCollider* cylinder_collider = new CylinderCollider(1.0f, 3.0f);
     KinematicBody* kinematic = new KinematicBody();
-    WalkerController* walker = new WalkerController(kinematic, planets, point_collider);
+    Gravity* gravity = new Gravity(kinematic, planets);
+    WalkerController* walker = new WalkerController(kinematic, gravity, planets, point_collider);
 
     return VObjectConfig()
         .transform(TransformBuilder()
@@ -94,6 +95,7 @@ VObjectConfig Enemy(HumanoidPlayerController* player_ref, std::vector<PlanetInfo
         .component(point_collider)
         .component(cylinder_collider)
         .component(new GroundEnemyController(walker, cylinder_collider, player_ref))
+        .component(gravity)
         .component(kinematic)
         .child(EnemyObj());
 }
