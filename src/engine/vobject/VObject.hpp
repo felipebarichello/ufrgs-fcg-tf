@@ -28,6 +28,7 @@ namespace engine {
             }
 
             void add_component(std::unique_ptr<Component> component);
+            void add_component(Component* component);
 
             /// @brief Add a child VObject to this VObject.
             /// @param child
