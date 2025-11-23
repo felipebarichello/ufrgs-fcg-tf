@@ -2,11 +2,9 @@
 
 #include <engine>
 #include <memory>
-#include <game/components/PlanetInfo.hpp>
 #include <game/components/WalkerController.hpp>
-#include <game/components/player/PlayerShipController.hpp>
-#include <engine/vobject/components/TextDrawable.hpp>
-
+#include <game/components/physics/AngularVelocity.hpp>
+#include "SphericalInput.hpp"
 
 namespace game::components {
     class HumanoidPlayerController : public engine::Behavior {
