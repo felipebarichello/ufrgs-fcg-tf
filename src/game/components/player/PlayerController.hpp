@@ -2,7 +2,7 @@
 
 #include <engine>
 #include "HumanoidPlayerController.hpp"
-#include <game/components/player/PlayerShipController.hpp>
+#include "PlayerShipController.hpp"
 
 namespace game::components {
     class PlayerController : public engine::Behavior {
