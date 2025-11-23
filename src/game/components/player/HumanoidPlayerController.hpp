@@ -4,7 +4,7 @@
 #include <memory>
 #include <game/components/WalkerController.hpp>
 #include <game/components/physics/AngularVelocity.hpp>
-#include "SphericalInput.hpp"
+#include "SphericalCoords.hpp"
 
 namespace game::components {
     class HumanoidPlayerController : public engine::Behavior {
@@ -64,7 +64,7 @@ namespace game::components {
 
             void handle_input();
             void update_released_camera();
-            SphericalInput get_spherical_input();
+            SphericalCoords get_spherical_input();
             void set_camera_phi(float new_phi);
             void set_camera_theta(float new_theta);
             void update_camera();

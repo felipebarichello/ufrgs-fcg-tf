@@ -60,7 +60,7 @@ namespace game::components {
             }
 
             // Steering
-            SphericalInput spherical = this->command.steer;
+            SphericalCoords spherical = this->command.steer;
             float horizontal_fuel = std::fabs(spherical.delta_theta) * this->horizontal_steer_fuel_consumption;
             float vertical_fuel = std::fabs(spherical.delta_phi) * this->vertical_steer_fuel_consumption;
             this->fuel -= horizontal_fuel + vertical_fuel;

@@ -38,16 +38,16 @@ namespace game::components {
         this->test_planet_collisions();
     }
 
-    SphericalInput PlayerShipController::get_smooth_spherical_input() {
-        SphericalInput spherical = this->get_spherical_input();
+    SphericalCoords PlayerShipController::get_smooth_spherical_input() {
+        SphericalCoords spherical = this->get_spherical_input();
         spherical.delta_theta = std::lerp(this->smooth_spherical_input.delta_theta, spherical.delta_theta, theta_lerp);
         spherical.delta_phi   = std::lerp(this->smooth_spherical_input.delta_phi,   spherical.delta_phi,   phi_lerp);
         this->smooth_spherical_input = spherical;
         return spherical;
     }
 
-    SphericalInput PlayerShipController::get_spherical_input() {
-        SphericalInput spherical;
+    SphericalCoords PlayerShipController::get_spherical_input() {
+        SphericalCoords spherical;
 
         // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
         Vec2 cursor_delta = EngineController::get_input()->get_cursor_position_delta();

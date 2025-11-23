@@ -3,7 +3,7 @@
 #include <engine>
 #include <memory>
 #include <game/components/PlanetInfo.hpp>
-#include <game/components/player/SphericalInput.hpp>
+#include <game/components/player/SphericalCoords.hpp>
 #include <game/components/physics/KinematicBody.hpp>
 #include <game/components/physics/AngularVelocity.hpp>
 #include <game/components/SpaceshipController.hpp>
@@ -34,7 +34,7 @@ namespace game::components {
             std::vector<PlanetInfo*> planets;
             engine::CylinderCollider* cylinder_collider;
 
-            SphericalInput smooth_spherical_input;
+            SphericalCoords smooth_spherical_input;
             float theta_lerp = 0.2f;
             float phi_lerp = 0.2f;
 
@@ -43,8 +43,8 @@ namespace game::components {
             float v_sensitivity = 0.001f;
             float h_sensitivity = 0.001f;
 
-            SphericalInput get_smooth_spherical_input();
-            SphericalInput get_spherical_input();
+            SphericalCoords get_smooth_spherical_input();
+            SphericalCoords get_spherical_input();
             void test_planet_collisions();
     };
 } // namespace game::components

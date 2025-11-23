@@ -5,7 +5,7 @@
 #include <engine/vobject/components/TextDrawable.hpp>
 #include <engine/collision/colliders/CylinderCollider.hpp>
 #include <game/components/PlanetInfo.hpp>
-#include <game/components/player/SphericalInput.hpp>
+#include <game/components/player/SphericalCoords.hpp>
 #include <game/components/physics/KinematicBody.hpp>
 #include <game/components/physics/AngularVelocity.hpp>
 #include <game/components/SpaceshipController.hpp>
@@ -16,7 +16,7 @@ namespace game::components {
         bool thrusting = false;
         bool rolling_left = false;
         bool rolling_right = false;
-        SphericalInput steer;
+        SphericalCoords steer;
     };
 
     class SpaceshipController : public engine::Behavior {
@@ -34,7 +34,7 @@ namespace game::components {
             KinematicBody* kinematic;
             AngularVelocity* angular;
             ShipCommand command;
-            
+
             float thrust_power = 50.0f; // meters/s^2 applied when thrusting
             float roll_power = 8.0f; // radians/s^2 applied when rolling
             float auto_unroll_factor = 1.0f; // Ratio of current angular velocity corrected per second when not rolling

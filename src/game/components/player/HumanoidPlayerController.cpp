@@ -48,7 +48,7 @@ namespace game::components {
         Transform& cam_transform = this->camera->get_vobject()->transform();
 
         /* Camera (attached) movement */
-        SphericalInput spherical = this->get_spherical_input();
+        SphericalCoords spherical = this->get_spherical_input();
         this->set_camera_phi(this->camera_phi + spherical.delta_phi);
 
         if (this->walker->is_grounded()) {
@@ -87,7 +87,7 @@ namespace game::components {
         Transform& cam_transform = this->camera->get_vobject()->transform();
         Quaternion& cam_quaternion = cam_transform.quaternion();
 
-        SphericalInput spherical = this->get_spherical_input();
+        SphericalCoords spherical = this->get_spherical_input();
         cam_quaternion.local_compose(Quaternion::from_y_rotation(spherical.delta_theta));
         cam_quaternion.local_compose(Quaternion::from_x_rotation(spherical.delta_phi));
         cam_quaternion.normalize();
@@ -99,8 +99,8 @@ namespace game::components {
         cam_transform.set_world_position(cam_transform.get_world_position() + this->released_camera_speed * this->move_vector_2d.x * right_of_camera);
     }
 
-    SphericalInput HumanoidPlayerController::get_spherical_input() {
-        SphericalInput spherical;
+    SphericalCoords HumanoidPlayerController::get_spherical_input() {
+        SphericalCoords spherical;
 
         // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
         Vec2 cursor_delta = EngineController::get_input()->get_cursor_position_delta();
