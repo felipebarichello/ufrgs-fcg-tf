@@ -8,11 +8,6 @@ using engine::Vec3;
 using engine::Quaternion;
 using engine::Transform;
 
-SpaceshipCameraController::SpaceshipCameraController(SpaceshipController* ship_controller, engine::Camera* camera) {
-    this->ship_controller = ship_controller;
-    this->camera = camera;
-}
-
 void SpaceshipCameraController::Update() {
     Transform& ship_transform = this->ship_controller->get_vobject()->transform();
     Quaternion ship_quat = ship_transform.get_quaternion();

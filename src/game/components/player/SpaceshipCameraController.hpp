@@ -7,14 +7,14 @@
 namespace game::components {
     class SpaceshipCameraController : public engine::Behavior {
         public:
-            SpaceshipCameraController(SpaceshipController* player_controller, engine::Camera* camera);
+            SpaceshipCameraController(SpaceshipController* player_controller, engine::Camera* camera) : ship_controller(player_controller), camera(camera) {}
             void Update() override;
 
         private:
             struct SphericalInput;
 
-            engine::Camera* camera;
             SpaceshipController* ship_controller;
+            engine::Camera* camera;
 
             float camera_smooth_speed = 0.1f;
             float vertical_offset = 2.0f;
