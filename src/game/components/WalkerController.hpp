@@ -6,8 +6,8 @@
 #include <vector>
 #include <optional>
 #include <game/components/PlanetInfo.hpp>
-#include <game/components/KinematicBody.hpp>
-#include <game/components/Gravity.hpp>
+#include <game/components/physics/KinematicBody.hpp>
+#include <game/components/physics/Gravity.hpp>
 #include <game/scenes/MainScene_vars.hpp>
 
 namespace game::components {

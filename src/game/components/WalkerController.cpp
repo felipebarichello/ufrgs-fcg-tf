@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <algorithm>
 #include <cstdio>
-#include <game/components/Gravity.hpp>
+#include <game/components/physics/Gravity.hpp>
 
 using engine::EngineController;
 using engine::Vec2;

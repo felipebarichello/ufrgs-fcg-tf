@@ -6,8 +6,8 @@
 #include <engine/collision/colliders/CylinderCollider.hpp>
 #include <game/components/PlanetInfo.hpp>
 #include <game/components/player/SphericalInput.hpp>
-#include <game/components/KinematicBody.hpp>
-#include <game/components/AngularVelocity.hpp>
+#include <game/components/physics/KinematicBody.hpp>
+#include <game/components/physics/AngularVelocity.hpp>
 #include <game/components/SpaceshipController.hpp>
 #include <game/scenes/MainScene_vars.hpp>
 
