@@ -13,6 +13,8 @@ using namespace engine;
 namespace game::components {
 
     void PlayerShipController::Awake() {
+        this->ship_command = &this->ship_controller->get_command();
+
         // Physics setup
         this->kinematic = this->ship_controller->get_kinematic_body();
         this->angular = this->ship_controller->get_angular_velocity();
@@ -27,86 +29,34 @@ namespace game::components {
 
         // Create text drawable to show fuel on-screen (top-left corner)
         std::ostringstream init_ss;
-        init_ss << std::fixed << std::setprecision(1) << this->fuel;
+        init_ss << std::fixed << std::setprecision(1) << this->ship_controller->get_fuel();
         this->fuel_text->setText(std::string("Fuel: ") + init_ss.str(), 1.5f, engine::Vec3(1.0f), -0.95f, 0.9f);
         this->game_over_text->setText(std::string(""), 3.0f, engine::Vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
     }
 
     void PlayerShipController::Start() {
         // Input setup
+
+        ShipCommand& cmd = *this->ship_command;
         InputController* input = EngineController::get_input();
-        input->subscribe_hold_button(GLFW_KEY_W, &this->thrusting);
-        input->subscribe_hold_button(GLFW_KEY_A, &this->rolling_left);
-        input->subscribe_hold_button(GLFW_KEY_D, &this->rolling_right);
+
+        input->subscribe_hold_button(GLFW_KEY_W, &cmd.thrusting);
+        input->subscribe_hold_button(GLFW_KEY_A, &cmd.rolling_left);
+        input->subscribe_hold_button(GLFW_KEY_D, &cmd.rolling_right);
     }
 
     void PlayerShipController::Update() {
-        Transform& transform = this->get_vobject()->transform();
-
-        // Inertial spaceship: integrate acceleration -> velocity -> position
-        Vec3 forward = transform.get_quaternion().rotate(Vec3(0.0f, 0.0f, -1.0f));
-        
-        float dt = EngineController::get_delta_time();
-        
-        if (this->fuel > 0.0f) {
-            // Passive fuel consumption
-            this->fuel -= this->passive_fuel_consumption * dt;
-
-            // Thrusting
-            if (this->thrusting) {
-                this->fuel -= dt * this->thrust_fuel_consumption;
-                this->kinematic->set_velocity(this->kinematic->get_velocity() + forward * thrust_power * dt);
-            }
-
-            // Rolling
-            Vec3& ang_velocity = this->angular->euler_angles();
-            float& roll_velocity = ang_velocity.z;
-            if (this->rolling_left) {
-                this->fuel -= dt * this->roll_fuel_consumption;
-                roll_velocity -= roll_power * dt;
-            }
-            if (this->rolling_right) {
-                this->fuel -= dt * this->roll_fuel_consumption;
-                roll_velocity += roll_power * dt;
-            }
-            if (this->rolling_left == false && this->rolling_right == false) {
-                // Automatic ship stabilization when not actively rolling
-                if (roll_velocity > 1e-6f) {
-                    float desired_correction = -roll_velocity * this->auto_unroll_factor;
-                    float abs_correction = std::fabs(desired_correction);
-                    float auto_roll_power = std::min(abs_correction, roll_power);
-                    float ratio = auto_roll_power / abs_correction;
-
-                    this->fuel -= dt * (this->roll_fuel_consumption * ratio);
-                    roll_velocity += std::copysignf(auto_roll_power, desired_correction) * dt;
-                } else if (roll_velocity < -1e-6f) {
-                    roll_velocity += roll_power * dt;
-                    if (roll_velocity > 0.0f) {
-                        roll_velocity = 0.0f;
-                    }
-                }
-            }
-
-            // Steering
-            SphericalInput spherical = this->get_smooth_spherical_input();
-            float horizontal_fuel = std::fabs(spherical.delta_theta) * this->horizontal_steer_fuel_consumption;
-            float vertical_fuel = std::fabs(spherical.delta_phi) * this->vertical_steer_fuel_consumption;
-            this->fuel -= horizontal_fuel + vertical_fuel;
-            this->angular->euler_angles().y = spherical.delta_theta * this->horizontal_steer_power;
-            this->angular->euler_angles().x = spherical.delta_phi * this->vertical_steer_power;
-        } else {
-            this->fuel = 0.0f; // Prevent negative fuel
-        }
-
-        // Update on-screen fuel text
-        if (this->fuel_text) {
-            std::ostringstream init_ss;
-            init_ss << std::fixed << std::setprecision(1) << this->fuel;
-            this->fuel_text->setText(std::string("Fuel: ") + init_ss.str(), 1.5f, engine::Vec3(1.0f), -0.95f, 0.9f);
-        }
+        this->ship_command->steer = this->get_smooth_spherical_input();
     }
 
     void PlayerShipController::PostUpdate() {
+        // Update on-screen fuel text
+        if (this->fuel_text) {
+            std::ostringstream init_ss;
+            init_ss << std::fixed << std::setprecision(1) << this->ship_controller->get_fuel();
+            this->fuel_text->setText(std::string("Fuel: ") + init_ss.str(), 1.5f, engine::Vec3(1.0f), -0.95f, 0.9f);
+        }
+
         this->test_planet_collisions();
     }
 

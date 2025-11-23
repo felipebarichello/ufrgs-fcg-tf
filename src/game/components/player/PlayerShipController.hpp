@@ -24,7 +24,7 @@ namespace game::components {
 
             KinematicBody* get_kinematic() const { return this->kinematic; }
             AngularVelocity* get_angular() const { return this->angular; }
-            float get_critical_roll_velocity() const { return this->critical_roll_velocity; }
+            float get_critical_roll_velocity() const { return this->ship_controller->get_critical_roll_velocity(); }
 
             float speed = 10.0f;
 
@@ -32,6 +32,7 @@ namespace game::components {
             SpaceshipController* ship_controller;
             KinematicBody* kinematic;
             AngularVelocity* angular;
+            ShipCommand* ship_command;
 
             std::vector<PlanetInfo*> planets;
             engine::CylinderCollider* cylinder_collider;
@@ -44,23 +45,6 @@ namespace game::components {
             
             float v_sensitivity = 0.001f;
             float h_sensitivity = 0.001f;
-            float thrust_power = 50.0f; // meters/s^2 applied when thrusting
-            float roll_power = 8.0f; // radians/s^2 applied when rolling
-            float auto_unroll_factor = 1.0f; // Ratio of current angular velocity corrected per second when not rolling
-            float critical_roll_velocity = 10.0f; // radians/s before ship is destroyed
-            float vertical_steer_power = 50.0f; // radians/s applied per unit of vertical input
-            float horizontal_steer_power = 50.0f; // radians/s applied per unit of horizontal input
-
-            float fuel = 200.0f;
-            float thrust_fuel_consumption = 10.0f; // units per second when thrusting
-            float roll_fuel_consumption = 3.0f; // units per second when rolling
-            float vertical_steer_fuel_consumption = 2.0f; // units per second per unit of vertical input
-            float horizontal_steer_fuel_consumption = 2.0f; // units per second per unit of horizontal input
-            float passive_fuel_consumption = 1.0f; // units per second whenever
-            
-            bool thrusting = false;
-            bool rolling_left = false;
-            bool rolling_right = false;
 
             // Text drawable to show fuel on screen
             engine::TextDrawable* fuel_text = nullptr;
