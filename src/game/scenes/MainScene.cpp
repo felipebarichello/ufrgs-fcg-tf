@@ -23,7 +23,7 @@ VObjectConfig Player(Camera* main_camera, float height, Camera* humanoid_camera,
     SpaceshipController* ship_ctrl = new SpaceshipController(kinematic, angular_velocity);
     player_ship = new PlayerShipController(ship_ctrl, ship_drawable, ship_collider);
     WalkerController* walker = new WalkerController(kinematic, gravity, point_collider);
-    HumanoidPlayerController* humanoid_controller = new HumanoidPlayerController(main_camera, walker, cylinder_collider);
+    HumanoidPlayerController* humanoid_controller = new HumanoidPlayerController(main_camera, walker, angular_velocity, cylinder_collider);
     game::scenes::main_scene::player = humanoid_controller;
 
     return VObjectConfig()

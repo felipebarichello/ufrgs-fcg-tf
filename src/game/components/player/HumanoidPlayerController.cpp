@@ -42,6 +42,12 @@ namespace game::components {
         }
     }
 
+    void HumanoidPlayerController::PostUpdate() {
+        if (this->walker->is_grounded()) {
+            this->angular->reset();
+        }
+    }
+
     // Movement/environment handled by WalkerController. Humanoid keeps camera and input only.
 
     void HumanoidPlayerController::update_transform_due_to_input() {
