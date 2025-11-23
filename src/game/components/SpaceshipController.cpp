@@ -12,6 +12,7 @@ using namespace engine;
 namespace game::components {
 
     void SpaceshipController::Awake() {
+        // Texts
         TextDrawable* f_text = new TextDrawable();
         TextDrawable* go_text = new TextDrawable();
         this->fuel_text = f_text;
@@ -55,14 +56,13 @@ namespace game::components {
             }
 
             // Rolling
-            Quaternion& quaternion = transform.quaternion();
             if (this->rolling_left) {
                 this->fuel -= dt * this->roll_fuel_consumption;
-                quaternion.local_compose(Quaternion::from_z_rotation(roll_power * dt));
+                this->angular->ang_velocity() -= roll_power * dt;
             }
             if (this->rolling_right) {
                 this->fuel -= dt * this->roll_fuel_consumption;
-                quaternion.local_compose(Quaternion::from_z_rotation(-roll_power * dt));
+                this->angular->ang_velocity() += roll_power * dt;
             }
         }
 
