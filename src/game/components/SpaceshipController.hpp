@@ -21,6 +21,9 @@ namespace game::components {
             void OnEnable() override;
             void OnDisable() override;
 
+            AngularVelocity* get_angular() const { return this->angular; }
+            float get_critical_roll_velocity() const { return this->critical_roll_velocity; }
+
             float speed = 10.0f;
 
         private:
@@ -34,7 +37,8 @@ namespace game::components {
             float v_sensitivity = 0.001f;
             float h_sensitivity = 0.001f;
             float thrust_power = 50.0f; // meters/s^2 applied when thrusting
-            float roll_power = 10.0f; // radians/s^2 applied when rotating
+            float roll_power = 8.0f; // radians/s^2 applied when rolling
+            float critical_roll_velocity = 7.0f; // radians/s before ship is destroyed
 
             float fuel = 200.0f;
             float thrust_fuel_consumption = 10.0f; // units per second when thrusting

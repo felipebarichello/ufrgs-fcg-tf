@@ -16,11 +16,18 @@ namespace game::components {
         // Toggle on 'E' press
         input->subscribe_press_button(GLFW_KEY_E, std::bind(&PlayerSwitcherController::toggle_active, this));
 
-        this->spaceship->disable();
+        this->ship->disable();
+    }
+
+    void PlayerSwitcherController::Update() {
+        // Destroy ship if rolling too fast
+        if (this->ship->is_enabled() && std::fabs(this->ship->get_angular()->ang_velocity()) > this->ship->get_critical_roll_velocity()) {
+            this->toggle_active();
+        }
     }
 
     void PlayerSwitcherController::toggle_active() {
-        if (!this->humanoid || !this->spaceship) return;
+        if (!this->humanoid || !this->ship) return;
         if (this->humanoid->get_walker()->is_grounded()) return; // Only allow switching when humanoid is not grounded
 
         bool was_humanoid = this->humanoid->is_enabled();
@@ -31,10 +38,10 @@ namespace game::components {
             // Quaternion rotation_adjustment = Quaternion::from_x_rotation(-phi);
             // this->get_vobject()->transform().quaternion().local_compose(rotation_adjustment);
 
-            this->spaceship->enable();
+            this->ship->enable();
             Camera::set_main(this->ship_cam);
         } else {
-            this->spaceship->disable();
+            this->ship->disable();
             this->humanoid->enable();
             Camera::set_main(this->humanoid_cam);
         }
