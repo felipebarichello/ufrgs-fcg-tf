@@ -32,17 +32,22 @@ namespace game::components {
 
         // Update rotation from input and camera
         this->update_rotation_due_to_input();
-        
+
         // Inertial spaceship: integrate acceleration -> velocity -> position
         Vec3 forward = transform.get_quaternion().rotate(Vec3(0.0f, 0.0f, -1.0f));
-
+        
         float dt = EngineController::get_delta_time();
+        
+        // Passive fuel consumption
+        if (this->fuel > 0.0f) {
+            this->fuel -= this->passive_fuel_consumption_rate * dt;
+        }
 
         // Build acceleration vector from input
         float accel_dir = 0.0f;
         bool thrusting = this->accelerating_forward || this->accelerating_backward;
         if (thrusting && this->fuel > 0.0f) {
-            this->fuel -= dt * this->fuel_consumption_rate; // Consume fuel
+            this->fuel -= dt * this->active_fuel_consumption_rate; // Consume fuel
             if (this->accelerating_forward)  accel_dir += thrust_power;
             if (this->accelerating_backward) accel_dir -= thrust_power;
         }
