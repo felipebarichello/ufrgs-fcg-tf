@@ -14,7 +14,7 @@ void SpaceshipCameraController::Update() {
     Transform& cam_transform = this->camera->get_vobject()->transform();
     Vec3 up_dir = ship_quat.rotate(Vec3(0.0f, 1.0f, 0.0f));
 
-    Quaternion new_cam_quat = Quaternion::slerp(cam_transform.quaternion(), ship_quat, this->camera_smooth_speed);
+    Quaternion new_cam_quat = Quaternion::slerp(cam_transform.quaternion(), ship_quat, this->camera_rotation_smooth);
     Vec3 inert_cam_offset = new_cam_quat.rotate(Vec3(0.0f, 0.0f, this->default_distance));
     Vec3 total_cam_offset = inert_cam_offset + up_dir * this->vertical_offset;
     

@@ -11,17 +11,11 @@ namespace game::components {
             void Update() override;
 
         private:
-            struct SphericalInput;
-
             SpaceshipController* ship_controller;
             engine::Camera* camera;
 
-            float camera_smooth_speed = 0.1f;
+            float camera_rotation_smooth = 0.1f;
             float vertical_offset = 2.0f;
-            float camera_vel_smooth = 0.1f;
             float default_distance = 10.0f;
-            float min_distance = 5.0f;
-            
-            engine::Vec3 velocity = engine::Vec3(0.0f);
     };
 } // namespace game::components
