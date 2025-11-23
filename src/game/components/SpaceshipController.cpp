@@ -79,8 +79,6 @@ namespace game::components {
                         roll_velocity = 0.0f;
                     }
                 }
-                this->fuel -= dt * (this->roll_fuel_consumption / 2.0f);
-                ang_velocity *= std::pow(0.9f, dt * 60.0f); // Damping factor
             }
 
             // Steering
