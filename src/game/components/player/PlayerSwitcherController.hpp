@@ -2,12 +2,12 @@
 
 #include <engine>
 #include "HumanoidPlayerController.hpp"
-#include <game/components/SpaceshipController.hpp>
+#include <game/components/player/PlayerShipController.hpp>
 
 namespace game::components {
     class PlayerSwitcherController : public engine::Behavior {
     public:
-        PlayerSwitcherController(HumanoidPlayerController* humanoid, SpaceshipController* spaceship, engine::Camera* humanoid_cam, engine::Camera* ship_cam)
+        PlayerSwitcherController(HumanoidPlayerController* humanoid, PlayerShipController* spaceship, engine::Camera* humanoid_cam, engine::Camera* ship_cam)
             : humanoid(humanoid), ship(spaceship), humanoid_cam(humanoid_cam), ship_cam(ship_cam) {}
 
         void Start() override;
@@ -15,7 +15,7 @@ namespace game::components {
 
     private:
         HumanoidPlayerController* humanoid = nullptr;
-        SpaceshipController* ship = nullptr;
+        PlayerShipController* ship = nullptr;
         engine::Camera* humanoid_cam = nullptr;
         engine::Camera* ship_cam = nullptr;
 

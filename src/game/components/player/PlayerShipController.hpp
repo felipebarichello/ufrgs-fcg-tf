@@ -11,9 +11,9 @@
 #include <game/scenes/MainScene_vars.hpp>
 
 namespace game::components {
-    class SpaceshipController : public engine::Behavior {
+    class PlayerShipController : public engine::Behavior {
         public:
-            SpaceshipController(KinematicBody* kinematic, AngularVelocity* angular, engine::ObjDrawable* model, engine::CylinderCollider* cylinder_collider) : kinematic(kinematic), angular(angular), planets(scenes::main_scene::planets), cylinder_collider(cylinder_collider), model(model) {}
+            PlayerShipController(KinematicBody* kinematic, AngularVelocity* angular, engine::ObjDrawable* model, engine::CylinderCollider* cylinder_collider) : kinematic(kinematic), angular(angular), planets(scenes::main_scene::planets), cylinder_collider(cylinder_collider), model(model) {}
             void Awake() override;
             void Start() override;
             void Update() override;

@@ -4,7 +4,7 @@
 #include <memory>
 #include <game/components/PlanetInfo.hpp>
 #include <game/components/WalkerController.hpp>
-#include <game/components/SpaceshipController.hpp>
+#include <game/components/player/PlayerShipController.hpp>
 #include <engine/vobject/components/TextDrawable.hpp>
 
 

@@ -10,7 +10,7 @@ using namespace engine;
 using namespace game::components;
 using namespace game::instantiators;
 
-VObjectConfig Player(Camera* main_camera, float height, Camera* humanoid_camera, Camera* ship_camera, SpaceshipController*& ship_controller) {
+VObjectConfig Player(Camera* main_camera, float height, Camera* humanoid_camera, Camera* ship_camera, PlayerShipController*& ship_controller) {
     KinematicBody* kinematic = new KinematicBody();
     ObjDrawable* ship_drawable = new ObjDrawable(std::string("spaceship.obj"), std::string("spaceship.jpg"));
     Gravity* gravity = new Gravity(kinematic);
@@ -20,7 +20,7 @@ VObjectConfig Player(Camera* main_camera, float height, Camera* humanoid_camera,
     engine::CylinderCollider* ship_collider = new engine::CylinderCollider(2.0f, 1.0f);
     AngularVelocity* angular_velocity = new AngularVelocity();
 
-    ship_controller = new SpaceshipController(kinematic, angular_velocity, ship_drawable, ship_collider);
+    ship_controller = new PlayerShipController(kinematic, angular_velocity, ship_drawable, ship_collider);
     WalkerController* walker = new WalkerController(kinematic, gravity, point_collider);
     HumanoidPlayerController* humanoid_controller = new HumanoidPlayerController(main_camera, walker, cylinder_collider);
     game::scenes::main_scene::player = humanoid_controller;
@@ -103,7 +103,7 @@ namespace game::scenes {
         planets.push_back(new PlanetInfo(25.0e12f, PLANET_7_RADIUS));
         planets.push_back(new PlanetInfo(25.0e12f, PLANET_8_RADIUS));
 
-        SpaceshipController* ship_ref = nullptr;
+        PlayerShipController* ship_ref = nullptr;
 
         root
             .vobject(Player(humanoid_camera, player_height, humanoid_camera, ship_camera, ship_ref))

@@ -2,16 +2,16 @@
 
 #include <engine>
 #include <memory>
-#include <game/components/SpaceshipController.hpp>
+#include <game/components/player/PlayerShipController.hpp>
 
 namespace game::components {
     class SpaceshipCameraController : public engine::Behavior {
         public:
-            SpaceshipCameraController(SpaceshipController* player_controller, engine::Camera* camera) : ship_controller(player_controller), camera(camera) {}
+            SpaceshipCameraController(PlayerShipController* player_controller, engine::Camera* camera) : ship_controller(player_controller), camera(camera) {}
             void Update() override;
 
         private:
-            SpaceshipController* ship_controller;
+            PlayerShipController* ship_controller;
             engine::Camera* camera;
 
             float camera_rotation_smooth = 0.1f;

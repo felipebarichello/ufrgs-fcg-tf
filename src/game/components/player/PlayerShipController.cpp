@@ -1,4 +1,4 @@
-#include "SpaceshipController.hpp"
+#include "PlayerShipController.hpp"
 #include <engine>
 #include <InputController.hpp>
 #include <algorithm>
@@ -12,7 +12,7 @@ using namespace engine;
 
 namespace game::components {
 
-    void SpaceshipController::Awake() {
+    void PlayerShipController::Awake() {
         // Texts
         TextDrawable* f_text = new TextDrawable();
         TextDrawable* go_text = new TextDrawable();
@@ -22,7 +22,7 @@ namespace game::components {
         this->get_vobject()->add_component(go_text);
     }
 
-    void SpaceshipController::Start() {
+    void PlayerShipController::Start() {
         InputController* input = EngineController::get_input();
         input->subscribe_hold_button(GLFW_KEY_W, &this->thrusting);
         input->subscribe_hold_button(GLFW_KEY_A, &this->rolling_left);
@@ -35,7 +35,7 @@ namespace game::components {
         this->game_over_text->setText(std::string(""), 3.0f, engine::Vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
     }
 
-    void SpaceshipController::Update() {
+    void PlayerShipController::Update() {
         Transform& transform = this->get_vobject()->transform();
 
         // Inertial spaceship: integrate acceleration -> velocity -> position
@@ -101,11 +101,11 @@ namespace game::components {
         }
     }
 
-    void SpaceshipController::PostUpdate() {
+    void PlayerShipController::PostUpdate() {
         this->test_planet_collisions();
     }
 
-    SphericalInput SpaceshipController::get_smooth_spherical_input() {
+    SphericalInput PlayerShipController::get_smooth_spherical_input() {
         SphericalInput spherical = this->get_spherical_input();
         spherical.delta_theta = std::lerp(this->smooth_spherical_input.delta_theta, spherical.delta_theta, theta_lerp);
         spherical.delta_phi   = std::lerp(this->smooth_spherical_input.delta_phi,   spherical.delta_phi,   phi_lerp);
@@ -113,7 +113,7 @@ namespace game::components {
         return spherical;
     }
 
-    SphericalInput SpaceshipController::get_spherical_input() {
+    SphericalInput PlayerShipController::get_spherical_input() {
         SphericalInput spherical;
 
         // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
@@ -126,15 +126,15 @@ namespace game::components {
         return spherical;
     }
 
-    void SpaceshipController::OnEnable() {
+    void PlayerShipController::OnEnable() {
         this->model->set_visible();
     }
 
-    void SpaceshipController::OnDisable() {
+    void PlayerShipController::OnDisable() {
         this->model->set_invisible();
     }
 
-    void SpaceshipController::test_planet_collisions() {
+    void PlayerShipController::test_planet_collisions() {
         for (PlanetInfo* planet : this->planets) {
             bool collision_detected = engine::collision::collide_cylinder_sphere(*this->cylinder_collider, *planet->get_sphere_collider()).has_collided();
             if (collision_detected) {
