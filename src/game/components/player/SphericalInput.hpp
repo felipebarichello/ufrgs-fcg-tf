@@ -2,7 +2,7 @@
 
 namespace game::components {
     struct SphericalInput {
-        float delta_theta;
-        float delta_phi;
+        float delta_theta = 0.0f;
+        float delta_phi = 0.0f;
     };
 } // namespace game::components
