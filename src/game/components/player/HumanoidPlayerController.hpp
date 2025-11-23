@@ -4,7 +4,7 @@
 #include <memory>
 #include <game/components/WalkerController.hpp>
 #include <game/components/physics/AngularVelocity.hpp>
-#include "SphericalCoords.hpp"
+#include <game/components/SphericalCoords.hpp>
 
 namespace game::components {
     class HumanoidPlayerController : public engine::Behavior {

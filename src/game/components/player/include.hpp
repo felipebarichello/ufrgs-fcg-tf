@@ -4,4 +4,3 @@
 #include "PlayerController.hpp"
 #include "PlayerShipController.hpp"
 #include "SpaceshipCameraController.hpp"
-#include "SphericalCoords.hpp"

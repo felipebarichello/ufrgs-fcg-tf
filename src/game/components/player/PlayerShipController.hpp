@@ -3,7 +3,7 @@
 #include <engine>
 #include <memory>
 #include <game/components/PlanetInfo.hpp>
-#include <game/components/player/SphericalCoords.hpp>
+#include <game/components/SphericalCoords.hpp>
 #include <game/components/physics/KinematicBody.hpp>
 #include <game/components/physics/AngularVelocity.hpp>
 #include <game/components/SpaceshipController.hpp>
