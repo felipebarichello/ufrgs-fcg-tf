@@ -1,9 +1,11 @@
 #include "Transform.hpp"
 #include "VObject.hpp"
+// #include <engine/math/linalg.hpp>
 
 using namespace engine;
 
 void Transform::set_world_position(const Vec3& new_pos) {
+    // std::cout << "new pos: " << new_pos.to_string() << std::endl;
     auto parent_opt = this->get_parent();
 
     if (parent_opt) {
@@ -18,7 +20,10 @@ void Transform::set_world_position(const Vec3& new_pos) {
     } else {
         // No parent, so local position is the same as world position
         this->_local_position = new_pos;
+        // std::cout << "Which is trivial" << std::endl;
     }
+
+    // std::cout << "local pos set to: " << this->_local_position.to_string() << std::endl;
 
     this->dirty = true;
 }
