@@ -15,6 +15,8 @@ namespace game::instantiators {
         Gravity* gravity = new Gravity(kinematic);
         WalkerController* walker = new WalkerController(kinematic, gravity, point_collider);
 
+        walker->set_max_walk_speed(32.0f);
+
         return VObjectConfig()
             .transform(TransformBuilder()
                 .position(Vec3(0.0f, config.home->get_radius(), 0.0f)))

@@ -25,6 +25,7 @@ namespace game::components {
             engine::PointCollider* get_point_collider() { return this->point_collider; }
             engine::Vec3 get_velocity() const { return this->kinematic->get_velocity(); }
             bool is_grounded() const { return this->grounded_to.has_value(); }
+            void set_max_walk_speed(float speed) { this->max_walk_speed = speed; }
 
         private:
             KinematicBody* kinematic;
