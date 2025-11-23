@@ -10,7 +10,7 @@ using namespace engine;
 using namespace game::components;
 using namespace game::instantiators;
 
-VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera, float height, SpaceshipController*& ship_controller) {
+VObjectConfig Player(Camera* main_camera, float height, SpaceshipController*& ship_controller, Camera* humanoid_camera, Camera* ship_camera) {
     KinematicBody* kinematic = new KinematicBody();
     ObjDrawable* ship_drawable = new ObjDrawable(std::string("spaceship.obj"), std::string("spaceship.jpg"));
     // Gravity* gravity = new Gravity(kinematic);
@@ -18,15 +18,15 @@ VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera,
 
     engine::PointCollider* point_collider = new engine::PointCollider();
     engine::CylinderCollider* cylinder_collider = new engine::CylinderCollider(height, 0.5f);
-    engine::CylinderCollider* spaceship_collider = new engine::CylinderCollider(2.0f, 1.0f);
+    engine::CylinderCollider* ship_collider = new engine::CylinderCollider(2.0f, 1.0f);
 
-    ship_controller = new SpaceshipController(kinematic, ship_drawable, spaceship_collider);
+    ship_controller = new SpaceshipController(kinematic, ship_drawable, ship_collider);
 
     // Create walker component first and then the humanoid which will forward inputs to it.
     WalkerController* walker = new WalkerController(kinematic, gravity, point_collider);
 
     HumanoidPlayerController* humanoid_controller = new HumanoidPlayerController(main_camera, walker, cylinder_collider);
-    player_ref = humanoid_controller;
+    game::scenes::main_scene::player = humanoid_controller;
 
     return VObjectConfig()
         .transform(TransformBuilder()
@@ -37,7 +37,8 @@ VObjectConfig Player(HumanoidPlayerController*& player_ref, Camera* main_camera,
         .component(ship_drawable)
         .component(point_collider)
         .component(cylinder_collider)
-        .component(spaceship_collider)
+        .component(ship_collider)
+        .component(new PlayerSwitcherController(humanoid_controller, ship_controller, humanoid_camera, ship_camera))
         .component(gravity)
         .component(kinematic)
         .child(VObjectConfig()
@@ -87,9 +88,8 @@ namespace game::scenes {
         const float planet_model_normalize = 1.0f; // Very precise estimate
 
         Camera* humanoid_camera = new Camera();
-        Camera* spaceship_camera = new Camera();
+        Camera* ship_camera = new Camera();
         Camera::set_main(humanoid_camera);
-        HumanoidPlayerController* player_ref = nullptr;
 
         std::vector<PlanetInfo*>& planets = scenes::main_scene::planets;
         planets.push_back(new PlanetInfo(55.0e12f, MAIN_PLANET_RADIUS));
@@ -105,11 +105,10 @@ namespace game::scenes {
         SpaceshipController* spaceship_controller_ref = nullptr;
 
         root
-            .vobject(Player(player_ref, humanoid_camera, player_height, spaceship_controller_ref))
-            .vobject(VObjectConfig().component(spaceship_camera))
-            .vobject(VObjectConfig().component(new SpaceshipCameraController(spaceship_controller_ref, spaceship_camera)))
+            .vobject(Player(humanoid_camera, player_height, spaceship_controller_ref, humanoid_camera, ship_camera))
+            .vobject(VObjectConfig().component(ship_camera))
+            .vobject(VObjectConfig().component(new SpaceshipCameraController(spaceship_controller_ref, ship_camera)))
             .vobject(SkyBox())
-            .vobject(VObjectConfig().component(new PlayerSwitcherController(player_ref, spaceship_controller_ref, humanoid_camera, spaceship_camera)))
             .vobject(VObjectConfig()  // Root VObject for all planets
                 .child(Enemy({
                     .home = planets[0],
@@ -191,7 +190,5 @@ namespace game::scenes {
                     ), 0.002f, 0.7f))
                 )
             );
-
-        scenes::main_scene::player = player_ref;
     }
 }
