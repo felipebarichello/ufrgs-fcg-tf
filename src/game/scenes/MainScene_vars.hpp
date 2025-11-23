@@ -5,10 +5,10 @@
 
 // Forward declarations
 namespace game::components {
-    class HumanoidPlayerController;
+    class PlayerController;
 }
 
 namespace game::scenes::main_scene {
-    inline components::HumanoidPlayerController* player;
+    inline components::PlayerController* player;
     inline std::vector<components::PlanetInfo*> planets;
 }

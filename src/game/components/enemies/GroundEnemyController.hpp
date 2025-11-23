@@ -23,7 +23,7 @@ namespace game::components {
             engine::CylinderCollider* cylinder_collider = nullptr;
 
             // Target references
-            HumanoidPlayerController* target_controller = nullptr;
+            PlayerController* target_controller = nullptr;
             engine::VObject* target_vobj = nullptr;
 
             // Internal helpers

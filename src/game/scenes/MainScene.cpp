@@ -24,7 +24,8 @@ VObjectConfig Player(Camera* main_camera, float height, Camera* humanoid_camera,
     player_ship = new PlayerShipController(ship_ctrl, ship_drawable, ship_collider);
     WalkerController* walker = new WalkerController(kinematic, gravity, point_collider);
     HumanoidPlayerController* humanoid_controller = new HumanoidPlayerController(main_camera, walker, angular_velocity, cylinder_collider);
-    game::scenes::main_scene::player = humanoid_controller;
+    PlayerController* player_ctl = new PlayerController(humanoid_controller, player_ship, humanoid_camera, ship_camera);
+    game::scenes::main_scene::player = player_ctl;
 
     return VObjectConfig()
         .transform(TransformBuilder()
@@ -36,7 +37,7 @@ VObjectConfig Player(Camera* main_camera, float height, Camera* humanoid_camera,
         .component(cylinder_collider)
         .component(ship_collider)
         .component(ship_ctrl)
-        .component(new PlayerController(humanoid_controller, player_ship, humanoid_camera, ship_camera))
+        .component(player_ctl)
         .component(gravity)
         .component(angular_velocity)
         .component(kinematic)

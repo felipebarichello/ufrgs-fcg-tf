@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cstdio>
 #include <game/components/WalkerController.hpp>
+#include <game/components/player/PlayerController.hpp>
 
 using engine::EngineController;
 using engine::Vec2;
@@ -14,7 +15,7 @@ using engine::Quaternion;
 namespace game::components {
 
     void GroundEnemyController::Awake() {
-        HumanoidPlayerController* target = scenes::main_scene::player;
+        PlayerController* target = game::scenes::main_scene::player;
         this->target_controller = target;
         this->target_vobj = target->get_vobject();
     }
@@ -58,13 +59,13 @@ namespace game::components {
 
         // Use the target controller's walker/collider to detect a proper collision
         if (this->target_controller) {
-            WalkerController* target_walker = this->target_controller->get_walker();
+            HumanoidPlayerController* target_humanoid = this->target_controller->get_humanoid();
+            WalkerController* target_walker = target_humanoid->get_walker();
             if (target_walker) {
                 auto enemy_cyl = this->get_cylinder_collider();
-                auto target_cyl = this->target_controller->get_cylinder_collider();
-
+                auto target_cyl = target_humanoid->get_cylinder_collider();
                 if (engine::collision::collide_cylinder_cylinder(*enemy_cyl, *target_cyl).has_collided()) {
-                    this->target_controller->hit_by_enemy();
+                    target_humanoid->hit_by_enemy();
                 }
             }
         }
