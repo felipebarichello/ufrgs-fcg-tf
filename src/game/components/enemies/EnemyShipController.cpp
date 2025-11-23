@@ -54,7 +54,10 @@ namespace game::components {
         // float up_dist = dist * up_comp;
 
         // Set steering input
-        this->ship_command->steer = SphericalCoords(up_comp * dt, right_comp * dt);
+        this->ship_command->steer = SphericalCoords {
+            .delta_theta = up_comp * dt,
+            .delta_phi = right_comp * dt
+        };
 
         // Thrust if not too close
         this->ship_command->thrusting = (forward_comp > 10.0f);
