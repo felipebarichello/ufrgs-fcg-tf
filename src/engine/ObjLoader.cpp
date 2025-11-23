@@ -67,8 +67,6 @@ GLuint ObjLoader::get_texture_object_for_unit(GLuint unit) {
 }
 
 ObjModel::ObjModel(const char* filename, const char* basepath, bool triangulate) {
-    printf("Carregando objetos do arquivo \"%s\"...\n", filename);
-
     // Se basepath == NULL, então setamos basepath como o dirname do
     // filename, para que os arquivos MTL sejam corretamente carregados caso
     // estejam no mesmo diretório dos arquivos OBJ.
@@ -293,8 +291,6 @@ void ObjLoader::ComputeNormals(ObjModel* model) {
 
 GLuint ObjLoader::LoadTextureImage(const char* filename)
 {
-    printf("Carregando imagem \"%s\"... ", filename);
-
     // Primeiro fazemos a leitura da imagem do disco
     stbi_set_flip_vertically_on_load(true);
     int width;
