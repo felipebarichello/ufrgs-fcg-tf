@@ -30,25 +30,11 @@ namespace game::components {
             float get_fuel() const { return this->fuel; }
             float get_critical_roll_velocity() const { return this->critical_roll_velocity; }
 
-            // Control inputs
-            bool thrusting = false;
-            bool rolling_left = false;
-            bool rolling_right = false;
-
         private:
             KinematicBody* kinematic;
             AngularVelocity* angular;
             ShipCommand command;
-
-            // std::vector<PlanetInfo*> planets;
-            // engine::CylinderCollider* cylinder_collider;
-
-            // SphericalInput smooth_spherical_input;
-            // float theta_lerp = 0.2f;
-            // float phi_lerp = 0.2f;
             
-            // float v_sensitivity = 0.001f;
-            // float h_sensitivity = 0.001f;
             float thrust_power = 50.0f; // meters/s^2 applied when thrusting
             float roll_power = 8.0f; // radians/s^2 applied when rolling
             float auto_unroll_factor = 1.0f; // Ratio of current angular velocity corrected per second when not rolling
