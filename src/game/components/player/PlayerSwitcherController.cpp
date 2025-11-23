@@ -34,9 +34,10 @@ namespace game::components {
         if (was_humanoid) {
             this->humanoid->disable();
 
-            // float phi = this->humanoid->get_camera_phi();
-            // Quaternion rotation_adjustment = Quaternion::from_x_rotation(-phi);
-            // this->get_vobject()->transform().quaternion().local_compose(rotation_adjustment);
+            float phi = this->humanoid->get_camera_phi();
+            Quaternion rotation_adjustment = Quaternion::from_x_rotation(phi);
+            this->get_vobject()->transform().quaternion().local_compose(rotation_adjustment);
+            this->humanoid->reset_camera_phi();
 
             this->ship->enable();
             Camera::set_main(this->ship_cam);

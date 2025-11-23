@@ -21,6 +21,7 @@ namespace game::components {
             void OnDisable() override;
             
             float get_camera_phi() const { return this->camera_phi; }
+            void reset_camera_phi() { this->camera_phi = 0.0f; }
 
             // Expose walker for external queries (e.g., collision checks)
             WalkerController* get_walker() { return this->walker; }
