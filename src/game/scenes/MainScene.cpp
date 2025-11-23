@@ -10,7 +10,7 @@ using namespace engine;
 using namespace game::components;
 using namespace game::instantiators;
 
-VObjectConfig Player(Camera* main_camera, float height, Camera* humanoid_camera, Camera* ship_camera) {
+VObjectConfig Player(Camera* main_camera, float height, Camera* humanoid_camera, Camera* ship_camera, SpaceshipController*& ship_controller) {
     KinematicBody* kinematic = new KinematicBody();
     ObjDrawable* ship_drawable = new ObjDrawable(std::string("spaceship.obj"), std::string("spaceship.jpg"));
     Gravity* gravity = new Gravity(kinematic);
@@ -19,7 +19,7 @@ VObjectConfig Player(Camera* main_camera, float height, Camera* humanoid_camera,
     engine::CylinderCollider* cylinder_collider = new engine::CylinderCollider(height, 0.5f);
     engine::CylinderCollider* ship_collider = new engine::CylinderCollider(2.0f, 1.0f);
 
-    SpaceshipController* ship_controller = new SpaceshipController(kinematic, ship_drawable, ship_collider);
+    ship_controller = new SpaceshipController(kinematic, ship_drawable, ship_collider);
     WalkerController* walker = new WalkerController(kinematic, gravity, point_collider);
     HumanoidPlayerController* humanoid_controller = new HumanoidPlayerController(main_camera, walker, cylinder_collider);
     game::scenes::main_scene::player = humanoid_controller;
@@ -35,7 +35,6 @@ VObjectConfig Player(Camera* main_camera, float height, Camera* humanoid_camera,
         .component(cylinder_collider)
         .component(ship_collider)
         .component(new PlayerSwitcherController(humanoid_controller, ship_controller, humanoid_camera, ship_camera))
-        .component(new SpaceshipCameraController(ship_controller, ship_camera))
         .component(gravity)
         .component(kinematic)
         .child(VObjectConfig()
@@ -98,8 +97,11 @@ namespace game::scenes {
         planets.push_back(new PlanetInfo(25.0e12f, PLANET_7_RADIUS));
         planets.push_back(new PlanetInfo(25.0e12f, PLANET_8_RADIUS));
 
+        SpaceshipController* ship_ref = nullptr;
+
         root
-            .vobject(Player(humanoid_camera, player_height, humanoid_camera, ship_camera))
+            .vobject(Player(humanoid_camera, player_height, humanoid_camera, ship_camera, ship_ref))
+            .vobject(VObjectConfig().component(new SpaceshipCameraController(ship_ref, ship_camera)))
             .vobject(VObjectConfig().component(ship_camera))
             .vobject(SkyBox())
             .vobject(VObjectConfig()  // Root VObject for all planets
