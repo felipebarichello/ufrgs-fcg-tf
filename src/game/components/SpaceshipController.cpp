@@ -22,9 +22,9 @@ namespace game::components {
 
     void SpaceshipController::Start() {
         InputController* input = EngineController::get_input();
-        input->subscribe_dpad(&this->move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
-        input->subscribe_hold_button(GLFW_KEY_W, &this->accelerating_forward);
-        input->subscribe_hold_button(GLFW_KEY_S, &this->accelerating_backward);
+        input->subscribe_hold_button(GLFW_KEY_W, &this->thrusting);
+        input->subscribe_hold_button(GLFW_KEY_A, &this->rolling_left);
+        input->subscribe_hold_button(GLFW_KEY_D, &this->rolling_right);
 
         // Create text drawable to show fuel on-screen (top-left corner)
         std::ostringstream init_ss;
@@ -49,15 +49,21 @@ namespace game::components {
             this->fuel -= this->passive_fuel_consumption * dt;
 
             // Thrusting
-            float accel_dir = 0.0f;
-            bool thrusting = this->accelerating_forward || this->accelerating_backward;
-            if (thrusting) {
-                this->fuel -= dt * this->thrust_fuel_consumption; // Consume fuel
-                if (this->accelerating_forward)  accel_dir += thrust_power;
-                if (this->accelerating_backward) accel_dir -= thrust_power;
+            if (this->thrusting) {
+                this->fuel -= dt * this->thrust_fuel_consumption;
+                this->kinematic->set_velocity(this->kinematic->get_velocity() + forward * thrust_power * dt);
             }
-            Vec3 accel_vec = forward * accel_dir;
-            this->kinematic->set_velocity(this->kinematic->get_velocity() + accel_vec * dt);
+
+            // Rolling
+            Quaternion& quaternion = transform.quaternion();
+            if (this->rolling_left) {
+                this->fuel -= dt * this->roll_fuel_consumption;
+                quaternion.local_compose(Quaternion::from_z_rotation(roll_power * dt));
+            }
+            if (this->rolling_right) {
+                this->fuel -= dt * this->roll_fuel_consumption;
+                quaternion.local_compose(Quaternion::from_z_rotation(-roll_power * dt));
+            }
         }
 
         // Update on-screen fuel text

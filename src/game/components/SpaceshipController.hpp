@@ -29,22 +29,25 @@ namespace game::components {
 
             engine::ObjDrawable* model;
             
-            // Camera smoothing parameters
-            engine::Vec2 move_vector {0.0f, 0.0f};
             float v_sensitivity = 0.001f;
             float h_sensitivity = 0.001f;
             float thrust_power = 50.0f; // meters/s^2 applied when thrusting
+            float roll_power = 5.0f; // radians/s^2 applied when rotating
+
             float fuel = 100.0f;
             float thrust_fuel_consumption = 1.0f; // units per second when thrusting
+            float roll_fuel_consumption = 0.5f; // units per second when rolling
             float passive_fuel_consumption = 0.1f; // units per second whenever
+            
+            bool thrusting = false;
+            bool rolling_left = false;
+            bool rolling_right = false;
 
             // Text drawable to show fuel on screen
             engine::TextDrawable* fuel_text = nullptr;
             engine::TextDrawable* game_over_text = nullptr;
 
             void update_rotation_due_to_input();
-            bool accelerating_forward = false;
-            bool accelerating_backward = false;
             SphericalInput get_spherical_input();
             void test_planet_collisions();
     };
