@@ -46,12 +46,6 @@ VObjectConfig Player(Camera* main_camera, float height, SpaceshipController*& sh
                 .position(Vec3(0.0f, height, 0.0f)))
             .component(main_camera)
         );
-        // .child(VObjectConfig()
-        //     .transform(TransformBuilder()
-        //         .position(Vec3(0.0f, -0.0f, 0.0f))
-        //     )
-        //     .component(new ObjDrawable("bunny.obj"))
-        // );
 }
 
 VObjectConfig Planet(PlanetInfo* planet_info) {
