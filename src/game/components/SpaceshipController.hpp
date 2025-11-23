@@ -5,7 +5,7 @@
 #include <engine/vobject/components/TextDrawable.hpp>
 #include <engine/collision/colliders/CylinderCollider.hpp>
 #include <game/components/PlanetInfo.hpp>
-#include <game/components/SphericalInput.hpp>
+#include <game/components/player/SphericalInput.hpp>
 #include <game/components/KinematicBody.hpp>
 #include <game/components/AngularVelocity.hpp>
 #include <game/scenes/MainScene_vars.hpp>
