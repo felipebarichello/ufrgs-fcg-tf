@@ -1,10 +1,5 @@
 #include "HumanoidPlayerController.hpp"
-#include <engine>
 #include <InputController.hpp>
-#include <algorithm>
-#include <game/components/PlanetInfo.hpp>
-#include <cstdio>
-#include <game/components/WalkerController.hpp>
 
 using namespace engine;
 
