@@ -15,7 +15,7 @@ namespace game::components {
             engine::Camera* camera;
 
             float camera_rotation_smooth = 0.1f;
-            float vertical_offset = 2.0f;
+            float vertical_offset = 1.0f;
             float default_distance = 10.0f;
     };
 } // namespace game::components
