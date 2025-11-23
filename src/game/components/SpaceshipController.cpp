@@ -68,8 +68,6 @@ namespace game::components {
         Transform& transform = this->get_vobject()->transform();
         Quaternion& quaternion = transform.quaternion();
 
-        /* Camera (attached) movement */
-
         SphericalInput spherical = this->get_spherical_input();
         float dt = EngineController::get_delta_time();
         quaternion.local_compose(Quaternion::from_y_rotation(spherical.delta_theta * dt * 50.0f));
