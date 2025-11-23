@@ -21,7 +21,7 @@ namespace game::components {
             void set_move_vector(engine::Vec2 mv) { this->move_vector = mv; }
             // Query input state for other components (e.g. camera bobbing)
             engine::Vec2 get_move_vector() const { return this->move_vector; }
-            void request_jump() { this->jump_requested = true; }
+            void request_jump();
             engine::PointCollider* get_point_collider() { return this->point_collider; }
             engine::Vec3 get_velocity() const { return this->kinematic->get_velocity(); }
             bool is_grounded() const { return this->grounded_to.has_value(); }
@@ -32,7 +32,6 @@ namespace game::components {
             Gravity* gravity;
 
             engine::Vec2 move_vector {0.0f, 0.0f};
-            bool jump_requested = false;
 
             // Tuning
             float walk_accel = 70.0f;

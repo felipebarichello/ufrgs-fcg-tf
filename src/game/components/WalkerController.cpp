@@ -42,12 +42,21 @@ namespace game::components {
         this->align_to_closest_planet();
     }
 
+    void WalkerController::request_jump() {
+        if (!this->grounded_to.has_value()) return; // Can't jump if not grounded
+
+        Vec3 up_direction = engine::h_normalize(this->get_vobject()->transform().get_world_position() - this->grounded_to.value()->get_vobject()->transform().get_world_position());
+        Vec3 jump_velocity = up_direction * this->jump_strength;
+        this->kinematic->set_velocity(this->kinematic->get_velocity() + jump_velocity);
+        this->set_not_grounded();
+    }
+
     void WalkerController::update_transform_due_to_input() {
         // Only handle walking when grounded
         Transform& transform = this->get_vobject()->transform();
         if (!this->grounded_to.has_value()) return;
 
-        auto& quaternion = transform.quaternion();
+        Quaternion& quaternion = transform.quaternion();
 
         Vec3 front_of_player = quaternion.rotate(Vec3(0.0f, 0.0f, -1.0f));
         Vec3 right_of_player = quaternion.rotate(Vec3(1.0f, 0.0f, 0.0f));
@@ -121,15 +130,6 @@ namespace game::components {
         }
         
         this->kinematic->set_velocity(desired_velocity);
-
-        // Handle jump request
-        if (this->jump_requested) {
-            this->jump_requested = false;
-            if (this->grounded_to.has_value()) {
-                this->kinematic->set_velocity(this->kinematic->get_velocity() + this->jump_strength * this->get_vobject()->transform().quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f)));
-                this->set_not_grounded();
-            }
-        }
     }
 
     void WalkerController::correct_planet_collision() {
