@@ -121,7 +121,7 @@ namespace game::components {
     }
 
     void HumanoidPlayerController::on_jump_pressed() {
-        if (this->walker) this->walker->request_jump();
+        this->walker->request_jump();
     }
 
     void HumanoidPlayerController::hit_by_enemy() {
