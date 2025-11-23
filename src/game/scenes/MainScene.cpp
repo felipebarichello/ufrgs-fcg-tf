@@ -10,7 +10,7 @@ using namespace engine;
 using namespace game::components;
 using namespace game::instantiators;
 
-VObjectConfig Player(Camera* main_camera, float height, Camera* humanoid_camera, Camera* ship_camera, PlayerShipController*& ship_controller) {
+VObjectConfig Player(Camera* main_camera, float height, Camera* humanoid_camera, Camera* ship_camera, PlayerShipController*& player_ship) {
     KinematicBody* kinematic = new KinematicBody();
     ObjDrawable* ship_drawable = new ObjDrawable(std::string("spaceship.obj"), std::string("spaceship.jpg"));
     Gravity* gravity = new Gravity(kinematic);
@@ -19,8 +19,9 @@ VObjectConfig Player(Camera* main_camera, float height, Camera* humanoid_camera,
     engine::CylinderCollider* cylinder_collider = new engine::CylinderCollider(height, 0.5f);
     engine::CylinderCollider* ship_collider = new engine::CylinderCollider(2.0f, 1.0f);
     AngularVelocity* angular_velocity = new AngularVelocity();
-
-    ship_controller = new PlayerShipController(kinematic, angular_velocity, ship_drawable, ship_collider);
+    
+    SpaceshipController* ship_ctrl = new SpaceshipController(kinematic, angular_velocity);
+    player_ship = new PlayerShipController(ship_ctrl, ship_drawable, ship_collider);
     WalkerController* walker = new WalkerController(kinematic, gravity, point_collider);
     HumanoidPlayerController* humanoid_controller = new HumanoidPlayerController(main_camera, walker, cylinder_collider);
     game::scenes::main_scene::player = humanoid_controller;
@@ -30,11 +31,12 @@ VObjectConfig Player(Camera* main_camera, float height, Camera* humanoid_camera,
             .position(Vec3(0.0f, 180.0f, 100.0f)))
         .component(walker)
         .component(humanoid_controller)
-        .component(ship_controller)
+        .component(player_ship)
         .component(point_collider)
         .component(cylinder_collider)
         .component(ship_collider)
-        .component(new PlayerSwitcherController(humanoid_controller, ship_controller, humanoid_camera, ship_camera))
+        .component(ship_ctrl)
+        .component(new PlayerSwitcherController(humanoid_controller, player_ship, humanoid_camera, ship_camera))
         .component(gravity)
         .component(angular_velocity)
         .component(kinematic)

@@ -8,12 +8,13 @@
 #include <game/components/player/SphericalInput.hpp>
 #include <game/components/KinematicBody.hpp>
 #include <game/components/AngularVelocity.hpp>
+#include <game/components/SpaceshipController.hpp>
 #include <game/scenes/MainScene_vars.hpp>
 
 namespace game::components {
     class PlayerShipController : public engine::Behavior {
         public:
-            PlayerShipController(KinematicBody* kinematic, AngularVelocity* angular, engine::ObjDrawable* model, engine::CylinderCollider* cylinder_collider) : kinematic(kinematic), angular(angular), planets(scenes::main_scene::planets), cylinder_collider(cylinder_collider), model(model) {}
+            PlayerShipController(SpaceshipController* ship_controller, engine::ObjDrawable* model, engine::CylinderCollider* cylinder_collider) : ship_controller(ship_controller), planets(scenes::main_scene::planets), cylinder_collider(cylinder_collider), model(model) {}
             void Awake() override;
             void Start() override;
             void Update() override;
@@ -21,14 +22,17 @@ namespace game::components {
             void OnEnable() override;
             void OnDisable() override;
 
+            KinematicBody* get_kinematic() const { return this->kinematic; }
             AngularVelocity* get_angular() const { return this->angular; }
             float get_critical_roll_velocity() const { return this->critical_roll_velocity; }
 
             float speed = 10.0f;
 
         private:
+            SpaceshipController* ship_controller;
             KinematicBody* kinematic;
             AngularVelocity* angular;
+
             std::vector<PlanetInfo*> planets;
             engine::CylinderCollider* cylinder_collider;
 

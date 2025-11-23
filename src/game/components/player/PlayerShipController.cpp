@@ -13,6 +13,10 @@ using namespace engine;
 namespace game::components {
 
     void PlayerShipController::Awake() {
+        // Physics setup
+        this->kinematic = this->ship_controller->get_kinematic_body();
+        this->angular = this->ship_controller->get_angular_velocity();
+
         // Texts
         TextDrawable* f_text = new TextDrawable();
         TextDrawable* go_text = new TextDrawable();
