@@ -101,8 +101,8 @@ namespace game::components {
 
     void SpaceshipController::update_steering() {
         SphericalInput spherical = this->get_spherical_input();
-        this->angular->euler_angles().y = spherical.delta_theta * 50.0f;
-        this->angular->euler_angles().x = spherical.delta_phi * 50.0f;
+        this->angular->euler_angles().y = spherical.delta_theta * this->horizontal_steering_power;
+        this->angular->euler_angles().x = spherical.delta_phi * this->vertical_steering_power;
     }
 
     SphericalInput SpaceshipController::get_spherical_input() {
