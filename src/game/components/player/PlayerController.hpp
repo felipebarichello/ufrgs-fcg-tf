@@ -22,6 +22,6 @@ namespace game::components {
         engine::Camera* humanoid_cam = nullptr;
         engine::Camera* ship_cam = nullptr;
 
-        void toggle_active();
+        void toggle_mode();
     };
 }
