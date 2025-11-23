@@ -7,7 +7,7 @@ namespace game::components {
     class GroundEnemySpawner : public engine::Behavior {
         public:
             GroundEnemySpawner(PlanetInfo* planet) : planet(planet) {}
-            void Start() override;
+            void PostUpdate() override;
 
         private:
             PlanetInfo* planet;

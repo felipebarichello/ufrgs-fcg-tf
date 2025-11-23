@@ -103,7 +103,7 @@ namespace game::scenes {
             .vobject(VObjectConfig().component(ship_camera))
             .vobject(SkyBox())
             .vobject(VObjectConfig()  // Root VObject for all planets
-                .child(Planet(planets[0])  // Central planet
+                .child(PlanetWithEnemy(planets[0])  // Central planet
                     .transform(TransformBuilder()
                         .scale(MAIN_PLANET_RADIUS * planet_model_normalize))
                 )

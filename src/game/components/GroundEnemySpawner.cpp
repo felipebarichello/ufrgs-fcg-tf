@@ -8,7 +8,7 @@ using namespace engine;
 
 namespace game::components {
 
-    void GroundEnemySpawner::Start() {
+    void GroundEnemySpawner::PostUpdate() {
         constexpr float DISTANCE_FROM_SURFACE = 2.0f;
 
         // Spawn an enemy on the planet surface
@@ -35,6 +35,8 @@ namespace game::components {
 
         VObject* inst = planet_vobj->get_scene()->instantiate(enemy_config);
         inst->transform().set_world_position(spawn_pos);
+
+        this->disable(); // Spawn only once
     }
 
 } // namespace game::components
