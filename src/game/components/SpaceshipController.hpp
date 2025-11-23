@@ -21,20 +21,6 @@ namespace game::components {
 
     class SpaceshipController : public engine::Behavior {
         public:
-            SpaceshipController(KinematicBody* kinematic, AngularVelocity* angular): kinematic(kinematic), angular(angular) {}
-            void Update() override;
-
-            KinematicBody* get_kinematic_body() const { return this->kinematic; }
-            AngularVelocity* get_angular_velocity() const { return this->angular; }
-            ShipCommand& get_command() { return this->command; }
-            float get_fuel() const { return this->fuel; }
-            float get_critical_roll_velocity() const { return this->critical_roll_velocity; }
-
-        private:
-            KinematicBody* kinematic;
-            AngularVelocity* angular;
-            ShipCommand command;
-
             float thrust_power = 50.0f; // meters/s^2 applied when thrusting
             float roll_power = 8.0f; // radians/s^2 applied when rolling
             float auto_unroll_factor = 1.0f; // Ratio of current angular velocity corrected per second when not rolling
@@ -48,5 +34,17 @@ namespace game::components {
             float vertical_steer_fuel_consumption = 2.0f; // units per second per unit of vertical input
             float horizontal_steer_fuel_consumption = 2.0f; // units per second per unit of horizontal input
             float passive_fuel_consumption = 1.0f; // units per second whenever
+
+            SpaceshipController(KinematicBody* kinematic, AngularVelocity* angular): kinematic(kinematic), angular(angular) {}
+            void Update() override;
+
+            KinematicBody* get_kinematic_body() const { return this->kinematic; }
+            AngularVelocity* get_angular_velocity() const { return this->angular; }
+            ShipCommand& get_command() { return this->command; }
+
+        private:
+            KinematicBody* kinematic;
+            AngularVelocity* angular;
+            ShipCommand command;
     };
 } // namespace game::components

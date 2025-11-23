@@ -23,7 +23,7 @@ namespace game::components {
             KinematicBody* get_kinematic_body() const { return this->kinematic; }
             AngularVelocity* get_angular_velocity() const { return this->angular; }
             SpaceshipController* get_ship_controller() const { return this->ship_controller; }
-            float get_critical_roll_velocity() const { return this->ship_controller->get_critical_roll_velocity(); }
+            float get_critical_roll_velocity() const { return this->ship_controller->critical_roll_velocity; }
 
         private:
             SpaceshipController* ship_controller;

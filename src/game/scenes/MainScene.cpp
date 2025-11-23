@@ -5,6 +5,7 @@
 #include <game/components/include.hpp>
 #include <game/instantiators/Enemy.hpp>
 #include <game/scenes/MainScene_vars.hpp>
+#include <game/instantiators/EnemyShip.hpp>
 
 using namespace engine;
 using namespace game::components;
@@ -29,7 +30,7 @@ VObjectConfig Player(Camera* main_camera, float height, Camera* humanoid_camera,
 
     return VObjectConfig()
         .transform(TransformBuilder()
-            .position(Vec3(0.0f, 180.0f, 100.0f)))
+            .position(Vec3(0.0f, 220.0f, 0.0f)))
         .component(walker)
         .component(humanoid_controller)
         .component(player_ship)
@@ -70,15 +71,6 @@ VObjectConfig PlanetWithEnemy(PlanetInfo* planet_info) {
         .component(new GroundEnemySpawner(planet_info));
 }
 
-VObjectConfig SpaceshipObj() {
-    return VObjectConfig()
-        .transform(TransformBuilder()
-            .position(Vec3(0.0f, 0.0f, 0.0f))
-            .rotation(Quaternion::from_y_rotation(3.141592f * 1.5f))
-        )
-        .component(new ObjDrawable(std::string("spaceship.obj"), std::string("spaceship.jpg")));
-}
-
 VObjectConfig SkyBox() {
     return VObjectConfig()
         // .transform(TransformBuilder()
@@ -113,6 +105,7 @@ namespace game::scenes {
             .vobject(VObjectConfig().component(new SpaceshipCameraController(ship_ref, ship_camera)))
             .vobject(VObjectConfig().component(ship_camera))
             .vobject(SkyBox())
+            .vobject(EnemyShip())
             .vobject(VObjectConfig()  // Root VObject for all planets
                 .child(PlanetWithEnemy(planets[0])  // Central planet
                     .transform(TransformBuilder()

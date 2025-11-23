@@ -25,7 +25,7 @@ namespace game::components {
 
         // Create text drawable to show fuel on-screen (top-left corner)
         std::ostringstream init_ss;
-        init_ss << std::fixed << std::setprecision(1) << this->ship->get_ship_controller()->get_fuel();
+        init_ss << std::fixed << std::setprecision(1) << this->ship->get_ship_controller()->fuel;
         this->fuel_text->setText(std::string("Fuel: ") + init_ss.str(), 1.5f, engine::Vec3(1.0f), -0.95f, 0.9f);
         this->game_over_text->setText(std::string(""), 3.0f, engine::Vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
     }
@@ -50,7 +50,7 @@ namespace game::components {
         // Update HUD fuel text
         if (this->fuel_text) {
             std::ostringstream init_ss;
-            init_ss << std::fixed << std::setprecision(1) << this->ship->get_ship_controller()->get_fuel();
+            init_ss << std::fixed << std::setprecision(1) << this->ship->get_ship_controller()->fuel;
             this->fuel_text->setText(std::string("Fuel: ") + init_ss.str(), 1.5f, engine::Vec3(1.0f), -0.95f, 0.9f);
         }
     }
