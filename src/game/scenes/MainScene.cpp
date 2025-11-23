@@ -108,19 +108,15 @@ namespace game::scenes {
             .vobject(Player(player_ref, humanoid_camera, player_height, spaceship_controller_ref))
             .vobject(VObjectConfig().component(spaceship_camera))
             .vobject(VObjectConfig().component(new SpaceshipCameraController(spaceship_controller_ref, spaceship_camera)))
-            // HumanoidPlayer
             .vobject(SkyBox())
             .vobject(VObjectConfig().component(new PlayerSwitcherController(player_ref, spaceship_controller_ref, humanoid_camera, spaceship_camera)))
-            // ensure the camera component is attached to a VObject so Camera::get_vobject() is valid
-
             .vobject(VObjectConfig()  // Root VObject for all planets
                 .child(Enemy({
                     .home = planets[0],
-                }, player_ref))
-                .child(Planet(planets[0])  // Central star
+                }))
+                .child(Planet(planets[0])  // Central planet
                     .transform(TransformBuilder()
                         .scale(MAIN_PLANET_RADIUS * planet_model_normalize))
-                    //.child(Enemy(player_ref, planets))
                 )
                 .child(Planet(planets[1])  // Tilted circular orbit
                     .transform(TransformBuilder()

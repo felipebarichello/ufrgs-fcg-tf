@@ -10,7 +10,7 @@
 namespace game::components {
     class GroundEnemyController : public engine::Behavior {
         public:
-            GroundEnemyController(WalkerController* walker, engine::CylinderCollider* cylinder_collider, HumanoidPlayerController* target_controller) : walker(walker), cylinder_collider(cylinder_collider), target_controller(target_controller) {}
+            GroundEnemyController(WalkerController* walker, engine::CylinderCollider* cylinder_collider) : walker(walker), cylinder_collider(cylinder_collider) {}
 
             void Awake() override;
             void Update() override;

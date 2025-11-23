@@ -14,8 +14,9 @@ using engine::Quaternion;
 namespace game::components {
 
     void GroundEnemyController::Awake() {
-        // Keep reference to target VObject for positional queries
-        this->target_vobj = this->target_controller->get_vobject();
+        HumanoidPlayerController* target = scenes::main_scene::player;
+        this->target_controller = target;
+        this->target_vobj = target->get_vobject();
     }
 
     void GroundEnemyController::Update() {

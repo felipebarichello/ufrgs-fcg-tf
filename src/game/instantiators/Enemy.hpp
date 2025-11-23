@@ -11,5 +11,4 @@ namespace game::instantiators {
     
     engine::VObjectConfig EnemyObj();
     engine::VObjectConfig Enemy(EnemyConfig config);
-    engine::VObjectConfig Enemy(EnemyConfig config, game::components::HumanoidPlayerController* player);
 }

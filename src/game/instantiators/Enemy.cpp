@@ -7,12 +7,8 @@ using namespace engine;
 using namespace game::components;
 
 namespace game::instantiators {
-
+    
     VObjectConfig Enemy(EnemyConfig config) {
-        return Enemy(config, scenes::main_scene::player);
-    }
-
-    VObjectConfig Enemy(EnemyConfig config, game::components::HumanoidPlayerController* player) {
         PointCollider* point_collider = new PointCollider();
         CylinderCollider* cylinder_collider = new CylinderCollider(1.0f, 3.0f);
         KinematicBody* kinematic = new KinematicBody();
@@ -25,7 +21,7 @@ namespace game::instantiators {
             .component(walker)
             .component(point_collider)
             .component(cylinder_collider)
-            .component(new GroundEnemyController(walker, cylinder_collider, player))
+            .component(new GroundEnemyController(walker, cylinder_collider))
             .component(gravity)
             .component(kinematic)
             .child(EnemyObj());
