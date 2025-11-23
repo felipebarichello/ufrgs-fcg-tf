@@ -107,8 +107,6 @@ ObjModel::ObjModel(const char* filename, const char* basepath, bool triangulate)
             throw std::runtime_error("Objeto sem nome.");
         }
     }
-
-    printf("OBJ carregado com sucesso\n");
 }
 
 Vao ObjLoader::build_obj_vao(ObjModel* model) {
