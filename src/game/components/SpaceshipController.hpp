@@ -40,12 +40,14 @@ namespace game::components {
             float roll_power = 8.0f; // radians/s^2 applied when rolling
             float auto_unroll_factor = 0.2f; // Ratio of current angular velocity corrected per second when not rolling
             float critical_roll_velocity = 10.0f; // radians/s before ship is destroyed
-            float vertical_steering_power = 50.0f; // radians/s applied per unit of vertical input
-            float horizontal_steering_power = 50.0f; // radians/s applied per unit of horizontal input
+            float vertical_steer_power = 50.0f; // radians/s applied per unit of vertical input
+            float horizontal_steer_power = 50.0f; // radians/s applied per unit of horizontal input
 
             float fuel = 200.0f;
             float thrust_fuel_consumption = 10.0f; // units per second when thrusting
             float roll_fuel_consumption = 3.0f; // units per second when rolling
+            float vertical_steer_fuel_consumption = 2.0f; // units per second per unit of vertical input
+            float horizontal_steer_fuel_consumption = 2.0f; // units per second per unit of horizontal input
             float passive_fuel_consumption = 1.0f; // units per second whenever
             
             bool thrusting = false;
@@ -56,7 +58,6 @@ namespace game::components {
             engine::TextDrawable* fuel_text = nullptr;
             engine::TextDrawable* game_over_text = nullptr;
 
-            void update_steering();
             SphericalInput get_spherical_input();
             void test_planet_collisions();
     };

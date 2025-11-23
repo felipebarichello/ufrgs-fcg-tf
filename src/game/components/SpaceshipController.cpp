@@ -37,9 +37,6 @@ namespace game::components {
     void SpaceshipController::Update() {
         Transform& transform = this->get_vobject()->transform();
 
-        // Update rotation from input and camera
-        this->update_steering();
-
         // Inertial spaceship: integrate acceleration -> velocity -> position
         Vec3 forward = transform.get_quaternion().rotate(Vec3(0.0f, 0.0f, -1.0f));
         
@@ -85,6 +82,14 @@ namespace game::components {
                 this->fuel -= dt * (this->roll_fuel_consumption / 2.0f);
                 ang_velocity *= std::pow(0.9f, dt * 60.0f); // Damping factor
             }
+
+            // Steering
+            SphericalInput spherical = this->get_spherical_input();
+            float horizontal_fuel = std::fabs(spherical.delta_theta) * this->horizontal_steer_fuel_consumption;
+            float vertical_fuel = std::fabs(spherical.delta_phi) * this->vertical_steer_fuel_consumption;
+            this->fuel -= (horizontal_fuel + vertical_fuel) * dt;
+            this->angular->euler_angles().y = spherical.delta_theta * this->horizontal_steer_power;
+            this->angular->euler_angles().x = spherical.delta_phi * this->vertical_steer_power;
         }
 
         // Update on-screen fuel text
@@ -97,12 +102,6 @@ namespace game::components {
 
     void SpaceshipController::PostUpdate() {
         this->test_planet_collisions();
-    }
-
-    void SpaceshipController::update_steering() {
-        SphericalInput spherical = this->get_spherical_input();
-        this->angular->euler_angles().y = spherical.delta_theta * this->horizontal_steering_power;
-        this->angular->euler_angles().x = spherical.delta_phi * this->vertical_steering_power;
     }
 
     SphericalInput SpaceshipController::get_spherical_input() {
