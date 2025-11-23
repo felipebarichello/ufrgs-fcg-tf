@@ -14,14 +14,6 @@ Trajectory::Trajectory(std::unique_ptr<Curve> curve, float speed, float t) {
     this->speed = speed;
 }
 
-void Trajectory::Awake() {
-    // Initialize the trajectory    
-}
-
-void Trajectory::Start() {
-    // Start the trajectory
-}
-
 void Trajectory::Update() {
     auto& transform = this->get_vobject()->transform();
     float delta_time = EngineController::get_delta_time();
