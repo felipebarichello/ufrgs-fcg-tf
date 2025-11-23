@@ -3,7 +3,7 @@
 #include <random>
 #include <vector>
 #include <glm/gtc/type_ptr.hpp>
-#include <engine/math/matrices.hpp>
+#include <engine/math/linalg.hpp>
 
 Stars::Stars(int max_stars) {
     this->max_stars = max_stars;

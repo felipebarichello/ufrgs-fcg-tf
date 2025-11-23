@@ -1,6 +1,6 @@
 #include "InputController.hpp"
 #include "math/linalg.hpp"
-#include <engine/math/matrices.hpp>
+#include <engine/math/linalg.hpp>
 #include <macros>
 
 using namespace engine;

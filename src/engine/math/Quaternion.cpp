@@ -1,6 +1,5 @@
 #include "Quaternion.hpp"
 #include <engine/math/linalg.hpp>
-#include <engine/math/matrices.hpp>
 
 #include <sstream>
 #include <cmath>

@@ -1,9 +1,4 @@
-#include <engine/vobject/Transform.hpp>
-#include <engine/vobject/components/Drawable.hpp>
-#include <engine/vobject/components/Camera.hpp>
-#include <engine/EngineController.hpp>
-#include <engine/vao.hpp>
-#include <engine/math/matrices.hpp>
+#include <engine>
 #include <glm/gtc/type_ptr.hpp>
 #include <vector>
 #include <game/components/player/PlayerShipController.hpp>
