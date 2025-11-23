@@ -54,7 +54,7 @@ namespace game::components {
             engine::TextDrawable* fuel_text = nullptr;
             engine::TextDrawable* game_over_text = nullptr;
 
-            void update_rotation_due_to_input();
+            void update_steering();
             SphericalInput get_spherical_input();
             void test_planet_collisions();
     };

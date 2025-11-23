@@ -21,7 +21,7 @@ namespace game::components {
 
     void PlayerSwitcherController::Update() {
         // Destroy ship if rolling too fast
-        if (this->ship->is_enabled() && std::fabs(this->ship->get_angular()->ang_velocity()) > this->ship->get_critical_roll_velocity()) {
+        if (this->ship->is_enabled() && std::fabs(this->ship->get_angular()->euler_angles().z) > this->ship->get_critical_roll_velocity()) {
             this->toggle_active();
         }
     }

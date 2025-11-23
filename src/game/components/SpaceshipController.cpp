@@ -38,7 +38,7 @@ namespace game::components {
         Transform& transform = this->get_vobject()->transform();
 
         // Update rotation from input and camera
-        this->update_rotation_due_to_input();
+        this->update_steering();
 
         // Inertial spaceship: integrate acceleration -> velocity -> position
         Vec3 forward = transform.get_quaternion().rotate(Vec3(0.0f, 0.0f, -1.0f));
@@ -56,33 +56,34 @@ namespace game::components {
             }
 
             // Rolling
+            Vec3& ang_velocity = this->angular->euler_angles();
+            float& roll_velocity = ang_velocity.z;
             if (this->rolling_left) {
                 this->fuel -= dt * this->roll_fuel_consumption;
-                this->angular->ang_velocity() -= roll_power * dt;
+                roll_velocity -= roll_power * dt;
             }
             if (this->rolling_right) {
                 this->fuel -= dt * this->roll_fuel_consumption;
-                this->angular->ang_velocity() += roll_power * dt;
+                roll_velocity += roll_power * dt;
             }
             if (this->rolling_left == false && this->rolling_right == false) {
                 // Automatic ship stabilization when not actively rolling
-                if (this->angular->ang_velocity() > 1e-6f) {
-                    float ang_vel = this->angular->ang_velocity();
-                    float desired_correction = -ang_vel * this->auto_unroll_factor;
+                if (roll_velocity > 1e-6f) {
+                    float desired_correction = -roll_velocity * this->auto_unroll_factor;
                     float abs_correction = std::fabs(desired_correction);
                     float auto_roll_power = std::min(abs_correction, roll_power);
                     float ratio = auto_roll_power / abs_correction;
 
                     this->fuel -= dt * (this->roll_fuel_consumption * ratio);
-                    this->angular->ang_velocity() += std::copysignf(auto_roll_power, desired_correction) * dt;
-                } else if (this->angular->ang_velocity() < -1e-6f) {
-                    this->angular->ang_velocity() += roll_power * dt;
-                    if (this->angular->ang_velocity() > 0.0f) {
-                        this->angular->ang_velocity() = 0.0f;
+                    roll_velocity += std::copysignf(auto_roll_power, desired_correction) * dt;
+                } else if (roll_velocity < -1e-6f) {
+                    roll_velocity += roll_power * dt;
+                    if (roll_velocity > 0.0f) {
+                        roll_velocity = 0.0f;
                     }
                 }
                 this->fuel -= dt * (this->roll_fuel_consumption / 2.0f);
-                this->angular->ang_velocity() *= std::pow(0.9f, dt * 60.0f); // Damping factor
+                ang_velocity *= std::pow(0.9f, dt * 60.0f); // Damping factor
             }
         }
 
@@ -98,15 +99,10 @@ namespace game::components {
         this->test_planet_collisions();
     }
 
-    void SpaceshipController::update_rotation_due_to_input() {
-        Transform& transform = this->get_vobject()->transform();
-        Quaternion& quaternion = transform.quaternion();
-        float dt = EngineController::get_delta_time();
-
+    void SpaceshipController::update_steering() {
         SphericalInput spherical = this->get_spherical_input();
-        quaternion.local_compose(Quaternion::from_y_rotation(spherical.delta_theta * dt * 50.0f));
-        quaternion.local_compose(Quaternion::from_x_rotation(spherical.delta_phi * dt * 50.0f));
-        quaternion.normalize();
+        this->angular->euler_angles().y = spherical.delta_theta * 50.0f;
+        this->angular->euler_angles().x = spherical.delta_phi * 50.0f;
     }
 
     SphericalInput SpaceshipController::get_spherical_input() {

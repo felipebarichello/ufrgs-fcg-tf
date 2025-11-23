@@ -6,9 +6,9 @@ namespace game::components {
         public:
             AngularVelocity() = default;
             void Update() override;
-            float& ang_velocity() { return this->_ang_velocity; }
+            engine::Vec3& euler_angles() { return this->_euler_angles; }
 
         private:
-            float _ang_velocity = 0.0f;
+            engine::Vec3 _euler_angles = engine::Vec3(0.0f);
     };
 }
