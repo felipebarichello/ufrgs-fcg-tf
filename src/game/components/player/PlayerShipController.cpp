@@ -133,10 +133,12 @@ namespace game::components {
 
     void PlayerShipController::OnEnable() {
         this->model->set_visible();
+        this->ship_controller->enable();
     }
 
     void PlayerShipController::OnDisable() {
         this->model->set_invisible();
+        this->ship_controller->disable();
     }
 
     void PlayerShipController::test_planet_collisions() {
