@@ -14,9 +14,15 @@ namespace engine {
             }
 
             void trigger_awaken() {
-                for (Behavior* behavior : this->awaken_queue) {
-                    behavior->call_awake();
-                }
+                size_t i = 0;
+                size_t length = this->awaken_queue.size();
+
+                // The do-while is necessary because new VObjects might be scheduled during Awake calls
+                do {
+                    for (i = 0; i < length; i++) {
+                        this->awaken_queue[i]->call_awake();
+                    }
+                } while (i < this->awaken_queue.size());
                 
                 this->awaken_queue.clear();
             }
@@ -25,12 +31,25 @@ namespace engine {
                 this->start_queue.push_back(component);
             }
 
-            void trigger_start() {
-                for (Behavior* behavior : this->start_queue) {
-                    behavior->call_start();
+            /// @brief Triggers Start calls for all scheduled components.
+            /// @return If any new components were scheduled during Start calls.
+            bool trigger_start() {
+                size_t i = 0;
+                size_t length = this->start_queue.size();
+
+                for (i = 0; i < length; i++) {
+                    this->start_queue[i]->call_start();
+                }
+
+                if (i < this->start_queue.size()) {
+                    // A VObject was instanced during Start calls.
+                    // Remove already started components from the queue and quit.
+                    this->start_queue.erase(this->start_queue.begin(), this->start_queue.begin() + length);
+                    return true;
                 }
                 
                 this->start_queue.clear();
+                return false;
             }
 
             void subscribe_update(Behavior* component) {
@@ -48,8 +67,15 @@ namespace engine {
             }
 
             void update() {
-                this->trigger_awaken();
-                this->trigger_start();
+                bool new_vobjects = false;
+
+                do {
+                    this->trigger_awaken();
+                    new_vobjects = this->trigger_start();
+                } while (new_vobjects);
+
+                // Don't worry about new VObjects here.
+                // They won't run Update until the next frame.
                 this->trigger_update();
             }
 
