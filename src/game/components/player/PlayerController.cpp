@@ -2,13 +2,14 @@
 #include <InputController.hpp>
 #include <EngineController.hpp>
 
-using engine::EngineController;
-using engine::InputController;
-using engine::Camera;
-using engine::Transform;
-using engine::Quaternion;
+using namespace engine;
 
 namespace game::components {
+
+    void PlayerController::Awake() {
+        this->game_over_text = new TextDrawable();
+        this->game_over_text->setText(std::string(""), 1.8f, Vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
+    }
 
     void PlayerController::Start() {
         InputController* input = EngineController::get_input();
@@ -27,7 +28,7 @@ namespace game::components {
     }
 
     void PlayerController::hit_by_enemy() {
-        this->humanoid->hit_by_enemy();
+        this->game_over_text->setText(std::string("GAME OVER"), 1.8f, Vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
     }
 
     void PlayerController::toggle_mode() {

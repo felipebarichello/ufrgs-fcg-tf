@@ -65,7 +65,7 @@ namespace game::components {
                 auto enemy_cyl = this->get_cylinder_collider();
                 auto target_cyl = target_humanoid->get_cylinder_collider();
                 if (engine::collision::collide_cylinder_cylinder(*enemy_cyl, *target_cyl).has_collided()) {
-                    target_humanoid->hit_by_enemy();
+                    target_controller->hit_by_enemy();
                 }
             }
         }

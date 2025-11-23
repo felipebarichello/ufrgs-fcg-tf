@@ -14,7 +14,6 @@ namespace game::components {
             // Now HumanoidPlayerController only handles input and camera.
             // It receives a pointer to a WalkerController component that resides in the same VObject.
             HumanoidPlayerController(engine::Camera* camera, WalkerController* walker, AngularVelocity* angular, engine::CylinderCollider* cylinder_collider) : camera(camera), walker(walker), angular(angular), cylinder_collider(cylinder_collider) {}
-            void Awake() override;
             void Start() override;
             void Update() override;
             void PostUpdate() override;
@@ -45,8 +44,6 @@ namespace game::components {
 
             /// @brief Used both for storing camera transform before releasing and for bobbing.
             engine::Transform stored_child_cam_transform;
-
-            engine::TextDrawable* game_over_text = nullptr;
             
             // View bobbing
             float bob_timer = 0.0f;

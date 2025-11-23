@@ -10,11 +10,6 @@ using namespace engine;
 
 namespace game::components {
 
-    void HumanoidPlayerController::Awake() {
-        this->game_over_text = new TextDrawable();
-        this->game_over_text->setText(std::string(""), 1.8f, Vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
-    }
-
     void HumanoidPlayerController::Start() {
         InputController* input = EngineController::get_input();
         // Subscribe input into local move vector and forward it to WalkerController in Update
@@ -142,10 +137,6 @@ namespace game::components {
 
     void HumanoidPlayerController::on_jump_pressed() {
         this->walker->request_jump();
-    }
-
-    void HumanoidPlayerController::hit_by_enemy() {
-        this->game_over_text->setText(std::string("GAME OVER"), 1.8f, Vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
     }
 
     void HumanoidPlayerController::toggle_camera_release() {

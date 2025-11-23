@@ -10,6 +10,7 @@ namespace game::components {
         PlayerController(HumanoidPlayerController* humanoid, PlayerShipController* spaceship, engine::Camera* humanoid_cam, engine::Camera* ship_cam)
             : humanoid(humanoid), ship(spaceship), humanoid_cam(humanoid_cam), ship_cam(ship_cam) {}
 
+        void Awake() override;
         void Start() override;
         void Update() override;
 
@@ -24,6 +25,8 @@ namespace game::components {
         PlayerShipController* ship = nullptr;
         engine::Camera* humanoid_cam = nullptr;
         engine::Camera* ship_cam = nullptr;
+
+        engine::TextDrawable* game_over_text = nullptr;
 
         void toggle_mode();
     };
