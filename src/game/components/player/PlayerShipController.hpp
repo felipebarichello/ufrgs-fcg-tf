@@ -20,8 +20,9 @@ namespace game::components {
             void OnEnable() override;
             void OnDisable() override;
 
-            KinematicBody* get_kinematic() const { return this->kinematic; }
-            AngularVelocity* get_angular() const { return this->angular; }
+            KinematicBody* get_kinematic_body() const { return this->kinematic; }
+            AngularVelocity* get_angular_velocity() const { return this->angular; }
+            SpaceshipController* get_ship_controller() const { return this->ship_controller; }
             float get_critical_roll_velocity() const { return this->ship_controller->get_critical_roll_velocity(); }
 
         private:
@@ -41,10 +42,6 @@ namespace game::components {
             
             float v_sensitivity = 0.001f;
             float h_sensitivity = 0.001f;
-
-            // Text drawable to show fuel on screen
-            engine::TextDrawable* fuel_text = nullptr;
-            engine::TextDrawable* game_over_text = nullptr;
 
             SphericalInput get_smooth_spherical_input();
             SphericalInput get_spherical_input();

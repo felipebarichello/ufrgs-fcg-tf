@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <game/components/PlanetInfo.hpp>
+#include <engine/vobject/components/TextDrawable.hpp>
 
 // Forward declarations
 namespace game::components {
@@ -9,6 +10,7 @@ namespace game::components {
 }
 
 namespace game::scenes::main_scene {
-    inline components::PlayerController* player;
+    inline game::components::PlayerController* player;
     inline std::vector<components::PlanetInfo*> planets;
+    inline engine::TextDrawable* game_over_text;
 }

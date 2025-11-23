@@ -4,9 +4,8 @@
 #include <algorithm>
 #include <engine/vobject/components/TextDrawable.hpp>
 #include <glm/vec3.hpp>
-#include <sstream>
-#include <iomanip>
 #include <cmath>
+#include <game/scenes/MainScene_vars.hpp>
 
 using namespace engine;
 
@@ -18,20 +17,6 @@ namespace game::components {
         // Physics setup
         this->kinematic = this->ship_controller->get_kinematic_body();
         this->angular = this->ship_controller->get_angular_velocity();
-
-        // Texts
-        TextDrawable* f_text = new TextDrawable();
-        TextDrawable* go_text = new TextDrawable();
-        this->fuel_text = f_text;
-        this->game_over_text = go_text;
-        this->get_vobject()->add_component(f_text);
-        this->get_vobject()->add_component(go_text);
-
-        // Create text drawable to show fuel on-screen (top-left corner)
-        std::ostringstream init_ss;
-        init_ss << std::fixed << std::setprecision(1) << this->ship_controller->get_fuel();
-        this->fuel_text->setText(std::string("Fuel: ") + init_ss.str(), 1.5f, engine::Vec3(1.0f), -0.95f, 0.9f);
-        this->game_over_text->setText(std::string(""), 3.0f, engine::Vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
     }
 
     void PlayerShipController::Start() {
@@ -50,13 +35,6 @@ namespace game::components {
     }
 
     void PlayerShipController::PostUpdate() {
-        // Update on-screen fuel text
-        if (this->fuel_text) {
-            std::ostringstream init_ss;
-            init_ss << std::fixed << std::setprecision(1) << this->ship_controller->get_fuel();
-            this->fuel_text->setText(std::string("Fuel: ") + init_ss.str(), 1.5f, engine::Vec3(1.0f), -0.95f, 0.9f);
-        }
-
         this->test_planet_collisions();
     }
 
@@ -95,7 +73,7 @@ namespace game::components {
         for (PlanetInfo* planet : this->planets) {
             bool collision_detected = engine::collision::collide_cylinder_sphere(*this->cylinder_collider, *planet->get_sphere_collider()).has_collided();
             if (collision_detected) {
-                this->game_over_text->setText(std::string("GAME OVER"), 1.8f, engine::Vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
+                scenes::main_scene::game_over_text->setText(std::string("GAME OVER"), 1.8f, engine::Vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
             }
         }
     }

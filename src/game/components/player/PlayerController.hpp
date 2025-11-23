@@ -13,6 +13,7 @@ namespace game::components {
         void Awake() override;
         void Start() override;
         void Update() override;
+        void PostUpdate() override;
 
         HumanoidPlayerController* get_humanoid() { return this->humanoid; }
         PlayerShipController* get_ship() { return this->ship; }
@@ -26,7 +27,11 @@ namespace game::components {
         engine::Camera* humanoid_cam = nullptr;
         engine::Camera* ship_cam = nullptr;
 
+        // Text to show game over message on screen
         engine::TextDrawable* game_over_text = nullptr;
+
+        // Text to show fuel on screen
+        engine::TextDrawable* fuel_text = nullptr;
 
         void toggle_mode();
     };
