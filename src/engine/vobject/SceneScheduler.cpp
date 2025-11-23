@@ -7,11 +7,20 @@ namespace engine {
         size_t length = this->awaken_queue.size();
 
         // The do-while is necessary because new VObjects might be scheduled during Awake calls
-        do {
+        while(true) {
             for (i = 0; i < length; i++) {
                 this->awaken_queue[i]->call_awake();
             }
-        } while (i < this->awaken_queue.size());
+
+            if (i >= this->awaken_queue.size()) {
+                break;
+            }
+
+            // If reaches here, a VObject was instanced during Awake calls.
+            // Remove already awakened components from the queue and continue.
+            this->awaken_queue.erase(this->awaken_queue.begin(), this->awaken_queue.begin() + length);
+            length = this->awaken_queue.size();
+        };
         
         this->awaken_queue.clear();
     }
