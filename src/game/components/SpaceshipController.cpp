@@ -89,6 +89,8 @@ namespace game::components {
             this->fuel -= horizontal_fuel + vertical_fuel;
             this->angular->euler_angles().y = spherical.delta_theta * this->horizontal_steer_power;
             this->angular->euler_angles().x = spherical.delta_phi * this->vertical_steer_power;
+        } else {
+            this->fuel = 0.0f; // Prevent negative fuel
         }
 
         // Update on-screen fuel text
