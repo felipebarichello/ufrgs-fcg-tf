@@ -1,4 +1,4 @@
-#include "PlayerSwitcherController.hpp"
+#include "PlayerController.hpp"
 #include <InputController.hpp>
 #include <EngineController.hpp>
 
@@ -10,23 +10,23 @@ using engine::Quaternion;
 
 namespace game::components {
 
-    void PlayerSwitcherController::Start() {
+    void PlayerController::Start() {
         InputController* input = EngineController::get_input();
         
         // Toggle on 'E' press
-        input->subscribe_press_button(GLFW_KEY_E, std::bind(&PlayerSwitcherController::toggle_active, this));
+        input->subscribe_press_button(GLFW_KEY_E, std::bind(&PlayerController::toggle_active, this));
 
         this->ship->disable();
     }
 
-    void PlayerSwitcherController::Update() {
+    void PlayerController::Update() {
         // Destroy ship if rolling too fast
         if (this->ship->is_enabled() && std::fabs(this->ship->get_angular()->euler_angles().z) > this->ship->get_critical_roll_velocity()) {
             this->toggle_active();
         }
     }
 
-    void PlayerSwitcherController::toggle_active() {
+    void PlayerController::toggle_active() {
         if (!this->humanoid || !this->ship) return;
         if (this->humanoid->get_walker()->is_grounded()) return; // Only allow switching when humanoid is not grounded
 

@@ -36,7 +36,7 @@ VObjectConfig Player(Camera* main_camera, float height, Camera* humanoid_camera,
         .component(cylinder_collider)
         .component(ship_collider)
         .component(ship_ctrl)
-        .component(new PlayerSwitcherController(humanoid_controller, player_ship, humanoid_camera, ship_camera))
+        .component(new PlayerController(humanoid_controller, player_ship, humanoid_camera, ship_camera))
         .component(gravity)
         .component(angular_velocity)
         .component(kinematic)
