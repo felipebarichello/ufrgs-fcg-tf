@@ -7,10 +7,8 @@ namespace game::components {
 
     void HumanoidPlayerController::Start() {
         InputController* input = EngineController::get_input();
-        // Subscribe input into local move vector and forward it to WalkerController in Update
         input->subscribe_dpad(&this->move_vector_2d, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
         input->subscribe_press_button(GLFW_KEY_F6, std::bind(&HumanoidPlayerController::toggle_camera_release, this));
-        // Jump now forwarded to WalkerController
         input->subscribe_press_button(GLFW_KEY_SPACE, std::bind(&HumanoidPlayerController::on_jump_pressed, this));
 
         // Capture the initial local transform of the child camera (used as base for bobbing offsets)
