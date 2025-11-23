@@ -85,7 +85,7 @@ namespace game::components {
             SphericalInput spherical = this->get_spherical_input();
             float horizontal_fuel = std::fabs(spherical.delta_theta) * this->horizontal_steer_fuel_consumption;
             float vertical_fuel = std::fabs(spherical.delta_phi) * this->vertical_steer_fuel_consumption;
-            this->fuel -= (horizontal_fuel + vertical_fuel);
+            this->fuel -= horizontal_fuel + vertical_fuel;
             this->angular->euler_angles().y = spherical.delta_theta * this->horizontal_steer_power;
             this->angular->euler_angles().x = spherical.delta_phi * this->vertical_steer_power;
         }
