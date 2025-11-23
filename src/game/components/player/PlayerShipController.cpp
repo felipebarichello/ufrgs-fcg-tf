@@ -33,6 +33,7 @@ namespace game::components {
     }
 
     void PlayerShipController::Start() {
+        // Input setup
         InputController* input = EngineController::get_input();
         input->subscribe_hold_button(GLFW_KEY_W, &this->thrusting);
         input->subscribe_hold_button(GLFW_KEY_A, &this->rolling_left);
