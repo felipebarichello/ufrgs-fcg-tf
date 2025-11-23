@@ -26,8 +26,6 @@ namespace game::components {
             AngularVelocity* get_angular() const { return this->angular; }
             float get_critical_roll_velocity() const { return this->ship_controller->get_critical_roll_velocity(); }
 
-            float speed = 10.0f;
-
         private:
             SpaceshipController* ship_controller;
             KinematicBody* kinematic;
