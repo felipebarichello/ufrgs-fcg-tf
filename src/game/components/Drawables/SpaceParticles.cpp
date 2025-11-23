@@ -41,7 +41,7 @@ SpaceParticles::SpaceParticles(int max_particles) {
         // Position = camera_pos + forward*depth + lateral jitter
         p.position = cam_pos + forward * depth + right * rx + up * ry;
         // Move in a random direction away from the camera
-        p.direction = engine::h_normalize(Vec3(
+        p.direction = engine::normalize(Vec3(
             (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f),
             (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f),
             (static_cast<float>(rand()) / RAND_MAX * 0.5f + 0.5f) // bias forward

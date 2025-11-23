@@ -16,8 +16,8 @@ namespace game::components {
         Transform& transform = this->get_vobject()->transform();
         for (PlanetInfo* planet : this->planets) {
             Vec3 vec_to_planet = planet->get_vobject()->transform().get_world_position() - transform.get_world_position();
-            float distance_to_planet = std::max(engine::h_norm(vec_to_planet), 1e-6f);
-            Vec3 grav_direction = engine::h_normalize(vec_to_planet);
+            float distance_to_planet = std::max(engine::norm(vec_to_planet), 1e-6f);
+            Vec3 grav_direction = engine::normalize(vec_to_planet);
             gravity_sum += (planet->get_gravity_mass() / distance_to_planet) * grav_direction;
         }
 

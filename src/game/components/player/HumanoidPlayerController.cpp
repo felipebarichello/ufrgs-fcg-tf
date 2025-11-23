@@ -48,8 +48,6 @@ namespace game::components {
         }
     }
 
-    // Movement/environment handled by WalkerController. Humanoid keeps camera and input only.
-
     void HumanoidPlayerController::update_transform_due_to_input() {
         auto& transform = this->get_vobject()->transform();
         auto& quaternion = transform.quaternion();
@@ -63,7 +61,7 @@ namespace game::components {
         if (!this->released_camera && this->camera && this->walker) {
             // Use input magnitude as a proxy for movement intensity
             engine::Vec2 mv = this->walker->get_move_vector();
-            float input_mag = engine::h_norm(mv);
+            float input_mag = engine::norm(mv);
 
             float dt = EngineController::get_delta_time();
             if (input_mag > this->bob_min_input_threshold) {
@@ -82,8 +80,6 @@ namespace game::components {
             cam_transform.local_position() = this->stored_child_cam_transform.get_local_position();
             cam_transform.local_position() += cam_transform.quaternion().rotate(Vec3(bob_x, bob_y, 0.0f));
         }
-
-        // Forwarded movement input is handled by WalkerController; Humanoid doesn't change position directly.
     }
 
     void HumanoidPlayerController::update_released_camera() {

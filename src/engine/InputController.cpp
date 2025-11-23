@@ -160,7 +160,7 @@ void InputController::update_dpad_direction(DPad* dpad) {
 
     // Normalize
     if (*(dpad->direction) != Vec2(0.0f, 0.0f))
-        *(dpad->direction) = engine::h_normalize(*(dpad->direction));
+        *(dpad->direction) = engine::normalize(*(dpad->direction));
 }
 
 Vec2 InputController::get_cursor_position() {

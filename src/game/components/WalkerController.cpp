@@ -26,12 +26,12 @@ namespace game::components {
             // If grounded, snap back to the surface when moving because you should not walk away from the planet
             PlanetInfo* planet = this->grounded_to.value();
             Vec3 planet_position = planet->get_vobject()->transform().get_world_position();
-            Vec3 direction_from_planet = engine::h_normalize(transform.get_world_position() - planet_position);
+            Vec3 direction_from_planet = engine::normalize(transform.get_world_position() - planet_position);
             transform.set_world_position(planet_position + direction_from_planet * planet->get_radius());
             
             // Remove vertical component of velocity
             Vec3 up_direction = direction_from_planet;
-            Vec3 vertical_velocity = engine::h_dot_product(this->kinematic->get_velocity(), up_direction) * up_direction;
+            Vec3 vertical_velocity = engine::dot_product(this->kinematic->get_velocity(), up_direction) * up_direction;
             this->kinematic->set_velocity(this->kinematic->get_velocity() - vertical_velocity);
         } else {
             // If not grounded, check for collision
@@ -45,7 +45,7 @@ namespace game::components {
     void WalkerController::request_jump() {
         if (!this->grounded_to.has_value()) return; // Can't jump if not grounded
 
-        Vec3 up_direction = engine::h_normalize(this->get_vobject()->transform().get_world_position() - this->grounded_to.value()->get_vobject()->transform().get_world_position());
+        Vec3 up_direction = engine::normalize(this->get_vobject()->transform().get_world_position() - this->grounded_to.value()->get_vobject()->transform().get_world_position());
         Vec3 jump_velocity = up_direction * this->jump_strength;
         this->kinematic->set_velocity(this->kinematic->get_velocity() + jump_velocity);
         this->set_not_grounded();
@@ -65,17 +65,17 @@ namespace game::components {
         move_vector_3d += this->move_vector.x * right_of_player;
         Vec3 desired_velocity_change = this->walk_accel * move_vector_3d * EngineController::get_delta_time();
         Vec3 desired_velocity = this->kinematic->get_velocity() + desired_velocity_change;
-        float desired_speed = engine::h_norm(desired_velocity);
+        float desired_speed = engine::norm(desired_velocity);
 
         if (desired_speed > this->max_walk_speed) {
             // Can't walk faster. Correct that.
-            Vec3 velocity_direction = engine::h_normalize(this->kinematic->get_velocity());
+            Vec3 velocity_direction = engine::normalize(this->kinematic->get_velocity());
             Vec3 clamped_cur_vel = velocity_direction * this->max_walk_speed;
             Vec3 excess_velocity = this->kinematic->get_velocity() - clamped_cur_vel;
 
             // Walking can only operate on the non-excess part
             Vec3 desired_vel_component = clamped_cur_vel + desired_velocity_change;
-            float vel_component_speed = engine::h_norm(desired_vel_component);
+            float vel_component_speed = engine::norm(desired_vel_component);
             if (vel_component_speed > this->max_walk_speed) {
                 // Clamp to max walk speed
                 desired_vel_component = desired_vel_component / vel_component_speed * this->max_walk_speed;
@@ -86,11 +86,11 @@ namespace game::components {
 
         { // Deaccelerate in the direction orthogonal to movement and when stopped (and also when moving opposite)
             Vec3 up = transform.quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
-            Vec3 horizontal_velocity = this->kinematic->get_velocity() - engine::h_dot_product(this->kinematic->get_velocity(), up) * up;
+            Vec3 horizontal_velocity = this->kinematic->get_velocity() - engine::dot_product(this->kinematic->get_velocity(), up) * up;
 
             if (engine::is_zero(move_vector_3d)) {
                 // No input, deaccelerate fully
-                float horizontal_speed = engine::h_norm(horizontal_velocity);
+                float horizontal_speed = engine::norm(horizontal_velocity);
                 if (horizontal_speed > 1e-6f) {
                     Vec3 horizontal_direction = horizontal_velocity / horizontal_speed;
                     float deaccel_amount = std::min(horizontal_speed, this->walk_deaccel * EngineController::get_delta_time());
@@ -98,16 +98,16 @@ namespace game::components {
                 }
             } else {
                 // Input present: deaccelerate orthogonal component and any component opposite to the input
-                Vec3 input_direction = engine::h_normalize(move_vector_3d);
+                Vec3 input_direction = engine::normalize(move_vector_3d);
 
-                float horiz_speed = engine::h_norm(horizontal_velocity);
+                float horiz_speed = engine::norm(horizontal_velocity);
                 if (horiz_speed > 1e-6f) {
                     // scalar component along input (can be negative if moving opposite)
-                    float scalar_along = engine::h_dot_product(horizontal_velocity, input_direction);
+                    float scalar_along = engine::dot_product(horizontal_velocity, input_direction);
 
                     // orthogonal component (horizontal_velocity minus its projection onto input_direction)
                     Vec3 orthogonal_vec = horizontal_velocity - scalar_along * input_direction;
-                    float orthogonal_speed = engine::h_norm(orthogonal_vec);
+                    float orthogonal_speed = engine::norm(orthogonal_vec);
 
                     float dt = EngineController::get_delta_time();
 
@@ -143,7 +143,7 @@ namespace game::components {
         for (PlanetInfo* planet : this->planets) {
             Vec3 planet_position = planet->get_vobject()->transform().get_world_position();
             Vec3 vec_to_planet = planet_position - transform.get_world_position();
-            float distance_to_planet = engine::h_norm(vec_to_planet);
+            float distance_to_planet = engine::norm(vec_to_planet);
 
             if (distance_to_planet < closest_planet_distance) {
                 this->closest_planet = planet;
@@ -152,10 +152,10 @@ namespace game::components {
 
             if (engine::collision::collide_point_sphere(*this->get_point_collider(), *planet->get_sphere_collider()).has_collided()) {
                 // Collision detected. Correcting...
-                Vec3 direction_to_planet = engine::h_normalize(vec_to_planet);
-                Vec3 velocity_to_planet = engine::h_dot_product(this->kinematic->get_velocity(), direction_to_planet) * direction_to_planet;
+                Vec3 direction_to_planet = engine::normalize(vec_to_planet);
+                Vec3 velocity_to_planet = engine::dot_product(this->kinematic->get_velocity(), direction_to_planet) * direction_to_planet;
 
-                if (engine::h_norm(velocity_to_planet) > 0.0f) {
+                if (engine::norm(velocity_to_planet) > 0.0f) {
                     this->kinematic->set_velocity(this->kinematic->get_velocity() - velocity_to_planet);
                 }
 
@@ -176,7 +176,7 @@ namespace game::components {
             PlanetInfo* grounded_planet = this->grounded_to.value();
             Vec3 grounded_planet_position = grounded_planet->get_vobject()->transform().get_world_position();
             Vec3 vec_to_grounded_planet = grounded_planet_position - world_pos;
-            Vec3 grounded_up_direction = -engine::h_normalize(vec_to_grounded_planet);
+            Vec3 grounded_up_direction = -engine::normalize(vec_to_grounded_planet);
 
             Quaternion align_quat = Quaternion::from_unit_vectors(current_up, grounded_up_direction);
             quaternion.global_compose(align_quat);
@@ -188,9 +188,9 @@ namespace game::components {
 
         Vec3 closest_planet_position = this->closest_planet->get_vobject()->transform().get_world_position();
         Vec3 vec_to_closest_planet = closest_planet_position - world_pos;
-        Vec3 closest_surface_point = closest_planet_position - engine::h_normalize(vec_to_closest_planet) * this->closest_planet->get_radius();
+        Vec3 closest_surface_point = closest_planet_position - engine::normalize(vec_to_closest_planet) * this->closest_planet->get_radius();
         Vec3 vec_to_closest_point = closest_surface_point - world_pos;
-        float closest_point_distance = engine::h_norm(vec_to_closest_point);
+        float closest_point_distance = engine::norm(vec_to_closest_point);
 
         // Do a soft alignment when near
         float MAX_SURFACE_ALIGN_DISTANCE = 200.0f;
@@ -198,7 +198,7 @@ namespace game::components {
 
         if (closest_point_distance > MAX_SURFACE_ALIGN_DISTANCE) return;
 
-        Quaternion align_quat = Quaternion::from_unit_vectors(current_up, -engine::h_normalize(vec_to_closest_planet));
+        Quaternion align_quat = Quaternion::from_unit_vectors(current_up, -engine::normalize(vec_to_closest_planet));
 
         if (closest_point_distance <= MIN_SURFACE_ALIGN_DISTANCE) {
             quaternion.global_compose(align_quat);

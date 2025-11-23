@@ -76,7 +76,7 @@ namespace engine {
     }
 
     Quaternion Quaternion::from_unit_vectors(const Vec3& source, const Vec3& target) {
-        float dot = engine::h_dot_product(source, target);
+        float dot = engine::dot_product(source, target);
 
         // TODO: Are those two branches necessary?
         if (dot >= 1.0f) {
@@ -86,15 +86,15 @@ namespace engine {
         
         if (dot <= -1.0f) {
             // Vectors are opposite
-            Vec3 orthogonal = engine::h_cross_product(source, Vec3(1.0f, 0.0f, 0.0f));
+            Vec3 orthogonal = engine::cross_product(source, Vec3(1.0f, 0.0f, 0.0f));
             if (orthogonal.length() < 1e-6f) {
-                orthogonal = engine::h_cross_product(source, Vec3(0.0f, 1.0f, 0.0f));
+                orthogonal = engine::cross_product(source, Vec3(0.0f, 1.0f, 0.0f));
             }
-            orthogonal = engine::h_normalize(orthogonal);
+            orthogonal = engine::normalize(orthogonal);
             return Quaternion::from_axis_angle(orthogonal, M_PI);
         }
 
-        Vec3 cross = engine::h_cross_product(source, target);
+        Vec3 cross = engine::cross_product(source, target);
         double s = sqrt((1 + dot) * 2);
         double inv_s = 1 / s;
 

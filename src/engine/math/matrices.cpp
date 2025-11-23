@@ -86,7 +86,7 @@ namespace engine {
         return sqrt( vx*vx + vy*vy + vz*vz );
     }
 
-    float h_norm(engine::Vec3 v)
+    float norm(engine::Vec3 v)
     {
         float vx = v.x;
         float vy = v.y;
@@ -95,7 +95,7 @@ namespace engine {
         return sqrt( vx*vx + vy*vy + vz*vz );
     }
 
-    float h_norm(engine::Vec2 v)
+    float norm(engine::Vec2 v)
     {
         float vx = v.x;
         float vy = v.y;
@@ -103,16 +103,16 @@ namespace engine {
         return sqrt( vx*vx + vy*vy );
     }
 
-    Vec2 h_normalize(Vec2 v)
+    Vec2 normalize(Vec2 v)
     {
-        float norm = h_norm(v);
-        return Vec2( v.x / norm, v.y / norm );
+        float v_norm = norm(v);
+        return Vec2( v.x / v_norm, v.y / v_norm );
     }
 
-    Vec3 h_normalize(Vec3 v)
+    Vec3 normalize(Vec3 v)
     {
-        float norm = h_norm(v);
-        return Vec3( v.x / norm, v.y / norm, v.z / norm );
+        float v_norm = norm(v);
+        return Vec3( v.x / v_norm, v.y / v_norm, v.z / v_norm );
     }
 
     Vec4 h_normalize(Vec4 v)
@@ -157,7 +157,7 @@ namespace engine {
         );
     }
 
-    engine::Vec3 h_cross_product(engine::Vec3 u, engine::Vec3 v)
+    engine::Vec3 cross_product(engine::Vec3 u, engine::Vec3 v)
     {
         float u1 = u.x;
         float u2 = u.y;
@@ -193,7 +193,7 @@ namespace engine {
         return u1*v1 + u2*v2 + u3*v3;
     }
 
-    float h_dot_product(engine::Vec3 u, engine::Vec3 v)
+    float dot_product(engine::Vec3 u, engine::Vec3 v)
     {
         float u1 = u.x;
         float u2 = u.y;
@@ -205,7 +205,7 @@ namespace engine {
         return u1*v1 + u2*v2 + u3*v3;
     }
 
-    float h_dot_product(engine::Vec2 u, engine::Vec2 v)
+    float dot_product(engine::Vec2 u, engine::Vec2 v)
     {
         float u1 = u.x;
         float u2 = u.y;
