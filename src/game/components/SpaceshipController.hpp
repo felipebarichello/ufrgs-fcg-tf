@@ -32,6 +32,10 @@ namespace game::components {
             std::vector<PlanetInfo*> planets;
             engine::CylinderCollider* cylinder_collider;
 
+            SphericalInput smooth_spherical_input;
+            float theta_lerp = 0.2f;
+            float phi_lerp = 0.2f;
+
             engine::ObjDrawable* model;
             
             float v_sensitivity = 0.001f;
@@ -58,6 +62,7 @@ namespace game::components {
             engine::TextDrawable* fuel_text = nullptr;
             engine::TextDrawable* game_over_text = nullptr;
 
+            SphericalInput get_smooth_spherical_input();
             SphericalInput get_spherical_input();
             void test_planet_collisions();
     };

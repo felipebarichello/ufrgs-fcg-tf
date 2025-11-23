@@ -6,6 +6,7 @@
 #include <glm/vec3.hpp>
 #include <sstream>
 #include <iomanip>
+#include <cmath>
 
 using namespace engine;
 
@@ -82,7 +83,7 @@ namespace game::components {
             }
 
             // Steering
-            SphericalInput spherical = this->get_spherical_input();
+            SphericalInput spherical = this->get_smooth_spherical_input();
             float horizontal_fuel = std::fabs(spherical.delta_theta) * this->horizontal_steer_fuel_consumption;
             float vertical_fuel = std::fabs(spherical.delta_phi) * this->vertical_steer_fuel_consumption;
             this->fuel -= horizontal_fuel + vertical_fuel;
@@ -100,6 +101,14 @@ namespace game::components {
 
     void SpaceshipController::PostUpdate() {
         this->test_planet_collisions();
+    }
+
+    SphericalInput SpaceshipController::get_smooth_spherical_input() {
+        SphericalInput spherical = this->get_spherical_input();
+        spherical.delta_theta = std::lerp(this->smooth_spherical_input.delta_theta, spherical.delta_theta, theta_lerp);
+        spherical.delta_phi   = std::lerp(this->smooth_spherical_input.delta_phi,   spherical.delta_phi,   phi_lerp);
+        this->smooth_spherical_input = spherical;
+        return spherical;
     }
 
     SphericalInput SpaceshipController::get_spherical_input() {
