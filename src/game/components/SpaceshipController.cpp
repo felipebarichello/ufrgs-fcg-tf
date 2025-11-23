@@ -68,13 +68,13 @@ namespace game::components {
                 // Automatic ship stabilization when not actively rolling
                 if (this->angular->ang_velocity() > 1e-6f) {
                     float ang_vel = this->angular->ang_velocity();
-                    float abs_ang_vel = std::fabs(ang_vel);
-                    float auto_roll_power = std::min(abs_ang_vel, roll_power);
-                    float ratio = auto_roll_power / abs_ang_vel;
+                    float desired_correction = -ang_vel * this->auto_unroll_factor;
+                    float abs_correction = std::fabs(desired_correction);
+                    float auto_roll_power = std::min(abs_correction, roll_power);
+                    float ratio = auto_roll_power / abs_correction;
 
                     this->fuel -= dt * (this->roll_fuel_consumption * ratio);
-                    this->angular->ang_velocity() -= std::copysignf(auto_roll_power, ang_vel) * dt;
-                    
+                    this->angular->ang_velocity() += std::copysignf(auto_roll_power, desired_correction) * dt;
                 } else if (this->angular->ang_velocity() < -1e-6f) {
                     this->angular->ang_velocity() += roll_power * dt;
                     if (this->angular->ang_velocity() > 0.0f) {
