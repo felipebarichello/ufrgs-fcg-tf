@@ -64,6 +64,26 @@ namespace game::components {
                 this->fuel -= dt * this->roll_fuel_consumption;
                 this->angular->ang_velocity() += roll_power * dt;
             }
+            if (this->rolling_left == false && this->rolling_right == false) {
+                // Automatic ship stabilization when not actively rolling
+                if (this->angular->ang_velocity() > 1e-6f) {
+                    float ang_vel = this->angular->ang_velocity();
+                    float abs_ang_vel = std::fabs(ang_vel);
+                    float auto_roll_power = std::min(abs_ang_vel, roll_power);
+                    float ratio = auto_roll_power / abs_ang_vel;
+
+                    this->fuel -= dt * (this->roll_fuel_consumption * ratio);
+                    this->angular->ang_velocity() -= std::copysignf(auto_roll_power, ang_vel) * dt;
+                    
+                } else if (this->angular->ang_velocity() < -1e-6f) {
+                    this->angular->ang_velocity() += roll_power * dt;
+                    if (this->angular->ang_velocity() > 0.0f) {
+                        this->angular->ang_velocity() = 0.0f;
+                    }
+                }
+                this->fuel -= dt * (this->roll_fuel_consumption / 2.0f);
+                this->angular->ang_velocity() *= std::pow(0.9f, dt * 60.0f); // Damping factor
+            }
         }
 
         // Update on-screen fuel text
