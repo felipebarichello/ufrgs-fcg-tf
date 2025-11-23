@@ -13,6 +13,7 @@ namespace game::components {
     class SpaceshipController : public engine::Behavior {
         public:
             SpaceshipController(KinematicBody* kinematic, engine::ObjDrawable* model, engine::CylinderCollider* cylinder_collider) : kinematic(kinematic), planets(scenes::main_scene::planets), cylinder_collider(cylinder_collider), model(model) {}
+            void Awake() override;
             void Start() override;
             void Update() override;
             void PostUpdate() override;

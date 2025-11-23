@@ -11,6 +11,15 @@ using namespace engine;
 
 namespace game::components {
 
+    void SpaceshipController::Awake() {
+        TextDrawable* f_text = new TextDrawable();
+        TextDrawable* go_text = new TextDrawable();
+        this->fuel_text = f_text;
+        this->game_over_text = go_text;
+        this->get_vobject()->add_component(f_text);
+        this->get_vobject()->add_component(go_text);
+    }
+
     void SpaceshipController::Start() {
         InputController* input = EngineController::get_input();
         input->subscribe_dpad(&this->move_vector, GLFW_KEY_W, GLFW_KEY_S, GLFW_KEY_A, GLFW_KEY_D);
@@ -18,12 +27,9 @@ namespace game::components {
         input->subscribe_hold_button(GLFW_KEY_S, &this->accelerating_backward);
 
         // Create text drawable to show fuel on-screen (top-left corner)
-        this->fuel_text = new TextDrawable();
         std::ostringstream init_ss;
         init_ss << std::fixed << std::setprecision(1) << this->fuel;
         this->fuel_text->setText(std::string("Fuel: ") + init_ss.str(), 1.5f, engine::Vec3(1.0f), -0.95f, 0.9f);
-
-        this->game_over_text = new TextDrawable();
         this->game_over_text->setText(std::string(""), 3.0f, engine::Vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
     }
 

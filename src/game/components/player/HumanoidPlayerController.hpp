@@ -14,6 +14,7 @@ namespace game::components {
             // Now HumanoidPlayerController only handles input and camera.
             // It receives a pointer to a WalkerController component that resides in the same VObject.
             HumanoidPlayerController(engine::Camera* camera, WalkerController* walker, engine::CylinderCollider* cylinder_collider) : camera(camera), walker(walker), cylinder_collider(cylinder_collider) {}
+            void Awake() override;
             void Start() override;
             void Update() override;
             void OnEnable() override;
