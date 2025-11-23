@@ -45,11 +45,13 @@ namespace engine {
     }
 
     void SceneScheduler::trigger_update() {
-        for (Behavior* behavior : this->update_subscribers) {
+        for (size_t i = 0; i < this->update_subscribers.size(); i++) {
+            Behavior* behavior = this->update_subscribers[i];
             behavior->call_update();
         }
 
-        for (Behavior* behavior : this->update_subscribers) {
+        for (size_t i = 0; i < this->update_subscribers.size(); i++) {
+            Behavior* behavior = this->update_subscribers[i];
             behavior->call_post_update();
         }
     }
