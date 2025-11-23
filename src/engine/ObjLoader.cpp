@@ -304,8 +304,6 @@ GLuint ObjLoader::LoadTextureImage(const char* filename)
         std::exit(EXIT_FAILURE);
     }
 
-    printf("OK (%dx%d).\n", width, height);
-
     // Agora criamos objetos na GPU com OpenGL para armazenar a textura
     GLuint texture_id;
     GLuint sampler_id;
@@ -335,8 +333,7 @@ GLuint ObjLoader::LoadTextureImage(const char* filename)
 
     // Store GL texture object id so we can rebind it reliably at draw time
     ObjLoader::loaded_texture_objects.push_back(texture_id);
-    printf(" GL_tex_id=%u unit=%u\n", texture_id, textureunit);
-
+    
     // Free the image buffer now that the texture data has been uploaded to the GPU.
     stbi_image_free(data);
 
