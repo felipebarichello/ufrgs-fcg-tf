@@ -62,9 +62,9 @@ namespace game::components {
 
         // Update on-screen fuel text
         if (this->fuel_text) {
-            std::ostringstream ss;
-            ss << std::fixed << std::setprecision(1) << std::max(0.0f, this->fuel);
-            this->fuel_text->setText(std::string("Fuel: ") + ss.str(), 1.8f, engine::Vec3(1.0f), -0.95f, 0.95f);
+            std::ostringstream init_ss;
+            init_ss << std::fixed << std::setprecision(1) << this->fuel;
+            this->fuel_text->setText(std::string("Fuel: ") + init_ss.str(), 1.5f, engine::Vec3(1.0f), -0.95f, 0.9f);
         }
     }
 
