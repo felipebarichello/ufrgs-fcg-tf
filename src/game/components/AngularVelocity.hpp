@@ -7,6 +7,7 @@ namespace game::components {
             AngularVelocity() = default;
             void Update() override;
             engine::Vec3& euler_angles() { return this->_euler_angles; }
+            void reset() { this->_euler_angles = engine::Vec3(0.0f); }
 
         private:
             engine::Vec3 _euler_angles = engine::Vec3(0.0f);
