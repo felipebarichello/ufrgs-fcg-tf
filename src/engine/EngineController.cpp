@@ -371,10 +371,6 @@ namespace engine {
         std::string vertex_shader_path = exe_dir + "/../../src/engine/shaders/PlanetVertexShader.glsl";
         std::string fragment_shader_path = exe_dir + "/../../src/engine/shaders/PlanetFragmentShader.glsl";
 
-        printf("Loading shaders from:\n");
-        printf("  Vertex: %s\n", vertex_shader_path.c_str());
-        printf("  Fragment: %s\n", fragment_shader_path.c_str());
-
         GLuint vertex_shader_id = load_shader_vertex(vertex_shader_path.c_str());
         GLuint fragment_shader_id = load_shader_fragment(fragment_shader_path.c_str());
 
@@ -387,10 +383,6 @@ namespace engine {
         // Load Phong shaders
         vertex_shader_path = exe_dir + "/../../src/engine/shaders/PhongVertexShader.glsl";
         fragment_shader_path = exe_dir + "/../../src/engine/shaders/PhongFragmentShader.glsl";
-
-        printf("Loading shaders from:\n");
-        printf("  Vertex: %s\n", vertex_shader_path.c_str());
-        printf("  Fragment: %s\n", fragment_shader_path.c_str());
 
         vertex_shader_id = load_shader_vertex(vertex_shader_path.c_str());
         fragment_shader_id = load_shader_fragment(fragment_shader_path.c_str());
@@ -405,10 +397,6 @@ namespace engine {
         vertex_shader_path = exe_dir + "/../../src/engine/shaders/StarVertexShader.glsl";
         fragment_shader_path = exe_dir + "/../../src/engine/shaders/StarFragmentShader.glsl";
     
-        printf("Loading shaders from:\n");
-        printf("  Vertex: %s\n", vertex_shader_path.c_str());
-        printf("  Fragment: %s\n", fragment_shader_path.c_str());
-    
         vertex_shader_id = load_shader_vertex(vertex_shader_path.c_str());
         fragment_shader_id = load_shader_fragment(fragment_shader_path.c_str());
     
@@ -421,10 +409,6 @@ namespace engine {
         vertex_shader_path = exe_dir + "/../../src/engine/shaders/ParticleVertexShader.glsl";
         fragment_shader_path = exe_dir + "/../../src/engine/shaders/ParticleFragmentShader.glsl";
     
-        printf("Loading shaders from:\n");
-        printf("  Vertex: %s\n", vertex_shader_path.c_str());
-        printf("  Fragment: %s\n", fragment_shader_path.c_str());
-    
         vertex_shader_id = load_shader_vertex(vertex_shader_path.c_str());
         fragment_shader_id = load_shader_fragment(fragment_shader_path.c_str());
     
@@ -436,10 +420,6 @@ namespace engine {
         // Load Star shaders (simple point sprite shader used only by Stars)
         vertex_shader_path = exe_dir + "/../../src/engine/shaders/StarVertexShader.glsl";
         fragment_shader_path = exe_dir + "/../../src/engine/shaders/StarFragmentShader.glsl";
-
-        printf("Loading shaders from:\n");
-        printf("  Vertex: %s\n", vertex_shader_path.c_str());
-        printf("  Fragment: %s\n", fragment_shader_path.c_str());
 
         vertex_shader_id = load_shader_vertex(vertex_shader_path.c_str());
         fragment_shader_id = load_shader_fragment(fragment_shader_path.c_str());
