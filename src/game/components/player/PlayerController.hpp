@@ -16,6 +16,9 @@ namespace game::components {
         HumanoidPlayerController* get_humanoid() { return this->humanoid; }
         PlayerShipController* get_ship() { return this->ship; }
 
+        // Called by enemies when they hit this player
+        void hit_by_enemy();
+
     private:
         HumanoidPlayerController* humanoid = nullptr;
         PlayerShipController* ship = nullptr;

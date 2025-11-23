@@ -26,6 +26,10 @@ namespace game::components {
         }
     }
 
+    void PlayerController::hit_by_enemy() {
+        this->humanoid->hit_by_enemy();
+    }
+
     void PlayerController::toggle_mode() {
         if (!this->humanoid || !this->ship) return;
         if (this->humanoid->get_walker()->is_grounded()) return; // Only allow switching when humanoid is not grounded

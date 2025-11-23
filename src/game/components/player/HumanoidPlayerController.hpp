@@ -29,7 +29,6 @@ namespace game::components {
 
             engine::CylinderCollider* get_cylinder_collider() { return this->cylinder_collider; }
             
-            // Called by enemies when they hit this player
             void hit_by_enemy();
 
         private:
