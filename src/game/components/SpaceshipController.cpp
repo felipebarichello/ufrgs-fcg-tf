@@ -38,24 +38,21 @@ namespace game::components {
         
         float dt = EngineController::get_delta_time();
         
-        // Passive fuel consumption
         if (this->fuel > 0.0f) {
-            this->fuel -= this->passive_fuel_consumption_rate * dt;
+            // Passive fuel consumption
+            this->fuel -= this->passive_fuel_consumption * dt;
+
+            // Thrusting
+            float accel_dir = 0.0f;
+            bool thrusting = this->accelerating_forward || this->accelerating_backward;
+            if (thrusting) {
+                this->fuel -= dt * this->thrust_fuel_consumption; // Consume fuel
+                if (this->accelerating_forward)  accel_dir += thrust_power;
+                if (this->accelerating_backward) accel_dir -= thrust_power;
+            }
+            Vec3 accel_vec = forward * accel_dir;
+            this->kinematic->set_velocity(this->kinematic->get_velocity() + accel_vec * dt);
         }
-
-        // Build acceleration vector from input
-        float accel_dir = 0.0f;
-        bool thrusting = this->accelerating_forward || this->accelerating_backward;
-        if (thrusting && this->fuel > 0.0f) {
-            this->fuel -= dt * this->active_fuel_consumption_rate; // Consume fuel
-            if (this->accelerating_forward)  accel_dir += thrust_power;
-            if (this->accelerating_backward) accel_dir -= thrust_power;
-        }
-
-        Vec3 accel_vec = forward * accel_dir;
-
-        // Integrate velocity
-        this->kinematic->set_velocity(this->kinematic->get_velocity() + accel_vec * dt);
 
         // Update on-screen fuel text
         if (this->fuel_text) {
@@ -77,7 +74,6 @@ namespace game::components {
         SphericalInput spherical = this->get_spherical_input();
         quaternion.local_compose(Quaternion::from_y_rotation(spherical.delta_theta * dt * 50.0f));
         quaternion.local_compose(Quaternion::from_x_rotation(spherical.delta_phi * dt * 50.0f));
-        quaternion.local_compose(Quaternion::from_z_rotation(-this->move_vector.x * dt * 5.0f));
         quaternion.normalize();
     }
 

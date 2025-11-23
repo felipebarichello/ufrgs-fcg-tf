@@ -34,8 +34,8 @@ namespace game::components {
             float h_sensitivity = 0.001f;
             float thrust_power = 50.0f; // meters/s^2 applied when thrusting
             float fuel = 100.0f;
-            float active_fuel_consumption_rate = 1.0f; // units per second when thrusting
-            float passive_fuel_consumption_rate = 0.1f; // units per second whenever
+            float thrust_fuel_consumption = 1.0f; // units per second when thrusting
+            float passive_fuel_consumption = 0.1f; // units per second whenever
 
             // Text drawable to show fuel on screen
             engine::TextDrawable* fuel_text = nullptr;
