@@ -44,18 +44,32 @@ namespace game::components {
 
     void HumanoidPlayerController::PostUpdate() {
         if (this->walker->is_grounded()) {
+            // Reset angular velocity
             this->angular->reset();
+
+            // Align to camera theta
+            Quaternion& quat = this->get_vobject()->transform().quaternion();
+            quat.local_compose(Quaternion::from_y_rotation(this->camera_theta));
+            this->set_camera_theta(0.0f);
         }
     }
 
     void HumanoidPlayerController::handle_input() {
-        auto& transform = this->get_vobject()->transform();
-        auto& quaternion = transform.quaternion();
+        Transform& transform = this->get_vobject()->transform();
+        Quaternion& quaternion = transform.quaternion();
+        Transform& cam_transform = this->camera->get_vobject()->transform();
 
         /* Camera (attached) movement */
         SphericalInput spherical = this->get_spherical_input();
         this->set_camera_phi(this->camera_phi + spherical.delta_phi);
-        quaternion.local_compose(Quaternion::from_y_rotation(spherical.delta_theta));
+
+        if (this->walker->is_grounded()) {
+            // Rotate player body when grounded
+            quaternion.local_compose(Quaternion::from_y_rotation(spherical.delta_theta));
+        } else {
+            // Rotate camera when not grounded
+            this->set_camera_theta(this->camera_theta + spherical.delta_theta);
+        }
 
         // Apply view bobbing to the child camera when attached
         if (!this->released_camera && this->camera && this->walker) {
@@ -76,7 +90,6 @@ namespace game::components {
             float bob_x = sinf(this->bob_timer) * this->bob_sway_amplitude * input_mag;
 
             // Apply offset in local camera space based on stored child transform
-            Transform& cam_transform = this->camera->get_vobject()->transform();
             cam_transform.local_position() = this->stored_child_cam_transform.get_local_position();
             cam_transform.local_position() += cam_transform.quaternion().rotate(Vec3(bob_x, bob_y, 0.0f));
         }
@@ -113,12 +126,17 @@ namespace game::components {
 
     void HumanoidPlayerController::set_camera_phi(float new_phi) {
         this->camera_phi = std::clamp(new_phi, this->phi_min, this->phi_max); // Don't let the player break their neck
-        
-        auto& cam_transform = this->camera
-            ->get_vobject()
-            ->transform();
+        this->update_camera();
+    }
 
-        cam_transform.quaternion() = Quaternion::from_x_rotation(this->camera_phi);
+    void HumanoidPlayerController::set_camera_theta(float new_theta) {
+        this->camera_theta = std::clamp(new_theta, -this->theta_max, this->theta_max);
+        this->update_camera();
+    }
+
+    void HumanoidPlayerController::update_camera() {
+        Transform& cam_transform = this->camera->get_vobject()->transform();
+        cam_transform.quaternion() = Quaternion::from_y_rotation(this->camera_theta) * Quaternion::from_x_rotation(this->camera_phi);
         cam_transform.quaternion().normalize();
     }
 

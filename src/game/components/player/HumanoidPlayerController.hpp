@@ -59,17 +59,21 @@ namespace game::components {
             // Input vector used by the camera and forwarded to WalkerController
             engine::Vec2 move_vector_2d {0.0f, 0.0f};
             float camera_phi = 0.0f;
+            float camera_theta = 0.0f;
             float v_sensitivity = 0.001f;
             float h_sensitivity = 0.001f;
             bool released_camera = false;
             float released_camera_speed = 5.0f;
-            float phi_max = 3.141592f/2;
-            float phi_min = -3.141592f/2;
+            float phi_min = -2.5f/2;
+            float phi_max =  2.5f/2;
+            float theta_max = 2.0f;
 
             void handle_input();
             void update_released_camera();
             SphericalInput get_spherical_input();
             void set_camera_phi(float new_phi);
+            void set_camera_theta(float new_theta);
+            void update_camera();
             void on_jump_pressed();
             void toggle_camera_release();
     };
