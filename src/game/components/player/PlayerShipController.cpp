@@ -24,6 +24,12 @@ namespace game::components {
         this->game_over_text = go_text;
         this->get_vobject()->add_component(f_text);
         this->get_vobject()->add_component(go_text);
+
+        // Create text drawable to show fuel on-screen (top-left corner)
+        std::ostringstream init_ss;
+        init_ss << std::fixed << std::setprecision(1) << this->fuel;
+        this->fuel_text->setText(std::string("Fuel: ") + init_ss.str(), 1.5f, engine::Vec3(1.0f), -0.95f, 0.9f);
+        this->game_over_text->setText(std::string(""), 3.0f, engine::Vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
     }
 
     void PlayerShipController::Start() {
@@ -31,12 +37,6 @@ namespace game::components {
         input->subscribe_hold_button(GLFW_KEY_W, &this->thrusting);
         input->subscribe_hold_button(GLFW_KEY_A, &this->rolling_left);
         input->subscribe_hold_button(GLFW_KEY_D, &this->rolling_right);
-
-        // Create text drawable to show fuel on-screen (top-left corner)
-        std::ostringstream init_ss;
-        init_ss << std::fixed << std::setprecision(1) << this->fuel;
-        this->fuel_text->setText(std::string("Fuel: ") + init_ss.str(), 1.5f, engine::Vec3(1.0f), -0.95f, 0.9f);
-        this->game_over_text->setText(std::string(""), 3.0f, engine::Vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
     }
 
     void PlayerShipController::Update() {
