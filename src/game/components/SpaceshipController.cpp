@@ -67,9 +67,9 @@ namespace game::components {
     void SpaceshipController::update_rotation_due_to_input() {
         Transform& transform = this->get_vobject()->transform();
         Quaternion& quaternion = transform.quaternion();
+        float dt = EngineController::get_delta_time();
 
         SphericalInput spherical = this->get_spherical_input();
-        float dt = EngineController::get_delta_time();
         quaternion.local_compose(Quaternion::from_y_rotation(spherical.delta_theta * dt * 50.0f));
         quaternion.local_compose(Quaternion::from_x_rotation(spherical.delta_phi * dt * 50.0f));
         quaternion.local_compose(Quaternion::from_z_rotation(-this->move_vector.x * dt * 5.0f));
