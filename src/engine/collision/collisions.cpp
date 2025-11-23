@@ -11,9 +11,9 @@ namespace engine::collision {
     // Closest point on segment AB to point P
     static engine::Vec3 closest_point_on_segment(const engine::Vec3& a, const engine::Vec3& b, const engine::Vec3& p) {
         engine::Vec3 ab = b - a;
-        float ab2 = engine::dot_product(ab, ab);
+        float ab2 = engine::dot(ab, ab);
         if (ab2 <= 1e-12f) return a;
-        float t = engine::dot_product(p - a, ab) / ab2;
+        float t = engine::dot(p - a, ab) / ab2;
         t = clampf(t, 0.0f, 1.0f);
         return a + ab * t;
     }
@@ -23,9 +23,9 @@ namespace engine::collision {
         engine::Vec3   d1 = q1 - p1; // Direction vector of segment S1
         engine::Vec3   d2 = q2 - p2; // Direction vector of segment S2
         engine::Vec3   r = p1 - p2;
-        float a = engine::dot_product(d1,d1); // squared length of segment S1
-        float e = engine::dot_product(d2,d2); // squared length of segment S2
-        float f = engine::dot_product(d2,r);
+        float a = engine::dot(d1,d1); // squared length of segment S1
+        float e = engine::dot(d2,d2); // squared length of segment S2
+        float f = engine::dot(d2,r);
 
         float s, t;
 
@@ -33,20 +33,20 @@ namespace engine::collision {
 
         if (a <= EPS && e <= EPS) {
             // Both segments degenerate to points
-            return engine::dot_product(p1 - p2, p1 - p2);
+            return engine::dot(p1 - p2, p1 - p2);
         }
         if (a <= EPS) {
             // First segment degenerates to a point
             s = 0.0f;
             t = clampf(f / e, 0.0f, 1.0f);
         } else {
-            float c = engine::dot_product(d1, r);
+            float c = engine::dot(d1, r);
             if (e <= EPS) {
                 // Second segment degenerates to a point
                 t = 0.0f;
                 s = clampf(-c / a, 0.0f, 1.0f);
             } else {
-                float b = engine::dot_product(d1, d2);
+                float b = engine::dot(d1, d2);
                 float denom = a*e - b*b;
                 if (denom != 0.0f) {
                     s = clampf((b*f - c*e) / denom, 0.0f, 1.0f);
@@ -68,7 +68,7 @@ namespace engine::collision {
         engine::Vec3 c1 = p1 + d1 * s;
         engine::Vec3 c2 = p2 + d2 * t;
         engine::Vec3 diff = c1 - c2;
-        return engine::dot_product(diff, diff);
+        return engine::dot(diff, diff);
     }
 
     SphereSphereCollision collide_sphere_sphere(const SphereCollider& sphere_1, const SphereCollider& sphere_2) {
@@ -149,7 +149,7 @@ namespace engine::collision {
         // Closest point on cylinder segment to sphere center
         Vec3 closest = closest_point_on_segment(a, b, sphere_pos);
         Vec3 diff = sphere_pos - closest;
-        float dist2 = engine::dot_product(diff, diff);
+        float dist2 = engine::dot(diff, diff);
 
         bool collided = dist2 <= ((cyl_radius + sphere_radius) * (cyl_radius + sphere_radius));
         return CylinderSphereCollision(collided);

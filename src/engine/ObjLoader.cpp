@@ -236,7 +236,7 @@ void ObjLoader::ComputeNormals(ObjModel* model) {
                 // PREENCHA AQUI o cálculo da normal de um triângulo cujos vértices
                 // estão nos pontos "a", "b", e "c", definidos no sentido anti-horário.
                 //const engine::Vec4  n = engine::Vec4(0.0f,0.0f,0.0f,0.0f);
-                engine::Vec4 n = h_cross_product(b - a, c - a);
+                engine::Vec4 n = h_cross(b - a, c - a);
 
                 for (size_t vertex = 0; vertex < 3; ++vertex)
                 {

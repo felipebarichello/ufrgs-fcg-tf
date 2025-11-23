@@ -46,9 +46,9 @@ namespace game::components {
         Vec3 right = transform.quaternion().rotate(Vec3(1.0f, 0.0f, 0.0f));
         Vec3 up = transform.quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
 
-        float forward_comp = engine::dot_product(dir_to_player, forward);
-        float right_comp = engine::dot_product(dir_to_player, right);
-        float up_comp = engine::dot_product(dir_to_player, up);
+        float forward_comp = engine::dot(dir_to_player, forward);
+        float right_comp = engine::dot(dir_to_player, right);
+        float up_comp = engine::dot(dir_to_player, up);
         // float forward_dist = dist * forward_comp;
         // float right_dist = dist * right_comp;
         // float up_dist = dist * up_comp;

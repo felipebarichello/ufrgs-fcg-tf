@@ -32,11 +32,11 @@ namespace engine {
     Vec4 h_normalize(Vec4 v);
     Vec2 normalize(Vec2 v);
 
-    engine::Vec4 h_cross_product(engine::Vec4 u, engine::Vec4 v);
-    engine::Vec3 cross_product(engine::Vec3 u, engine::Vec3 v);
+    engine::Vec4 h_cross(engine::Vec4 u, engine::Vec4 v);
+    engine::Vec3 cross(engine::Vec3 u, engine::Vec3 v);
     float h_dot_product(engine::Vec4 u, engine::Vec4 v);
-    float dot_product(engine::Vec3 u, engine::Vec3 v);
-    float dot_product(engine::Vec2 u, engine::Vec2 v);
+    float dot(engine::Vec3 u, engine::Vec3 v);
+    float dot(engine::Vec2 u, engine::Vec2 v);
 
     engine::Mat4 h_ortographic_matrix(float l, float r, float b, float t, float n, float f);
 }

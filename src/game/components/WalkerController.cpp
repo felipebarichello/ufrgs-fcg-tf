@@ -31,7 +31,7 @@ namespace game::components {
             
             // Remove vertical component of velocity
             Vec3 up_direction = direction_from_planet;
-            Vec3 vertical_velocity = engine::dot_product(this->kinematic->get_velocity(), up_direction) * up_direction;
+            Vec3 vertical_velocity = engine::dot(this->kinematic->get_velocity(), up_direction) * up_direction;
             this->kinematic->set_velocity(this->kinematic->get_velocity() - vertical_velocity);
         } else {
             // If not grounded, check for collision
@@ -86,7 +86,7 @@ namespace game::components {
 
         { // Deaccelerate in the direction orthogonal to movement and when stopped (and also when moving opposite)
             Vec3 up = transform.quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
-            Vec3 horizontal_velocity = this->kinematic->get_velocity() - engine::dot_product(this->kinematic->get_velocity(), up) * up;
+            Vec3 horizontal_velocity = this->kinematic->get_velocity() - engine::dot(this->kinematic->get_velocity(), up) * up;
 
             if (engine::is_zero(move_vector_3d)) {
                 // No input, deaccelerate fully
@@ -103,7 +103,7 @@ namespace game::components {
                 float horiz_speed = engine::norm(horizontal_velocity);
                 if (horiz_speed > 1e-6f) {
                     // scalar component along input (can be negative if moving opposite)
-                    float scalar_along = engine::dot_product(horizontal_velocity, input_direction);
+                    float scalar_along = engine::dot(horizontal_velocity, input_direction);
 
                     // orthogonal component (horizontal_velocity minus its projection onto input_direction)
                     Vec3 orthogonal_vec = horizontal_velocity - scalar_along * input_direction;
@@ -153,7 +153,7 @@ namespace game::components {
             if (engine::collision::collide_point_sphere(*this->get_point_collider(), *planet->get_sphere_collider()).has_collided()) {
                 // Collision detected. Correcting...
                 Vec3 direction_to_planet = engine::normalize(vec_to_planet);
-                Vec3 velocity_to_planet = engine::dot_product(this->kinematic->get_velocity(), direction_to_planet) * direction_to_planet;
+                Vec3 velocity_to_planet = engine::dot(this->kinematic->get_velocity(), direction_to_planet) * direction_to_planet;
 
                 if (engine::norm(velocity_to_planet) > 0.0f) {
                     this->kinematic->set_velocity(this->kinematic->get_velocity() - velocity_to_planet);

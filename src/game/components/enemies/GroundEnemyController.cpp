@@ -43,7 +43,7 @@ namespace game::components {
 
         // Project direction onto local tangent (use the VObject's current up as the surface normal proxy).
         Vec3 up = transform.quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
-        Vec3 dir_horiz = dir - engine::dot_product(dir, up) * up;
+        Vec3 dir_horiz = dir - engine::dot(dir, up) * up;
         float len = engine::norm(dir_horiz);
         Vec3 projected = (len < 1e-6f) ? Vec3(0.0f) : dir_horiz / len;
 
@@ -51,8 +51,8 @@ namespace game::components {
         Vec3 forward = transform.quaternion().rotate(Vec3(0.0f, 0.0f, -1.0f));
         Vec3 right = transform.quaternion().rotate(Vec3(1.0f, 0.0f, 0.0f));
 
-        float forward_comp = engine::dot_product(projected, forward);
-        float right_comp = engine::dot_product(projected, right);
+        float forward_comp = engine::dot(projected, forward);
+        float right_comp = engine::dot(projected, right);
 
         Vec2 move_vec(right_comp, forward_comp);
         if (this->walker) this->walker->set_move_vector(move_vec);
@@ -73,7 +73,7 @@ namespace game::components {
         // Also rotate the VObject to face the movement direction (projected)
         Quaternion& quaternion = transform.quaternion();
         // Recompute forward projection onto tangent plane
-        Vec3 forward_proj = forward - engine::dot_product(forward, up) * up;
+        Vec3 forward_proj = forward - engine::dot(forward, up) * up;
         float fwd_len = engine::norm(forward_proj);
         float proj_len = engine::norm(projected);
         if (fwd_len > 1e-6f && proj_len > 1e-6f) {

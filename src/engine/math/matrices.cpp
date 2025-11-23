@@ -140,7 +140,7 @@ namespace engine {
         );
     }
 
-    engine::Vec4 h_cross_product(engine::Vec4 u, engine::Vec4 v)
+    engine::Vec4 h_cross(engine::Vec4 u, engine::Vec4 v)
     {
         float u1 = u.x;
         float u2 = u.y;
@@ -157,7 +157,7 @@ namespace engine {
         );
     }
 
-    engine::Vec3 cross_product(engine::Vec3 u, engine::Vec3 v)
+    engine::Vec3 cross(engine::Vec3 u, engine::Vec3 v)
     {
         float u1 = u.x;
         float u2 = u.y;
@@ -193,7 +193,7 @@ namespace engine {
         return u1*v1 + u2*v2 + u3*v3;
     }
 
-    float dot_product(engine::Vec3 u, engine::Vec3 v)
+    float dot(engine::Vec3 u, engine::Vec3 v)
     {
         float u1 = u.x;
         float u2 = u.y;
@@ -205,7 +205,7 @@ namespace engine {
         return u1*v1 + u2*v2 + u3*v3;
     }
 
-    float dot_product(engine::Vec2 u, engine::Vec2 v)
+    float dot(engine::Vec2 u, engine::Vec2 v)
     {
         float u1 = u.x;
         float u2 = u.y;
