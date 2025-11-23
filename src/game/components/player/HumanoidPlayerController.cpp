@@ -33,7 +33,7 @@ namespace game::components {
         if (this->released_camera) {
             this->update_released_camera();
         } else {
-            this->update_transform_due_to_input();
+            this->handle_input();
             
             // Forward input to walker every frame
             if (this->walker) {
@@ -48,7 +48,7 @@ namespace game::components {
         }
     }
 
-    void HumanoidPlayerController::update_transform_due_to_input() {
+    void HumanoidPlayerController::handle_input() {
         auto& transform = this->get_vobject()->transform();
         auto& quaternion = transform.quaternion();
 

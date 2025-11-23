@@ -66,7 +66,7 @@ namespace game::components {
             float phi_max = 3.141592f/2;
             float phi_min = -3.141592f/2;
 
-            void update_transform_due_to_input();
+            void handle_input();
             void update_released_camera();
             SphericalInput get_spherical_input();
             void set_camera_phi(float new_phi);
