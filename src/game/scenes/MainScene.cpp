@@ -6,6 +6,7 @@
 #include <game/instantiators/Enemy.hpp>
 #include <game/scenes/MainScene_vars.hpp>
 #include <game/instantiators/EnemyShip.hpp>
+#include <game/instantiators/SpaceshipObj.hpp>
 
 using namespace engine;
 using namespace game::components;
@@ -13,7 +14,8 @@ using namespace game::instantiators;
 
 VObjectConfig Player(Camera* main_camera, float height, Camera* humanoid_camera, Camera* ship_camera, PlayerShipController*& player_ship) {
     KinematicBody* kinematic = new KinematicBody();
-    ObjDrawable* ship_drawable = new ObjDrawable(std::string("spaceship.obj"), std::string("spaceship.jpg"));
+    ObjDrawable* ship_drawable;
+    VObjectConfig spaceship_obj = SpaceshipObj(ship_drawable);
     Gravity* gravity = new Gravity(kinematic);
 
     engine::PointCollider* point_collider = new engine::PointCollider();
@@ -42,11 +44,7 @@ VObjectConfig Player(Camera* main_camera, float height, Camera* humanoid_camera,
         .component(gravity)
         .component(angular_velocity)
         .component(kinematic)
-        .child(VObjectConfig()
-            .transform(TransformBuilder()
-                .position(Vec3(0.0f, -0.5f, 0.0f)))
-            .component(ship_drawable)
-        )
+        .child(spaceship_obj)
         .child(VObjectConfig()
             .transform(TransformBuilder()
                 .position(Vec3(0.0f, height, 0.0f)))
