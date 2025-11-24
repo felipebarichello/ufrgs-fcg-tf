@@ -31,7 +31,7 @@ namespace game::components {
 
             // Rolling
             Vec3& ang_velocity = this->angular->euler_angles();
-            float& roll_velocity = ang_velocity.z;
+            float roll_velocity = -ang_velocity.z;
             if (cmd.rolling_left) {
                 this->fuel -= dt * this->roll_fuel_consumption;
                 roll_velocity -= roll_power * dt;
@@ -58,6 +58,8 @@ namespace game::components {
                     }
                 }
             }
+
+            ang_velocity.z = -roll_velocity;
 
             // Steering
             SphericalCoords spherical = this->command.steer;
