@@ -17,7 +17,7 @@ namespace game::instantiators {
 
         return VObjectConfig()
             .transform(TransformBuilder()
-                .position(Vec3(0.0f, 400.0f, 0.0f)))
+                .position(Vec3(0.0f, 220.0f, -20.0f)))
             .component(cylinder_collider)
             .component(enemy_controller)
             .component(ship_controller)

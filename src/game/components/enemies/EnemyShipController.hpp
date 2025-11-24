@@ -33,8 +33,9 @@ namespace game::components {
             std::vector<PlanetInfo*> planets;
             engine::CylinderCollider* cylinder_collider;
 
-            float prediction_time = 6.0f; // Seconds to look ahead for collisions
-            float roll_error_tolerance = 0.1f; // Radians per second of error allowed before rolling to correct
+            float facing_player_threshold = 0.8f; // Dot product within which to consider "facing player" for thrusting
+            float prediction_time = 1.0f; // Seconds to look ahead for collisions
+            float roll_error_tolerance = 0.1f; // Predicted radians of error allowed before rolling to correct
 
             void test_planet_collisions();
     };

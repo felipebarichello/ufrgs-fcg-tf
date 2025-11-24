@@ -26,8 +26,10 @@ namespace game::components {
     void EnemyShipController::Update() {
         // Simple AI to follow the player ship
 
+        float dt = EngineController::get_delta_time();
         Transform& transform = this->get_vobject()->transform();
         KinematicBody& kinematic = *this->kinematic;
+        AngularVelocity& angular = *this->angular;
 
         // Get positions
         Vec3 enemy_pos = transform.get_world_position();
@@ -45,6 +47,7 @@ namespace game::components {
         // proj: projected onto
         // pl: player
         // en: enemy
+        // nerror: negative error; add this to correct
 
         Vec3 pred_pl_pos = player_pos + player_vel * this->prediction_time;
         Vec3 pred_en_pos = enemy_pos  + enemy_vel  * this->prediction_time;
@@ -56,37 +59,39 @@ namespace game::components {
             return;
         }
 
-        Vec3 cur_forward_dir = transform.quaternion().rotate(Vec3(0.0f, 0.0f, -1.0f));
-        float pred_vec_to_pl_proj_cur_forward_dist = engine::dot(pred_vec_to_pl, cur_forward_dir);
         Vec3 pred_dir_to_pl = pred_vec_to_pl / pred_dist_to_pl;
-
-        Quaternion pred_quat_adjust = Quaternion::from_unit_vectors(cur_forward_dir, pred_dir_to_pl);
-        Vec3 pred_euler_adjust = pred_quat_adjust.to_euler_zyx();
-
-        // Set steering input
-        this->ship_command->steer = SphericalCoords {
-            .delta_theta = pred_euler_adjust.y,
-            .delta_phi   = pred_euler_adjust.x
-        };
-
-        float desired_roll = -pred_euler_adjust.z;
-        float pred_avg_roll_rate = desired_roll / this->prediction_time;
-        float cur_roll_rate = this->angular->euler_angles().z;
-        float roll_rate_error = pred_avg_roll_rate - cur_roll_rate;
         
-        if (roll_rate_error > this->roll_error_tolerance) {
+        Vec3 cur_forward_dir = transform.quaternion().rotate(Vec3(0.0f, 0.0f, -1.0f));
+        Quaternion cur_adjust_quat = Quaternion::from_unit_vectors(cur_forward_dir, pred_dir_to_pl);
+        Vec3 cur_adjust_euler = cur_adjust_quat.to_euler_zyx();
+
+        Vec3 pred_en_euler = angular.euler_angles() * this->prediction_time;
+        Vec3 euler_nerror = cur_adjust_euler - pred_en_euler;
+
+        this->ship_command->steer = SphericalCoords {
+            .delta_theta = euler_nerror.y * dt,
+            .delta_phi   = euler_nerror.x * dt
+        };
+        
+        float desired_roll_amount = -cur_adjust_euler.z;
+        float cur_roll_rate = -angular.euler_angles().z;
+        float pred_roll_amount = cur_roll_rate * this->prediction_time;
+        float roll_amount_nerror = desired_roll_amount - pred_roll_amount;
+        
+        if (roll_amount_nerror > this->roll_error_tolerance) {
             this->ship_command->rolling_left  = false;
             this->ship_command->rolling_right = true;
-        } else if (roll_rate_error < -this->roll_error_tolerance) {
+        } else if (roll_amount_nerror < -this->roll_error_tolerance) {
             this->ship_command->rolling_left  = true;
             this->ship_command->rolling_right = false;
         } else {
             this->ship_command->rolling_left  = false;
             this->ship_command->rolling_right = false;
         }
-
-        // Thrust if not too close
-        this->ship_command->thrusting = (pred_vec_to_pl_proj_cur_forward_dist > 0.0f);
+        
+        // Thrust if facing roughly towards the player
+        float pred_dir_to_pl_proj_cur_forward_dist = engine::dot(pred_dir_to_pl, cur_forward_dir);
+        this->ship_command->thrusting = (pred_dir_to_pl_proj_cur_forward_dist > this->facing_player_threshold);
     }
 
     void EnemyShipController::PostUpdate() {
@@ -97,7 +102,7 @@ namespace game::components {
         for (PlanetInfo* planet : this->planets) {
             bool collision_detected = engine::collision::collide_cylinder_sphere(*this->cylinder_collider, *planet->get_sphere_collider()).has_collided();
             if (collision_detected) {
-                this->get_vobject()->destroy();
+                // this->get_vobject()->destroy();
             }
         }
     }
