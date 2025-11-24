@@ -19,8 +19,8 @@ namespace game::components {
             void Update() override;
             void PostUpdate() override;
 
-            KinematicBody* get_kinematic() const { return this->kinematic; }
-            AngularVelocity* get_angular() const { return this->angular; }
+            KinematicBody* get_kinematic_body() const { return this->kinematic; }
+            AngularVelocity* get_angular_velocity() const { return this->angular; }
             float get_critical_roll_velocity() const { return this->ship_controller->critical_roll_velocity; }
 
         private:
@@ -32,6 +32,9 @@ namespace game::components {
 
             std::vector<PlanetInfo*> planets;
             engine::CylinderCollider* cylinder_collider;
+
+            float prediction_time = 6.0f; // Seconds to look ahead for collisions
+            float roll_error_tolerance = 0.1f; // Radians per second of error allowed before rolling to correct
 
             void test_planet_collisions();
     };

@@ -26,41 +26,67 @@ namespace game::components {
     void EnemyShipController::Update() {
         // Simple AI to follow the player ship
 
-        float dt = EngineController::get_delta_time();
         Transform& transform = this->get_vobject()->transform();
+        KinematicBody& kinematic = *this->kinematic;
 
         // Get positions
         Vec3 enemy_pos = transform.get_world_position();
-        Vec3 player_pos = this->player_controller->get_ship()->get_vobject()->transform().get_world_position();
+        Vec3 enemy_vel = kinematic.get_velocity();
+        PlayerShipController* player_ship = this->player_controller->get_ship();
+        Vec3 player_pos = player_ship->get_vobject()->transform().get_world_position();
+        Vec3 player_vel = player_ship->get_kinematic_body()->get_velocity();
 
-        Vec3 to_player = player_pos - enemy_pos;
-        float dist = engine::norm(to_player);
-        if (dist < 1e-6f) {
+        // Abbreviations:
+        // pred: predicted
+        // cur: current
+        // dist: distance
+        // vec: vector
+        // dir: direction
+        // proj: projected onto
+        // pl: player
+        // en: enemy
+
+        Vec3 pred_pl_pos = player_pos + player_vel * this->prediction_time;
+        Vec3 pred_en_pos = enemy_pos  + enemy_vel  * this->prediction_time;
+
+        Vec3 pred_vec_to_pl = pred_pl_pos - pred_en_pos;
+        float pred_dist_to_pl = engine::norm(pred_vec_to_pl);
+        if (pred_dist_to_pl < 1e-6f) {
             this->player_controller->hit_by_enemy(); // Prevent division by zero by just hitting the player
             return;
         }
 
-        Vec3 dir_to_player = to_player / dist;
+        Vec3 cur_forward_dir = transform.quaternion().rotate(Vec3(0.0f, 0.0f, -1.0f));
+        float pred_vec_to_pl_proj_cur_forward_dist = engine::dot(pred_vec_to_pl, cur_forward_dir);
+        Vec3 pred_dir_to_pl = pred_vec_to_pl / pred_dist_to_pl;
 
-        Vec3 forward = transform.quaternion().rotate(Vec3(0.0f, 0.0f, -1.0f));
-        Vec3 right = transform.quaternion().rotate(Vec3(1.0f, 0.0f, 0.0f));
-        Vec3 up = transform.quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
-
-        float forward_comp = engine::dot(dir_to_player, forward);
-        float right_comp = engine::dot(dir_to_player, right);
-        float up_comp = engine::dot(dir_to_player, up);
-        // float forward_dist = dist * forward_comp;
-        // float right_dist = dist * right_comp;
-        // float up_dist = dist * up_comp;
+        Quaternion pred_quat_adjust = Quaternion::from_unit_vectors(cur_forward_dir, pred_dir_to_pl);
+        Vec3 pred_euler_adjust = pred_quat_adjust.to_euler_zyx();
 
         // Set steering input
         this->ship_command->steer = SphericalCoords {
-            .delta_theta = up_comp * dt,
-            .delta_phi = right_comp * dt
+            .delta_theta = pred_euler_adjust.y,
+            .delta_phi   = pred_euler_adjust.x
         };
 
+        float desired_roll = -pred_euler_adjust.z;
+        float pred_avg_roll_rate = desired_roll / this->prediction_time;
+        float cur_roll_rate = this->angular->euler_angles().z;
+        float roll_rate_error = pred_avg_roll_rate - cur_roll_rate;
+        
+        if (roll_rate_error > this->roll_error_tolerance) {
+            this->ship_command->rolling_left  = false;
+            this->ship_command->rolling_right = true;
+        } else if (roll_rate_error < -this->roll_error_tolerance) {
+            this->ship_command->rolling_left  = true;
+            this->ship_command->rolling_right = false;
+        } else {
+            this->ship_command->rolling_left  = false;
+            this->ship_command->rolling_right = false;
+        }
+
         // Thrust if not too close
-        this->ship_command->thrusting = (forward_comp > 10.0f);
+        this->ship_command->thrusting = (pred_vec_to_pl_proj_cur_forward_dist > 0.0f);
     }
 
     void EnemyShipController::PostUpdate() {
