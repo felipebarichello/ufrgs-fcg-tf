@@ -6,8 +6,8 @@
 
 using namespace engine;
 
-DebugLineDrawable::DebugLineDrawable(std::function<Vec3()> p1_getter, std::function<Vec3()> p2_getter)
-    : p1_getter(std::move(p1_getter)), p2_getter(std::move(p2_getter))
+DebugLineDrawable::DebugLineDrawable(std::function<Vec3()> p1_getter, std::function<Vec3()> p2_getter, engine::Vec4 color)
+    : p1_getter(std::move(p1_getter)), p2_getter(std::move(p2_getter)), color(color)
 {
     glGenVertexArrays(1, &this->vao);
     glGenBuffers(1, &this->vbo);
@@ -62,7 +62,7 @@ void DebugLineDrawable::draw() {
     }
     GLint color_loc = glGetUniformLocation(prog, "absolute_color");
     if (color_loc != -1) {
-        glUniform4f(color_loc, 0.0f, 1.0f, 0.0f, 1.0f);
+        glUniform4f(color_loc, this->color.x, this->color.y, this->color.z, this->color.w);
     }
 
     // Optionally disable depth test so the line is visible over geometry
