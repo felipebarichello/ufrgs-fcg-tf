@@ -13,6 +13,9 @@ namespace game::instantiators {
         out_drawable = new ObjDrawable(std::string("spaceship.obj"), std::string("spaceship.jpg"));
 
         return VObjectConfig()
+            .transform(TransformBuilder()
+                .position(Vec3(0.0f, -0.5f, 0.2f))
+            )
             .component(out_drawable);
     }
 
