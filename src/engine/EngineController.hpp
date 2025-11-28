@@ -39,6 +39,7 @@ namespace engine {
             static GLuint phong_program_id;
             static GLuint star_program_id;
             static GLuint particle_program_id;
+            static GLuint line_program_id;
             static void frame_buffer_size_callback(GLFWwindow* window, int width, int height);
             static void error_callback(int error, const char* description);
             static GLFWwindow* init_window(WindowConfig window_config);
@@ -63,7 +64,8 @@ namespace engine {
                 Planet  = 0,
                 Phong   = 1,
                 Star    = 2,
-                Particle= 3
+                Particle= 3,
+                Line    = 4
             };
 
             static EngineController* get_instance();
