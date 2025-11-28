@@ -89,7 +89,7 @@ namespace game::components {
             this->ship_command->rolling_right = false;
         }
         
-        // Thrust if facing roughly towards the player
+        // Thrust if facing roughly towards the player's predicted position
         float pred_dir_to_pl_proj_cur_forward_dist = engine::dot(pred_dir_to_pl, cur_forward_dir);
         this->ship_command->thrusting = (pred_dir_to_pl_proj_cur_forward_dist > this->facing_player_threshold);
     }
