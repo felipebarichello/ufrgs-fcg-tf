@@ -3,7 +3,11 @@
 #include <InputController.hpp>
 #include <algorithm>
 #include <engine/vobject/components/TextDrawable.hpp>
+#include <engine/vobject/components/Drawable.hpp>
 #include <glm/vec3.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glad/glad.h>
 #include <sstream>
 #include <iomanip>
 #include <cmath>
@@ -21,6 +25,26 @@ namespace game::components {
         // Physics setup
         this->kinematic = this->ship_controller->get_kinematic_body();
         this->angular = this->ship_controller->get_angular_velocity();
+
+        // Attach engine-level debug drawable to draw a line to the player
+        if (this->debug_drawable == nullptr) {
+            engine::VObject* my_vo = this->get_vobject();
+            auto getter1 = [my_vo]() -> engine::Vec3 {
+                return my_vo->transform().get_world_position();
+            };
+            auto getter2 = []() -> engine::Vec3 {
+                // Resolve player ship position via scene global
+                auto player = scenes::main_scene::player;
+                if (!player) return engine::Vec3(0.0f);
+                auto ship = player->get_ship();
+                if (!ship) return engine::Vec3(0.0f);
+                return ship->get_vobject()->transform().get_world_position();
+            };
+
+            auto dbg = new engine::DebugLineDrawable(getter1, getter2);
+            this->debug_drawable = dbg;
+            this->get_vobject()->add_component(dbg);
+        }
     }
 
     void EnemyShipController::Update() {
