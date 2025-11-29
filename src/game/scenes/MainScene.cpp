@@ -12,7 +12,7 @@ using namespace engine;
 using namespace game::components;
 using namespace game::instantiators;
 
-VObjectConfig Player(Camera* main_camera, float height, Camera* humanoid_camera, Camera* ship_camera, PlayerShipController*& player_ship) {
+VObjectConfig Player(float height, Camera* humanoid_camera, Camera* ship_camera, PlayerShipController*& player_ship) {
     KinematicBody* kinematic = new KinematicBody();
     ObjDrawable* ship_drawable;
     VObjectConfig spaceship_obj = SpaceshipObj(ship_drawable);
@@ -26,7 +26,7 @@ VObjectConfig Player(Camera* main_camera, float height, Camera* humanoid_camera,
     SpaceshipController* ship_ctrl = new SpaceshipController(kinematic, angular_velocity);
     player_ship = new PlayerShipController(ship_ctrl, ship_drawable, ship_collider);
     WalkerController* walker = new WalkerController(kinematic, gravity, point_collider);
-    HumanoidPlayerController* humanoid_controller = new HumanoidPlayerController(main_camera, walker, angular_velocity, cylinder_collider);
+    HumanoidPlayerController* humanoid_controller = new HumanoidPlayerController(humanoid_camera, walker, angular_velocity, cylinder_collider);
     PlayerController* player_ctl = new PlayerController(humanoid_controller, player_ship, humanoid_camera, ship_camera);
     game::scenes::main_scene::player = player_ctl;
 
@@ -48,7 +48,7 @@ VObjectConfig Player(Camera* main_camera, float height, Camera* humanoid_camera,
         .child(VObjectConfig()
             .transform(TransformBuilder()
                 .position(Vec3(0.0f, height, 0.0f)))
-            .component(main_camera)
+            .component(humanoid_camera)
         );
 }
 
@@ -99,7 +99,7 @@ namespace game::scenes {
         PlayerShipController* ship_ref = nullptr;
 
         root
-            .vobject(Player(humanoid_camera, player_height, humanoid_camera, ship_camera, ship_ref))
+            .vobject(Player(player_height, humanoid_camera, ship_camera, ship_ref))
             .vobject(VObjectConfig().component(new SpaceshipCameraController(ship_ref, ship_camera)))
             .vobject(VObjectConfig().component(ship_camera))
             .vobject(SkyBox())
