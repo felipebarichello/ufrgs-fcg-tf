@@ -58,9 +58,15 @@ namespace game::components {
             float h_sensitivity = 0.001f;
             bool released_camera = false;
             float released_camera_speed = 5.0f;
-            float phi_min = -2.5f/2;
-            float phi_max =  2.5f/2;
-            float theta_max = 2.0f;
+            
+            /// @brief The number multiplying pi/2 is a ratio out of a quarter turn down (1.0 means you can look almost straight down)
+            float phi_min   =-1.5708f * 0.95f;
+
+            /// @brief The number multiplying pi/2 is a ratio out of a quarter turn up (1.0 means you can look almost straight up)
+            float phi_max   = 1.5708f * 0.95f;
+
+            /// @brief The number multiplying pi is a ratio out of half a turn in both directions (1.0 means you can turn until looking back)
+            float theta_max = 3.1415f * 0.65f;
 
             void handle_input();
             void update_released_camera();
