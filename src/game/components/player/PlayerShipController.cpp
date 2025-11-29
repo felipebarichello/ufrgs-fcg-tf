@@ -13,6 +13,7 @@ namespace game::components {
 
     void PlayerShipController::Awake() {
         this->ship_command = &this->ship_controller->get_command();
+        this->camera_controller->link_thrusting(&this->ship_command->thrusting, &this->ship_controller->fuel);
 
         // Physics setup
         this->kinematic = this->ship_controller->get_kinematic_body();

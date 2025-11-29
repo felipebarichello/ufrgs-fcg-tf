@@ -16,7 +16,16 @@ void ShipCameraController::PostUpdate() {
     // Smoothly rotate camera to match ship orientation
     Quaternion new_cam_quat = Quaternion::slerp(cam_transform.local_quaternion(), ship_quat, this->camera_rotation_smooth);
 
-    Vec3 cam_offset = Vec3(0.0f, this->vertical_offset, this->default_distance);
+    /* Camera distancing effect when accelerating */
+
+    bool is_thrusting = *this->is_thrusting_ptr && *this->fuel_ptr > 0.0f;
+    if (is_thrusting) {
+        this->cam_distance = std::lerp(this->cam_distance, this->max_distance, this->acceleration_smooth);
+    } else {
+        this->cam_distance = std::lerp(this->cam_distance, this->default_distance, this->acceleration_smooth);
+    }
+    
+    Vec3 cam_offset = Vec3(0.0f, this->vertical_offset, this->cam_distance);
 
     /* Handle animation if applicable */
 
