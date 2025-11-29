@@ -12,7 +12,9 @@ using namespace engine;
 using namespace game::components;
 using namespace game::instantiators;
 
-VObjectConfig Player(float height, Camera* humanoid_camera, Camera* ship_camera, PlayerShipController*& player_ship) {
+VObjectConfig Player(Camera* humanoid_camera, Camera* ship_camera, PlayerShipController*& player_ship) {
+    const float height = 1.8f;
+
     KinematicBody* kinematic = new KinematicBody();
     ObjDrawable* ship_drawable;
     VObjectConfig spaceship_obj = SpaceshipObj(ship_drawable);
@@ -78,7 +80,6 @@ VObjectConfig SkyBox() {
 
 namespace game::scenes {
     void MainScene::hierarchy(SceneRoot& root) {
-        const float player_height = 1.8f;
         const float planet_model_normalize = 1.0f; // Very precise estimate
 
         Camera* humanoid_camera = new Camera();
@@ -99,7 +100,7 @@ namespace game::scenes {
         PlayerShipController* ship_ref = nullptr;
 
         root
-            .vobject(Player(player_height, humanoid_camera, ship_camera, ship_ref))
+            .vobject(Player(humanoid_camera, ship_camera, ship_ref))
             .vobject(VObjectConfig().component(new SpaceshipCameraController(ship_ref, ship_camera)))
             .vobject(VObjectConfig().component(ship_camera))
             .vobject(SkyBox())
