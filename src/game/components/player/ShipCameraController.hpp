@@ -5,9 +5,9 @@
 #include <game/components/player/PlayerShipController.hpp>
 
 namespace game::components {
-    class SpaceshipCameraController : public engine::Behavior {
+    class ShipCameraController : public engine::Behavior {
         public:
-            SpaceshipCameraController(PlayerShipController* player_controller, engine::Camera* camera) : ship_controller(player_controller), camera(camera) {}
+            ShipCameraController(PlayerShipController* player_controller, engine::Camera* camera) : ship_controller(player_controller), camera(camera) {}
             void Update() override;
 
         private:

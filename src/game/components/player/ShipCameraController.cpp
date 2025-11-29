@@ -1,4 +1,4 @@
-#include "SpaceshipCameraController.hpp"
+#include "ShipCameraController.hpp"
 #include <engine/EngineController.hpp>
 #include <engine/math/linalg.hpp>
 #include <cmath>
@@ -8,7 +8,7 @@ using engine::Vec3;
 using engine::Quaternion;
 using engine::Transform;
 
-void SpaceshipCameraController::Update() {
+void ShipCameraController::Update() {
     Transform& ship_transform = this->ship_controller->get_vobject()->transform();
     Quaternion ship_quat = ship_transform.get_quaternion();
     Transform& cam_transform = this->camera->get_vobject()->transform();

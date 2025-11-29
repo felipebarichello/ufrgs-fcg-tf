@@ -47,7 +47,7 @@ VObjectConfig Player(Camera* humanoid_camera, Camera* ship_camera) {
         .component(angular_velocity)
         .component(kinematic)
         .child(spaceship_obj)
-        .child(VObjectConfig().component(new SpaceshipCameraController(player_ship, ship_camera)))
+        .child(VObjectConfig().component(new ShipCameraController(player_ship, ship_camera)))
         .child(VObjectConfig()
             .transform(TransformBuilder()
                 .position(Vec3(0.0f, height, 0.0f)))

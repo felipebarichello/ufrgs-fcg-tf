@@ -3,7 +3,7 @@
 #include <engine>
 #include <glm/gtc/type_ptr.hpp>
 #include <vector>
-#include <game/components/player/SpaceshipCameraController.hpp>
+#include <game/components/player/ShipCameraController.hpp>
 
 class SpaceParticles : public engine::Drawable {
 public:
