@@ -153,6 +153,8 @@ namespace game::components {
     }
 
     void HumanoidPlayerController::OnEnable() {
+        this->set_camera_theta(0.0f);
+        this->set_camera_phi(0.0f);
         this->walker->enable();
     }
 
