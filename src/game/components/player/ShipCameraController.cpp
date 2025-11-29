@@ -66,5 +66,5 @@ void ShipCameraController::OnEnable() {
     Transform& human_cam_transf = this->humanoid_camera->get_vobject()->transform();
     Transform& ship_cam_transf = this->camera->get_vobject()->transform();
     ship_cam_transf.set_world_position(human_cam_transf.get_world_position());
-    ship_cam_transf.local_quaternion() = human_cam_transf.get_local_quaternion();
+    ship_cam_transf.set_world_quaternion(human_cam_transf.get_world_quaternion());
 }

@@ -42,6 +42,9 @@ namespace engine {
                 return this->_quaternion;
             }
 
+            Quaternion get_world_quaternion();
+            void set_world_quaternion(const Quaternion& quat);
+
             Vec3 get_scale() const {
                 return this->_scale;
             }

@@ -28,6 +28,31 @@ void Transform::set_world_position(const Vec3& new_pos) {
     this->dirty = true;
 }
 
+Quaternion Transform::get_world_quaternion() {
+    auto parent_opt = this->get_parent();
+    if (parent_opt) {
+        Transform* parent_transform = parent_opt.value();
+        Quaternion parent_world_quat = parent_transform->get_world_quaternion();
+        return parent_world_quat * this->_quaternion;
+    } else {
+        return this->_quaternion;
+    }
+}
+
+void Transform::set_world_quaternion(const Quaternion& quat) {
+    auto parent_opt = this->get_parent();
+    if (parent_opt) {
+        Transform* parent_transform = parent_opt.value();
+        Quaternion parent_world_quat = parent_transform->get_world_quaternion();
+        Quaternion parent_world_conjugate = parent_world_quat.conjugated();
+        this->_quaternion = parent_world_conjugate * quat;
+    } else {
+        this->_quaternion = quat;
+    }
+
+    this->dirty = true;
+}
+
 Mat4 Transform::get_model_matrix() {
     if (this->dirty) {
         this->update_matrix();
