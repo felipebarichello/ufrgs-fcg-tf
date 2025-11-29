@@ -84,7 +84,6 @@ namespace game::scenes {
 
         Camera* humanoid_camera = new Camera();
         Camera* ship_camera = new Camera();
-        Camera::set_main(humanoid_camera);
 
         std::vector<PlanetInfo*>& planets = scenes::main_scene::planets;
         planets.push_back(new PlanetInfo(70.0e12f, MAIN_PLANET_RADIUS));

@@ -10,7 +10,10 @@ using namespace engine;
 namespace game::components {
 
     void PlayerController::Awake() {
-        // Texts setup
+        // Set main camera to humanoid camera at start
+        Camera::set_main(this->humanoid_cam);
+
+        /* HUD setup */
 
         this->game_over_text = new TextDrawable();
         this->game_over_text->setText(std::string(""), 1.8f, Vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
