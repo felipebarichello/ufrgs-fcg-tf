@@ -28,6 +28,7 @@ void ShipCameraController::PostUpdate() {
             this->is_animating = false;
         } else {
             float t = this->animation_timer / this->animation_time;
+            float eased_t = engine::ease_out_quad(t);
 
             Vec3 point_2 = Vec3(
                 0.0f,
@@ -46,7 +47,7 @@ void ShipCameraController::PostUpdate() {
                 point_2,
                 point_3,
                 cam_offset,
-                t
+                eased_t
             );
         }
     }
