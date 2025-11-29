@@ -8,16 +8,63 @@ using engine::Vec3;
 using engine::Quaternion;
 using engine::Transform;
 
-void ShipCameraController::Update() {
+void ShipCameraController::PostUpdate() {
     Transform& ship_transform = this->get_vobject()->transform();
     Quaternion ship_quat = ship_transform.get_quaternion();
     Transform& cam_transform = this->camera->get_vobject()->transform();
-    Vec3 up_dir = ship_quat.rotate(Vec3(0.0f, 1.0f, 0.0f));
 
+    // Smoothly rotate camera to match ship orientation
     Quaternion new_cam_quat = Quaternion::slerp(cam_transform.quaternion(), ship_quat, this->camera_rotation_smooth);
-    Vec3 inert_cam_offset = new_cam_quat.rotate(Vec3(0.0f, 0.0f, this->default_distance));
-    Vec3 total_cam_offset = inert_cam_offset + up_dir * this->vertical_offset;
+
+    Vec3 cam_offset = Vec3(0.0f, this->vertical_offset, this->default_distance);
+
+    /* Handle animation if applicable */
+
+    if (this->is_animating) {
+        float dt = engine::EngineController::get_delta_time();
+        this->animation_timer += dt;
+
+        if (this->animation_timer >= this->animation_time) {
+            this->is_animating = false;
+        } else {
+            float t = this->animation_timer / this->animation_time;
+
+            Vec3 point_2 = Vec3(
+                0.0f,
+                this->animation_bezier_2.x,
+                this->animation_bezier_2.y
+            );
+
+            Vec3 point_3 = Vec3(
+                0.0f,
+                this->animation_bezier_3.x,
+                this->animation_bezier_3.y
+            );
+
+            cam_offset = engine::bezier3(
+                Vec3(0.0f, 0.0f, 0.0f),
+                point_2,
+                point_3,
+                cam_offset,
+                t
+            );
+        }
+    }
     
-    cam_transform.set_world_position(ship_transform.get_world_position() + total_cam_offset);
+    /* Update transform */
+
+    cam_offset = new_cam_quat.rotate(cam_offset);
+    cam_transform.set_world_position(ship_transform.get_world_position() + cam_offset);
     cam_transform.quaternion() = new_cam_quat;
+}
+
+void ShipCameraController::OnEnable() {
+    this->animation_timer = 0.0f;
+    this->is_animating = true;
+
+    // Set ship camera to humanoid camera position
+    Transform& human_cam_transf = this->humanoid_camera->get_vobject()->transform();
+    Transform& ship_cam_transf = this->camera->get_vobject()->transform();
+    ship_cam_transf.set_world_position(human_cam_transf.get_world_position());
+    ship_cam_transf.quaternion() = human_cam_transf.get_quaternion();
 }

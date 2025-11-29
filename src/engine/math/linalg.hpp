@@ -48,6 +48,21 @@ namespace engine {
 
     engine::Mat4 h_ortographic_matrix(float l, float r, float b, float t, float n, float f);
 
+    /// @brief Assumes t in [0, 1]
+    /// @param p0 
+    /// @param p1 
+    /// @param p2 
+    /// @param p3 
+    /// @param t 
+    /// @return 
+    engine::Vec3 bezier3(
+        const engine::Vec3& p0,
+        const engine::Vec3& p1,
+        const engine::Vec3& p2,
+        const engine::Vec3& p3,
+        float t
+    );
+
     std::string to_string(const Vec2& v);
     std::string to_string(const Vec3& v);
     std::string to_string(const Mat4& m);

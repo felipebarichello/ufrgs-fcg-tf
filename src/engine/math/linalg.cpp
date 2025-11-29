@@ -259,6 +259,26 @@ namespace engine {
 
         return M;
     }
+
+    Vec3 bezier3(
+        const Vec3& p0,
+        const Vec3& p1,
+        const Vec3& p2,
+        const Vec3& p3,
+        float t
+    ) {
+        float u = 1.0f - t;
+        float b0 = u * u * u;
+        float b1 = 3.0f * t * u * u;
+        float b2 = 3.0f * t * t * u;
+        float b3 = t * t * t;
+
+        return Vec3(
+            b0 * p0.x + b1 * p1.x + b2 * p2.x + b3 * p3.x,
+            b0 * p0.y + b1 * p1.y + b2 * p2.y + b3 * p3.y,
+            b0 * p0.z + b1 * p1.z + b2 * p2.z + b3 * p3.z
+        );
+    }
     
     std::string to_string(const Vec2& v) {
         std::ostringstream os;

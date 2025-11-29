@@ -26,7 +26,7 @@ VObjectConfig Player(Camera* humanoid_camera, Camera* ship_camera) {
     AngularVelocity* angular_velocity = new AngularVelocity();
     
     SpaceshipController* ship_ctl = new SpaceshipController(kinematic, angular_velocity);
-    ShipCameraController* ship_cam_ctl = new ShipCameraController(ship_camera);
+    ShipCameraController* ship_cam_ctl = new ShipCameraController(ship_camera, humanoid_camera);
     PlayerShipController* player_ship = new PlayerShipController(ship_ctl, ship_cam_ctl, ship_drawable, ship_collider);
     WalkerController* walker = new WalkerController(kinematic, gravity, point_collider);
     HumanoidPlayerController* humanoid_controller = new HumanoidPlayerController(humanoid_camera, walker, angular_velocity, cylinder_collider);
