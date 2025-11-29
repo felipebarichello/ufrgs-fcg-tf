@@ -80,7 +80,7 @@ VObjectConfig SkyBox() {
 
 namespace game::scenes {
     void MainScene::hierarchy(SceneRoot& root) {
-        const float planet_model_normalize = 1.0f; // Very precise estimate
+        const float planet_model_normalize = 1.0f;
 
         Camera* humanoid_camera = new Camera();
         Camera* ship_camera = new Camera();
