@@ -70,7 +70,7 @@ namespace game::components {
         if (was_humanoid) {
             float phi = this->humanoid->get_camera_phi();
             Quaternion rotation_adjustment = Quaternion::from_x_rotation(phi);
-            this->get_vobject()->transform().quaternion().local_compose(rotation_adjustment);
+            this->get_vobject()->transform().local_quaternion().local_compose(rotation_adjustment);
             this->humanoid->reset_camera_phi();
             
             this->humanoid->disable();

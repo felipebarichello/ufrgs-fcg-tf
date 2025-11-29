@@ -33,11 +33,11 @@ namespace engine {
 
             void set_world_position(const Vec3& pos);
 
-            Quaternion get_quaternion() const {
+            Quaternion get_local_quaternion() const {
                 return this->_quaternion;
             }
 
-            Quaternion& quaternion() {
+            Quaternion& local_quaternion() {
                 this->dirty = true;
                 return this->_quaternion;
             }

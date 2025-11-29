@@ -24,7 +24,7 @@ SpaceParticles::SpaceParticles(int max_particles) {
     engine::Quaternion cam_q = engine::Quaternion::identity();
     if (cam && cam->get_vobject() != nullptr) {
         cam_pos = cam->get_vobject()->transform().get_local_position();
-        cam_q = cam->get_vobject()->transform().get_quaternion();
+        cam_q = cam->get_vobject()->transform().get_local_quaternion();
     }
 
     engine::Vec3 forward = cam_q.rotate(engine::Vec3(0.0f, 0.0f, -1.0f));
@@ -75,7 +75,7 @@ void SpaceParticles::update() {
     engine::Vec3 camera_up = engine::Vec3(0.0f, 1.0f, 0.0f);
     engine::Vec3 camera_postion = engine::Vec3(0.0f);
     if (camera && camera->get_vobject() != nullptr) {
-        auto q = camera->get_vobject()->transform().get_quaternion();
+        auto q = camera->get_vobject()->transform().get_local_quaternion();
         camera_forward = normalize(q.rotate(engine::Vec3(0.0f, 0.0f, -1.0f)));
         camera_right = normalize(q.rotate(engine::Vec3(1.0f, 0.0f, 0.0f)));
         camera_up = normalize(q.rotate(engine::Vec3(0.0f, 1.0f, 0.0f)));

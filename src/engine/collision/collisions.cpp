@@ -113,8 +113,8 @@ namespace engine::collision {
         Vec3 pos2 = vobj2->transform().get_world_position();
 
         // Axes (apply rotation)
-        Vec3 axis1 = vobj1->transform().get_quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
-        Vec3 axis2 = vobj2->transform().get_quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
+        Vec3 axis1 = vobj1->transform().get_local_quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
+        Vec3 axis2 = vobj2->transform().get_local_quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
 
         // Segment endpoints for the axes
         Vec3 a1 = pos1;
@@ -137,7 +137,7 @@ namespace engine::collision {
         Vec3 sphere_pos = sphere_vobj->transform().get_world_position();
 
         // Cylinder axis and scale
-        Vec3 axis = cylinder_vobj->transform().get_quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
+        Vec3 axis = cylinder_vobj->transform().get_local_quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
         float cyl_radius = cyl.get_radius();
 
         float sphere_radius = sphere.get_radius();

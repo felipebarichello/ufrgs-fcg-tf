@@ -42,14 +42,14 @@ namespace game::components {
         Vec3 dir = to_target / dist;
 
         // Project direction onto local tangent (use the VObject's current up as the surface normal proxy).
-        Vec3 up = transform.quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
+        Vec3 up = transform.local_quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
         Vec3 dir_horiz = dir - engine::dot(dir, up) * up;
         float len = engine::norm(dir_horiz);
         Vec3 projected = (len < 1e-6f) ? Vec3(0.0f) : dir_horiz / len;
 
         // Determine local forward/right basis
-        Vec3 forward = transform.quaternion().rotate(Vec3(0.0f, 0.0f, -1.0f));
-        Vec3 right = transform.quaternion().rotate(Vec3(1.0f, 0.0f, 0.0f));
+        Vec3 forward = transform.local_quaternion().rotate(Vec3(0.0f, 0.0f, -1.0f));
+        Vec3 right = transform.local_quaternion().rotate(Vec3(1.0f, 0.0f, 0.0f));
 
         float forward_comp = engine::dot(projected, forward);
         float right_comp = engine::dot(projected, right);
@@ -71,7 +71,7 @@ namespace game::components {
         }
 
         // Also rotate the VObject to face the movement direction (projected)
-        Quaternion& quaternion = transform.quaternion();
+        Quaternion& quaternion = transform.local_quaternion();
         // Recompute forward projection onto tangent plane
         Vec3 forward_proj = forward - engine::dot(forward, up) * up;
         float fwd_len = engine::norm(forward_proj);

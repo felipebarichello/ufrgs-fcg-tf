@@ -56,7 +56,7 @@ namespace game::components {
         Transform& transform = this->get_vobject()->transform();
         if (!this->grounded_to.has_value()) return;
 
-        Quaternion& quaternion = transform.quaternion();
+        Quaternion& quaternion = transform.local_quaternion();
 
         Vec3 front_of_player = quaternion.rotate(Vec3(0.0f, 0.0f, -1.0f));
         Vec3 right_of_player = quaternion.rotate(Vec3(1.0f, 0.0f, 0.0f));
@@ -85,7 +85,7 @@ namespace game::components {
         }
 
         { // Deaccelerate in the direction orthogonal to movement and when stopped (and also when moving opposite)
-            Vec3 up = transform.quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
+            Vec3 up = transform.local_quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
             Vec3 horizontal_velocity = this->kinematic->get_velocity() - engine::dot(this->kinematic->get_velocity(), up) * up;
 
             if (engine::is_zero(move_vector_3d)) {
@@ -169,7 +169,7 @@ namespace game::components {
     void WalkerController::align_to_closest_planet() {
         Transform& transform = this->get_vobject()->transform();
         Vec3 world_pos = transform.get_world_position();
-        Quaternion& quaternion = transform.quaternion();
+        Quaternion& quaternion = transform.local_quaternion();
         Vec3 current_up = quaternion.rotate(Vec3(0.0f, 1.0f, 0.0f));
 
         if (this->grounded_to.has_value()) {

@@ -36,7 +36,7 @@ namespace game::components {
             this->angular->reset();
 
             // Align to camera theta
-            Quaternion& quat = this->get_vobject()->transform().quaternion();
+            Quaternion& quat = this->get_vobject()->transform().local_quaternion();
             quat.local_compose(Quaternion::from_y_rotation(this->camera_theta));
             this->set_camera_theta(0.0f);
         }
@@ -44,7 +44,7 @@ namespace game::components {
 
     void HumanoidPlayerController::handle_input() {
         Transform& transform = this->get_vobject()->transform();
-        Quaternion& quaternion = transform.quaternion();
+        Quaternion& quaternion = transform.local_quaternion();
         Transform& cam_transform = this->camera->get_vobject()->transform();
 
         /* Camera (attached) movement */
@@ -79,13 +79,13 @@ namespace game::components {
 
             // Apply offset in local camera space based on stored child transform
             cam_transform.local_position() = this->stored_child_cam_transform.get_local_position();
-            cam_transform.local_position() += cam_transform.quaternion().rotate(Vec3(bob_x, bob_y, 0.0f));
+            cam_transform.local_position() += cam_transform.local_quaternion().rotate(Vec3(bob_x, bob_y, 0.0f));
         }
     }
 
     void HumanoidPlayerController::update_released_camera() {
         Transform& cam_transform = this->camera->get_vobject()->transform();
-        Quaternion& cam_quaternion = cam_transform.quaternion();
+        Quaternion& cam_quaternion = cam_transform.local_quaternion();
 
         SphericalCoords spherical = this->get_spherical_input();
         cam_quaternion.local_compose(Quaternion::from_y_rotation(spherical.delta_theta));
@@ -124,8 +124,8 @@ namespace game::components {
 
     void HumanoidPlayerController::update_camera() {
         Transform& cam_transform = this->camera->get_vobject()->transform();
-        cam_transform.quaternion() = Quaternion::from_y_rotation(this->camera_theta) * Quaternion::from_x_rotation(this->camera_phi);
-        cam_transform.quaternion().normalize();
+        cam_transform.local_quaternion() = Quaternion::from_y_rotation(this->camera_theta) * Quaternion::from_x_rotation(this->camera_phi);
+        cam_transform.local_quaternion().normalize();
     }
 
     void HumanoidPlayerController::on_jump_pressed() {
@@ -145,7 +145,7 @@ namespace game::components {
 
             // Keep transform after disowning
             cam_transf.copy_values_from(player_transform);
-            cam_transf.set_world_position(cam_transf.get_world_position() + cam_transf.quaternion().rotate(this->stored_child_cam_transform.get_world_position()));
+            cam_transf.set_world_position(cam_transf.get_world_position() + cam_transf.local_quaternion().rotate(this->stored_child_cam_transform.get_world_position()));
         } else {
             this->get_vobject()->add_child(this->camera->get_vobject());
             cam_transf.copy_values_from(this->stored_child_cam_transform);

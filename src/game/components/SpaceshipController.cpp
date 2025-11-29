@@ -16,7 +16,7 @@ namespace game::components {
         if (this->fuel > 0.0f) {
             float dt = EngineController::get_delta_time();
             Transform& transform = this->get_vobject()->transform();
-            Vec3 forward = transform.get_quaternion().rotate(Vec3(0.0f, 0.0f, -1.0f));
+            Vec3 forward = transform.get_local_quaternion().rotate(Vec3(0.0f, 0.0f, -1.0f));
 
             ShipCommand& cmd = this->command;
 

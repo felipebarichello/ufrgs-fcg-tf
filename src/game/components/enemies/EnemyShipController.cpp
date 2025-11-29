@@ -79,9 +79,9 @@ namespace game::components {
 
         Vec3 pred_dir_to_pl = pred_vec_to_pl / pred_dist_to_pl;
         
-        Vec3 cur_forward_dir = transform.quaternion().rotate(Vec3(0.0f, 0.0f, -1.0f));
+        Vec3 cur_forward_dir = transform.local_quaternion().rotate(Vec3(0.0f, 0.0f, -1.0f));
         Quaternion cur_adjust_quat = Quaternion::from_unit_vectors(cur_forward_dir, pred_dir_to_pl);
-        Quaternion cur_adjust_local = transform.quaternion().conjugated() * cur_adjust_quat * transform.quaternion();
+        Quaternion cur_adjust_local = transform.local_quaternion().conjugated() * cur_adjust_quat * transform.local_quaternion();
         Vec3 cur_adjust_euler = cur_adjust_local.to_euler_zyx();
 
         Vec3 pred_en_euler = angular.euler_angles() * this->prediction_time;

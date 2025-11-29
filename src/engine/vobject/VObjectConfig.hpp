@@ -30,7 +30,7 @@ namespace engine {
             }
 
             TransformBuilder& rotation(const Quaternion& q) {
-                inner.quaternion() = q;
+                inner.local_quaternion() = q;
                 return *this;
             }
     };
