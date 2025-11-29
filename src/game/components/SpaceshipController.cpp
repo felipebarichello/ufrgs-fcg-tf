@@ -35,7 +35,6 @@ namespace game::components {
             if (cmd.rolling_left) {
                 this->fuel -= dt * this->roll_fuel_consumption;
                 roll_velocity -= roll_power * dt;
-
             }
             if (cmd.rolling_right) {
                 this->fuel -= dt * this->roll_fuel_consumption;
