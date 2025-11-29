@@ -12,7 +12,7 @@ using namespace engine;
 using namespace game::components;
 using namespace game::instantiators;
 
-VObjectConfig Player(Camera* humanoid_camera, Camera* ship_camera, PlayerShipController*& player_ship) {
+VObjectConfig Player(Camera* humanoid_camera, Camera* ship_camera) {
     const float height = 1.8f;
 
     KinematicBody* kinematic = new KinematicBody();
@@ -26,7 +26,7 @@ VObjectConfig Player(Camera* humanoid_camera, Camera* ship_camera, PlayerShipCon
     AngularVelocity* angular_velocity = new AngularVelocity();
     
     SpaceshipController* ship_ctrl = new SpaceshipController(kinematic, angular_velocity);
-    player_ship = new PlayerShipController(ship_ctrl, ship_drawable, ship_collider);
+    PlayerShipController* player_ship = new PlayerShipController(ship_ctrl, ship_drawable, ship_collider);
     WalkerController* walker = new WalkerController(kinematic, gravity, point_collider);
     HumanoidPlayerController* humanoid_controller = new HumanoidPlayerController(humanoid_camera, walker, angular_velocity, cylinder_collider);
     PlayerController* player_ctl = new PlayerController(humanoid_controller, player_ship, humanoid_camera, ship_camera);
@@ -47,6 +47,7 @@ VObjectConfig Player(Camera* humanoid_camera, Camera* ship_camera, PlayerShipCon
         .component(angular_velocity)
         .component(kinematic)
         .child(spaceship_obj)
+        .child(VObjectConfig().component(new SpaceshipCameraController(player_ship, ship_camera)))
         .child(VObjectConfig()
             .transform(TransformBuilder()
                 .position(Vec3(0.0f, height, 0.0f)))
@@ -96,11 +97,8 @@ namespace game::scenes {
         planets.push_back(new PlanetInfo(28.0e12f, PLANET_7_RADIUS));
         planets.push_back(new PlanetInfo(50.0e12f, PLANET_8_RADIUS));
 
-        PlayerShipController* ship_ref = nullptr;
-
         root
-            .vobject(Player(humanoid_camera, ship_camera, ship_ref))
-            .vobject(VObjectConfig().component(new SpaceshipCameraController(ship_ref, ship_camera)))
+            .vobject(Player(humanoid_camera, ship_camera))
             .vobject(VObjectConfig().component(ship_camera))
             .vobject(SkyBox())
             .vobject(EnemyShip())
