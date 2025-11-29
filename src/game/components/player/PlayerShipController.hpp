@@ -8,11 +8,12 @@
 #include <game/components/physics/AngularVelocity.hpp>
 #include <game/components/SpaceshipController.hpp>
 #include <game/scenes/MainScene_vars.hpp>
+#include "ShipCameraController.hpp"
 
 namespace game::components {
     class PlayerShipController : public engine::Behavior {
         public:
-            PlayerShipController(SpaceshipController* ship_controller, engine::ObjDrawable* model, engine::CylinderCollider* cylinder_collider) : ship_controller(ship_controller), planets(scenes::main_scene::planets), cylinder_collider(cylinder_collider), model(model) {}
+            PlayerShipController(SpaceshipController* ship_controller, ShipCameraController* ship_camera_controller, engine::ObjDrawable* model, engine::CylinderCollider* cylinder_collider) : ship_controller(ship_controller), camera_controller(ship_camera_controller), planets(scenes::main_scene::planets), cylinder_collider(cylinder_collider), model(model) {}
             void Awake() override;
             void Start() override;
             void Update() override;
@@ -31,15 +32,15 @@ namespace game::components {
             AngularVelocity* angular;
             ShipCommand* ship_command;
 
+            ShipCameraController* camera_controller;
             std::vector<PlanetInfo*> planets;
             engine::CylinderCollider* cylinder_collider;
+            engine::ObjDrawable* model;
 
             SphericalCoords smooth_spherical_input;
             float theta_lerp = 0.2f;
             float phi_lerp = 0.2f;
 
-            engine::ObjDrawable* model;
-            
             float v_sensitivity = 0.001f;
             float h_sensitivity = 0.001f;
 

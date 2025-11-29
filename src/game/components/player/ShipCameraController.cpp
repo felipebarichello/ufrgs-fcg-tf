@@ -9,7 +9,7 @@ using engine::Quaternion;
 using engine::Transform;
 
 void ShipCameraController::Update() {
-    Transform& ship_transform = this->ship_controller->get_vobject()->transform();
+    Transform& ship_transform = this->get_vobject()->transform();
     Quaternion ship_quat = ship_transform.get_quaternion();
     Transform& cam_transform = this->camera->get_vobject()->transform();
     Vec3 up_dir = ship_quat.rotate(Vec3(0.0f, 1.0f, 0.0f));

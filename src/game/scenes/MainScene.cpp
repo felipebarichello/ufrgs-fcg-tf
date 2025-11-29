@@ -25,8 +25,9 @@ VObjectConfig Player(Camera* humanoid_camera, Camera* ship_camera) {
     engine::CylinderCollider* ship_collider = new engine::CylinderCollider(2.0f, 1.0f);
     AngularVelocity* angular_velocity = new AngularVelocity();
     
-    SpaceshipController* ship_ctrl = new SpaceshipController(kinematic, angular_velocity);
-    PlayerShipController* player_ship = new PlayerShipController(ship_ctrl, ship_drawable, ship_collider);
+    SpaceshipController* ship_ctl = new SpaceshipController(kinematic, angular_velocity);
+    ShipCameraController* ship_cam_ctl = new ShipCameraController(ship_camera);
+    PlayerShipController* player_ship = new PlayerShipController(ship_ctl, ship_cam_ctl, ship_drawable, ship_collider);
     WalkerController* walker = new WalkerController(kinematic, gravity, point_collider);
     HumanoidPlayerController* humanoid_controller = new HumanoidPlayerController(humanoid_camera, walker, angular_velocity, cylinder_collider);
     PlayerController* player_ctl = new PlayerController(humanoid_controller, player_ship, humanoid_camera, ship_camera);
@@ -41,12 +42,12 @@ VObjectConfig Player(Camera* humanoid_camera, Camera* ship_camera) {
         .component(point_collider)
         .component(cylinder_collider)
         .component(ship_collider)
-        .component(ship_ctrl)
+        .component(ship_ctl)
         .component(player_ctl)
         .component(gravity)
         .component(angular_velocity)
         .component(kinematic)
-        .component(new ShipCameraController(player_ship, ship_camera))
+        .component(ship_cam_ctl)
         .child(spaceship_obj)
         .child(VObjectConfig()
             .transform(TransformBuilder()

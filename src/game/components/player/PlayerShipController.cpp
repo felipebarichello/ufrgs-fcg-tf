@@ -62,10 +62,12 @@ namespace game::components {
     void PlayerShipController::OnEnable() {
         this->model->set_visible();
         this->ship_controller->enable();
+        this->camera_controller->enable();
     }
 
     void PlayerShipController::OnDisable() {
         this->model->set_invisible();
+        this->camera_controller->disable();
         this->ship_controller->disable();
     }
 
