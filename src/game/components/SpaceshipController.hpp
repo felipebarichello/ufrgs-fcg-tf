@@ -21,12 +21,12 @@ namespace game::components {
 
     class SpaceshipController : public engine::Behavior {
         public:
-            float thrust_power = 50.0f; // meters/s^2 applied when thrusting
-            float roll_power = 8.0f; // radians/s^2 applied when rolling
+            float thrust_accel = 50.0f; // meters/s^2 applied when thrusting
+            float roll_accel = 8.0f; // radians/s^2 applied when rolling
             float auto_unroll_factor = 1.0f; // Ratio of current angular velocity corrected per second when not rolling
             float critical_roll_velocity = 10.0f; // radians/s before ship is destroyed
-            float vertical_steer_power = 50.0f; // radians/s applied per unit of vertical input
-            float horizontal_steer_power = 50.0f; // radians/s applied per unit of horizontal input
+            float vertical_steer_accel = 50.0f; // radians/s applied per unit of vertical input
+            float horizontal_steer_accel = 50.0f; // radians/s applied per unit of horizontal input
 
             float fuel = 200.0f;
             float thrust_fuel_consumption = 10.0f; // units per second when thrusting

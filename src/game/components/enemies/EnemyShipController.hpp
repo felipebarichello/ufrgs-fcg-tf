@@ -33,8 +33,10 @@ namespace game::components {
             std::vector<PlanetInfo*> planets;
             engine::CylinderCollider* cylinder_collider;
 
+            float catch_speed = 0.5f; // Desired meters per second when touching player
+            float max_steer_velocity = 4.0f; // Radians per second of max steering input
             float facing_player_threshold = 0.8f; // Dot product within which to consider "facing player" for thrusting
-            float prediction_time = 1.0f; // Seconds to look ahead for collisions
+            float prediction_time = 1.0f; // Seconds to look ahead for player and enemy state
             float roll_error_tolerance = 0.1f; // Predicted radians of error allowed before rolling to correct
 
             void test_planet_collisions();

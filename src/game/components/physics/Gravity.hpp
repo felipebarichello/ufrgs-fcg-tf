@@ -11,7 +11,8 @@ namespace game::components {
     class Gravity : public engine::Behavior {
         public:
             // Gravity / grounding
-            static constexpr float GRAVITATIONAL_CONSTANT = 6.6743e-11f;
+            // static constexpr float GRAVITATIONAL_CONSTANT = 6.6743e-11f;
+            static constexpr float GRAVITATIONAL_CONSTANT = 0.0f;
 
             Gravity(KinematicBody* kinematic) : kinematic(kinematic), planets(scenes::main_scene::planets) {}
             // Gravity(KinematicBody* kinematic, std::vector<PlanetInfo*> planets) : kinematic(kinematic), planets(planets) {}
