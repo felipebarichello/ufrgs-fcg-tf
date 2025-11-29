@@ -19,9 +19,11 @@ namespace game::components {
             float default_distance = 10.0f;
 
             /// @brief Time in seconds for the camera displacement animation when switching to ship
-            float animation_time = 1.0f;
+            float animation_time = 0.5f;
+
             engine::Vec2 animation_bezier_2 = engine::Vec2(0.5f, 0.0f);
             engine::Vec2 animation_bezier_3 = engine::Vec2(0.8f, 0.8f);
+
             float animation_timer = 0.0f;
             bool is_animating = false;
     };
