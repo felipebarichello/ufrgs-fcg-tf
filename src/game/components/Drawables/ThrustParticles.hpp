@@ -31,8 +31,10 @@ namespace game::components {
             engine::Vec3 thruster_offset = engine::Vec3(0.0f, 0.0f, 2.0f); // Offset in thruster local coords from center of thruster Transform to get thruster position
             engine::Vec3 thruster_normal = engine::Vec3(0.0f, 0.0f, 1.0f); // Direction the thruster points to in thruster local coords
             float particles_per_second = 70.0f;
-            // accumulator for fractional particle spawns between frames
+
+            // Accumulator for fractional particle spawns between frames
             float spawn_accumulator = 0.0f;
+
             float thruster_radius = 1.0f; // radius of emission circle behind ship
             float min_particle_speed = 20.0f;
             float max_particle_speed = 50.0f;
