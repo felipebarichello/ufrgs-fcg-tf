@@ -32,6 +32,8 @@ namespace game::components {
             engine::Vec3 thruster_normal = engine::Vec3(0.0f, 0.0f, 1.0f); // Direction the thruster points to in thruster local coords
             float particles_per_second = 50.0f;
             float thruster_radius = 1.0f; // radius of emission circle behind ship
+            float min_particle_speed = 20.0f;
+            float max_particle_speed = 50.0f;
             float min_particle_decay_rate = 0.25f;   // seconds
             float max_particle_decay_rate = 2.0f;    // seconds
             float max_particle_size = 2.0f;
