@@ -196,7 +196,7 @@ namespace game::components {
             if (t < 0.0f) t = 0.0f;
             if (t > 1.0f) t = 1.0f;
             engine::Vec3 col = this->initial_color * (1.0f - t) + this->final_color * t;
-            float alpha = 1.0f - t * 1.0f; // fade out towards end of life
+            float alpha = 1.0f - std::pow(t * 1.0f, 4.0f); // fade out towards end of life
             engine::Vec4 color4(col.x, col.y, col.z, alpha);
             if (color_uniform != -1) glUniform4fv(color_uniform, 1, glm::value_ptr(color4));
 

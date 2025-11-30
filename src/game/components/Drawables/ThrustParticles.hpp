@@ -32,7 +32,7 @@ namespace game::components {
 
             engine::Vec3 thruster_offset = engine::Vec3(0.0f, 0.0f, 3.3f); // Offset in thruster local coords from center of thruster Transform to get thruster position
             engine::Vec3 thruster_normal = engine::Vec3(0.0f, 0.0f, 1.0f); // Direction the thruster points to in thruster local coords
-            float particles_per_second = 200.0f;
+            float particles_per_second = 100.0f;
             float thruster_radius = 1.0f; // radius of emission circle behind ship
             // Controls how widely particles are scattered around the thruster axis.
             // Larger values produce a wider cone of emission.
@@ -41,8 +41,8 @@ namespace game::components {
             float spawn_depth = 0.1f;
             float min_particle_speed = 20.0f;
             float max_particle_speed = 50.0f;
-            float min_particle_decay_time = 0.25f;   // seconds
-            float max_particle_decay_time = 1.0f;    // seconds
+            float min_particle_decay_time = 0.1f;   // seconds
+            float max_particle_decay_time = 0.2f;    // seconds
             float max_particle_size = 1.0f;
             engine::Vec3 initial_color = {0.267f, 0.278f, 0.647f}; // #4447a5ff
             engine::Vec3 final_color  = {0.957f, 0.694f, 0.071f};  // #f4b112ff
