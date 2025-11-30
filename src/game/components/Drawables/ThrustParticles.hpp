@@ -13,6 +13,8 @@ namespace game::components {
             ThrustParticles(SpaceshipController* ship_controller);
             ~ThrustParticles();
 
+            bool is_transparent() const override { return true; }
+
             void update();
             void draw() override;
 

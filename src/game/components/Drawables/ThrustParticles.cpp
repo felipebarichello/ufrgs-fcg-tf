@@ -173,10 +173,6 @@ namespace game::components {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE);
         glEnable(GL_PROGRAM_POINT_SIZE);
 
-        // Disable depth testing so exhaust renders on top (restore after)
-        GLboolean depth_was_enabled = glIsEnabled(GL_DEPTH_TEST);
-        if (depth_was_enabled) glDisable(GL_DEPTH_TEST);
-
         for (const auto& particle : particles) {
             // supply size to shader via uniform when available
             // scale up particle size for better visibility
@@ -208,8 +204,7 @@ namespace game::components {
             }
         }
 
-        // Restore depth test and blending state
-        if (depth_was_enabled) glEnable(GL_DEPTH_TEST);
+        // Restore blend and point size state
         glDisable(GL_BLEND);
         glDisable(GL_PROGRAM_POINT_SIZE);
     }

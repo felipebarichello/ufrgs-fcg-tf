@@ -461,8 +461,15 @@ namespace engine {
     void EngineController::draw() {
         EngineController::update_main_camera();
 
+        // Two-pass rendering: first opaque drawables, then transparent drawables.
+        // This ensures transparent objects (particles) are rendered after opaque
+        // geometry so blending + depth-testing behave correctly.
         for (const auto& drawable : EngineController::drawables) {
-            drawable->draw();
+            if (!drawable->is_transparent()) drawable->draw();
+        }
+
+        for (const auto& drawable : EngineController::drawables) {
+            if (drawable->is_transparent()) drawable->draw();
         }
     }
 
