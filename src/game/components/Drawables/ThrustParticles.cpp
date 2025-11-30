@@ -43,10 +43,14 @@ namespace game::components {
         engine::Vec3 emit_right = normalize(q.rotate(engine::Vec3(1.0f, 0.0f, 0.0f)));
         engine::Vec3 emit_up = normalize(q.rotate(engine::Vec3(0.0f, 1.0f, 0.0f)));
 
-        // Lazily initialize particle pool around the thruster if empty and thrusting
-        if (particles.empty() && thrusting) {
-            const int pool_size = 64;
-            for (int i = 0; i < pool_size; ++i) {
+        // Spawn particles based on particles_per_second while thrusting.
+        if (thrusting) {
+            float spawn_f = this->particles_per_second * delta_time + this->spawn_accumulator;
+            int to_spawn = static_cast<int>(spawn_f);
+            this->spawn_accumulator = spawn_f - static_cast<float>(to_spawn);
+
+            for (int s = 0; s < to_spawn; ++s) {
+                // random lateral offset
                 float radial_distance = static_cast<float>(rand()) / RAND_MAX * this->thruster_radius;
                 float angle = (static_cast<float>(rand()) / RAND_MAX) * 2.0f * 3.1415926f;
                 float rx = std::cos(angle) * radial_distance;
@@ -56,7 +60,7 @@ namespace game::components {
 
                 // Compute world-space base position using local offset
                 Vec3 base_pos = emit_pos + q.rotate(this->thruster_offset);
-                Vec3 forward_world = this->thruster_normal;
+                Vec3 forward_world = q.rotate(this->thruster_normal);
 
                 Vec3 jitter = normalize(Vec3(
                     (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * 0.3f,
@@ -65,17 +69,29 @@ namespace game::components {
                 ));
 
                 Vec3 dir = normalize(-forward_world + jitter);
-                float speed = this->min_particle_speed + (static_cast<float>(rand()) / RAND_MAX) * (this->max_particle_speed - this->min_particle_speed); // arbitrary speed range
+                float speed = this->min_particle_speed + (static_cast<float>(rand()) / RAND_MAX) * (this->max_particle_speed - this->min_particle_speed);
 
                 float decay = min_particle_decay_rate + (static_cast<float>(rand()) / RAND_MAX) * (max_particle_decay_rate - min_particle_decay_rate);
                 float size = max_particle_size * (static_cast<float>(rand()) / RAND_MAX);
-                particles.emplace_back(Particle {
+
+                Particle newp = Particle {
                     .position = base_pos + forward_world * (-depth) + emit_right * rx + emit_up * ry,
                     .velocity = dir * speed + ship_velocity,
                     .decay_time = decay,
                     .size = size,
                     .age = 0.0f,
-                });
+                };
+
+                // try to reuse an expired particle slot first
+                bool placed = false;
+                for (auto &pp : particles) {
+                    if (pp.age >= pp.decay_time) {
+                        pp = newp;
+                        placed = true;
+                        break;
+                    }
+                }
+                if (!placed) particles.push_back(newp);
             }
         }
 
