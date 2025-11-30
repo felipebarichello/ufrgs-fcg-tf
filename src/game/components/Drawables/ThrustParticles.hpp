@@ -20,8 +20,7 @@ namespace game::components {
             struct Particle {
                 engine::Vec3 position;
                 engine::Vec3 velocity;
-                float decay_rate;       // life duration (seconds)
-                float color_shift_rate; // rate at which particle shifts color
+                float decay_time;       // life duration (seconds)
                 float size;
                 float age;      // current life progress (seconds)
             };

@@ -64,14 +64,12 @@ namespace game::components {
                 Vec3 dir = normalize(-forward_world + jitter);
                 float speed = 2.0f + (static_cast<float>(rand()) / RAND_MAX) * 3.0f; // arbitrary speed range
 
-                // compute decay first so we can safely set color_shift_rate
                 float decay = min_particle_decay_rate + (static_cast<float>(rand()) / RAND_MAX) * (max_particle_decay_rate - min_particle_decay_rate);
                 float size = max_particle_size * (static_cast<float>(rand()) / RAND_MAX);
                 particles.emplace_back(Particle {
                     .position = base_pos + forward_world * (-depth) + emit_right * rx + emit_up * ry,
                     .velocity = dir * speed + this->ship_controller->get_kinematic_body()->get_velocity(),
-                    .decay_rate = decay,
-                    .color_shift_rate = (decay > 0.0f) ? (1.0f / decay) : 1.0f,
+                    .decay_time = decay,
                     .size = size,
                     .age = 0.0f,
                 });
@@ -83,7 +81,7 @@ namespace game::components {
             particle.age += delta_time;
             particle.position += particle.velocity * delta_time;
 
-            bool expired = particle.age >= particle.decay_rate;
+            bool expired = particle.age >= particle.decay_time;
 
             // if expired or moved beyond forward limit, respawn behind thruster
             engine::Vec3 to_particle = particle.position - emit_pos;
@@ -110,9 +108,8 @@ namespace game::components {
                 float speed = 2.0f + (static_cast<float>(rand()) / RAND_MAX) * 3.0f;
                 particle.velocity = dir * speed;
 
-                particle.decay_rate = min_particle_decay_rate + (static_cast<float>(rand()) / RAND_MAX) * (max_particle_decay_rate - min_particle_decay_rate);
-                if (particle.decay_rate <= 0.0f) particle.decay_rate = min_particle_decay_rate;
-                particle.color_shift_rate = 1.0f / particle.decay_rate;
+                particle.decay_time = min_particle_decay_rate + (static_cast<float>(rand()) / RAND_MAX) * (max_particle_decay_rate - min_particle_decay_rate);
+                if (particle.decay_time <= 0.0f) particle.decay_time = min_particle_decay_rate;
                 particle.age = 0.0f;
                 particle.size = max_particle_size * (static_cast<float>(rand()) / RAND_MAX);
             }
@@ -166,7 +163,7 @@ namespace game::components {
 
             // compute particle color by interpolating initial->final by age/decay
             float t = 0.0f;
-            if (particle.decay_rate > 0.0f) t = particle.age / particle.decay_rate;
+            if (particle.decay_time > 0.0f) t = particle.age / particle.decay_time;
             if (t < 0.0f) t = 0.0f;
             if (t > 1.0f) t = 1.0f;
             engine::Vec3 col = this->initial_color * (1.0f - t) + this->final_color * t;
