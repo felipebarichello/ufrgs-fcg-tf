@@ -68,6 +68,11 @@ namespace game::components {
 
         bool was_humanoid = this->humanoid->is_enabled();
         if (was_humanoid) {
+            // Can't switch to ship if out of fuel
+            if (this->ship->get_ship_controller()->fuel <= 0.0f) {
+                return;
+            }
+
             float phi = this->humanoid->get_camera_phi();
             Quaternion rotation_adjustment = Quaternion::from_x_rotation(phi);
             this->get_vobject()->transform().local_quaternion().local_compose(rotation_adjustment);
