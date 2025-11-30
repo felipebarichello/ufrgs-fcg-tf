@@ -55,17 +55,16 @@ namespace game::components {
                 float angle = (static_cast<float>(rand()) / RAND_MAX) * 2.0f * 3.1415926f;
                 float rx = std::cos(angle) * radial_distance;
                 float ry = std::sin(angle) * radial_distance;
-                const float emission_depth = 4.0f;
-                float depth = static_cast<float>(rand()) / RAND_MAX * emission_depth;
+                float depth = static_cast<float>(rand()) / RAND_MAX * this->spawn_depth;
 
                 // Compute world-space base position using local offset
                 Vec3 base_pos = emit_pos + q.rotate(this->thruster_offset);
                 Vec3 forward_world = q.rotate(this->thruster_normal);
 
                 Vec3 jitter = normalize(Vec3(
-                    (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * 0.3f,
-                    (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * 0.3f,
-                    (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * 0.3f
+                    (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * this->spread_jitter,
+                    (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * this->spread_jitter,
+                    (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * this->spread_jitter
                 ));
 
                 Vec3 dir = normalize(-forward_world + jitter);
@@ -105,7 +104,7 @@ namespace game::components {
             // if expired or moved beyond forward limit, respawn behind thruster
             engine::Vec3 to_particle = particle.position - emit_pos;
             float forward_dot = to_particle.x * emit_forward.x + to_particle.y * emit_forward.y + to_particle.z * emit_forward.z;
-            const float emission_depth = 4.0f;
+            const float emission_depth = this->spawn_depth;
 
             if (expired || forward_dot >= emission_depth) {
                 // Only respawn particles while thrusting; when not thrusting let them die out
@@ -125,9 +124,9 @@ namespace game::components {
                     + emit_right * rx + emit_up * ry;
 
                 Vec3 jitter = normalize(Vec3(
-                    (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * 0.25f,
-                    (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * 0.25f,
-                    (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * 0.25f
+                    (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * (this->spread_jitter * 0.8333333f),
+                    (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * (this->spread_jitter * 0.8333333f),
+                    (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * (this->spread_jitter * 0.8333333f)
                 ));
                 Vec3 dir = normalize(-forward_world + jitter);
                 float speed = this->min_particle_speed + (static_cast<float>(rand()) / RAND_MAX) * (this->max_particle_speed - this->min_particle_speed); // arbitrary speed range
