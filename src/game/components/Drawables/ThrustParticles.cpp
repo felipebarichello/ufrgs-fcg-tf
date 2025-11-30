@@ -31,7 +31,7 @@ namespace game::components {
 
     void ThrustParticles::update() {
         float delta_time = engine::EngineController::get_delta_time();
-        bool thrusting = this->ship_controller->get_command().thrusting;
+        bool thrusting = this->ship_controller->get_command().thrusting && this->ship_controller->fuel > 0.0f;
 
         // Use the mandatory thruster transform (provided in constructor)
         Transform* thruster_transf = this->thruster_transform();
