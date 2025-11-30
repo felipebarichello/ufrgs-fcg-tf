@@ -31,6 +31,7 @@ namespace game::components {
             KinematicBody* kinematic;
             AngularVelocity* angular;
             ShipCommand* ship_command;
+            ShipCommand ship_command_buffer;
 
             ShipCameraController* camera_controller;
             std::vector<PlanetInfo*> planets;

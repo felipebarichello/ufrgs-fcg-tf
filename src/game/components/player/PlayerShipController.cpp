@@ -23,7 +23,7 @@ namespace game::components {
     void PlayerShipController::Start() {
         // Input setup
 
-        ShipCommand& cmd = *this->ship_command;
+        ShipCommand& cmd = this->ship_command_buffer;
         InputController* input = EngineController::get_input();
 
         input->subscribe_hold_button(GLFW_KEY_W, &cmd.thrusting);
@@ -32,6 +32,9 @@ namespace game::components {
     }
 
     void PlayerShipController::Update() {
+        this->ship_command->thrusting     = this->ship_command_buffer.thrusting;
+        this->ship_command->rolling_left  = this->ship_command_buffer.rolling_left;
+        this->ship_command->rolling_right = this->ship_command_buffer.rolling_right;
         this->ship_command->steer = this->get_smooth_spherical_input();
     }
 

@@ -38,9 +38,7 @@ namespace game::components {
             engine::Vec3 initial_color = {0.267f, 0.278f, 0.647f}; // #4447a5ff
             engine::Vec3 final_color  = {0.957f, 0.694f, 0.071f};  // #f4b112ff
             // engine::Vec3 final_color   = {0.973f, 0.282f, 0.063f}; // #f84810
-
-            bool thrusting = false;
-
+            
             engine::Transform* thruster_transform() {
                 return &this->ship_controller->get_vobject()->transform();
             }

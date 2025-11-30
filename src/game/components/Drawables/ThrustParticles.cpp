@@ -31,6 +31,7 @@ namespace game::components {
 
     void ThrustParticles::update() {
         float delta_time = engine::EngineController::get_delta_time();
+        bool thrusting = this->ship_controller->get_command().thrusting;
 
         // Use the mandatory thruster transform (provided in constructor)
         Transform* thruster_transf = this->thruster_transform();
@@ -40,8 +41,8 @@ namespace game::components {
         engine::Vec3 emit_right = normalize(q.rotate(engine::Vec3(1.0f, 0.0f, 0.0f)));
         engine::Vec3 emit_up = normalize(q.rotate(engine::Vec3(0.0f, 1.0f, 0.0f)));
 
-        // Lazily initialize particle pool around the thruster if empty
-        if (particles.empty()) {
+        // Lazily initialize particle pool around the thruster if empty and thrusting
+        if (particles.empty() && thrusting) {
             const int pool_size = 64;
             for (int i = 0; i < pool_size; ++i) {
                 float radial_distance = static_cast<float>(rand()) / RAND_MAX * this->thruster_radius;
@@ -88,6 +89,11 @@ namespace game::components {
             float forward_dot = to_particle.x * emit_forward.x + to_particle.y * emit_forward.y + to_particle.z * emit_forward.z;
             const float emission_depth = 4.0f;
             if (expired || forward_dot >= emission_depth) {
+                // Only respawn particles while thrusting; when not thrusting let them die out
+                if (!thrusting) {
+                    continue;
+                }
+                
                 float radial_distance = (static_cast<float>(rand()) / RAND_MAX) * this->thruster_radius;
                 float angle = (static_cast<float>(rand()) / RAND_MAX) * 2.0f * 3.1415926f;
                 float rx = std::cos(angle) * radial_distance;
