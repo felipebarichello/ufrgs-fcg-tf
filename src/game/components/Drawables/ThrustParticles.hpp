@@ -28,7 +28,7 @@ namespace game::components {
             SpaceshipController* ship_controller = nullptr;
             std::vector<Particle> particles;
 
-            engine::Vec3 thruster_offset = engine::Vec3(0.0f, 0.0f, 2.0f); // Offset in thruster local coords from center of thruster Transform to get thruster position
+            engine::Vec3 thruster_offset = engine::Vec3(0.0f, 0.0f, 5.0f); // Offset in thruster local coords from center of thruster Transform to get thruster position
             engine::Vec3 thruster_normal = engine::Vec3(0.0f, 0.0f, 1.0f); // Direction the thruster points to in thruster local coords
             float particles_per_second = 70.0f;
             float thruster_radius = 1.0f; // radius of emission circle behind ship
