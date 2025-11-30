@@ -139,39 +139,23 @@ namespace game::components {
 
         engine::Mat4 model_matrix = engine::Mat4(1.0f);
 
-        // Enable blending so particle alpha is applied (match SpaceParticles)
+        // Enable additive blending for fire-like particles and allow shader point size
         glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
         glEnable(GL_PROGRAM_POINT_SIZE);
 
-        // --- DEBUG: draw a single large white point at the thruster origin with depth disabled
-        // This helps determine whether the shader/VAO path is working or whether depth/position hides particles.
-        {
-            Transform* thruster_transf = this->thruster_transform();
-            engine::Vec3 debug_pos = thruster_transf->get_world_position();
-            if (position_uniform != -1 && color_uniform != -1) {
-                GLboolean depth_was_enabled = glIsEnabled(GL_DEPTH_TEST);
-                if (depth_was_enabled) glDisable(GL_DEPTH_TEST);
-
-                if (point_size_uniform != -1) glUniform1f(point_size_uniform, 24.0f);
-                else glPointSize(24.0f);
-
-                engine::Vec4 pos4(debug_pos, 1.0f);
-                glUniform4fv(position_uniform, 1, glm::value_ptr(pos4));
-                engine::Vec4 white(1.0f, 1.0f, 1.0f, 1.0f);
-                glUniform4fv(color_uniform, 1, glm::value_ptr(white));
-                if (this->vao_ptr) this->vao_ptr->draw();
-
-                if (depth_was_enabled) glEnable(GL_DEPTH_TEST);
-            }
-        }
+        // Disable depth testing so exhaust renders on top (restore after)
+        GLboolean depth_was_enabled = glIsEnabled(GL_DEPTH_TEST);
+        if (depth_was_enabled) glDisable(GL_DEPTH_TEST);
 
         for (const auto& particle : particles) {
             // supply size to shader via uniform when available
+            // scale up particle size for better visibility
+            float display_size = particle.size * 8.0f;
             if (point_size_uniform != -1) {
-                glUniform1f(point_size_uniform, particle.size);
+                glUniform1f(point_size_uniform, display_size);
             } else {
-                glPointSize(particle.size);
+                glPointSize(display_size);
             }
             if (position_uniform != -1) {
                 // shader declares a vec4 position; upload a vec4
@@ -195,8 +179,8 @@ namespace game::components {
             }
         }
 
-        // Restore depth write and blending state
-        glDepthMask(GL_TRUE);
+        // Restore depth test and blending state
+        if (depth_was_enabled) glEnable(GL_DEPTH_TEST);
         glDisable(GL_BLEND);
         glDisable(GL_PROGRAM_POINT_SIZE);
     }
