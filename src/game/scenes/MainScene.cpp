@@ -38,7 +38,7 @@ std::vector<VObjectConfig> Player() {
 
     std::vector<VObjectConfig> vobjs;
 
-    vobjs.push_back(VObjectConfig()
+    VObjectConfig player_vobj = VObjectConfig()
         .transform(TransformBuilder()
             .position(Vec3(0.0f, 220.0f, 0.0f)))
         .component(walker)
@@ -58,9 +58,10 @@ std::vector<VObjectConfig> Player() {
             .transform(TransformBuilder()
                 .position(Vec3(0.0f, height, 0.0f)))
             .component(humanoid_camera)
-        )
-    );
+        );
 
+    vobjs.push_back(player_vobj);
+    vobjs.push_back(VObjectConfig().component(new ThrustParticles(ship_ctl)));
     vobjs.push_back(VObjectConfig().component(ship_camera));
 
     return vobjs;

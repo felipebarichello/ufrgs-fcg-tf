@@ -8,7 +8,7 @@ namespace engine {
     class Drawable : public virtual Component {
         public:
             Drawable();
-            ~Drawable();
+            virtual ~Drawable();
             virtual void draw() = 0;
         protected:
             Vao* vao_ptr;
