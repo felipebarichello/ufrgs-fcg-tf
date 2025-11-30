@@ -1,6 +1,32 @@
 #include "ThrustParticles.hpp"
+#include <cmath>
+#include <algorithm>
+#include <glm/glm.hpp>
 
 using namespace engine;
+
+// Sample a direction uniformly inside a cone around `axis`.
+// `cone_half_angle` is the cone half-angle in radians (0 = no spread).
+static engine::Vec3 sample_direction_in_cone(const engine::Vec3 &axis, float cone_half_angle) {
+    float u = static_cast<float>(rand()) / RAND_MAX; // [0,1)
+    float cos_max = std::cos(cone_half_angle);
+    float cos_theta = 1.0f - u * (1.0f - cos_max); // uniform on [cos_max, 1]
+    float sin_theta = std::sqrt(std::max(0.0f, 1.0f - cos_theta * cos_theta));
+    float phi = (static_cast<float>(rand()) / RAND_MAX) * 2.0f * 3.14159265358979323846f;
+
+    float x = std::cos(phi) * sin_theta;
+    float y = std::sin(phi) * sin_theta;
+    float z = cos_theta;
+
+    engine::Vec3 axis_n = normalize(axis);
+    // pick a vector not parallel to axis to build an orthonormal basis
+    engine::Vec3 tmp = (std::fabs(axis_n.z) < 0.999f) ? engine::Vec3(0.0f, 0.0f, 1.0f) : engine::Vec3(0.0f, 1.0f, 0.0f);
+    engine::Vec3 right = normalize(glm::cross(axis_n, tmp));
+    engine::Vec3 up = glm::cross(right, axis_n);
+
+    engine::Vec3 dir = right * x + up * y + axis_n * z;
+    return normalize(dir);
+}
 
 namespace game::components {
     ThrustParticles::ThrustParticles(SpaceshipController* ship_controller) {
@@ -61,13 +87,8 @@ namespace game::components {
                 Vec3 base_pos = emit_pos + q.rotate(this->thruster_offset);
                 Vec3 forward_world = q.rotate(this->thruster_normal);
 
-                Vec3 jitter = normalize(Vec3(
-                    (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * this->spread_jitter,
-                    (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * this->spread_jitter,
-                    (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * this->spread_jitter
-                ));
-
-                Vec3 dir = normalize(-forward_world + jitter);
+                // sample a direction inside a cone around the thruster backward axis
+                Vec3 dir = sample_direction_in_cone(-forward_world, this->spread_cone);
                 float speed = this->min_particle_speed + (static_cast<float>(rand()) / RAND_MAX) * (this->max_particle_speed - this->min_particle_speed);
 
                 float decay = min_particle_decay_time + (static_cast<float>(rand()) / RAND_MAX) * (max_particle_decay_time - min_particle_decay_time);
@@ -123,7 +144,8 @@ namespace game::components {
                 Vec3 spawn_position = base_pos + normal_dir * (- (static_cast<float>(rand()) / RAND_MAX) * emission_depth)
                     + emit_right * rx + emit_up * ry;
 
-                Vec3 dir = normalize(normal_dir);
+                // spawn particles moving roughly opposite the thruster normal with spread
+                Vec3 dir = sample_direction_in_cone(normal_dir, this->spread_cone);
                 float speed = this->min_particle_speed + (static_cast<float>(rand()) / RAND_MAX) * (this->max_particle_speed - this->min_particle_speed); // arbitrary speed range
 
                 particle.decay_time = min_particle_decay_time + (static_cast<float>(rand()) / RAND_MAX) * (max_particle_decay_time - min_particle_decay_time);
@@ -191,8 +213,8 @@ namespace game::components {
             if (t < 0.0f) t = 0.0f;
             if (t > 1.0f) t = 1.0f;
             engine::Vec3 col = this->initial_color * (1.0f - t) + this->final_color * t;
-            float alpha = 1.0f - std::pow(t * 1.0f, 4.0f); // fade out towards end of life
-            engine::Vec4 color4(col.x, col.y, col.z, alpha);
+            float alpha_factor = 1.0f - std::pow(t, 4.0f); // fade out towards end of life
+            engine::Vec4 color4(col.x, col.y, col.z, alpha_factor * this->initial_alpha);
             if (color_uniform != -1) glUniform4fv(color_uniform, 1, glm::value_ptr(color4));
 
             if (this->vao_ptr) {
