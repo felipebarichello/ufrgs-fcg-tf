@@ -118,17 +118,12 @@ namespace game::components {
                 float ry = std::sin(angle) * radial_distance;
 
                 Vec3 base_pos = emit_pos + q.rotate(this->thruster_offset);
-                Vec3 forward_world = q.rotate(this->thruster_normal);
+                Vec3 normal_dir = q.rotate(this->thruster_normal);
 
-                Vec3 spawn_position = base_pos + forward_world * (- (static_cast<float>(rand()) / RAND_MAX) * emission_depth)
+                Vec3 spawn_position = base_pos + normal_dir * (- (static_cast<float>(rand()) / RAND_MAX) * emission_depth)
                     + emit_right * rx + emit_up * ry;
 
-                Vec3 jitter = normalize(Vec3(
-                    (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * (this->spread_jitter * 0.8333333f),
-                    (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * (this->spread_jitter * 0.8333333f),
-                    (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * (this->spread_jitter * 0.8333333f)
-                ));
-                Vec3 dir = normalize(-forward_world + jitter);
+                Vec3 dir = normalize(normal_dir);
                 float speed = this->min_particle_speed + (static_cast<float>(rand()) / RAND_MAX) * (this->max_particle_speed - this->min_particle_speed); // arbitrary speed range
 
                 particle.decay_time = min_particle_decay_time + (static_cast<float>(rand()) / RAND_MAX) * (max_particle_decay_time - min_particle_decay_time);
