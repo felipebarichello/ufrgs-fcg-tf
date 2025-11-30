@@ -12,7 +12,7 @@ namespace engine {
         }
 
         // Recursively instantiate and add children VObjects
-        for (VObjectConfig& child_config : vobject_config.children) {
+        for (VObjectConfig& child_config : vobject_config._children) {
             VObject* child_vobject = this->instantiate(child_config);
             vobject->add_child(child_vobject);
         }

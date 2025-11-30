@@ -12,8 +12,11 @@ using namespace engine;
 using namespace game::components;
 using namespace game::instantiators;
 
-VObjectConfig Player(Camera* humanoid_camera, Camera* ship_camera) {
+std::vector<VObjectConfig> Player() {
     const float height = 1.8f;
+
+    Camera* humanoid_camera = new Camera();
+    Camera* ship_camera = new Camera();
 
     KinematicBody* kinematic = new KinematicBody();
     ObjDrawable* ship_drawable;
@@ -33,7 +36,9 @@ VObjectConfig Player(Camera* humanoid_camera, Camera* ship_camera) {
     PlayerController* player_ctl = new PlayerController(humanoid_controller, player_ship, humanoid_camera, ship_camera);
     game::scenes::main_scene::player = player_ctl;
 
-    return VObjectConfig()
+    std::vector<VObjectConfig> vobjs;
+
+    vobjs.push_back(VObjectConfig()
         .transform(TransformBuilder()
             .position(Vec3(0.0f, 220.0f, 0.0f)))
         .component(walker)
@@ -53,7 +58,12 @@ VObjectConfig Player(Camera* humanoid_camera, Camera* ship_camera) {
             .transform(TransformBuilder()
                 .position(Vec3(0.0f, height, 0.0f)))
             .component(humanoid_camera)
-        );
+        )
+    );
+
+    vobjs.push_back(VObjectConfig().component(ship_camera));
+
+    return vobjs;
 }
 
 VObjectConfig Planet(PlanetInfo* planet_info) {
@@ -84,9 +94,6 @@ namespace game::scenes {
     void MainScene::hierarchy(SceneRoot& root) {
         const float planet_model_normalize = 1.0f;
 
-        Camera* humanoid_camera = new Camera();
-        Camera* ship_camera = new Camera();
-
         std::vector<PlanetInfo*>& planets = scenes::main_scene::planets;
         planets.push_back(new PlanetInfo(70.0e12f, MAIN_PLANET_RADIUS));
         planets.push_back(new PlanetInfo(25.0e12f, PLANET_1_RADIUS));
@@ -99,8 +106,7 @@ namespace game::scenes {
         planets.push_back(new PlanetInfo(50.0e12f, PLANET_8_RADIUS));
 
         root
-            .vobject(Player(humanoid_camera, ship_camera))
-            .vobject(VObjectConfig().component(ship_camera))
+            .vobjects(Player())
             .vobject(SkyBox())
             .vobject(EnemyShip())
             .vobject(VObjectConfig()  // Root VObject for all planets

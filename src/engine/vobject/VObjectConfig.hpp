@@ -40,7 +40,7 @@ namespace engine {
         public:
             Transform _transform;
             std::vector<Component*> components;
-            std::vector<VObjectConfig> children;
+            std::vector<VObjectConfig> _children;
 
             VObjectConfig() = default;
 
@@ -52,15 +52,24 @@ namespace engine {
             /// @brief For convenience, you don't need to use std::unique_ptr directly.
             /// The conversion is done for you. But be careful with ownership!
             /// The component passed as argument should not be managed elsewhere.
-            /// @param component 
-            /// @return 
+            /// @param component
             VObjectConfig& component(Component* component) {
                 this->components.push_back(component);
                 return *this;
             }
 
             VObjectConfig& child(VObjectConfig child_config) {
-                this->children.push_back(child_config);
+                this->_children.push_back(child_config);
+                return *this;
+            }
+
+            VObjectConfig& children(std::vector<VObjectConfig> child_configs) {
+                this->_children.insert(
+                    this->_children.end(),
+                    child_configs.begin(),
+                    child_configs.end()
+                );
+
                 return *this;
             }
     };
@@ -72,6 +81,16 @@ namespace engine {
 
         SceneRoot& vobject(VObjectConfig vobject_config) {
             this->root_vobjects.push_back(vobject_config);
+            return *this;
+        }
+
+        SceneRoot& vobjects(std::vector<VObjectConfig> vobject_configs) {
+            this->root_vobjects.insert(
+                this->root_vobjects.end(),
+                vobject_configs.begin(),
+                vobject_configs.end()
+            );
+
             return *this;
         }
     };
