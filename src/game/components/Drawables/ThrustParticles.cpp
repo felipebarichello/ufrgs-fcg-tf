@@ -70,7 +70,7 @@ namespace game::components {
                 Vec3 dir = normalize(-forward_world + jitter);
                 float speed = this->min_particle_speed + (static_cast<float>(rand()) / RAND_MAX) * (this->max_particle_speed - this->min_particle_speed);
 
-                float decay = min_particle_decay_rate + (static_cast<float>(rand()) / RAND_MAX) * (max_particle_decay_rate - min_particle_decay_rate);
+                float decay = min_particle_decay_time + (static_cast<float>(rand()) / RAND_MAX) * (max_particle_decay_time - min_particle_decay_time);
                 float size = max_particle_size * (static_cast<float>(rand()) / RAND_MAX);
 
                 Particle newp = Particle {
@@ -131,8 +131,8 @@ namespace game::components {
                 Vec3 dir = normalize(-forward_world + jitter);
                 float speed = this->min_particle_speed + (static_cast<float>(rand()) / RAND_MAX) * (this->max_particle_speed - this->min_particle_speed); // arbitrary speed range
 
-                particle.decay_time = min_particle_decay_rate + (static_cast<float>(rand()) / RAND_MAX) * (max_particle_decay_rate - min_particle_decay_rate);
-                if (particle.decay_time <= 0.0f) particle.decay_time = min_particle_decay_rate;
+                particle.decay_time = min_particle_decay_time + (static_cast<float>(rand()) / RAND_MAX) * (max_particle_decay_time - min_particle_decay_time);
+                if (particle.decay_time <= 0.0f) particle.decay_time = min_particle_decay_time;
                 particle.age = 0.0f;
                 particle.size = max_particle_size * (static_cast<float>(rand()) / RAND_MAX);
 
