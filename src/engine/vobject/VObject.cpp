@@ -24,12 +24,21 @@ namespace engine {
         this->add_component(std::unique_ptr<Component>(component));
     }
 
+    void VObject::reparent(VObject* new_parent) {
+        // Disown from current parent if any
+        if (this->parent.has_value()) {
+            this->parent.value()->disown_child(this);
+        }
+
+        // Add to new parent
+        new_parent->add_child(this);
+    }
+
     // TODO: For many cases, it's better to disown the transform only
     void VObject::disown_child(VObject* child) {
         auto obj_id = child->get_id();
         std::size_t elements_destroyed = static_cast<bool>(this->children.erase(obj_id));
 
-        // TODO: Better error logging
         if (elements_destroyed <= 0) {
             std::cerr << "VObject " << this->id
                 << " tried to disown child " << child->get_id();

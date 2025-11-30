@@ -48,15 +48,7 @@ namespace game::components {
             void update_transform_due_to_input();
             void correct_planet_collision();
             void align_to_closest_planet();
-
-            void set_not_grounded() {
-                this->grounded_to = std::nullopt;
-                this->gravity->enable();
-            }
-
-            void ground_to(PlanetInfo* planet) {
-                this->grounded_to = planet;
-                this->gravity->disable();
-            }
+            void ground_to(PlanetInfo* planet);
+            void set_not_grounded();
     };
 } // namespace game::components

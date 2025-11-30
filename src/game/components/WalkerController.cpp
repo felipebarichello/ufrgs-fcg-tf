@@ -213,4 +213,38 @@ namespace game::components {
         quaternion.normalize();
     }
 
+    void WalkerController::ground_to(PlanetInfo* planet) {
+        this->grounded_to = planet;
+        this->gravity->disable();
+
+        // Compute world position and quaternion
+        Transform& transform = this->get_vobject()->transform();
+        Vec3 world_pos = transform.get_world_position();
+        Quaternion quaternion = transform.get_world_quaternion();
+
+        // Reparent
+        this->get_vobject()->reparent(planet->get_vobject());
+
+        // Restore world position and quaternion after reparenting
+        transform.set_world_position(world_pos);
+        transform.set_world_quaternion(quaternion);
+    }
+
+    void WalkerController::set_not_grounded() {
+        this->grounded_to = std::nullopt;
+        this->gravity->enable();
+
+        // Compute world position and quaternion
+        Transform& transform = this->get_vobject()->transform();
+        Vec3 world_pos = transform.get_world_position();
+        Quaternion quaternion = transform.get_world_quaternion();
+
+        // Reparent
+        this->get_vobject()->disown_self();
+
+        // Restore world position and quaternion after reparenting
+        transform.set_world_position(world_pos);
+        transform.set_world_quaternion(quaternion);
+    }
+
 } // namespace game::components

@@ -40,6 +40,15 @@ namespace engine {
                 child->set_parent_raw(this);
             }
 
+            /// @brief Change own parent to another VObject
+            void reparent(VObject* new_parent);
+
+            void disown_self() {
+                if (this->parent.has_value()) {
+                    this->parent.value()->disown_child(this);
+                }
+            }
+
             /// @brief Make child VObject a root VObject
             ///
             /// # Critical

@@ -67,20 +67,20 @@ std::vector<VObjectConfig> Player() {
     return vobjs;
 }
 
-VObjectConfig Planet(PlanetInfo* planet_info) {
+VObjectConfig Planet(PlanetInfo* planet_info, float planet_radius) {
     return VObjectConfig()
         .component(planet_info)
         .component(planet_info->get_sphere_collider())
         .child(VObjectConfig()
             .transform(TransformBuilder()
-                .position(Vec3(0.0f, 0.0f, 0.0f))
+                .scale(planet_radius)
             )
             .component(new ObjDrawable(std::string("mars.obj"), EngineController::ShaderType::Planet))
         );
 }
 
-VObjectConfig PlanetWithEnemy(PlanetInfo* planet_info) {
-    return Planet(planet_info)
+VObjectConfig PlanetWithEnemy(PlanetInfo* planet_info, float planet_radius) {
+    return Planet(planet_info, planet_radius)
         .component(new GroundEnemySpawner(planet_info));
 }
 
@@ -93,8 +93,6 @@ VObjectConfig SkyBox() {
 
 namespace game::scenes {
     void MainScene::hierarchy(SceneRoot& root) {
-        const float planet_model_normalize = 1.0f;
-
         std::vector<PlanetInfo*>& planets = scenes::main_scene::planets;
         planets.push_back(new PlanetInfo(70.0e12f, MAIN_PLANET_RADIUS));
         planets.push_back(new PlanetInfo(25.0e12f, PLANET_1_RADIUS));
@@ -111,76 +109,57 @@ namespace game::scenes {
             .vobject(SkyBox())
             .vobject(EnemyShip())
             .vobject(VObjectConfig()  // Root VObject for all planets
-                .child(PlanetWithEnemy(planets[0])  // Central planet
-                    .transform(TransformBuilder()
-                        .scale(MAIN_PLANET_RADIUS * planet_model_normalize))
-                )
-                .child(PlanetWithEnemy(planets[1])  // Tilted circular orbit
-                    .transform(TransformBuilder()
-                        .scale(PLANET_1_RADIUS * planet_model_normalize))
+                .child(PlanetWithEnemy(planets[0], MAIN_PLANET_RADIUS))  // Central planet
+                .child(PlanetWithEnemy(planets[1], PLANET_1_RADIUS)  // Tilted circular orbit
                     .component(new Trajectory(std::make_unique<engine::CircularCurve>(
                         Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
                         Vec3(0.2f, 1.0f, 0.1f),      // Tilted normal vector
                         700.0f                      // Radius
                     ), 0.002f, 0.2f))
                 )
-                .child(PlanetWithEnemy(planets[2])  // Tilted circular orbit
-                    .transform(TransformBuilder()
-                        .scale(PLANET_2_RADIUS * planet_model_normalize))
+                .child(PlanetWithEnemy(planets[2], PLANET_2_RADIUS)  // Tilted circular orbit
                     .component(new Trajectory(std::make_unique<engine::CircularCurve>(
                         Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
                         Vec3(0.2f, 1.0f, 0.1f),      // Tilted normal vector
                         700.0f                      // Radius
                     ), 0.002f, 0.8f))
                 )
-                .child(PlanetWithEnemy(planets[3])  // Tilted circular orbit
-                    .transform(TransformBuilder()
-                        .scale(PLANET_3_RADIUS * planet_model_normalize))
+                .child(PlanetWithEnemy(planets[3], PLANET_3_RADIUS)  // Tilted circular orbit
                     .component(new Trajectory(std::make_unique<engine::CircularCurve>(
                         Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
                         Vec3(0.2f, 1.0f, 0.1f),      // Tilted normal vector
                         1400.0f                      // Radius
                     ), 0.002f, 0.7f))
                 )
-                .child(PlanetWithEnemy(planets[4])  // Tilted circular orbit
-                    .transform(TransformBuilder()
-                        .scale(PLANET_4_RADIUS * planet_model_normalize))
+                .child(PlanetWithEnemy(planets[4], PLANET_4_RADIUS)  // Tilted circular orbit
                     .component(new Trajectory(std::make_unique<engine::CircularCurve>(
                         Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
                         Vec3(0.2f, 1.0f, 0.1f),      // Tilted normal vector
                         1400.0f                      // Radius
                     ), 0.002f, 0.4f))
                 )
-                .child(PlanetWithEnemy(planets[5])  // Tilted circular orbit
-                    .transform(TransformBuilder()
-                        .scale(PLANET_5_RADIUS * planet_model_normalize))
+                .child(PlanetWithEnemy(planets[5], PLANET_5_RADIUS)  // Tilted circular orbit
                     .component(new Trajectory(std::make_unique<engine::CircularCurve>(
                         Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
                         Vec3(0.2f, 1.0f, 0.1f),      // Tilted normal vector
                         2100.0f                      // Radius
                     ), 0.002f, 0.4f))
                 )
-                .child(PlanetWithEnemy(planets[6])  // Tilted circular orbit
-                    .transform(TransformBuilder()
-                        .scale(PLANET_6_RADIUS * planet_model_normalize))
+                .child(PlanetWithEnemy(planets[6], PLANET_6_RADIUS)  // Tilted circular orbit
                     .component(new Trajectory(std::make_unique<engine::CircularCurve>(
                         Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
                         Vec3(0.2f, 1.0f, 0.1f),      // Tilted normal vector
                         2100.0f                      // Radius
                     ), 0.002f, 0.9f))
                 )
-                .child(PlanetWithEnemy(planets[7])  // Tilted circular orbit
-                    .transform(TransformBuilder()
-                        .scale(PLANET_7_RADIUS * planet_model_normalize))
+                .child(PlanetWithEnemy(planets[7], PLANET_7_RADIUS)  // Tilted circular orbit
                     .component(new Trajectory(std::make_unique<engine::CircularCurve>(
                         Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
                         Vec3(0.2f, 1.0f, 0.1f),      // Tilted normal vector
                         2800.0f                      // Radius
                     ), 0.002f, 0.5f))
                 )
-                .child(PlanetWithEnemy(planets[8])  // Tilted circular orbit
-                    .transform(TransformBuilder()
-                        .scale(PLANET_8_RADIUS * planet_model_normalize))
+                .child(PlanetWithEnemy(planets[8], PLANET_8_RADIUS)  // Tilted circular orbit
                     .component(new Trajectory(std::make_unique<engine::CircularCurve>(
                         Vec3(0.0f, 0.0f, 0.0f),      // Center at origin
                         Vec3(0.2f, 1.0f, 0.1f),      // Tilted normal vector
