@@ -192,6 +192,8 @@ namespace game::components {
             // compute particle color by interpolating initial->final by age/decay
             float t = 0.0f;
             if (particle.decay_time > 0.0f) t = particle.age / particle.decay_time;
+            // speed up transition towards final color
+            t *= this->color_transition_speed;
             if (t < 0.0f) t = 0.0f;
             if (t > 1.0f) t = 1.0f;
             engine::Vec3 col = this->initial_color * (1.0f - t) + this->final_color * t;

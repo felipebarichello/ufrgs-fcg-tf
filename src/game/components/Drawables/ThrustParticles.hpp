@@ -41,6 +41,10 @@ namespace game::components {
             float max_particle_size = 2.0f;
             engine::Vec3 initial_color = {0.267f, 0.278f, 0.647f}; // #4447a5ff
             engine::Vec3 final_color  = {0.957f, 0.694f, 0.071f};  // #f4b112ff
+            // multiplier applied to normalized life (age/decay) to control
+            // how quickly particle color transitions from initial to final.
+            // Values >1.0 speed up the transition.
+            float color_transition_speed = 1.5f;
             // engine::Vec3 final_color   = {0.973f, 0.282f, 0.063f}; // #f84810
             
             // Accumulator for fractional particle spawns between frames
