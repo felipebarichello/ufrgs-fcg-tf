@@ -53,7 +53,7 @@ namespace game::components {
 
                 // Compute world-space base position using local offset
                 Vec3 base_pos = emit_pos + q.rotate(this->thruster_offset);
-                Vec3 forward_world = q.rotate(this->thruster_normal);
+                Vec3 forward_world = this->thruster_normal;
 
                 Vec3 jitter = normalize(Vec3(
                     (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * 0.3f,
@@ -69,7 +69,7 @@ namespace game::components {
                 float size = max_particle_size * (static_cast<float>(rand()) / RAND_MAX);
                 particles.emplace_back(Particle {
                     .position = base_pos + forward_world * (-depth) + emit_right * rx + emit_up * ry,
-                    .velocity = dir * speed,
+                    .velocity = dir * speed + this->ship_controller->get_kinematic_body()->get_velocity(),
                     .decay_rate = decay,
                     .color_shift_rate = (decay > 0.0f) ? (1.0f / decay) : 1.0f,
                     .size = size,
