@@ -31,7 +31,9 @@ namespace game::components {
 
     void ThrustParticles::update() {
         float delta_time = engine::EngineController::get_delta_time();
-        bool thrusting = this->ship_controller->get_command().thrusting && this->ship_controller->fuel > 0.0f;
+        SpaceshipController* ship_controller = this->ship_controller;
+        bool thrusting = ship_controller->get_command().thrusting && ship_controller->fuel > 0.0f;
+        engine::Vec3 ship_velocity = ship_controller->get_kinematic_body()->get_velocity();
 
         // Use the mandatory thruster transform (provided in constructor)
         Transform* thruster_transf = this->thruster_transform();
@@ -69,7 +71,7 @@ namespace game::components {
                 float size = max_particle_size * (static_cast<float>(rand()) / RAND_MAX);
                 particles.emplace_back(Particle {
                     .position = base_pos + forward_world * (-depth) + emit_right * rx + emit_up * ry,
-                    .velocity = dir * speed + this->ship_controller->get_kinematic_body()->get_velocity(),
+                    .velocity = dir * speed + ship_velocity,
                     .decay_time = decay,
                     .size = size,
                     .age = 0.0f,
@@ -88,6 +90,7 @@ namespace game::components {
             engine::Vec3 to_particle = particle.position - emit_pos;
             float forward_dot = to_particle.x * emit_forward.x + to_particle.y * emit_forward.y + to_particle.z * emit_forward.z;
             const float emission_depth = 4.0f;
+
             if (expired || forward_dot >= emission_depth) {
                 // Only respawn particles while thrusting; when not thrusting let them die out
                 if (!thrusting) {
@@ -102,8 +105,8 @@ namespace game::components {
                 Vec3 base_pos = emit_pos + q.rotate(this->thruster_offset);
                 Vec3 forward_world = q.rotate(this->thruster_normal);
 
-                particle.position = base_pos + forward_world * (- (static_cast<float>(rand()) / RAND_MAX) * emission_depth);
-                particle.position += emit_right * rx + emit_up * ry;
+                Vec3 spawn_position = base_pos + forward_world * (- (static_cast<float>(rand()) / RAND_MAX) * emission_depth)
+                    + emit_right * rx + emit_up * ry;
 
                 Vec3 jitter = normalize(Vec3(
                     (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * 0.25f,
@@ -112,12 +115,19 @@ namespace game::components {
                 ));
                 Vec3 dir = normalize(-forward_world + jitter);
                 float speed = 2.0f + (static_cast<float>(rand()) / RAND_MAX) * 3.0f;
-                particle.velocity = dir * speed;
 
                 particle.decay_time = min_particle_decay_rate + (static_cast<float>(rand()) / RAND_MAX) * (max_particle_decay_rate - min_particle_decay_rate);
                 if (particle.decay_time <= 0.0f) particle.decay_time = min_particle_decay_rate;
                 particle.age = 0.0f;
                 particle.size = max_particle_size * (static_cast<float>(rand()) / RAND_MAX);
+
+                particle = Particle {
+                    .position = spawn_position,
+                    .velocity = dir * speed + ship_velocity,
+                    .decay_time = particle.decay_time,
+                    .size = particle.size,
+                    .age = 0.0f,
+                };
             }
         }
     }
