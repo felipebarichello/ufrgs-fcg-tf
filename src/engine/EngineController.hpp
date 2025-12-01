@@ -64,8 +64,7 @@ namespace engine {
                 Planet  = 0,
                 Phong   = 1,
                 Star    = 2,
-                Particle= 3,
-                Line    = 4
+                Particle= 3
             };
 
             static EngineController* get_instance();

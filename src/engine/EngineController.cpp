@@ -33,7 +33,6 @@ namespace engine {
             case ShaderType::Phong:    return phong_program_id;
             case ShaderType::Star:     return star_program_id;
             case ShaderType::Particle: return particle_program_id;
-            case ShaderType::Line:     return line_program_id;
             default: return phong_program_id;
         }
     }
@@ -419,18 +418,6 @@ namespace engine {
     
         particle_program_id = create_gpu_program(vertex_shader_id, fragment_shader_id);
 
-        // Load Line shaders (simple unlit color shader for debug lines)
-        vertex_shader_path = exe_dir + "/../../src/engine/shaders/LineVertexShader.glsl";
-        fragment_shader_path = exe_dir + "/../../src/engine/shaders/LineFragmentShader.glsl";
-
-        vertex_shader_id = load_shader_vertex(vertex_shader_path.c_str());
-        fragment_shader_id = load_shader_fragment(fragment_shader_path.c_str());
-
-        if (line_program_id != 0)
-            glDeleteProgram(line_program_id);
-
-        line_program_id = create_gpu_program(vertex_shader_id, fragment_shader_id);
-
         // Load Star shaders (simple point sprite shader used only by Stars)
         vertex_shader_path = exe_dir + "/../../src/engine/shaders/StarVertexShader.glsl";
         fragment_shader_path = exe_dir + "/../../src/engine/shaders/StarFragmentShader.glsl";
@@ -514,17 +501,6 @@ namespace engine {
 
         {
             GLuint prog = EngineController::get_program_id(ShaderType::Particle);
-            if (prog != 0) {
-                glUseProgram(prog);
-                GLint view_loc = glGetUniformLocation(prog, "view");
-                GLint proj_loc = glGetUniformLocation(prog, "projection");
-                if (view_loc != -1) glUniformMatrix4fv(view_loc, 1, GL_FALSE, glm::value_ptr(view));
-                if (proj_loc != -1) glUniformMatrix4fv(proj_loc, 1, GL_FALSE, glm::value_ptr(projection));
-            }
-        }
-
-        {
-            GLuint prog = EngineController::get_program_id(ShaderType::Line);
             if (prog != 0) {
                 glUseProgram(prog);
                 GLint view_loc = glGetUniformLocation(prog, "view");
