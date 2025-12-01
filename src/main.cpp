@@ -16,6 +16,7 @@ int main() {
     });
     
     // Subscribe F11 key to toggle fullscreen
+    engine_controller->toggle_fullscreen(); // Start in fullscreen
     engine_controller->input()->subscribe_press_button(GLFW_KEY_F11, [&]() {
         engine_controller->toggle_fullscreen();
     });
