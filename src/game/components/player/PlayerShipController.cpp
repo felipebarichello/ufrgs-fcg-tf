@@ -38,10 +38,6 @@ namespace game::components {
         this->ship_command->steer = this->get_smooth_spherical_input();
     }
 
-    void PlayerShipController::PostUpdate() {
-        this->test_planet_collisions();
-    }
-
     SphericalCoords PlayerShipController::get_smooth_spherical_input() {
         SphericalCoords spherical = this->get_spherical_input();
         spherical.delta_theta = std::lerp(this->smooth_spherical_input.delta_theta, spherical.delta_theta, theta_lerp);
@@ -75,12 +71,13 @@ namespace game::components {
         this->ship_controller->disable();
     }
 
-    void PlayerShipController::test_planet_collisions() {
+    bool PlayerShipController::collided_with_planets() {
         for (PlanetInfo* planet : this->planets) {
             bool collision_detected = engine::collision::collide_cylinder_sphere(*this->cylinder_collider, *planet->get_sphere_collider()).has_collided();
-            if (collision_detected) {
-                scenes::main_scene::game_over_text->setText(std::string("GAME OVER"), 1.8f, engine::Vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
+            if (collision_detected && this->is_enabled()) {
+                return true;
             }
         }
+        return false;
     }
 }

@@ -17,7 +17,6 @@ namespace game::components {
             void Awake() override;
             void Start() override;
             void Update() override;
-            void PostUpdate() override;
             void OnEnable() override;
             void OnDisable() override;
 
@@ -25,6 +24,7 @@ namespace game::components {
             AngularVelocity* get_angular_velocity() const { return this->angular; }
             SpaceshipController* get_ship_controller() const { return this->ship_controller; }
             float get_critical_roll_velocity() const { return this->ship_controller->critical_roll_velocity; }
+            bool collided_with_planets();
 
         private:
             SpaceshipController* ship_controller;
@@ -47,6 +47,5 @@ namespace game::components {
 
             SphericalCoords get_smooth_spherical_input();
             SphericalCoords get_spherical_input();
-            void test_planet_collisions();
     };
 } // namespace game::components
