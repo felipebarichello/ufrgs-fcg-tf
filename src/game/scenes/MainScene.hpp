@@ -20,5 +20,6 @@ namespace game::scenes {
     class MainScene : public engine::SceneBoot {
         public:
             void hierarchy(SceneRoot& root) override;
+            static void restart();
     };
 } // namespace game::scenes
