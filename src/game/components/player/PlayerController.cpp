@@ -16,7 +16,7 @@ namespace game::components {
         /* HUD setup */
 
         this->game_over_text = new TextDrawable();
-        this->game_over_text->setText(std::string(""), 1.8f, Vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
+        this->game_over_text->setText(std::string(""), 1.8f, 0.0f, 0.0f);
         scenes::main_scene::game_over_text = this->game_over_text;
 
         TextDrawable* f_text = new TextDrawable();
@@ -29,15 +29,15 @@ namespace game::components {
         // Create text drawable to show fuel on-screen (top-left corner)
         std::ostringstream init_ss;
         init_ss << std::fixed << std::setprecision(1) << this->ship->get_ship_controller()->fuel;
-        this->fuel_text->setText(std::string("Fuel: ") + init_ss.str(), 1.5f, engine::Vec3(1.0f), -0.95f, 0.9f);
-        this->game_over_text->setText(std::string(""), 3.0f, engine::Vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
+        this->fuel_text->setText(std::string("Fuel: ") + init_ss.str(), 1.5f, -0.95f, 0.9f);
+        this->game_over_text->setText(std::string(""), 3.0f, 0.0f, 0.0f);
 
         // Create text drawable to show oxygen on-screen (top-left corner, below fuel)
         this->oxygen_text = new TextDrawable();
         this->get_vobject()->add_component(this->oxygen_text);
         std::ostringstream oxy_ss;;
         oxy_ss << std::fixed << std::setprecision(1) << this->oxygen_level;
-        this->oxygen_text->setText(std::string("Oxygen: ") + oxy_ss.str(), 1.5f, engine::Vec3(0.0f, 0.7f, 1.0f), -0.95f, 0.8f);
+        this->oxygen_text->setText(std::string("Oxygen: ") + oxy_ss.str(), 1.5f, -0.95f, 0.8f);
     }
 
     void PlayerController::Start() {
@@ -65,11 +65,6 @@ namespace game::components {
         bool is_ship_active = this->ship && this->ship->is_enabled();
         if ((is_humanoid_active && !this->humanoid->get_walker()->is_grounded()) || (is_ship_active && this->ship->get_ship_controller()->fuel <= 0.0f)) {
             this->oxygen_level -= this->oxygen_decrease_rate * delta_time;
-            if (this->oxygen_level < 0.0f) {
-                this->oxygen_level = 0.0f;
-                // Game over
-                this->hit_by_enemy();
-            }
         } else {
             // Recover oxygen when grounded
             this->oxygen_level += (this->oxygen_decrease_rate / 2.0f) * delta_time;
@@ -87,23 +82,30 @@ namespace game::components {
         if (this->fuel_text) {
             std::ostringstream init_ss;
             init_ss << std::fixed << std::setprecision(1) << this->ship->get_ship_controller()->fuel;
-            this->fuel_text->setText(std::string("Fuel: ") + init_ss.str(), 1.5f, engine::Vec3(1.0f), -0.95f, 0.9f);
+            this->fuel_text->setText(std::string("Fuel: ") + init_ss.str(), 1.5f, -0.95f, 0.9f);
         }
+
         // Update HUD oxygen text
         if (this->oxygen_text && this->humanoid) {
             std::ostringstream oxy_ss;;
             oxy_ss << std::fixed << std::setprecision(1) << this->oxygen_level;
-            this->oxygen_text->setText(std::string("Oxygen: ") + oxy_ss.str(), 1.5f, engine::Vec3(0.0f, 0.7f, 1.0f), -0.95f, 0.8f);
+            this->oxygen_text->setText(std::string("Oxygen: ") + oxy_ss.str(), 1.5f, -0.95f, 0.8f);
         }
 
         // game over logic
-        if (this->oxygen_level <= 0.0f ||  this->ship->get_ship_controller()->fuel <= 0.0f || this->ship->collided_with_planets()) {
-            this->game_over();
+        if (this->oxygen_level <= 0.0f) {
+            this->game_over(std::string("OXYGEN DEPLETED"));
+        } else if (this->ship->get_ship_controller()->fuel <= 0.0f) {
+            this->game_over(std::string("OUT OF FUEL"));
+        } else if (this->ship->collided_with_planets()) {
+            this->game_over(std::string("SHIP CRASHED"));
+        } else if (this->killed_by_enemy) {
+            this->game_over(std::string("KILLED BY ENEMY"));
         }
     }
 
     void PlayerController::hit_by_enemy() {
-        this->game_over_text->setText(std::string("GAME OVER"), 1.8f, Vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
+        this->killed_by_enemy = true;
     }
 
     void PlayerController::toggle_mode() {
@@ -132,8 +134,29 @@ namespace game::components {
         }
     }
 
-    void PlayerController::game_over() {
-        this->game_over_text->setText(std::string("GAME OVER"), 1.8f, Vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
+    void PlayerController::game_over(std::string reason) {
+        this->humanoid->disable();
+        this->ship->disable();
+        Camera::set_main(this->humanoid_cam);
+
+        // Build full text
+        std::string full_text = "GAME OVER: " + reason;
+
+        // Heuristic to center text in normalized screen coords [-1,1].
+        // Tune these values if font metrics become available.
+        const float font_size = 2.0f;
+        const float avg_char_width_per_unit = 0.008f; // width per character per font-size unit
+        float text_width = static_cast<float>(full_text.length()) * avg_char_width_per_unit * font_size;
+
+        // Center by placing left edge at -text_width/2
+        float x_pos = -text_width * 0.5f;
+        float y_pos = 0.0f;
+
+        // Clamp to screen bounds [-1,1] just in case
+        if (x_pos < -1.0f) x_pos = -1.0f;
+        if (x_pos > 1.0f) x_pos = 1.0f;
+
+        this->game_over_text->setText(full_text, font_size, x_pos, y_pos);
     }
 
 }

@@ -34,9 +34,10 @@ namespace game::components {
         float oxygen_level = 100.0f; // percentage
         float oxygen_decrease_rate = 5.0f; // percentage per seconds  
         float fuel_increase_rate = 5.0f; // units per second when grounded
+        bool killed_by_enemy = false;
 
         void toggle_mode();
 
-        void game_over();
+        void game_over(std::string reason);
     };
 }

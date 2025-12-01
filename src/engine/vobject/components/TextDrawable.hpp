@@ -10,7 +10,7 @@ namespace engine {
         public:
         TextDrawable();
         ~TextDrawable();
-        void setText(const std::string& text, float scale, engine::Vec3 color, float x, float y);
+        void setText(const std::string& text, float scale, float x, float y);
         void draw() override;
         private:
         float x = 0.0f;

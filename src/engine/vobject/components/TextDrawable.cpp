@@ -17,7 +17,7 @@ namespace engine {
 	{
 	}
 
-	void TextDrawable::setText(const std::string& text, float scale, engine::Vec3 color, float x, float y)
+	void TextDrawable::setText(const std::string& text, float scale, float x, float y)
 	{
 		this->text = text;
 		this->scale = scale;

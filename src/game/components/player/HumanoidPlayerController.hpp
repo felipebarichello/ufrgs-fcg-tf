@@ -26,8 +26,6 @@ namespace game::components {
 
             engine::CylinderCollider* get_cylinder_collider() { return this->cylinder_collider; }
             
-            void hit_by_enemy();
-
         private:
             static constexpr float GRAVITATIONAL_CONSTANT = 6.6743e-11f;
             static constexpr float MIN_SURFACE_ALIGN_DISTANCE = 2.0f;
