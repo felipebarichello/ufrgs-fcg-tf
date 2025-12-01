@@ -56,112 +56,105 @@ namespace game::components {
     }
 
     void ThrustParticles::update() {
-        float delta_time = engine::EngineController::get_delta_time();
+        float dt = engine::EngineController::get_delta_time();
         SpaceshipController* ship_controller = this->ship_controller;
         bool thrusting = ship_controller->get_command().thrusting && ship_controller->fuel > 0.0f;
         engine::Vec3 ship_velocity = ship_controller->get_kinematic_body()->get_velocity();
 
-        // Use the mandatory thruster transform (provided in constructor)
+        // Use the thruster transform (provided in constructor)
         Transform* thruster_transf = this->thruster_transform();
         engine::Vec3 emit_pos = thruster_transf->get_world_position();
-        auto q = thruster_transf->get_world_quaternion();
-        engine::Vec3 emit_forward = normalize(q.rotate(engine::Vec3(0.0f, 0.0f, -1.0f)));
+        Quaternion q = thruster_transf->get_world_quaternion();
         engine::Vec3 emit_right = normalize(q.rotate(engine::Vec3(1.0f, 0.0f, 0.0f)));
         engine::Vec3 emit_up = normalize(q.rotate(engine::Vec3(0.0f, 1.0f, 0.0f)));
+        Vec3 base_pos = emit_pos + q.rotate(this->thruster_offset);
+        Vec3 normal_dir = q.rotate(this->thruster_normal);
 
-        // Spawn particles based on particles_per_second while thrusting.
+        int new_particles_needed;
+
         if (thrusting) {
-            float spawn_f = this->particles_per_second * delta_time + this->spawn_accumulator;
-            int to_spawn = static_cast<int>(spawn_f);
-            this->spawn_accumulator = spawn_f - static_cast<float>(to_spawn);
-
-            for (int s = 0; s < to_spawn; ++s) {
-                // random lateral offset
-                float radial_distance = static_cast<float>(rand()) / RAND_MAX * this->thruster_radius;
-                float angle = (static_cast<float>(rand()) / RAND_MAX) * 2.0f * 3.1415926f;
-                float rx = std::cos(angle) * radial_distance;
-                float ry = std::sin(angle) * radial_distance;
-                float depth = static_cast<float>(rand()) / RAND_MAX * this->spawn_depth;
-
-                // Compute world-space base position using local offset
-                Vec3 base_pos = emit_pos + q.rotate(this->thruster_offset);
-                Vec3 forward_world = q.rotate(this->thruster_normal);
-
-                // sample a direction inside a cone around the thruster backward axis
-                Vec3 dir = sample_direction_in_cone(-forward_world, this->spread_cone);
-                float speed = this->min_particle_speed + (static_cast<float>(rand()) / RAND_MAX) * (this->max_particle_speed - this->min_particle_speed);
-
-                float decay = min_particle_decay_time + (static_cast<float>(rand()) / RAND_MAX) * (max_particle_decay_time - min_particle_decay_time);
-                float size = max_particle_size * (static_cast<float>(rand()) / RAND_MAX);
-
-                Particle newp = Particle {
-                    .position = base_pos + forward_world * (-depth) + emit_right * rx + emit_up * ry,
-                    .velocity = dir * speed + ship_velocity,
-                    .decay_time = decay,
-                    .size = size,
-                    .age = 0.0f,
-                };
-
-                // try to reuse an expired particle slot first
-                bool placed = false;
-                for (auto &pp : particles) {
-                    if (pp.age >= pp.decay_time) {
-                        pp = newp;
-                        placed = true;
-                        break;
-                    }
-                }
-                if (!placed) particles.push_back(newp);
-            }
+            float frac_particles_needed = this->particles_per_second * dt + this->spawn_accumulator;
+            new_particles_needed = static_cast<int>(frac_particles_needed);
+            this->spawn_accumulator = frac_particles_needed - static_cast<float>(new_particles_needed);
+        } else {
+            new_particles_needed = 0;
+            this->spawn_accumulator = 0.0f;
         }
 
-        for (auto& particle : particles) {
-            // Update age and position
-            particle.age += delta_time;
-            particle.position += particle.velocity * delta_time;
-
+        size_t cur_particle_count = particles.size();
+        for (size_t i = 0; i < cur_particle_count; i++) {
+            Particle& particle = particles[i];
+            particle.age += dt;
             bool expired = particle.age >= particle.decay_time;
 
-            // if expired or moved beyond forward limit, respawn behind thruster
-            engine::Vec3 to_particle = particle.position - emit_pos;
-            float forward_dot = to_particle.x * emit_forward.x + to_particle.y * emit_forward.y + to_particle.z * emit_forward.z;
-            const float emission_depth = this->spawn_depth;
-
-            if (expired || forward_dot >= emission_depth) {
-                // Only respawn particles while thrusting; when not thrusting let them die out
-                if (!thrusting) {
-                    continue;
+            if (expired) {
+                if (new_particles_needed > 0) {
+                    this->init_particle(
+                        particle,
+                        ship_velocity,
+                        emit_right,
+                        emit_up,
+                        normal_dir,
+                        base_pos
+                    );
+                    new_particles_needed--;
                 }
                 
-                float radial_distance = (static_cast<float>(rand()) / RAND_MAX) * this->thruster_radius;
-                float angle = (static_cast<float>(rand()) / RAND_MAX) * 2.0f * 3.1415926f;
-                float rx = std::cos(angle) * radial_distance;
-                float ry = std::sin(angle) * radial_distance;
+                continue;
+            }
 
-                Vec3 base_pos = emit_pos + q.rotate(this->thruster_offset);
-                Vec3 normal_dir = q.rotate(this->thruster_normal);
+            particle.position += particle.velocity * dt;
+        }
 
-                Vec3 spawn_position = base_pos + normal_dir * (- (static_cast<float>(rand()) / RAND_MAX) * emission_depth)
-                    + emit_right * rx + emit_up * ry;
-
-                // spawn particles moving roughly opposite the thruster normal with spread
-                Vec3 dir = sample_direction_in_cone(normal_dir, this->spread_cone);
-                float speed = this->min_particle_speed + (static_cast<float>(rand()) / RAND_MAX) * (this->max_particle_speed - this->min_particle_speed); // arbitrary speed range
-
-                particle.decay_time = min_particle_decay_time + (static_cast<float>(rand()) / RAND_MAX) * (max_particle_decay_time - min_particle_decay_time);
-                if (particle.decay_time <= 0.0f) particle.decay_time = min_particle_decay_time;
-                particle.age = 0.0f;
-                particle.size = max_particle_size * (static_cast<float>(rand()) / RAND_MAX);
-
-                particle = Particle {
-                    .position = spawn_position,
-                    .velocity = dir * speed + ship_velocity,
-                    .decay_time = particle.decay_time,
-                    .size = particle.size,
-                    .age = 0.0f,
-                };
+        if (new_particles_needed > 0) {
+            // Create new particles
+            for (int i = 0; i < new_particles_needed; i++) {
+                Particle new_particle;
+                this->init_particle(
+                    new_particle,
+                    ship_velocity,
+                    emit_right,
+                    emit_up,
+                    normal_dir,
+                    base_pos
+                );
+                particles.push_back(new_particle);
             }
         }
+    }
+
+    void ThrustParticles::init_particle(
+        Particle& particle,
+        Vec3& ship_velocity,
+        Vec3& emit_right,
+        Vec3& emit_up,
+        Vec3& normal_dir,
+        Vec3& base_pos
+    ) {
+        float radial_distance = (static_cast<float>(rand()) / RAND_MAX) * this->thruster_radius;
+        float angle = (static_cast<float>(rand()) / RAND_MAX) * 2.0f * 3.1415926f;
+        float rx = std::cos(angle) * radial_distance;
+        float ry = std::sin(angle) * radial_distance;
+
+        Vec3 spawn_position = base_pos + normal_dir * (- (static_cast<float>(rand()) / RAND_MAX) * this->spawn_depth)
+            + emit_right * rx + emit_up * ry;
+
+        // spawn particles moving roughly opposite the thruster normal with spread
+        Vec3 dir = sample_direction_in_cone(normal_dir, this->spread_cone);
+        float speed = this->min_particle_speed + (static_cast<float>(rand()) / RAND_MAX) * (this->max_particle_speed - this->min_particle_speed); // arbitrary speed range
+
+        particle.decay_time = min_particle_decay_time + (static_cast<float>(rand()) / RAND_MAX) * (max_particle_decay_time - min_particle_decay_time);
+        if (particle.decay_time <= 0.0f) particle.decay_time = min_particle_decay_time;
+        particle.age = 0.0f;
+        particle.size = max_particle_size * (static_cast<float>(rand()) / RAND_MAX);
+
+        particle = Particle {
+            .position = spawn_position,
+            .velocity = dir * speed + ship_velocity,
+            .decay_time = particle.decay_time,
+            .size = particle.size,
+            .age = 0.0f,
+        };
     }
 
     void ThrustParticles::draw() {
