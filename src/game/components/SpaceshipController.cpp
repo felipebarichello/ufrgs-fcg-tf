@@ -72,4 +72,11 @@ namespace game::components {
         }
     }
 
+    void SpaceshipController::OnDisable() {
+        this->command.thrusting = false;
+        this->command.rolling_left = false;
+        this->command.rolling_right = false;
+        this->command.steer = SphericalCoords();
+    }
+
 }

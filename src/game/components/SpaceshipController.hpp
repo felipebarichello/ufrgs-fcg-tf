@@ -37,6 +37,7 @@ namespace game::components {
 
             SpaceshipController(KinematicBody* kinematic, AngularVelocity* angular): kinematic(kinematic), angular(angular) {}
             void Update() override;
+            void OnDisable() override;
 
             KinematicBody* get_kinematic_body() const { return this->kinematic; }
             AngularVelocity* get_angular_velocity() const { return this->angular; }
