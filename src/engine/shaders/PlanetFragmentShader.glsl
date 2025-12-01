@@ -66,50 +66,75 @@ float fbm(float x) {
 	return v;
 }
 
+
+//FONTE: https://gist.github.com/983/e170a24ae8eba2cd174f
+vec3 hsv2rgb(vec3 c){
+    vec4 K = vec4(1.0, 2.0/3.0, 1.0/3.0, 3.0);
+    vec3 p = abs(fract(c.x + K.xyz) * 6.0 - K.www);
+    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
 in vec4 interpolated_color;
 uniform sampler2D TextureImage;
 in vec2 texcoords;
 in vec3 lambert_diffuse_term;
 in vec3 Ia;
 in vec3 position_model;
+in float random_seed_out;
 
 out vec4 color;
 
 void main()
 {
     // Base colors: light, mid, and dark blue
-    vec3 color1 = vec3(0.2, 0.2, 1.0);
-    vec3 color2 = vec3(0.0, 0.5, 0.75);
-    vec3 color3 = vec3(0.3, 0.4, 1.0);
+    float seed = random_seed_out;
+    float baseHue = rand(seed);
+
+    // Low, realistic saturations
+    float s1 = 0.05 + 0.30 * rand(seed+1.0);
+    float s2 = 0.10 + 0.20 * rand(seed+2.0);
+    float s3 = 0.02 + 0.10 * rand(seed+3.0);
+
+    // Moderate, not bright values
+    float v1 = 0.35 + 0.35 * rand(seed+4.0);
+    float v2 = 0.60 + 0.40 * rand(seed+5.0);
+    float v3 = 0.75 + 0.40 * rand(seed+6.0);
+
+    // Slight hue offsets (kept small to avoid rainbow colors)
+    vec3 color1 = hsv2rgb(vec3(baseHue + 0.02 * rand(seed+7.0), s1, v1));
+    vec3 color2 = hsv2rgb(vec3(baseHue + 0.04 * rand(seed+8.0), s2, v2));
+    vec3 color3 = hsv2rgb(vec3(baseHue + 0.07 * rand(seed+9.0), s3, v3));
+
+    float max_freq1 = 3.0;
+    float max_freq2 = 8.0;
+
+    float freq1 = max_freq1 + max_freq1 * sin(seed);
+    float freq2 = max_freq1 + max_freq1 * sin(seed+1);
+    float freq3 = max_freq1 + max_freq1 * sin(seed+2);
+    float freq4 = max_freq2 + max_freq2 * sin(seed+3);
+    float freq5 = max_freq2 + max_freq2 * sin(seed+4);
+    float freq6 = max_freq2 + max_freq2 * sin(seed+5);
 
     // Warp coordinates using FBM
     float warpStrength = 0.8;
     vec3 q = vec3(
-        fbm(position_model * 2.0),
-        fbm(position_model * 2.0 + vec3(5.2, 1.3, 2.1)),
-        fbm(position_model * 2.0 + vec3(1.7, 9.2, 3.1))
+        fbm(position_model * freq1),
+        fbm(position_model * freq2 + vec3(5.2, 1.3, 2.1)),
+        fbm(position_model * freq3 + vec3(1.7, 9.2, 3.1))
     );
     vec3 warpedPos = position_model + warpStrength * q;
 
     // Generate FBM patterns
-    float f1 = fbm(warpedPos * 5.0 + vec3(1.7, 9.2, 3.1));
-    float f2 = fbm(warpedPos * 6.0 + vec3(5.2, 1.3, 2.1));
-    float f3 = fbm(warpedPos * 7.0 + vec3(8.3, 2.8, 4.5));
+    float f1 = fbm(warpedPos * freq4 + vec3(1.7, 9.2, 3.1));
+    float f2 = fbm(warpedPos * freq5 + vec3(5.2, 1.3, 2.1));
+    float f3 = fbm(warpedPos * freq6 + vec3(8.3, 2.8, 4.5));
 
     // Blend base colors based on FBM patterns
     vec3 Kd = 0.33*(f1*color1 + f2*color2 + f3*color3);
 
-    // // Add micro-detail 
-    // float fine1 = fbm(warpedPos * 200.0 + vec3(2.5, 1.5, 3.5));
-    // float fine2 = fbm(warpedPos * 500.0 + vec3(1.7, 9.2, 3.1));
-    // float fineDetail = mix(fine1, fine2, 0.5);
-    // Kd *= 1.0 + fineDetail;
-
     Kd = clamp(Kd, 0.0, 1.0);
-    Kd = pow(Kd, vec3(1.0/2.2)); // gamma correction
+    //Kd = pow(Kd, vec3(1.0/2.2)); // gamma correction
 
     vec3 ambient_term = Ia * Kd;
     color = vec4(Kd * lambert_diffuse_term + ambient_term, 1.0);
 }
-
-

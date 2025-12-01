@@ -12,11 +12,13 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 uniform float alpha;
+uniform float random_seed;
 uniform vec4 absolute_color;
 
 uniform vec3 Ks;
 uniform float Ns;
 
+out float random_seed_out;
 out vec4 interpolated_color;
 out vec2 texcoords;
 out vec3 lambert_diffuse_term;
@@ -46,5 +48,7 @@ void main()
     lambert_diffuse_term = I*max(0.0, dot(n,l)); // termo difuso de Lambert
     texcoords = texture_coefficients;
     position_model = model_coefficients.xyz;
+    // Pass the per-drawable random seed down to the fragment shader
+    random_seed_out = random_seed;
 }
 
