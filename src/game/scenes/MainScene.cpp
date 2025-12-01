@@ -36,6 +36,8 @@ std::vector<VObjectConfig> Player() {
     PlayerController* player_ctl = new PlayerController(humanoid_controller, player_ship, humanoid_camera, ship_camera);
     game::scenes::main_scene::player = player_ctl;
 
+    ThrustParticles* thrust_particles = new ThrustParticles(ship_ctl);
+
     std::vector<VObjectConfig> vobjs;
 
     VObjectConfig player_vobj = VObjectConfig()
@@ -53,6 +55,7 @@ std::vector<VObjectConfig> Player() {
         .component(angular_velocity)
         .component(kinematic)
         .component(ship_cam_ctl)
+        .component(thrust_particles)
         .child(spaceship_obj)
         .child(VObjectConfig()
             .transform(TransformBuilder()
