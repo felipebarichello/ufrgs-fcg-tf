@@ -124,14 +124,14 @@ namespace game::scenes {
     void MainScene::hierarchy(SceneRoot& root) {
         std::vector<PlanetInfo*>& planets = scenes::main_scene::planets;
         planets.push_back(new PlanetInfo(70.0e12f, MAIN_PLANET_RADIUS));
-        planets.push_back(new PlanetInfo(25.0e12f, PLANET_1_RADIUS));
-        planets.push_back(new PlanetInfo(42.0e12f, PLANET_2_RADIUS));
-        planets.push_back(new PlanetInfo(65.0e12f, PLANET_3_RADIUS));
-        planets.push_back(new PlanetInfo(53.0e12f, PLANET_4_RADIUS));
-        planets.push_back(new PlanetInfo(35.0e12f, PLANET_5_RADIUS));
-        planets.push_back(new PlanetInfo(60.0e12f, PLANET_6_RADIUS));
-        planets.push_back(new PlanetInfo(28.0e12f, PLANET_7_RADIUS));
-        planets.push_back(new PlanetInfo(50.0e12f, PLANET_8_RADIUS));
+        planets.push_back(new PlanetInfo(70.0e12f*PLANET_1_RADIUS/MAIN_PLANET_RADIUS, PLANET_1_RADIUS));
+        planets.push_back(new PlanetInfo(70.0e12f*PLANET_2_RADIUS/MAIN_PLANET_RADIUS, PLANET_2_RADIUS));
+        planets.push_back(new PlanetInfo(70.0e12f*PLANET_3_RADIUS/MAIN_PLANET_RADIUS, PLANET_3_RADIUS));
+        planets.push_back(new PlanetInfo(70.0e12f*PLANET_4_RADIUS/MAIN_PLANET_RADIUS, PLANET_4_RADIUS));
+        planets.push_back(new PlanetInfo(70.0e12f*PLANET_5_RADIUS/MAIN_PLANET_RADIUS, PLANET_5_RADIUS));
+        planets.push_back(new PlanetInfo(70.0e12f*PLANET_6_RADIUS/MAIN_PLANET_RADIUS, PLANET_6_RADIUS));
+        planets.push_back(new PlanetInfo(70.0e12f*PLANET_7_RADIUS/MAIN_PLANET_RADIUS, PLANET_7_RADIUS));
+        planets.push_back(new PlanetInfo(70.0e12f*PLANET_8_RADIUS/MAIN_PLANET_RADIUS, PLANET_8_RADIUS));
 
         root
             .vobjects(Player())
