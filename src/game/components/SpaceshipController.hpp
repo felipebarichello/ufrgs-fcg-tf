@@ -2,7 +2,6 @@
 
 #include <engine>
 #include <memory>
-#include <engine/vobject/components/TextDrawable.hpp>
 #include <engine/collision/colliders/CylinderCollider.hpp>
 #include <game/components/PlanetInfo.hpp>
 #include <game/components/SphericalCoords.hpp>
