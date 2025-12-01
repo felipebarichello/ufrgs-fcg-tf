@@ -34,11 +34,6 @@ namespace game::components {
         if (this->walker->is_grounded()) {
             // Reset angular velocity
             this->angular->reset();
-
-            // Align to camera theta
-            Quaternion& quat = this->get_vobject()->transform().local_quaternion();
-            quat.local_compose(Quaternion::from_y_rotation(this->camera_theta));
-            this->set_camera_theta(0.0f);
         }
     }
 
@@ -50,14 +45,7 @@ namespace game::components {
         /* Camera (attached) movement */
         SphericalCoords spherical = this->get_spherical_input();
         this->set_camera_phi(this->camera_phi + spherical.delta_phi);
-
-        if (this->walker->is_grounded()) {
-            // Rotate player body when grounded
-            quaternion.local_compose(Quaternion::from_y_rotation(spherical.delta_theta));
-        } else {
-            // Rotate camera when not grounded
-            this->set_camera_theta(this->camera_theta + spherical.delta_theta);
-        }
+        quaternion.local_compose(Quaternion::from_y_rotation(spherical.delta_theta));
 
         // Apply view bobbing to the child camera when attached
         if (!this->released_camera && this->camera && this->walker) {
@@ -113,18 +101,9 @@ namespace game::components {
     }
 
     void HumanoidPlayerController::set_camera_phi(float new_phi) {
-        this->camera_phi = std::clamp(new_phi, this->phi_min, this->phi_max); // Don't let the player break their neck
-        this->update_camera();
-    }
-
-    void HumanoidPlayerController::set_camera_theta(float new_theta) {
-        this->camera_theta = new_theta;
-        this->update_camera();
-    }
-
-    void HumanoidPlayerController::update_camera() {
         Transform& cam_transform = this->camera->get_vobject()->transform();
-        cam_transform.local_quaternion() = Quaternion::from_y_rotation(this->camera_theta) * Quaternion::from_x_rotation(this->camera_phi);
+        this->camera_phi = std::clamp(new_phi, this->phi_min, this->phi_max); // Don't let the player break their neck
+        cam_transform.local_quaternion() = Quaternion::from_x_rotation(this->camera_phi);
         cam_transform.local_quaternion().normalize();
     }
 
@@ -153,7 +132,6 @@ namespace game::components {
     }
 
     void HumanoidPlayerController::OnEnable() {
-        this->set_camera_theta(0.0f);
         this->set_camera_phi(0.0f);
         this->walker->enable();
     }

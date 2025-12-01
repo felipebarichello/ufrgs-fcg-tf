@@ -51,7 +51,6 @@ namespace game::components {
             // Input vector used by the camera and forwarded to WalkerController
             engine::Vec2 move_vector_2d {0.0f, 0.0f};
             float camera_phi = 0.0f;
-            float camera_theta = 0.0f;
             float v_sensitivity = 0.001f;
             float h_sensitivity = 0.001f;
             bool released_camera = false;
@@ -63,15 +62,10 @@ namespace game::components {
             /// @brief The number multiplying pi/2 is a ratio out of a quarter turn up (1.0 means you can look almost straight up)
             float phi_max   = 1.5708f * 0.95f;
 
-            /// @brief The number multiplying pi is a ratio out of half a turn in both directions (1.0 means you can turn until looking back)
-            float theta_max = 3.1415f * 0.65f;
-
             void handle_input();
             void update_released_camera();
             SphericalCoords get_spherical_input();
             void set_camera_phi(float new_phi);
-            void set_camera_theta(float new_theta);
-            void update_camera();
             void on_jump_pressed();
             void toggle_camera_release();
     };
