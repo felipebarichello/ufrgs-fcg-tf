@@ -26,7 +26,7 @@ namespace game::components {
             PlayerController* target_controller = nullptr;
             engine::VObject* target_vobj = nullptr;
 
-            float facing_smooth = 0.04f;
+            float facing_smooth = 0.02f;
             // Internal helpers
             void update_follow_target();
     };

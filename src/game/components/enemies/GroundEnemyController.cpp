@@ -79,11 +79,13 @@ namespace game::components {
         if (fwd_len > 1e-6f && proj_len > 1e-6f) {
             Vec3 fwd_n = forward_proj / fwd_len;
             Vec3 proj_n = projected / proj_len;
-
             // Rotation that brings fwd_n -> proj_n
             Quaternion face_rot = Quaternion::from_unit_vectors(fwd_n, proj_n);
-            // Apply rotation in global frame so the up direction remains consistent
-            quaternion.global_compose(face_rot);
+            // Compute target quaternion by composing current with face_rot (in global frame)
+            Quaternion target_quat = quaternion;
+            target_quat.global_compose(face_rot);
+            // Interpolate towards target to smooth the rotation
+            quaternion = Quaternion::slerp(quaternion, target_quat, this->facing_smooth);
             quaternion.normalize();
         }
     }
