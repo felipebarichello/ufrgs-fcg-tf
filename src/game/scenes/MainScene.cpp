@@ -198,10 +198,9 @@ namespace game::scenes {
             );
     }
 
+    // Restart scene
     void MainScene::restart() {
-        // Set the player vobject position back to starting point
-        // Set the player vobject world position back to starting point
-        if (game::scenes::main_scene::player && game::scenes::main_scene::player->get_vobject()) {
+        if (game::scenes::main_scene::player) {
             game::scenes::main_scene::player->get_vobject()->transform().set_world_position(Vec3(0.0f, 220.0f, 0.0f));
         }
     }

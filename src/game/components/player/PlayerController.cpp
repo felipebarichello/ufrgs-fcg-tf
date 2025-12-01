@@ -55,9 +55,16 @@ namespace game::components {
     }
 
     void PlayerController::Update() {
+        bool is_humanoid = this->humanoid->is_enabled();
+
         // Destroy ship if rolling too fast
-        if (this->ship->is_enabled() && std::fabs(this->ship->get_angular_velocity()->euler_angles().z) > this->ship->get_critical_roll_velocity()) {
+        if (!is_humanoid && std::fabs(this->ship->get_angular_velocity()->euler_angles().z) > this->ship->get_critical_roll_velocity()) {
             this->toggle_mode();
+        }
+
+        // Make ship not dirty when grounded
+        if (is_humanoid && this->humanoid->get_walker()->is_grounded()) {
+            this->ship_is_dirty = false;
         }
     }
 
@@ -65,7 +72,7 @@ namespace game::components {
 
         this->time += EngineController::get_delta_time();
 
-        if (this->game_overed) {
+        if (this->is_game_over) {
             this->game_over_routine();
             return;
         }
@@ -79,7 +86,7 @@ namespace game::components {
             this->oxygen_level -= this->oxygen_decrease_rate * delta_time;
         } else {
             // Recover oxygen when grounded
-            this->oxygen_level += (this->oxygen_decrease_rate / 2.0f) * delta_time;
+            this->oxygen_level += (this->oxygen_recovery_rate) * delta_time;
             if (this->oxygen_level > 100.0f) {
                 this->oxygen_level = 100.0f;
             }
@@ -123,7 +130,7 @@ namespace game::components {
         this->ship->get_angular_velocity()->reset();
         this->humanoid->get_walker()->set_velocity(Vec3(0.0f, 0.0f, 0.0f));
         this->humanoid->get_walker()->reset_grounded_to();
-        this->game_overed = false;
+        this->is_game_over = false;
         this->game_over_timer = 0.0f;
         this->oxygen_level = 100.0f;
         this->killed_by_enemy = false;
@@ -146,8 +153,15 @@ namespace game::components {
 
         bool was_humanoid = this->humanoid->is_enabled();
         if (was_humanoid) {
-            // Can't switch to ship if out of fuel
-            if (this->ship->get_ship_controller()->fuel <= 0.0f) {
+            bool ship_is_blocked =
+                // Can't switch to ship if out of fuel
+                this->ship->get_ship_controller()->fuel <= 0.0f
+                
+                // Can't switch to ship if ship is dirty
+                || this->ship_is_dirty;
+
+            
+            if (ship_is_blocked) {
                 return;
             }
 
@@ -159,6 +173,8 @@ namespace game::components {
             this->humanoid->disable();
             this->ship->enable();
             Camera::set_main(this->ship_cam);
+
+            this->ship_is_dirty = true;
         } else {
             this->ship->disable();
             this->humanoid->enable();
@@ -191,7 +207,7 @@ namespace game::components {
         this->game_over_text->setText(full_text, font_size, x_pos, y_pos);
 
         this->time_text->setText("Survived time: " + std::to_string(static_cast<int>(this->time)) + "s", 1.5f, x_pos, y_pos - 0.2f);
-        this->game_overed = true;
+        this->is_game_over = true;
     }
 
     void PlayerController::game_over_routine() {

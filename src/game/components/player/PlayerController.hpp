@@ -35,18 +35,18 @@ namespace game::components {
         engine::TextDrawable* time_text = nullptr;
 
         float oxygen_level = 100.0f; // percentage
-        float oxygen_decrease_rate = 5.0f; // percentage per seconds  
+        float oxygen_decrease_rate =  5.0f;  // percentage per seconds
+        float oxygen_recovery_rate = 10.0f; // percentage per second
         float fuel_increase_rate = 5.0f; // units per second when grounded
         bool killed_by_enemy = false;
-        bool game_overed = false;
+        bool is_game_over = false;
         float game_over_timer = 0.0f;
         float time_to_restart = 3.0f; // seconds before restart after game over
         float time = 0.0f;
+        bool ship_is_dirty = false; // becomes true after switching to ship mode until grounded
 
         void game_over_routine();
-
         void toggle_mode();
-
         void game_over(std::string reason);
     };
 }
