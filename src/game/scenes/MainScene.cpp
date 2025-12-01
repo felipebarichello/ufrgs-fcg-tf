@@ -136,7 +136,6 @@ namespace game::scenes {
         root
             .vobjects(Player())
             .vobject(SkyBox())
-            .vobject(EnemyShip())
             .vobject(VObjectConfig()  // Root VObject for all planets
                 .child(FlyingEnemy())
                 .child(PlanetWithEnemy(planets[0], MAIN_PLANET_RADIUS))  // Central planet
