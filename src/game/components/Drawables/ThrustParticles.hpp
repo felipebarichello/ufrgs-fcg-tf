@@ -59,5 +59,14 @@ namespace game::components {
             engine::Transform* thruster_transform() {
                 return &this->ship_controller->get_vobject()->transform();
             }
+
+            inline void init_particle(
+                Particle& particle,
+                engine::Vec3& ship_velocity,
+                engine::Vec3& emit_right,
+                engine::Vec3& emit_up,
+                engine::Vec3& normal_dir,
+                engine::Vec3& base_pos
+            );
     };  
 } // namespace game::components
