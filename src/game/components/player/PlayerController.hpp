@@ -36,5 +36,7 @@ namespace game::components {
         float fuel_increase_rate = 5.0f; // units per second when grounded
 
         void toggle_mode();
+
+        void game_over();
     };
 }

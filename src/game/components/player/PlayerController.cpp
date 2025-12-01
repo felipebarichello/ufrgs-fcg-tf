@@ -95,6 +95,11 @@ namespace game::components {
             oxy_ss << std::fixed << std::setprecision(1) << this->oxygen_level;
             this->oxygen_text->setText(std::string("Oxygen: ") + oxy_ss.str(), 1.5f, engine::Vec3(0.0f, 0.7f, 1.0f), -0.95f, 0.8f);
         }
+
+        // game over logic
+        if (this->oxygen_level <= 0.0f ||  this->ship->get_ship_controller()->fuel <= 0.0f || this->ship->collided_with_planets()) {
+            this->game_over();
+        }
     }
 
     void PlayerController::hit_by_enemy() {
@@ -125,6 +130,10 @@ namespace game::components {
             this->humanoid->enable();
             Camera::set_main(this->humanoid_cam);
         }
+    }
+
+    void PlayerController::game_over() {
+        this->game_over_text->setText(std::string("GAME OVER"), 1.8f, Vec3(1.0f, 0.0f, 0.0f), 0.0f, 0.0f);
     }
 
 }
