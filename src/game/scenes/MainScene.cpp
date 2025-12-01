@@ -79,7 +79,7 @@ VObjectConfig Planet(PlanetInfo* planet_info, float planet_radius) {
         );
 }
 
-VObjectConfig FlyingEnemy() {
+VObjectConfig FlyingSatellite() {
     return VObjectConfig()
         .child(VObjectConfig()
             .transform(TransformBuilder()
@@ -137,7 +137,7 @@ namespace game::scenes {
             .vobjects(Player())
             .vobject(SkyBox())
             .vobject(VObjectConfig()  // Root VObject for all planets
-                .child(FlyingEnemy())
+                .child(FlyingSatellite())
                 .child(PlanetWithEnemy(planets[0], MAIN_PLANET_RADIUS))  // Central planet
                 .child(PlanetWithEnemy(planets[1], PLANET_1_RADIUS)  // Tilted circular orbit
                     .component(new Trajectory(std::make_unique<engine::CircularCurve>(
