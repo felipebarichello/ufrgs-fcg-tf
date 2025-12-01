@@ -61,7 +61,7 @@ namespace game::components {
         bool thrusting = ship_controller->get_command().thrusting && ship_controller->fuel > 0.0f;
         engine::Vec3 ship_velocity = ship_controller->get_kinematic_body()->get_velocity();
 
-        // Use the mandatory thruster transform (provided in constructor)
+        // Use the thruster transform (provided in constructor)
         Transform* thruster_transf = this->thruster_transform();
         engine::Vec3 emit_pos = thruster_transf->get_world_position();
         auto q = thruster_transf->get_world_quaternion();
