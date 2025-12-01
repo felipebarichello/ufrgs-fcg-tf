@@ -107,8 +107,6 @@ namespace game::components {
         // game over logic
         if (this->oxygen_level <= 0.0f) {
             this->game_over(std::string("OXYGEN DEPLETED"));
-        } else if (this->ship->get_ship_controller()->fuel <= 0.0f) {
-            this->game_over(std::string("OUT OF FUEL"));
         } else if (this->ship->collided_with_planets()) {
             this->game_over(std::string("SHIP CRASHED"));
         } else if (this->killed_by_enemy) {
