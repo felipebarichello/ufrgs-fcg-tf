@@ -27,11 +27,13 @@ namespace game::components {
         engine::Camera* humanoid_cam = nullptr;
         engine::Camera* ship_cam = nullptr;
 
-        // Text to show game over message on screen
         engine::TextDrawable* game_over_text = nullptr;
-
-        // Text to show fuel on screen
         engine::TextDrawable* fuel_text = nullptr;
+        engine::TextDrawable* oxygen_text = nullptr;
+
+        float oxygen_level = 100.0f; // percentage
+        float oxygen_decrease_rate = 5.0f; // percentage per seconds  
+        float fuel_increase_rate = 5.0f; // units per second when grounded
 
         void toggle_mode();
     };
