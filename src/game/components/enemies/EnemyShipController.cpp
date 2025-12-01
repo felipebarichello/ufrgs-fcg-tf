@@ -25,20 +25,6 @@ namespace game::components {
         // Physics setup
         this->kinematic = this->ship_controller->get_kinematic_body();
         this->angular = this->ship_controller->get_angular_velocity();
-
-        // Attach engine-level debug drawable to draw a line to the player
-        if (this->debug_drawable == nullptr) {
-            auto getter1 = [this]() -> engine::Vec3 {
-                return this->debug_line_start;
-            };
-            auto getter2 = [this]() -> engine::Vec3 {
-                return this->debug_line_end;
-            };
-
-            auto dbg = new engine::DebugLineDrawable(getter1, getter2, engine::Vec4(0.0f, 1.0f, 0.0f, 1.0f));
-            this->debug_drawable = dbg;
-            this->get_vobject()->add_component(dbg);
-        }
     }
 
     void EnemyShipController::Update() {

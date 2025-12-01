@@ -38,10 +38,5 @@ namespace game::components {
             float roll_error_tolerance = 0.1f; // Predicted radians of error allowed before rolling to correct
 
             void test_planet_collisions();
-
-            // Debug line
-            engine::DebugLineDrawable* debug_drawable = nullptr;
-            engine::Vec3 debug_line_start = engine::Vec3(0.0f);
-            engine::Vec3 debug_line_end   = engine::Vec3(0.0f);
     };
 } // namespace game::components
