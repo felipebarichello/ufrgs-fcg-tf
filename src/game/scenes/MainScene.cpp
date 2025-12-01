@@ -79,6 +79,35 @@ VObjectConfig Planet(PlanetInfo* planet_info, float planet_radius) {
         );
 }
 
+VObjectConfig FlyingEnemy() {
+    return VObjectConfig()
+        .child(VObjectConfig()
+            .transform(TransformBuilder()
+                .scale(0.002f)
+            )
+            .component(new ObjDrawable(std::string("10477_Satellite_v1_L3.obj"), std::string("10477_Satellite_v1_Diffuse.jpg")))
+            .component(new Trajectory(std::make_unique<engine::PieceWiseBezierCurve>(
+                std::vector<engine::BezierCurve>{
+                    // Two cubic Bezier curves forming a closed loop around origin
+                    // Curve 1: from +X to -X (upper arc)
+                    engine::BezierCurve({
+                        Vec3(280.0f, 260.0f, 0.0f),
+                        Vec3(280.0f, 300.0f, 160.0f),
+                        Vec3(-280.0f, 220.0f, 160.0f),
+                        Vec3(-280.0f, 260.0f, 0.0f)
+                    }),
+                    // Curve 2: from -X back to +X (lower arc)
+                    engine::BezierCurve({
+                        Vec3(-280.0f, 260.0f, 0.0f),
+                        Vec3(-280.0f, 300.0f, -160.0f),
+                        Vec3(280.0f, 220.0f, -160.0f),
+                        Vec3(280.0f, 260.0f, 0.0f)
+                    })
+                }
+            ), 20.0f, 0.0f))
+        );
+}
+
 VObjectConfig PlanetWithEnemy(PlanetInfo* planet_info, float planet_radius) {
     return Planet(planet_info, planet_radius)
         .component(new GroundEnemySpawner(planet_info));
@@ -109,6 +138,7 @@ namespace game::scenes {
             .vobject(SkyBox())
             .vobject(EnemyShip())
             .vobject(VObjectConfig()  // Root VObject for all planets
+                .child(FlyingEnemy())
                 .child(PlanetWithEnemy(planets[0], MAIN_PLANET_RADIUS))  // Central planet
                 .child(PlanetWithEnemy(planets[1], PLANET_1_RADIUS)  // Tilted circular orbit
                     .component(new Trajectory(std::make_unique<engine::CircularCurve>(
