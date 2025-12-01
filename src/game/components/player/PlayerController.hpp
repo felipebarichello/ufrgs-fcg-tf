@@ -43,11 +43,10 @@ namespace game::components {
         float game_over_timer = 0.0f;
         float time_to_restart = 3.0f; // seconds before restart after game over
         float time = 0.0f;
+        bool ship_is_dirty = false; // becomes true after switching to ship mode until grounded
 
         void game_over_routine();
-
         void toggle_mode();
-
         void game_over(std::string reason);
     };
 }
