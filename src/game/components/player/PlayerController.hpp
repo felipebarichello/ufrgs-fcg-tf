@@ -41,7 +41,7 @@ namespace game::components {
         bool killed_by_enemy = false;
         bool is_game_over = false;
         float game_over_timer = 0.0f;
-        float time_to_restart = 3.0f; // seconds before restart after game over
+        float time_to_restart = 2.0f; // seconds before restart after game over
         float time = 0.0f;
         bool ship_is_dirty = false; // becomes true after switching to ship mode until grounded
 
