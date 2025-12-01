@@ -118,7 +118,7 @@ namespace game::components {
     }
 
     void HumanoidPlayerController::set_camera_theta(float new_theta) {
-        this->camera_theta = std::clamp(new_theta, -this->theta_max, this->theta_max);
+        this->camera_theta = new_theta;
         this->update_camera();
     }
 
