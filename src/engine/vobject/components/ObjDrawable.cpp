@@ -1,6 +1,7 @@
 #include "ObjDrawable.hpp"
 #include "ObjLoader.hpp"
 #include <macros>
+#include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
@@ -9,6 +10,8 @@ using namespace engine;
 ObjDrawable::ObjDrawable(std::string file_name) {
     std::string model_path = EngineController::get_executable_directory() + "/../../assets/" + file_name;
     this->vao_ptr = ObjLoader::load(model_path.c_str());
+    this->seed = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+    // random seed for this drawable
 }
 
 ObjDrawable::ObjDrawable(std::string file_name, std::string texture_file_name, EngineController::ShaderType shader_type) {
@@ -17,6 +20,7 @@ ObjDrawable::ObjDrawable(std::string file_name, std::string texture_file_name, E
     // Constructor: model and optional texture paths provided.
     this->vao_ptr = ObjLoader::load(model_path.c_str(), texture_path.c_str());
     this->shader_type = shader_type;
+    this->seed = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
 }
 
 ObjDrawable::ObjDrawable(std::string file_name, std::string texture_file_name) {
@@ -25,6 +29,7 @@ ObjDrawable::ObjDrawable(std::string file_name, std::string texture_file_name) {
     // Constructor: model and optional texture paths provided.
     this->vao_ptr = ObjLoader::load(model_path.c_str(), texture_path.c_str());
     this->shader_type = EngineController::ShaderType::Phong;
+    this->seed = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
 }
 
 ObjDrawable::ObjDrawable(std::string file_name, EngineController::ShaderType shader_type) {
@@ -32,6 +37,7 @@ ObjDrawable::ObjDrawable(std::string file_name, EngineController::ShaderType sha
     // Constructor: model and optional texture paths provided.
     this->vao_ptr = ObjLoader::load(model_path.c_str());
     this->shader_type = shader_type;
+    this->seed = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
 }
 
 void ObjDrawable::draw() {
@@ -51,6 +57,13 @@ void ObjDrawable::draw() {
     engine::Mat4 model_matrix = this->get_vobject()->transform().get_model_matrix();
     GLsizei model_uniform = glGetUniformLocation(program_id, "model");
     glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model_matrix));
+    // Send the per-drawable random seed to the shader before drawing
+    GLfloat random_seed = this->seed;
+    GLint seed_uniform = glGetUniformLocation(program_id, "random_seed");
+    if (seed_uniform != -1) {
+        glUniform1f(seed_uniform, random_seed);
+    }
+
     if (this->vao_ptr) {
         this->vao_ptr->draw();
     }

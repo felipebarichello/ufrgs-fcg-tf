@@ -20,6 +20,7 @@ namespace engine {
         private:
             engine::EngineController::ShaderType shader_type { engine::EngineController::ShaderType::Planet };
             bool visible = true;
+            float seed = 0.0f;
     };
 
 } // namespace engine
