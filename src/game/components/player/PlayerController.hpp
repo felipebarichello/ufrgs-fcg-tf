@@ -35,7 +35,8 @@ namespace game::components {
         engine::TextDrawable* time_text = nullptr;
 
         float oxygen_level = 100.0f; // percentage
-        float oxygen_decrease_rate = 5.0f; // percentage per seconds  
+        float oxygen_decrease_rate =  5.0f;  // percentage per seconds
+        float oxygen_recovery_rate = 10.0f; // percentage per second
         float fuel_increase_rate = 5.0f; // units per second when grounded
         bool killed_by_enemy = false;
         bool is_game_over = false;

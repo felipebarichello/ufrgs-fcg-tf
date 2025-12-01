@@ -79,7 +79,7 @@ namespace game::components {
             this->oxygen_level -= this->oxygen_decrease_rate * delta_time;
         } else {
             // Recover oxygen when grounded
-            this->oxygen_level += (this->oxygen_decrease_rate / 2.0f) * delta_time;
+            this->oxygen_level += (this->oxygen_recovery_rate) * delta_time;
             if (this->oxygen_level > 100.0f) {
                 this->oxygen_level = 100.0f;
             }
