@@ -21,6 +21,8 @@ namespace game::components {
         // Called by enemies when they hit this player
         void hit_by_enemy();
 
+        void restart();
+
     private:
         HumanoidPlayerController* humanoid = nullptr;
         PlayerShipController* ship = nullptr;
@@ -35,6 +37,11 @@ namespace game::components {
         float oxygen_decrease_rate = 5.0f; // percentage per seconds  
         float fuel_increase_rate = 5.0f; // units per second when grounded
         bool killed_by_enemy = false;
+        bool game_overed = false;
+        float game_over_timer = 0.0f;
+        float time_to_restart = 3.0f; // seconds before restart after game over
+
+        void game_over_routine();
 
         void toggle_mode();
 

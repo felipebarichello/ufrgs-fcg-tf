@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iomanip>
 #include <game/scenes/MainScene_vars.hpp>
+#include <game/scenes/MainScene.hpp>
 
 using namespace engine;
 
@@ -58,6 +59,11 @@ namespace game::components {
 
     void PlayerController::PostUpdate() {
 
+        if (this->game_overed) {
+            this->game_over_routine();
+            return;
+        }
+
         float delta_time = EngineController::get_delta_time();
         // Decrease oxygen level over time if it is humanoid and is not grouded or is in the ship but there is no fuel
 
@@ -102,6 +108,22 @@ namespace game::components {
         } else if (this->killed_by_enemy) {
             this->game_over(std::string("KILLED BY ENEMY"));
         }
+    }
+
+    void PlayerController::restart() {
+        // reset spaceship velocities
+        this->ship->get_kinematic_body()->set_velocity(Vec3(0.0f, 0.0f, 0.0f));
+        this->humanoid->get_walker()->set_velocity(Vec3(0.0f, 0.0f, 0.0f));
+        this->game_overed = false;
+        this->game_over_timer = 0.0f;
+        this->oxygen_level = 100.0f;
+        this->killed_by_enemy = false;
+        this->game_over_text->setText(std::string(""), 1.8f, 0.0f, 0.0f);
+        this->humanoid->enable();
+        this->ship->disable();
+        this->ship->get_ship_controller()->set_fuel(100.0f);
+        Camera::set_main(this->humanoid_cam);
+        scenes::MainScene::restart();
     }
 
     void PlayerController::hit_by_enemy() {
@@ -157,6 +179,14 @@ namespace game::components {
         if (x_pos > 1.0f) x_pos = 1.0f;
 
         this->game_over_text->setText(full_text, font_size, x_pos, y_pos);
+        this->game_overed = true;
     }
 
+    void PlayerController::game_over_routine() {
+        this->game_over_timer += EngineController::get_delta_time();
+        if (this->game_over_timer < this->time_to_restart) {
+            return;
+        }
+        this->restart();
+    }
 }

@@ -43,6 +43,8 @@ namespace game::components {
             AngularVelocity* get_angular_velocity() const { return this->angular; }
             ShipCommand& get_command() { return this->command; }
 
+            void set_fuel(float amount) { this->fuel = amount; }
+
         private:
             KinematicBody* kinematic;
             AngularVelocity* angular;
