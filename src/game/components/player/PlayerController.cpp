@@ -65,7 +65,7 @@ namespace game::components {
 
         this->time += EngineController::get_delta_time();
 
-        if (this->game_overed) {
+        if (this->is_game_over) {
             this->game_over_routine();
             return;
         }
@@ -123,7 +123,7 @@ namespace game::components {
         this->ship->get_angular_velocity()->reset();
         this->humanoid->get_walker()->set_velocity(Vec3(0.0f, 0.0f, 0.0f));
         this->humanoid->get_walker()->reset_grounded_to();
-        this->game_overed = false;
+        this->is_game_over = false;
         this->game_over_timer = 0.0f;
         this->oxygen_level = 100.0f;
         this->killed_by_enemy = false;
@@ -191,7 +191,7 @@ namespace game::components {
         this->game_over_text->setText(full_text, font_size, x_pos, y_pos);
 
         this->time_text->setText("Survived time: " + std::to_string(static_cast<int>(this->time)) + "s", 1.5f, x_pos, y_pos - 0.2f);
-        this->game_overed = true;
+        this->is_game_over = true;
     }
 
     void PlayerController::game_over_routine() {
