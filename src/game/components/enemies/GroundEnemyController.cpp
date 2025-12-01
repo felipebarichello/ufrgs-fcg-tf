@@ -63,8 +63,8 @@ namespace game::components {
             WalkerController* target_walker = target_humanoid->get_walker();
             if (target_walker) {
                 auto enemy_cyl = this->get_cylinder_collider();
-                auto target_cyl = target_humanoid->get_cylinder_collider();
-                if (engine::collision::collide_cylinder_cylinder(*enemy_cyl, *target_cyl).has_collided()) {
+                auto target_point = target_walker->get_point_collider();
+                if (engine::collision::collide_point_cylinder(*target_point, *enemy_cyl).has_collided()) {
                     this->target_controller->hit_by_enemy();
                 }
             }
@@ -82,11 +82,8 @@ namespace game::components {
 
             // Rotation that brings fwd_n -> proj_n
             Quaternion face_rot = Quaternion::from_unit_vectors(fwd_n, proj_n);
-            // Compute target quaternion by composing current with face_rot (in global frame)
-            Quaternion target_quat = quaternion;
-            target_quat.global_compose(face_rot);
-            // Interpolate towards target to smooth the rotation
-            quaternion = Quaternion::slerp(quaternion, target_quat, this->facing_smooth);
+            // Apply rotation in global frame so the up direction remains consistent
+            quaternion.global_compose(face_rot);
             quaternion.normalize();
         }
     }
