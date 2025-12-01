@@ -28,12 +28,13 @@ namespace game::components {
             float vertical_steer_power = 50.0f; // radians/s applied per unit of vertical input
             float horizontal_steer_power = 50.0f; // radians/s applied per unit of horizontal input
 
-            float fuel = 200.0f;
-            float thrust_fuel_consumption = 10.0f; // units per second when thrusting
-            float roll_fuel_consumption = 3.0f; // units per second when rolling
-            float vertical_steer_fuel_consumption = 2.0f; // units per second per unit of vertical input
-            float horizontal_steer_fuel_consumption = 2.0f; // units per second per unit of horizontal input
+            float fuel = 100.0f;
+            float thrust_fuel_consumption = 5.0f; // units per second when thrusting
+            float roll_fuel_consumption = 1.0f; // units per second when rolling
+            float vertical_steer_fuel_consumption = 1.0f; // units per second per unit of vertical input
+            float horizontal_steer_fuel_consumption = 1.0f; // units per second per unit of horizontal input
             float passive_fuel_consumption = 1.0f; // units per second whenever
+            void add_fuel(float amount) { this->fuel += amount; if (this->fuel > 100.0f) this->fuel = 100.0f; }
 
             SpaceshipController(KinematicBody* kinematic, AngularVelocity* angular): kinematic(kinematic), angular(angular) {}
             void Update() override;
