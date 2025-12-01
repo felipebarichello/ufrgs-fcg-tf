@@ -39,6 +39,10 @@ namespace game::components {
         std::ostringstream oxy_ss;;
         oxy_ss << std::fixed << std::setprecision(1) << this->oxygen_level;
         this->oxygen_text->setText(std::string("Oxygen: ") + oxy_ss.str(), 1.5f, -0.95f, 0.8f);
+
+        this->time_text = new TextDrawable();
+        this->get_vobject()->add_component(this->time_text);
+        this->time_text->setText("", 1.5f, -0.95f, 0.7f);
     }
 
     void PlayerController::Start() {
@@ -58,6 +62,8 @@ namespace game::components {
     }
 
     void PlayerController::PostUpdate() {
+
+        this->time += EngineController::get_delta_time();
 
         if (this->game_overed) {
             this->game_over_routine();
@@ -112,6 +118,7 @@ namespace game::components {
 
     void PlayerController::restart() {
         // reset spaceship velocities
+        this->time_text->setText("", 1.5f, -0.95f, 0.7f);
         this->ship->get_kinematic_body()->set_velocity(Vec3(0.0f, 0.0f, 0.0f));
         this->ship->get_angular_velocity()->reset();
         this->humanoid->get_walker()->set_velocity(Vec3(0.0f, 0.0f, 0.0f));
@@ -125,6 +132,7 @@ namespace game::components {
         this->ship->disable();
         this->ship->get_ship_controller()->set_fuel(100.0f);
         Camera::set_main(this->humanoid_cam);
+        this->time = 0.0f;
         scenes::MainScene::restart();
     }
 
@@ -181,6 +189,8 @@ namespace game::components {
         if (x_pos > 1.0f) x_pos = 1.0f;
 
         this->game_over_text->setText(full_text, font_size, x_pos, y_pos);
+
+        this->time_text->setText("Survived time: " + std::to_string(static_cast<int>(this->time)) + "s", 1.5f, x_pos, y_pos - 0.2f);
         this->game_overed = true;
     }
 

@@ -32,6 +32,7 @@ namespace game::components {
         engine::TextDrawable* game_over_text = nullptr;
         engine::TextDrawable* fuel_text = nullptr;
         engine::TextDrawable* oxygen_text = nullptr;
+        engine::TextDrawable* time_text = nullptr;
 
         float oxygen_level = 100.0f; // percentage
         float oxygen_decrease_rate = 5.0f; // percentage per seconds  
@@ -40,6 +41,7 @@ namespace game::components {
         bool game_overed = false;
         float game_over_timer = 0.0f;
         float time_to_restart = 3.0f; // seconds before restart after game over
+        float time = 0.0f;
 
         void game_over_routine();
 
