@@ -61,7 +61,7 @@ std::vector<VObjectConfig> Player() {
         );
 
     vobjs.push_back(player_vobj);
-    vobjs.push_back(VObjectConfig().component(new ThrustParticles(ship_ctl)));
+    //vobjs.push_back(VObjectConfig().component(new ThrustParticles(ship_ctl)));
     vobjs.push_back(VObjectConfig().component(ship_camera));
 
     return vobjs;
