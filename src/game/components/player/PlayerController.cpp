@@ -113,7 +113,9 @@ namespace game::components {
     void PlayerController::restart() {
         // reset spaceship velocities
         this->ship->get_kinematic_body()->set_velocity(Vec3(0.0f, 0.0f, 0.0f));
+        this->ship->get_angular_velocity()->reset();
         this->humanoid->get_walker()->set_velocity(Vec3(0.0f, 0.0f, 0.0f));
+        this->humanoid->get_walker()->reset_grounded_to();
         this->game_overed = false;
         this->game_over_timer = 0.0f;
         this->oxygen_level = 100.0f;

@@ -247,4 +247,8 @@ namespace game::components {
         transform.set_world_quaternion(quaternion);
     }
 
+    void WalkerController::reset_grounded_to() {
+        this->set_not_grounded();
+    }
+
 } // namespace game::components

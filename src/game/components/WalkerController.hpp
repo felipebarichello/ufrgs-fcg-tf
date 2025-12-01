@@ -27,6 +27,7 @@ namespace game::components {
             bool is_grounded() const { return this->grounded_to.has_value(); }
             void set_max_walk_speed(float speed) { this->max_walk_speed = speed; }
             void set_velocity(const engine::Vec3& vel) { this->kinematic->set_velocity(vel); }
+            void reset_grounded_to();
 
         private:
             KinematicBody* kinematic;
