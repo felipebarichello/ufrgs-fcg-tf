@@ -34,10 +34,6 @@ ObjDrawable::ObjDrawable(std::string file_name, EngineController::ShaderType sha
     this->shader_type = shader_type;
 }
 
-ObjDrawable::~ObjDrawable() {
-    // no-op; VAO lifetime is managed by ObjLoader cache
-}
-
 void ObjDrawable::draw() {
     if (!this->visible) return;
 
