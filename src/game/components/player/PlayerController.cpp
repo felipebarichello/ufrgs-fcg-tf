@@ -138,6 +138,7 @@ namespace game::components {
         this->humanoid->enable();
         this->ship->disable();
         this->ship->get_ship_controller()->set_fuel(100.0f);
+        this->ship_is_dirty = false;
         Camera::set_main(this->humanoid_cam);
         this->time = 0.0f;
         scenes::MainScene::restart();
