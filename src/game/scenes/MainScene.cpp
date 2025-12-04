@@ -7,7 +7,7 @@
 #include <game/scenes/MainScene_vars.hpp>
 #include <game/instantiators/EnemyShip.hpp>
 #include <game/instantiators/SpaceshipObj.hpp>
-#include <time.h>
+#include <engine/math/random.hpp>
 
 using namespace engine;
 using namespace game::components;
@@ -130,6 +130,7 @@ VObjectConfig SkyBox() {
 
 namespace game::scenes {
     void MainScene::hierarchy(SceneRoot& root) {
+
         std::vector<PlanetInfo*>& planets = scenes::main_scene::planets;
         planets.push_back(new PlanetInfo(70.0e12f, MAIN_PLANET_RADIUS));
         planets.push_back(new PlanetInfo(70.0e12f*PLANET_1_RADIUS/MAIN_PLANET_RADIUS, PLANET_1_RADIUS));
@@ -207,23 +208,23 @@ namespace game::scenes {
     }
 
     // Restart scene
+
     void MainScene::restart() {
+
+        constexpr float DISTANCE_FROM_SURFACE = 2.0f;
+
         if (game::scenes::main_scene::player) {
-            int rand = time(NULL) % 6;
-            if (rand == 0)
-                game::scenes::main_scene::player->get_vobject()->transform().set_world_position(Vec3(220.0f, 0.0f, 0.0f));
-            else if (rand == 1)
-                game::scenes::main_scene::player->get_vobject()->transform().set_world_position(Vec3(0.0f, 220.0f, 0.0f));
-            else if (rand == 2)
-                game::scenes::main_scene::player->get_vobject()->transform().set_world_position(Vec3(0.0f, 0.0f, 220.0f));
-            else if (rand == 3)
-                game::scenes::main_scene::player->get_vobject()->transform().set_world_position(Vec3(-220.0f, 0.0f, 0.0f));
-            else if (rand == 4)
-                game::scenes::main_scene::player->get_vobject()->transform().set_world_position(Vec3(0.0f, -220.0f, 0.0f));
-            else if (rand == 5)
-                game::scenes::main_scene::player->get_vobject()->transform().set_world_position(Vec3(0.0f, 0.0f, -220.0f));
-            else 
-                game::scenes::main_scene::player->get_vobject()->transform().set_world_position(Vec3(220.0f, 0.0f, 0.0f));
+            float theta = engine::random_float(0.0f, 2.0f * M_PI);
+            float phi = engine::random_float(0.0f, M_PI);
+
+            Vec3 dir;
+            dir.x = std::sin(phi) * std::cos(theta);
+            dir.y = std::sin(phi) * std::sin(theta);
+            dir.z = std::cos(phi);
+
+            Vec3 relative_spawn_pos = dir * (MAIN_PLANET_RADIUS + DISTANCE_FROM_SURFACE);
+            game::scenes::main_scene::player->get_vobject()->transform().set_world_position(relative_spawn_pos);
         }
     }
 }
+
