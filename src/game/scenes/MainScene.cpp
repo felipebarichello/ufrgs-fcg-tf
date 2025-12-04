@@ -7,6 +7,7 @@
 #include <game/scenes/MainScene_vars.hpp>
 #include <game/instantiators/EnemyShip.hpp>
 #include <game/instantiators/SpaceshipObj.hpp>
+#include <time.h>
 
 using namespace engine;
 using namespace game::components;
@@ -208,7 +209,21 @@ namespace game::scenes {
     // Restart scene
     void MainScene::restart() {
         if (game::scenes::main_scene::player) {
-            game::scenes::main_scene::player->get_vobject()->transform().set_world_position(Vec3(0.0f, 220.0f, 0.0f));
+            int rand = time(NULL) % 6;
+            if (rand == 0)
+                game::scenes::main_scene::player->get_vobject()->transform().set_world_position(Vec3(220.0f, 0.0f, 0.0f));
+            else if (rand == 1)
+                game::scenes::main_scene::player->get_vobject()->transform().set_world_position(Vec3(0.0f, 220.0f, 0.0f));
+            else if (rand == 2)
+                game::scenes::main_scene::player->get_vobject()->transform().set_world_position(Vec3(0.0f, 0.0f, 220.0f));
+            else if (rand == 3)
+                game::scenes::main_scene::player->get_vobject()->transform().set_world_position(Vec3(-220.0f, 0.0f, 0.0f));
+            else if (rand == 4)
+                game::scenes::main_scene::player->get_vobject()->transform().set_world_position(Vec3(0.0f, -220.0f, 0.0f));
+            else if (rand == 5)
+                game::scenes::main_scene::player->get_vobject()->transform().set_world_position(Vec3(0.0f, 0.0f, -220.0f));
+            else 
+                game::scenes::main_scene::player->get_vobject()->transform().set_world_position(Vec3(220.0f, 0.0f, 0.0f));
         }
     }
 }
