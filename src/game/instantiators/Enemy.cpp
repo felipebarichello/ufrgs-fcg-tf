@@ -10,22 +10,26 @@ namespace game::instantiators {
     
     VObjectConfig Enemy(EnemyConfig config) {
         PointCollider* point_collider = new PointCollider();
-        CylinderCollider* cylinder_collider = new CylinderCollider(1.0f, 3.0f);
+        CylinderCollider* cylinder_collider = new CylinderCollider(9.0f, 0.5f);
         KinematicBody* kinematic = new KinematicBody();
         Gravity* gravity = new Gravity(kinematic);
         WalkerController* walker = new WalkerController(kinematic, gravity, point_collider);
 
         walker->set_max_walk_speed(40.0f);
-
+        
         return VObjectConfig()
             .transform(TransformBuilder()
                 .position(Vec3(0.0f, config.home->get_radius(), 0.0f)))
             .component(walker)
             .component(point_collider)
-            .component(cylinder_collider)
             .component(new GroundEnemyController(walker, cylinder_collider))
             .component(gravity)
             .component(kinematic)
+            .child(VObjectConfig()
+                .transform(TransformBuilder()
+                    .rotation(Quaternion::from_z_rotation(-M_PI/2)))
+                .component(cylinder_collider)
+            )
             .child(EnemyObj());
     }
     
