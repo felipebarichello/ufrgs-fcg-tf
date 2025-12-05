@@ -46,8 +46,8 @@ namespace engine::collision {
         float sphere_radius = sphere.get_radius();
 
         // Cylinder segment endpoints
-        Vec3 a = cyl_pos;
-        Vec3 b = cyl_pos + axis * cyl.get_height();
+        Vec3 a = cyl_pos + axis * cyl.get_height()*0.5f;
+        Vec3 b = cyl_pos - axis * cyl.get_height()*0.5f;
 
         // Closest point on cylinder segment to sphere center
         Vec3 closest = closest_point_on_segment(a, b, sphere_pos);
