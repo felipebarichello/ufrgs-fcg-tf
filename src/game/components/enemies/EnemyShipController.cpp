@@ -105,7 +105,7 @@ namespace game::components {
 
     void EnemyShipController::test_planet_collisions() {
         for (PlanetInfo* planet : this->planets) {
-            bool collision_detected = engine::collision::collide_cylinder_sphere(*this->cylinder_collider, *planet->get_sphere_collider()).has_collided();
+            bool collision_detected = engine::collision::collide_capsule_sphere(*this->capsule_collider, *planet->get_sphere_collider()).has_collided();
             if (collision_detected) {
                 // this->get_vobject()->destroy();
             }

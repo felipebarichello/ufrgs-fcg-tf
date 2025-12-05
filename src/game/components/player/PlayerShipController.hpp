@@ -13,7 +13,7 @@
 namespace game::components {
     class PlayerShipController : public engine::Behavior {
         public:
-            PlayerShipController(SpaceshipController* ship_controller, ShipCameraController* ship_camera_controller, engine::ObjDrawable* model, engine::CylinderCollider* cylinder_collider) : ship_controller(ship_controller), camera_controller(ship_camera_controller), planets(scenes::main_scene::planets), cylinder_collider(cylinder_collider), model(model) {}
+            PlayerShipController(SpaceshipController* ship_controller, ShipCameraController* ship_camera_controller, engine::ObjDrawable* model, engine::CapsuleCollider* capsule_collider) : ship_controller(ship_controller), camera_controller(ship_camera_controller), planets(scenes::main_scene::planets), capsule_collider(capsule_collider), model(model) {}
             void Awake() override;
             void Start() override;
             void Update() override;
@@ -35,7 +35,7 @@ namespace game::components {
 
             ShipCameraController* camera_controller;
             std::vector<PlanetInfo*> planets;
-            engine::CylinderCollider* cylinder_collider;
+            engine::CapsuleCollider* capsule_collider;
             engine::ObjDrawable* model;
 
             SphericalCoords smooth_spherical_input;

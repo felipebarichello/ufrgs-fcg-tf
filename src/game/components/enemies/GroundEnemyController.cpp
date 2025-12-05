@@ -62,9 +62,9 @@ namespace game::components {
             HumanoidPlayerController* target_humanoid = this->target_controller->get_humanoid();
             WalkerController* target_walker = target_humanoid->get_walker();
             if (target_walker) {
-                auto enemy_cyl = this->get_cylinder_collider();
+                auto enemy_cyl = this->get_capsule_collider();
                 auto target_point = target_walker->get_point_collider();
-                if (engine::collision::collide_point_cylinder(*target_point, *enemy_cyl).has_collided()) {
+                if (engine::collision::collide_point_capsule(*target_point, *enemy_cyl).has_collided()) {
                     this->target_controller->hit_by_enemy();
                 }
             }

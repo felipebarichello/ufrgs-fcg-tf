@@ -3,7 +3,7 @@
 #include <engine/collision/colliders/SphereCollider.hpp>
 
 #include <engine/collision/colliders/PointCollider.hpp>
-#include <engine/collision/colliders/CylinderCollider.hpp>
+#include <engine/collision/colliders/CapsuleCollider.hpp>
 
 namespace engine::collision {
     class PointSphereCollision {
@@ -17,34 +17,34 @@ namespace engine::collision {
 
     PointSphereCollision collide_point_sphere(const PointCollider& point, const SphereCollider& sphere);
 
-    class CylinderCylinderCollision {
+    class CapsuleCapsuleCollision {
         public:
-            CylinderCylinderCollision(bool collided) : collided(collided) {}
+            CapsuleCapsuleCollision(bool collided) : collided(collided) {}
             bool has_collided() const { return this->collided; }
 
         private:
             bool collided;
     };
 
-    class CylinderSphereCollision {
+    class CapsuleSphereCollision {
         public:
-            CylinderSphereCollision(bool collided) : collided(collided) {}
+            CapsuleSphereCollision(bool collided) : collided(collided) {}
             bool has_collided() const { return this->collided; }
 
         private:
             bool collided;
     };
 
-    CylinderSphereCollision collide_cylinder_sphere(const CylinderCollider& cyl, const SphereCollider& sphere);
+    CapsuleSphereCollision collide_capsule_sphere(const CapsuleCollider& cyl, const SphereCollider& sphere);
 
-    class PointCylinderCollision {
+    class PointCapsuleCollision {
         public:
-            PointCylinderCollision(bool collided) : collided(collided) {}
+            PointCapsuleCollision(bool collided) : collided(collided) {}
             bool has_collided() const { return this->collided; }
 
         private:
             bool collided;
     };
 
-    PointCylinderCollision collide_point_cylinder(const PointCollider& point, const CylinderCollider& cylinder);
+    PointCapsuleCollision collide_point_capsule(const PointCollider& point, const CapsuleCollider& capsule);
 }

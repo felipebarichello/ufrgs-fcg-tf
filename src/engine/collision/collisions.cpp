@@ -32,54 +32,54 @@ namespace engine::collision {
         return PointSphereCollision(collided);
     }
 
-    CylinderSphereCollision collide_cylinder_sphere(const CylinderCollider& cyl, const SphereCollider& sphere) {
-        auto cylinder_vobj = cyl.get_vobject();
+    CapsuleSphereCollision collide_capsule_sphere(const CapsuleCollider& cyl, const SphereCollider& sphere) {
+        auto capsule_vobj = cyl.get_vobject();
         auto sphere_vobj = sphere.get_vobject();
 
-        Vec3 cyl_pos = cylinder_vobj->transform().get_world_position();
+        Vec3 cyl_pos = capsule_vobj->transform().get_world_position();
         Vec3 sphere_pos = sphere_vobj->transform().get_world_position();
 
-        // Cylinder axis and scale
-        Vec3 axis = cylinder_vobj->transform().get_world_quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
+        // Capsule axis and scale
+        Vec3 axis = capsule_vobj->transform().get_world_quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
         float cyl_radius = cyl.get_radius();
 
         float sphere_radius = sphere.get_radius();
 
-        // Cylinder segment endpoints
+        // Capsule segment endpoints
         Vec3 a = cyl_pos + axis * cyl.get_height()*0.5f;
         Vec3 b = cyl_pos - axis * cyl.get_height()*0.5f;
 
-        // Closest point on cylinder segment to sphere center
+        // Closest point on capsule segment to sphere center
         Vec3 closest = closest_point_on_segment(a, b, sphere_pos);
         Vec3 diff = sphere_pos - closest;
         float dist2 = engine::dot(diff, diff);
 
         bool collided = dist2 <= ((cyl_radius + sphere_radius) * (cyl_radius + sphere_radius));
-        return CylinderSphereCollision(collided);
+        return CapsuleSphereCollision(collided);
     }
 
-    PointCylinderCollision collide_point_cylinder(const PointCollider& point, const CylinderCollider& cyl) {
+    PointCapsuleCollision collide_point_capsule(const PointCollider& point, const CapsuleCollider& cyl) {
         auto point_vobj = point.get_vobject();
-        auto cylinder_vobj = cyl.get_vobject();
+        auto capsule_vobj = cyl.get_vobject();
 
         Vec3 point_pos = point_vobj->transform().get_world_position();
-        Vec3 cyl_pos = cylinder_vobj->transform().get_world_position();
+        Vec3 cyl_pos = capsule_vobj->transform().get_world_position();
 
-        // Cylinder axis and scale
-        Vec3 axis = cylinder_vobj->transform().get_world_quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
+        // Capsule axis and scale
+        Vec3 axis = capsule_vobj->transform().get_world_quaternion().rotate(Vec3(0.0f, 1.0f, 0.0f));
         float cyl_radius = cyl.get_radius();
 
-        // Cylinder segment endpoints
+        // Capsule segment endpoints
         Vec3 a = cyl_pos + axis * cyl.get_height()*0.5f;
         Vec3 b = cyl_pos - axis * cyl.get_height()*0.5f;
 
-        // Closest point on cylinder segment to point
+        // Closest point on capsule segment to point
         Vec3 closest = closest_point_on_segment(a, b, point_pos);
         Vec3 diff = point_pos - closest;
         float dist2 = engine::dot(diff, diff);
 
         bool collided = dist2 <= (cyl_radius * cyl_radius);
-        return PointCylinderCollision(collided);
+        return PointCapsuleCollision(collided);
     }
 
 } // namespace engine::collision

@@ -3,7 +3,7 @@
 #include <engine>
 #include <memory>
 #include <engine/vobject/components/TextDrawable.hpp>
-#include <engine/collision/colliders/CylinderCollider.hpp>
+#include <engine/collision/colliders/CapsuleCollider.hpp>
 #include <game/components/PlanetInfo.hpp>
 #include <game/components/SphericalCoords.hpp>
 #include <game/components/physics/KinematicBody.hpp>
@@ -14,7 +14,7 @@
 namespace game::components {
     class EnemyShipController : public engine::Behavior {
         public:
-            EnemyShipController(SpaceshipController* ship_controller, engine::CylinderCollider* cylinder_collider) : ship_controller(ship_controller), planets(scenes::main_scene::planets), cylinder_collider(cylinder_collider) {}
+            EnemyShipController(SpaceshipController* ship_controller, engine::CapsuleCollider* capsule_collider) : ship_controller(ship_controller), planets(scenes::main_scene::planets), capsule_collider(capsule_collider) {}
             void Awake() override;
             void Update() override;
             void PostUpdate() override;
@@ -31,7 +31,7 @@ namespace game::components {
             PlayerController* player_controller;
 
             std::vector<PlanetInfo*> planets;
-            engine::CylinderCollider* cylinder_collider;
+            engine::CapsuleCollider* capsule_collider;
 
             float facing_player_threshold = 0.8f; // Dot product within which to consider "facing player" for thrusting
             float prediction_time = 1.0f; // Seconds to look ahead for collisions

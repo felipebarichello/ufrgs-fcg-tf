@@ -3,9 +3,9 @@
 #include <engine/vobject/Component.hpp>
 
 namespace engine {
-    class CylinderCollider : public Component {
+    class CapsuleCollider : public Component {
         public:
-            CylinderCollider(float height, float radius) : height(height), radius(radius) {}
+            CapsuleCollider(float height, float radius) : height(height), radius(radius) {}
             float get_height() const { return this->height; }
             float get_radius() const { return this->radius; }
 

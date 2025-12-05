@@ -1,5 +1,5 @@
 #pragma once
 
-#include "CylinderCollider.hpp"
+#include "CapsuleCollider.hpp"
 #include "SphereCollider.hpp"
 #include "PointCollider.hpp"

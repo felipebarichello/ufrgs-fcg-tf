@@ -11,7 +11,7 @@ namespace game::components {
         public:
             // Now HumanoidPlayerController only handles input and camera.
             // It receives a pointer to a WalkerController component that resides in the same VObject.
-            HumanoidPlayerController(engine::Camera* camera, WalkerController* walker, AngularVelocity* angular, engine::CylinderCollider* cylinder_collider) : camera(camera), walker(walker), angular(angular), cylinder_collider(cylinder_collider) {}
+            HumanoidPlayerController(engine::Camera* camera, WalkerController* walker, AngularVelocity* angular, engine::CapsuleCollider* capsule_collider) : camera(camera), walker(walker), angular(angular), capsule_collider(capsule_collider) {}
             void Start() override;
             void Update() override;
             void PostUpdate() override;
@@ -24,7 +24,7 @@ namespace game::components {
             // Expose walker for external queries (e.g., collision checks)
             WalkerController* get_walker() { return this->walker; }
 
-            engine::CylinderCollider* get_cylinder_collider() { return this->cylinder_collider; }
+            engine::CapsuleCollider* get_capsule_collider() { return this->capsule_collider; }
             
         private:
             static constexpr float GRAVITATIONAL_CONSTANT = 6.6743e-11f;
@@ -36,7 +36,7 @@ namespace game::components {
             WalkerController* walker = nullptr;
             AngularVelocity* angular = nullptr;
 
-            engine::CylinderCollider* cylinder_collider;
+            engine::CapsuleCollider* capsule_collider;
 
             /// @brief Used both for storing camera transform before releasing and for bobbing.
             engine::Transform stored_child_cam_transform;

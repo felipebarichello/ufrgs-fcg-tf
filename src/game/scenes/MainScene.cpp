@@ -25,15 +25,15 @@ std::vector<VObjectConfig> Player() {
     Gravity* gravity = new Gravity(kinematic);
 
     engine::PointCollider* point_collider = new engine::PointCollider();
-    engine::CylinderCollider* cylinder_collider = new engine::CylinderCollider(height, 0.5f);
-    engine::CylinderCollider* ship_collider = new engine::CylinderCollider(2.0f, 1.0f);
+    engine::CapsuleCollider* capsule_collider = new engine::CapsuleCollider(height, 0.5f);
+    engine::CapsuleCollider* ship_collider = new engine::CapsuleCollider(2.0f, 1.0f);
     AngularVelocity* angular_velocity = new AngularVelocity();
     
     SpaceshipController* ship_ctl = new SpaceshipController(kinematic, angular_velocity);
     ShipCameraController* ship_cam_ctl = new ShipCameraController(ship_camera, humanoid_camera);
     PlayerShipController* player_ship = new PlayerShipController(ship_ctl, ship_cam_ctl, ship_drawable, ship_collider);
     WalkerController* walker = new WalkerController(kinematic, gravity, point_collider);
-    HumanoidPlayerController* humanoid_controller = new HumanoidPlayerController(humanoid_camera, walker, angular_velocity, cylinder_collider);
+    HumanoidPlayerController* humanoid_controller = new HumanoidPlayerController(humanoid_camera, walker, angular_velocity, capsule_collider);
     PlayerController* player_ctl = new PlayerController(humanoid_controller, player_ship, humanoid_camera, ship_camera);
     game::scenes::main_scene::player = player_ctl;
 
@@ -48,7 +48,7 @@ std::vector<VObjectConfig> Player() {
         .component(humanoid_controller)
         .component(player_ship)
         .component(point_collider)
-        .component(cylinder_collider)
+        .component(capsule_collider)
         .component(ship_ctl)
         .component(player_ctl)
         .component(gravity)

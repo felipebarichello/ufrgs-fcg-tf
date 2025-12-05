@@ -2,7 +2,7 @@
 
 #include <engine>
 #include <memory>
-#include <engine/collision/colliders/CylinderCollider.hpp>
+#include <engine/collision/colliders/CapsuleCollider.hpp>
 #include <game/components/PlanetInfo.hpp>
 #include <game/components/SphericalCoords.hpp>
 #include <game/components/physics/KinematicBody.hpp>
