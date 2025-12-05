@@ -26,4 +26,10 @@ class Stars : public engine::Drawable {
         float distance = 200.0f;
         bool use_phong_shading = false;
 
+        float max_size = 3.0f;
+        float min_size = 0.5f;
+
+        float min_alpha = 0.25f;
+        float max_alpha = 1.0f;
+
         engine::Vec3 color = {1.0, 1.0, 1.0};};
