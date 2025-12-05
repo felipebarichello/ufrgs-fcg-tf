@@ -4,21 +4,19 @@
 #include <GLFW/glfw3.h>
 
 namespace engine {
-	TextDrawable::TextDrawable()
-	{
+	TextDrawable::TextDrawable() {
 		static bool text_rendering_initialized = false;
 		if (!text_rendering_initialized) {
 			engine::init_text_renderer();
 			text_rendering_initialized = true;
 		}
+		this->window = engine::EngineController::get_instance()->get_window();
 	}
 
-	TextDrawable::~TextDrawable()
-	{
+	TextDrawable::~TextDrawable(){
 	}
 
-	void TextDrawable::setText(const std::string& text, float scale, float x, float y)
-	{
+	void TextDrawable::setText(const std::string& text, float scale, float x, float y) {
 		this->text = text;
 		this->scale = scale;
 		this->color = color;
@@ -26,14 +24,15 @@ namespace engine {
 		this->y = y;
 	}
 
-	void TextDrawable::draw()
-	{
-		engine::EngineController* ec = engine::EngineController::get_instance();
-		if (!ec) return;
-		GLFWwindow* window = ec->get_window();
-		if (!window) return;
-
-		// Currently the text shader in TextRendering.cpp uses a fixed color
+	void TextDrawable::draw() {
 		render_text(window, this->text, this->x, this->y, this->scale);
+	}
+
+	float TextDrawable::get_text_width() const {
+		return set_text_char_width(window);
+	}
+
+	float TextDrawable::get_text_height() const {
+		return set_text_line_height(window);
 	}
 }
