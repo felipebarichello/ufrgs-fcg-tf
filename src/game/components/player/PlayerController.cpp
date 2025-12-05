@@ -186,26 +186,26 @@ namespace game::components {
         this->ship->disable();
         Camera::set_main(this->humanoid_cam);
 
-        // Build full text
         std::string full_text = "GAME OVER: " + reason;
 
-        // Heuristic to center text in normalized screen coords [-1,1].
-        // Tune these values if font metrics become available.
-        const float font_size = 2.0f;
-        const float avg_char_width_per_unit = 0.008f; // width per character per font-size unit
-        float text_width = static_cast<float>(full_text.length()) * avg_char_width_per_unit * font_size;
-
-        // Center by placing left edge at -text_width/2
+        float font_size = 2.0f;
+        float char_width = game_over_text->get_text_width();
+        float text_width = static_cast<float>(full_text.length()) * char_width * font_size;
         float x_pos = -text_width * 0.5f;
         float y_pos = 0.0f;
-
-        // Clamp to screen bounds [-1,1] just in case
         if (x_pos < -1.0f) x_pos = -1.0f;
         if (x_pos > 1.0f) x_pos = 1.0f;
-
         this->game_over_text->setText(full_text, font_size, x_pos, y_pos);
 
-        this->time_text->setText("Survived time: " + std::to_string(static_cast<int>(this->time)) + "s", 1.5f, x_pos, y_pos - 0.2f);
+        std::string time_text_str = "Survived time: ";
+
+        font_size = 1.5f;
+        char_width = game_over_text->get_text_width();
+        x_pos = -text_width * 0.5f;
+        if (x_pos < -1.0f) x_pos = -1.0f;
+        if (x_pos > 1.0f) x_pos = 1.0f;
+        this->time_text->setText(time_text_str + std::to_string(static_cast<int>(this->time)) + "s", font_size, x_pos, y_pos - 0.1f);
+
         this->is_game_over = true;
     }
 
