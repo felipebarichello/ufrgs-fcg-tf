@@ -11,9 +11,9 @@ namespace engine::collision {
     // Closest point on segment AB to point P
     static engine::Vec3 closest_point_on_segment(const engine::Vec3& a, const engine::Vec3& b, const engine::Vec3& p) {
         engine::Vec3 ab = b - a;
-        float ab2 = engine::dot(ab, ab);
-        if (ab2 <= 1e-12f) return a;
-        float t = engine::dot(p - a, ab) / ab2;
+        float sqr_ab = engine::dot(ab, ab);
+        if (sqr_ab <= 1e-12f) return a;
+        float t = engine::dot(p - a, ab) / sqr_ab;
         t = clampf(t, 0.0f, 1.0f);
         return a + ab * t;
     }
