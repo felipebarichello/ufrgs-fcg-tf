@@ -52,9 +52,9 @@ namespace engine::collision {
         // Closest point on capsule segment to sphere center
         Vec3 closest = closest_point_on_segment(a, b, sphere_pos);
         Vec3 diff = sphere_pos - closest;
-        float dist2 = engine::dot(diff, diff);
+        float sqr_dist = engine::dot(diff, diff);
 
-        bool collided = dist2 <= ((cyl_radius + sphere_radius) * (cyl_radius + sphere_radius));
+        bool collided = sqr_dist <= ((cyl_radius + sphere_radius) * (cyl_radius + sphere_radius));
         return CapsuleSphereCollision(collided);
     }
 
@@ -76,9 +76,9 @@ namespace engine::collision {
         // Closest point on capsule segment to point
         Vec3 closest = closest_point_on_segment(a, b, point_pos);
         Vec3 diff = point_pos - closest;
-        float dist2 = engine::dot(diff, diff);
+        float sqr_dist = engine::dot(diff, diff);
 
-        bool collided = dist2 <= (cyl_radius * cyl_radius);
+        bool collided = sqr_dist <= (cyl_radius * cyl_radius);
         return PointCapsuleCollision(collided);
     }
 
