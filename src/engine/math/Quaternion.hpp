@@ -16,6 +16,7 @@ extern "C" {
 }
 #undef Quaternion
 
+// FONTE: https://github.com/MartinWeigel/Quaternion 
 namespace engine {
     using CQuaternion = ::CQuaternion;
 
