@@ -261,7 +261,7 @@ namespace engine {
     }
 
     float ease_out_quad(float t) {
-        return 1.0f - std::powf(1.0f - t, 2.0f);
+        return 1.0f - std::pow(1.0f - t, 2.0f);
     }
 
     Vec2 bezier3(const Vec2& p1, const Vec2& p2, float t) {
@@ -275,13 +275,10 @@ namespace engine {
         const Vec2& p3,
         float t
     ) {
-        float u = 1.0f - t;
-        float b0 = u * u * u;
-        float b1 = 3.0f * t * u * u;
-        float b2 = 3.0f * t * t * u;
-        float b3 = t * t * t;
-
-        return b0 * p0 + b1 * p1 + b2 * p2 + b3 * p3;
+        return  (1-t)*(1-t)*(1-t)*p0 +
+                3*(1-t)*(1-t)*t*p1 +
+                3*(1-t)*t*t*p2 +
+                t*t*t*p3;
     }
 
     Vec3 bezier3(
@@ -291,13 +288,10 @@ namespace engine {
         const Vec3& p3,
         float t
     ) {
-        float u = 1.0f - t;
-        float b0 = u * u * u;
-        float b1 = 3.0f * t * u * u;
-        float b2 = 3.0f * t * t * u;
-        float b3 = t * t * t;
-
-        return b0 * p0 + b1 * p1 + b2 * p2 + b3 * p3;
+        return  (1-t)*(1-t)*(1-t)*p0 +
+                3*(1-t)*(1-t)*t*p1 +
+                3*(1-t)*t*t*p2 +
+                t*t*t*p3;
     }
     
     std::string to_string(const Vec2& v) {
