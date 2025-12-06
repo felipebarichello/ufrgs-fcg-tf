@@ -91,14 +91,14 @@ void main()
     float baseHue = rand(seed);
 
     // Low, realistic saturations
-    float s1 = 0.05 + 0.30 * rand(seed+1.0);
-    float s2 = 0.10 + 0.20 * rand(seed+2.0);
-    float s3 = 0.02 + 0.10 * rand(seed+3.0);
+    float s1 = 0.10 + 0.50 * rand(seed+1.0);
+    float s2 = 0.20 + 0.40 * rand(seed+2.0);
+    float s3 = 0.04 + 0.20 * rand(seed+3.0);
 
     // Moderate, not bright values
-    float v1 = 0.35 + 0.35 * rand(seed+4.0);
-    float v2 = 0.60 + 0.40 * rand(seed+5.0);
-    float v3 = 0.75 + 0.40 * rand(seed+6.0);
+    float v1 = 0.12 + 0.30 * rand(seed+4.0);
+    float v2 = 0.25 + 0.20 * rand(seed+5.0);
+    float v3 = 0.20 + 0.50 * rand(seed+6.0);
 
     // Slight hue offsets (kept small to avoid rainbow colors)
     vec3 color1 = hsv2rgb(vec3(baseHue + 0.02 * rand(seed+7.0), s1, v1));
