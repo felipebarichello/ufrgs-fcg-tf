@@ -17,15 +17,13 @@ Rotacionar nave (eixos x e y): mouse
 
 Como rodar?
 
-Opção 1 (make):
-
 $sudo apt-get install build-essential make libx11-dev libxrandr-dev \
                          libxinerama-dev libxcursor-dev libxcb1-dev libxext-dev \
                          libxrender-dev libxfixes-dev libxau-dev libxdmcp-dev
 $make clean # Se necessario
 $make run
 
-Opção 2 (vscode):
+vscode:
 
 Instale as extensões "ms-vscode.cpptools" e "ms-vscode.cmake-tools"
 Clique no botão play no canto inferior direito.
