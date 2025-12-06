@@ -133,7 +133,7 @@ void main()
     vec3 Kd = 0.33*(f1*color1 + f2*color2 + f3*color3);
 
     Kd = clamp(Kd, 0.0, 1.0);
-    //Kd = pow(Kd, vec3(1.0/2.2)); // gamma correction
+    Kd = pow(Kd, vec3(1.0/2.2));
 
     vec3 ambient_term = Ia * Kd;
     color = vec4(Kd * lambert_diffuse_term + ambient_term, 1.0);
