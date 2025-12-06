@@ -18,8 +18,10 @@ CircularCurve::CircularCurve(const Vec3& center, const Vec3& normal, float radiu
 
 Vec3 CircularCurve::get_point(float t) const {
     // Calculate the point on the circular path
-    float angle = t * 2.0f * M_PI; // Full circle
-    return center + radius * (u * (float) cos(angle) + v * (float) sin(angle));
+    float angle = t * 2.0f * M_PI; 
+    float c = (float) cos(angle);
+    float s = (float) sin(angle);
+    return center + radius * (this->u*c + this->v*s);
 }
 
 Vec3 CircularCurve::get_tangent(float t) const {
