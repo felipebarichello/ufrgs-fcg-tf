@@ -1,4 +1,8 @@
-# Readme
+# Trabalho final de FCG
+
+![Imagem em terra](https://github.com/felipebarichello/ufrgs-fcg-tf/blob/main/images/land.png)
+
+![Imagem na nave](https://github.com/felipebarichello/ufrgs-fcg-tf/blob/main/images/ship.png)
 
 ## Contribuições
 
